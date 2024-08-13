@@ -54,7 +54,27 @@ Film reccomendations between users. Request_id is the id of the request that mus
 ### Target Audience
 
 ### Wireframes
+The below wireframes were created to plan the front end layout of the app. For each page, a large view and mobile view have been created.
 
+**Home Page**
+
+![](documentation/wireframes/HomePage.png)
+
+**Profile Page**
+
+![](documentation/wireframes/Profile.png)
+
+**Friends Page**
+
+![](documentation/wireframes/Friends.png)
+
+**Reccomendations Page**
+
+![](documentation/wireframes/Reccomendations.png) 
+
+**Sign up/Login Page**
+
+![](documentation/wireframes/Signup.png) 
 ### Colours
 
 ### Fonts
