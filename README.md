@@ -14,7 +14,7 @@ Alex Small | [GitHub](https://github.com/AlexSmall96) | [LinkedIn](https://www.l
 ### Database Schema
 
 ### Methodology
-
+![Initial Kanban Board](documentation/images/KanbanBoardInitial.png) 
 ### User Stories
 
 ## UX
