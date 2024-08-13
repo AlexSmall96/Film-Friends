@@ -11,6 +11,12 @@ Alex Small | [GitHub](https://github.com/AlexSmall96) | [LinkedIn](https://www.l
 
 ## Project Goals and Planning
 
+### Database Schema
+
+### Methodology
+
+### User Stories
+
 ## UX
 
 ### Target Audience
@@ -23,17 +29,13 @@ Alex Small | [GitHub](https://github.com/AlexSmall96) | [LinkedIn](https://www.l
 
 ### Images
 
-## Methodology
-
-### User Stories
-
 ## Programming Languages, Frameworks, and Libraries used
 
 ## Testing
 
 ## Deployment
 
-## Creditss
+## Credits
 Reference udemy course when code is used:
  - [https://www.udemy.com/course/the-complete-nodejs-developer-course-2](https://www.udemy.com/course/the-complete-nodejs-developer-course-2)
 ## Code
