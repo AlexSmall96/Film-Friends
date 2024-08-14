@@ -3,20 +3,20 @@ const express = require('express')
 const path = require('path')
 const dotenv = require('dotenv')
 const cors = require('cors');
-dotenv.config()
+require('./db/mongoose')
+const userRouter = require('./routers/user')
 
 // Setup App
 const app = express()
-const port = process.env.PORT || 3000
-
-
+const port = process.env.PORT
 const buildPath = path.join(__dirname, 'build')
-
-
 app.use(express.static(buildPath))
 app.use(express.json())
 app.use(cors())
+dotenv.config()
 
+// Setup routers
+app.use(userRouter)
 
 // gets the static files from the build folder
 app.get('*', (req, res) => {
