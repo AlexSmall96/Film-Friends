@@ -1,28 +1,25 @@
+// This file sets up the express app and serves the static files for the front end section of the site
+
 // Import necessary packages
-const express = require('express')
 const path = require('path')
 const dotenv = require('dotenv')
 const cors = require('cors');
-require('./db/mongoose')
-const userRouter = require('./routers/user')
+const express = require('express')
+
+// Import app after that has been setup in setupApp.js
+const app = require('./setupApp')
 
 // Setup App
-const app = express()
 const port = process.env.PORT
 const buildPath = path.join(__dirname, 'build')
 app.use(express.static(buildPath))
-app.use(express.json())
 app.use(cors())
 dotenv.config()
-
-// Setup routers
-app.use(userRouter)
 
 // gets the static files from the build folder
 app.get('*', (req, res) => {
   res.sendFile(path.join(buildPath, 'index.html'))
 })
-
 
 // Showing that the server is online and running and listening for changes
 app.listen(port, () => {
