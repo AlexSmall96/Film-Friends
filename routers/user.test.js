@@ -3,10 +3,24 @@ const app = require('../setupApp')
 const mongoose = require('mongoose')
 const User = require('../models/user')
 
+// Wipe database before each test is run and setup initial user
+const userOneId = new mongoose.Types.ObjectId()
+const userOne = {
+    _id: userOneId,
+    username: 'Mike',
+    email: 'mike@example.com',
+    password: '56what!!',
+}
+
+beforeEach(async () => {
+    await User.deleteMany()
+    await new User(userOne).save()
+})
+
 // Close database connection after tests have run
 afterAll(() => mongoose.connection.close())
 
-// Sign up
+// Sign up Tests
 test('Should sign up a new user', async () => {
     // Correct status code
     const response = await request(app)
@@ -34,6 +48,14 @@ test('Should sign up a new user', async () => {
 })
 
 test('User sign up should fail with invalid data', async () => {
+    // Email address already used
+    await request(app)
+    .post('/users')
+    .send({
+        username: 'Alex',
+        email: 'mike@example.com',
+        password: 'Red123@!'
+    })
     // Missing username
     await request(app)
     .post('/users')
