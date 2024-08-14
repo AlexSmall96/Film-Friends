@@ -13,6 +13,8 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "mongodb-legacy": "^6.1.0",
+    "mongoose": "^8.5.1",
     "path": "^0.12.7",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -21,6 +23,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "dev": "env-cmd config/dev.env node mongoose.js",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -45,6 +48,7 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-    "@babel/plugin-transform-private-property-in-object": "^7.24.7"
+    "@babel/plugin-transform-private-property-in-object": "^7.24.7",
+    "env-cmd": "^8.0.2"
   }
 }
