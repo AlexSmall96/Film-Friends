@@ -1,13 +1,15 @@
 const request = require('supertest')
 const app = require('../setupApp')
 const mongoose = require('mongoose')
+const User = require('../models/user')
 
 // Close database connection after tests have run
 afterAll(() => mongoose.connection.close())
 
 // Sign up
 test('Should sign up a new user', async () => {
-    await request(app)
+    // Correct status code
+    const response = await request(app)
     .post('/users')
     .send({
         username: 'Alex',
@@ -15,6 +17,20 @@ test('Should sign up a new user', async () => {
         password: 'Red123@!'
     })
     .expect(201)
+    // Assert that the database was changed correctly
+    const user = await User.findById(response.body.user._id)
+    expect(user).not.toBeNull()
+    // Assert the password was hashed correctly
+    expect(user.password).not.toBe('Red123@!')
+    // Assertions about the response
+    expect(response.body).toMatchObject({
+        user: {
+            username: 'Alex',
+            email: 'alex@example.com',
+        }
+    })
+    // Assert that the age is defaulted to 0
+    expect(user.age).toBe(0)
 })
 
 test('User sign up should fail with invalid data', async () => {

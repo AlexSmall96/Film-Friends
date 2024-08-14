@@ -15,4 +15,15 @@ router.post('/users', async (req, res) => {
     }
 })
 
+// Login 
+
+// Logout
+
+// View profile
+
+// Edit profile
+
+// Delete account
+
+
 module.exports = router
