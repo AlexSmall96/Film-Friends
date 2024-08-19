@@ -27,8 +27,6 @@ const filmSchema = new mongoose.Schema({
     },
     userRating: {
         type: Number,
-        min: 0,
-        max: 5,
         default: 0,
         validate(value) {
             if (value < 0 || value > 5) {

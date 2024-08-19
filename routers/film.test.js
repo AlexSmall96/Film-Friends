@@ -21,6 +21,7 @@ beforeEach(async () => {
 // Close database connection after tests have run
 afterAll(async () => {mongoose.connection.close()})
 
+// Create a film
 test('Should create a new film', async () => {
     // Correct status code
     const response = await request(app).post('/films').send({title: 'A great film', imdbID: 'a123', owner: userTwoId}).expect(201)
@@ -46,6 +47,7 @@ test('Film creation should fail with invalid data', async () => {
     await request(app).post('/films').send({title: 'film three', imdbID: 'h123', owner: userTwoId, userRating: 6}).expect(400)
 })
 
+// View film
 test('Should view data for a single film', async () => {
     // Correct status code
     const response = await request(app).get(`/films/${filmTwo._id}`).expect(200)
@@ -57,4 +59,29 @@ test('Should view data for a single film', async () => {
 test('Get film should fail with invalid id', async () => {
     // Correct status code
     await request(app).get('/films/123').expect(400)
+})
+
+// Update film
+test('Should update film with valid data', async () => {
+    // Correct status code
+    await request(app).patch(`/films/${filmTwo._id}`).send({
+        "watched": true,
+        "public": true,
+        "userRating": 4.5,
+        "notes": "a great film, would reccomend"
+    }).expect(200)
+    // Assert that the database was changed correctly
+    const film = await Film.findById(filmTwo._id)
+    expect(film.watched).toBe(true)
+    expect(film.public).toBe(true)
+    expect(film.userRating).toBe(4.5)
+    expect(film.notes).toBe("a great film, would reccomend")
+})
+
+test('Film update should fail with invalid data or invalid id', async () => {
+    // Invalid id
+    await request(app).patch('/films/123').send({'watched': true}).expect(400)
+    // Custom error message for Invalid rating
+    const response = await request(app).patch(`/films/${filmTwo._id}`).send({'userRating': -1}).expect(400)
+    expect(response.body.errors.userRating.message).toBe('Rating must be between 0 and 5.')
 })
