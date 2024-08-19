@@ -48,8 +48,10 @@ test('Should sign up a new user', async () => {
 })
 
 test('User sign up should fail with invalid data', async () => {
+    // Username already used
+    await request(app).post('/users').send({username: 'Alex', email: 'another@example.com', password: 'Red123@!'})
     // Email address already used
-    await request(app).post('/users').send({username: 'Alex',email: 'mike@example.com', password: 'Red123@!'})
+    await request(app).post('/users').send({username: 'Alex', email: 'mike@example.com', password: 'Red123@!'})
     // Missing username
     await request(app).post('/users').send({email: 'alex@example.com', password: 'Red123@!'}).expect(400)
     // Invalid email
