@@ -127,3 +127,12 @@ test('Profile edit should fail with invalid data or invalid id', async () => {
     // Invalid password
     expect(errors.password.message).toBe('Password cannot contain "password"')
 })
+
+// Delete profile
+test('Should delete profile with valid id', async () => {
+    // Correct status code
+    const response = await request(app).delete(`/users/${userOneId}`).expect(200)
+    // Assert the database was changed correctly
+    const user = await User.findById(userOneId)
+    expect(user).toBeNull()
+})

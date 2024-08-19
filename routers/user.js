@@ -59,6 +59,17 @@ router.patch('/users/:id', async (req, res) => {
 })
 
 // Delete account
-
+router.delete('/users/:id', async (req, res) => {
+    const _id = req.params.id
+    try {
+        const user = await User.findOneAndDelete({_id:_id})
+        if (!user) {
+            return res.status(404).send()
+        }
+        res.send(user)
+    } catch (e) {
+        res.status(400).send(e)
+    }
+})
 
 module.exports = router
