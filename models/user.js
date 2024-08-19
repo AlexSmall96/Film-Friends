@@ -43,7 +43,20 @@ const userSchema = new mongoose.Schema({
     },
 })
 
-// Add method to hash passwords when user is created or password is changed
+// Method to find user by email and password
+userSchema.statics.findByCredentials = async (email, password) => {
+    const user = await User.findOne({email: email})
+    if (!user) {
+        throw new Error('Unable to login.')
+    }
+    const isMatch = await bcrypt.compare(password, user.password)
+    if (!isMatch) {
+        throw new Error('Unable to login.')
+    }
+    return user
+}
+
+// Method to hash passwords when user is created or password is changed
 userSchema.pre('save', async function (next) {
     const user = this
     if (user.isModified('password')){
