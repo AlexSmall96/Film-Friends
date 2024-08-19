@@ -39,4 +39,17 @@ router.patch('/films/:id', async (req, res) => {
     }
 })
 
+// Delete film
+router.delete('/films/:id', async (req, res) => {
+    const _id = req.params.id
+    try {
+        const film = await Film.findOneAndDelete({_id:_id})
+        if (!film) {
+            return res.status(404).send()
+        }
+        res.send(film)
+    } catch (e) {
+        res.status(400).send(e)
+    }
+})
 module.exports = router

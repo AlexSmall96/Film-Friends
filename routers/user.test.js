@@ -136,3 +136,8 @@ test('Should delete profile with valid id', async () => {
     const user = await User.findById(userOneId)
     expect(user).toBeNull()
 })
+
+test('User deletion should fail with invalid data', async () => {
+    // Correct status code
+    await request(app).delete('/users/123').expect(400)
+})

@@ -85,3 +85,17 @@ test('Film update should fail with invalid data or invalid id', async () => {
     const response = await request(app).patch(`/films/${filmTwo._id}`).send({'userRating': -1}).expect(400)
     expect(response.body.errors.userRating.message).toBe('Rating must be between 0 and 5.')
 })
+
+// Delete film
+test('Should delete film with valid id', async () => {
+    // Correct status code
+    await request(app).delete(`/films/${filmTwoId}`).expect(200)
+    // Assert the database was changed correctly
+    const film = await Film.findById(filmTwoId)
+    expect(film).toBeNull()
+})
+
+test('Film deletion should fail with invalid data', async () => {
+    // Correct status code
+    await request(app).delete('/films/123').expect(400)
+})
