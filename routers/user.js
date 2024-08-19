@@ -43,7 +43,20 @@ router.get('/users/', async (req, res) => {
         res.status(400).send(e)
     }
 })
+
 // Edit profile
+router.patch('/users/:id', async (req, res) => {
+    const _id = req.params.id
+    try {
+        const user = await User.findByIdAndUpdate(_id, req.body, {new: true, runValidators: true})
+        if (!user) {
+            return res.status(404).send()
+        }
+        res.send(user)
+    } catch (e) {
+        res.status(400).send(e)
+    }
+})
 
 // Delete account
 

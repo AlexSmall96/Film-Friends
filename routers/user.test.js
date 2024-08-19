@@ -48,20 +48,19 @@ test('Should sign up a new user', async () => {
 })
 
 test('User sign up should fail with invalid data', async () => {
-    // Username already used
-    await request(app).post('/users').send({username: 'Alex', email: 'another@example.com', password: 'Red123@!'})
-    // Email address already used
-    await request(app).post('/users').send({username: 'Alex', email: 'mike@example.com', password: 'Red123@!'})
-    // Missing username
-    await request(app).post('/users').send({email: 'alex@example.com', password: 'Red123@!'}).expect(400)
+    // Username taken
+    await request(app).post('/users').send({username: 'Jane'}).expect(400)
+    // Email taken
+    await request(app).post('/users').send({email: 'jane@example.com'}).expect(400)
+    // Custom error messages
+    const response = await request(app).post('/users').send({age: -1, email: 'mike@', password: 'password'}).expect(400)
+    const errors = response.body.errors
+    // Invalid age
+    expect(errors.age.message).toBe('Age must be a positive number.')
     // Invalid email
-    await request(app).post('/users').send({username: 'Alex', email: 'alex@', password: 'Red123@!'}).expect(400)
-    // Missing email
-    await request(app).post('/users').send({username: 'Alex', password: 'Red123@!'}).expect(400)
-    // Negative number provided for age
-    await request(app).post('/users').send({username: 'Alex', email: 'alex@example.com', password: 'Red123@!', age: -1}).expect(400)
+    expect(errors.email.message).toBe('Email is invalid')
     // Invalid password
-    await request(app).post('/users').send({username: 'Alex', email: 'alex@example.com', password: 'password',}).expect(400)
+    expect(errors.password.message).toBe('Password cannot contain "password"')
 })
 
 // View profile tests
@@ -93,4 +92,38 @@ test('Should be able to search for user by username', async () => {
     // Search 3: Search for abc - should return no results with status code 200
     const resultsForAbc = await request(app).get('/users/?username=abc').expect(200)
     expect(resultsForAbc.body.users.length).toBe(0)
+})
+
+// Edit profile
+test('Should be able to edit valid fields with valid data', async () => {
+    // Correct status code
+    await request(app).patch(`/users/${userOneId}`).send({
+        username: 'Mike2',
+        email: 'mike2@example.com',
+        age: 28,
+        password: 'new12345'
+    }).expect(200)
+    // Assert that the database was changed correctly
+    const user = await User.findById(userOneId)
+    expect(user.username).toBe('Mike2')
+    expect(user.email).toBe('mike2@example.com')
+    expect(user.age).toBe(28)
+})
+
+test('Profile edit should fail with invalid data or invalid id', async () => {
+    // Invalid id
+    await request(app).patch('/users/123').send({username: 'Mike3'}).expect(400)
+    // Username taken
+    await request(app).patch(`/users/${userOneId}`).send({username: 'Jane'}).expect(400)
+    // Email taken
+    await request(app).patch(`/users/${userOneId}`).send({email: 'jane@example.com'}).expect(400)
+    // Custom error messages
+    const response = await request(app).patch(`/users/${userOneId}`).send({age: -1, email: 'mike@', password: 'password'}).expect(400)
+    const errors = response.body.errors
+    // Invalid age
+    expect(errors.age.message).toBe('Age must be a positive number.')
+    // Invalid email
+    expect(errors.email.message).toBe('Email is invalid')
+    // Invalid password
+    expect(errors.password.message).toBe('Password cannot contain "password"')
 })
