@@ -53,3 +53,8 @@ test('Should view data for a single film', async () => {
     expect(response.body.film.title).toBe('film two')
     expect(response.body.film.imdbID).toBe('g123')
 })
+
+test('Get film should fail with invalid id', async () => {
+    // Correct status code
+    await request(app).get('/films/123').expect(400)
+})
