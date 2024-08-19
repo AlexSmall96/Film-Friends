@@ -76,6 +76,11 @@ test('Should be able to view users profile and film list', async () => {
     expect(response.body.films[1].title).toBe('film one b')
 })
 
+test('Get profile should fail with invalid id', async () => {
+    // Correct status code
+    await request(app).get('/users/123').expect(400)
+})
+
 // Search for profiles
 test('Should be able to search for user by username', async () => {
     // Search 1: Search for ' JAne' - should return Jane and Jane44 with status code 200
