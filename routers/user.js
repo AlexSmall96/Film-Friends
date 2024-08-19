@@ -32,6 +32,17 @@ router.get('/users/:id', async (req, res) => {
         res.status(400).send(e)
     }
 })
+
+// Search for profiles
+router.get('/users/', async (req, res) => {
+    const username = new RegExp(`^${req.query.username.trim()}`, "i")
+    try {
+        const users = await User.find( { username: { $regex:username } } )
+        res.status(200).send({ users })
+    } catch (e) {
+        res.status(400).send(e)
+    }
+})
 // Edit profile
 
 // Delete account

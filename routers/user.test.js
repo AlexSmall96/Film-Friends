@@ -4,29 +4,23 @@ const mongoose = require('mongoose')
 const User = require('../models/user')
 const Film = require('../models/film')
 
-// Wipe database before each test is run and setup initial user
+// Define test data
 const userOneId = new mongoose.Types.ObjectId()
-const userOne = {
-    _id: userOneId,
-    username: 'Mike',
-    email: 'mike@example.com',
-    password: '56what!!',
-}
-const filmOneA = {
-    title: 'film one a',
-    imdbID: 't345',
-    owner: userOneId
-}
-const filmOneB = {
-    title: 'film one b',
-    imdbID: 's345',
-    owner: userOneId
-}
+const userSearchAId = new mongoose.Types.ObjectId()
+const userSearchBId = new mongoose.Types.ObjectId()
+const userOne = {_id: userOneId, username: 'Mike', email: 'mike@example.com', password: '56what!!'}
+const userSearchA = { _id: userSearchAId, username: 'Jane', email: 'jane@example.com', password: '34red>?'}
+const userSearchB = { _id: userSearchBId, username: 'Jane44', email: 'jane44@another.com', password: '34green>?'}
+const filmOneA = {title: 'film one a', imdbID: 't345', owner: userOneId}
+const filmOneB = {title: 'film one b', imdbID: 's345', owner: userOneId}
 
+// Wipe database before each test and setup test data
 beforeEach(async () => {
     await User.deleteMany()
     await Film.deleteMany()
     await new User(userOne).save()
+    await new User(userSearchA).save()
+    await new User(userSearchB).save()
     await new Film(filmOneA).save()
     await new Film(filmOneB).save()
 })
@@ -37,16 +31,14 @@ afterAll(() => mongoose.connection.close())
 // Sign up Tests
 test('Should sign up a new user', async () => {
     // Correct status code
-    const response = await request(app).post('/users').send({username: 'Alex', email: 'alex@example.com', password: 'Red123@!'})
-    .expect(201)
+    const response = await request(app).post('/users').send({username: 'Alex', email: 'alex@example.com', password: 'Red123@!'}).expect(201)
     // Assert that the database was changed correctly
     const user = await User.findById(response.body.user._id)
     expect(user).not.toBeNull()
     // Assert the password was hashed correctly
     expect(user.password).not.toBe('Red123@!')
     // Assertions about the response
-    expect(response.body).toMatchObject({
-        user: {
+    expect(response.body).toMatchObject({user: {
             username: 'Alex',
             email: 'alex@example.com',
         }
@@ -80,4 +72,18 @@ test('Should be able to view users profile and film list', async () => {
     expect(response.body.films.length).toBe(2)
     expect(response.body.films[0].title).toBe('film one a')
     expect(response.body.films[1].title).toBe('film one b')
+})
+
+// Search for profiles
+test('Should be able to search for user by username', async () => {
+    // Search 1: Search for ' JAne' - should return Jane and Jane44 with status code 200
+    const resultsForJane = await request(app).get('/users/?username= JAne').expect(200)
+    expect(resultsForJane.body.users.length).toBe(2)
+    // Search 2: Search for 'Jane44 ' - should only return Jane44 with status code 200
+    const resultsForJane44 = await request(app).get('/users/?username=Jane44 ').expect(200)
+    expect(resultsForJane44.body.users.length).toBe(1)
+    expect(resultsForJane44.body.users[0].email).toBe('jane44@another.com')
+    // Search 3: Search for abc - should return no results with status code 200
+    const resultsForAbc = await request(app).get('/users/?username=abc').expect(200)
+    expect(resultsForAbc.body.users.length).toBe(0)
 })
