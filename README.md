@@ -74,7 +74,12 @@ The below wireframes were created to plan the front end layout of the app. For e
 
 **Sign up/Login Page**
 
-![](documentation/wireframes/Signup.png) 
+![](documentation/wireframes/Signup.png)
+
+**Films Page**
+
+![](documentation/wireframes/FilmsPage.png)
+
 ### Colours
 
 ### Fonts
