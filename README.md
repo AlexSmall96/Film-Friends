@@ -11,8 +11,9 @@ Alex Small | [GitHub](https://github.com/AlexSmall96) | [LinkedIn](https://www.l
 
 
 ## Project Goals and Planning
-
-
+### Process Flow Diagrams
+#### Login and Sign Up
+![Login and Sign up](documentation/process-flows/SignInSignUp.png)
 ### Database Schema
 The below diagram was used to model the database schema. An interactive version can be found [here](https://dbdocs.io/alex.small739/Film-Friends-Db-Schema?view=relationships).
 Descriptions of the database tables and fields are as follows:
@@ -46,6 +47,8 @@ The backend logic for the project was written in [Node.js](https://nodejs.org/en
 
 
 #### Sprint 4: Frontend Styling
+
+#### Sprint 5: Remaining Documentation and Manual Testing
 ### User Stories
 #### Allow me to sign up for Film Friends
 - Users can sign up using a chosen email, username, and password.
