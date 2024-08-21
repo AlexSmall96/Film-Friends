@@ -110,6 +110,12 @@ test('Logout should be successful when authenticated', async () => {
     // Token has been removed from tokens array
     expect(userOne.tokens.length).toBe(1)
 })
+test('Logout should be unsuccessful when not authenticated', async () => {
+    // Correct status code
+    const response = await request(app).post('/users/logout').expect(401)
+    // Correct error message
+    expect(response.body.error).toBe('Please authenticate.')
+})
 
 // View profile tests
 test('User should be able to view their own profile and all films', async () => {
@@ -123,7 +129,6 @@ test('User should be able to view their own profile and all films', async () => 
     expect(response.body.films[0].title).toBe('film one a')
     expect(response.body.films[1].title).toBe('film one b')
 })
-
 test('User should be able to view another users username, age and public films', async () => {
     // userTwo views userOne's profile
     // Correct status code
@@ -137,8 +142,13 @@ test('User should be able to view another users username, age and public films',
     expect(Object.keys(response.body.profile).includes('email')).toBe(false)
     expect(Object.keys(response.body.profile).includes('password')).toBe(false)
 })
-
-test('Get profile should fail with invalid id', async () => {
+test('View profile should be unsuccessful when not authenticated', async () => {
+    // Correct status code
+    const response = await request(app).get(`/users/${userOneId}`).expect(401)
+    // Correct error message
+    expect(response.body.error).toBe('Please authenticate.')
+})
+test('View profile should fail with invalid id', async () => {
     // Correct status code
     await request(app).get('/users/123').set(...userOneAuth).expect(400)
 })
@@ -156,6 +166,12 @@ test('Should be able to search for user by username', async () => {
     const resultsForAbc = await request(app).get('/users/?username=abc').set(...userOneAuth).expect(200)
     expect(resultsForAbc.body.users.length).toBe(0)
 })
+test('Search for profiles should be unsuccessful when not authenticated', async () => {
+    // Correct status code
+    const response = await request(app).get('/users/?username= JAne').expect(401)
+    // Correct error message
+    expect(response.body.error).toBe('Please authenticate.')
+})
 
 // Edit profile
 test('Should be able to edit valid fields with valid data', async () => {
@@ -172,7 +188,6 @@ test('Should be able to edit valid fields with valid data', async () => {
     expect(user.email).toBe('mike2@example.com')
     expect(user.age).toBe(28)
 })
-
 test('Profile edit should fail with invalid data or invalid id', async () => {
     // Invalid id
     await request(app).patch('/users/123').send({username: 'Mike3'}).set(...userOneAuth).expect(400)
@@ -190,6 +205,12 @@ test('Profile edit should fail with invalid data or invalid id', async () => {
     // Invalid password
     expect(errors.password.message).toBe('Password cannot contain "password"')
 })
+test('Profile edit should be unsuccessful when not authenticated', async () => {
+    // Correct status code
+    const response = await request(app).patch(`/users/${userOneId}`).send({username: 'Mike3'}).expect(401)
+    // Correct error message
+    expect(response.body.error).toBe('Please authenticate.')
+})
 
 // Delete profile
 test('Should delete profile with valid id', async () => {
@@ -199,8 +220,13 @@ test('Should delete profile with valid id', async () => {
     const user = await User.findById(userOneId)
     expect(user).toBeNull()
 })
-
 test('User deletion should fail with invalid data', async () => {
     // Correct status code
     await request(app).delete('/users/123').set(...userOneAuth).expect(400)
+})
+test('Profile delete should be unsuccessful when not authenticated', async () => {
+    // Correct status code
+    const response = await request(app).delete(`/users/${userOneId}`).expect(401)
+    // Correct error message
+    expect(response.body.error).toBe('Please authenticate.')
 })
