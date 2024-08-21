@@ -2,6 +2,7 @@ const express = require('express')
 const router = new express.Router()
 const User = require('../models/user')
 const Film = require('../models/film')
+const auth = require('../middleware/auth')
 
 // User Endpoints go here
 
@@ -22,7 +23,7 @@ router.post('/users', async (req, res) => {
 
 // View profile
 // Need to add authentication to hide private data (email, password, private films)
-router.get('/users/:id', async (req, res) => {
+router.get('/users/:id', auth, async (req, res) => {
     const _id = req.params.id
     try {
         const user = await User.findById(_id)
@@ -34,7 +35,7 @@ router.get('/users/:id', async (req, res) => {
 })
 
 // Search for profiles
-router.get('/users/', async (req, res) => {
+router.get('/users/', auth, async (req, res) => {
     const username = new RegExp(`^${req.query.username.trim()}`, "i")
     try {
         const users = await User.find( { username: { $regex:username } } )
@@ -45,7 +46,7 @@ router.get('/users/', async (req, res) => {
 })
 
 // Edit profile
-router.patch('/users/:id', async (req, res) => {
+router.patch('/users/:id', auth, async (req, res) => {
     const _id = req.params.id
     try {
         const user = await User.findByIdAndUpdate(_id, req.body, {new: true, runValidators: true})
@@ -59,7 +60,7 @@ router.patch('/users/:id', async (req, res) => {
 })
 
 // Delete account
-router.delete('/users/:id', async (req, res) => {
+router.delete('/users/:id', auth, async (req, res) => {
     const _id = req.params.id
     try {
         const user = await User.findOneAndDelete({_id:_id})

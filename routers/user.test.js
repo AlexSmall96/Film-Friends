@@ -1,14 +1,25 @@
 const request = require('supertest')
 const app = require('../setupApp')
 const mongoose = require('mongoose')
+const jwt = require('jsonwebtoken')
 const User = require('../models/user')
 const Film = require('../models/film')
+const JWT_SECRET = process.env.JWT_SECRET
 
 // Define test data
 const userOneId = new mongoose.Types.ObjectId()
 const userSearchAId = new mongoose.Types.ObjectId()
 const userSearchBId = new mongoose.Types.ObjectId()
-const userOne = {_id: userOneId, username: 'Mike', email: 'mike@example.com', password: '56what!!'}
+const userOne = {
+    _id: userOneId, 
+    username: 'Mike', 
+    email: 'mike@example.com', 
+    password: '56what!!',
+    tokens: [{
+        token: jwt.sign({_id: userOneId}, JWT_SECRET)
+    }]
+}
+const userOneAuth = ['Authorization', `Bearer ${userOne.tokens[0].token}`]
 const userSearchA = { _id: userSearchAId, username: 'Jane', email: 'jane@example.com', password: '34red>?'}
 const userSearchB = { _id: userSearchBId, username: 'Jane44', email: 'jane44@another.com', password: '34green>?'}
 const filmOneA = {title: 'film one a', imdbID: 't345', owner: userOneId}
@@ -66,7 +77,7 @@ test('User sign up should fail with invalid data', async () => {
 // View profile tests
 test('Should be able to view users profile and film list', async () => {
     // Correct status code
-    const response = await request(app).get(`/users/${userOneId}`).expect(200)
+    const response = await request(app).get(`/users/${userOneId}`).set(...userOneAuth).expect(200)
     // Correct data is returned
     expect(response.body.user.username).toBe('Mike')
     expect(response.body.user.email).toBe('mike@example.com')
@@ -77,20 +88,20 @@ test('Should be able to view users profile and film list', async () => {
 
 test('Get profile should fail with invalid id', async () => {
     // Correct status code
-    await request(app).get('/users/123').expect(400)
+    await request(app).get('/users/123').set(...userOneAuth).expect(400)
 })
 
 // Search for profiles
 test('Should be able to search for user by username', async () => {
     // Search 1: Search for ' JAne' - should return Jane and Jane44 with status code 200
-    const resultsForJane = await request(app).get('/users/?username= JAne').expect(200)
+    const resultsForJane = await request(app).get('/users/?username= JAne').set(...userOneAuth).expect(200)
     expect(resultsForJane.body.users.length).toBe(2)
     // Search 2: Search for 'Jane44 ' - should only return Jane44 with status code 200
-    const resultsForJane44 = await request(app).get('/users/?username=Jane44 ').expect(200)
+    const resultsForJane44 = await request(app).get('/users/?username=Jane44 ').set(...userOneAuth).expect(200)
     expect(resultsForJane44.body.users.length).toBe(1)
     expect(resultsForJane44.body.users[0].email).toBe('jane44@another.com')
     // Search 3: Search for abc - should return no results with status code 200
-    const resultsForAbc = await request(app).get('/users/?username=abc').expect(200)
+    const resultsForAbc = await request(app).get('/users/?username=abc').set(...userOneAuth).expect(200)
     expect(resultsForAbc.body.users.length).toBe(0)
 })
 
@@ -102,7 +113,7 @@ test('Should be able to edit valid fields with valid data', async () => {
         email: 'mike2@example.com',
         age: 28,
         password: 'new12345'
-    }).expect(200)
+    }).set(...userOneAuth).expect(200)
     // Assert that the database was changed correctly
     const user = await User.findById(userOneId)
     expect(user.username).toBe('Mike2')
@@ -112,13 +123,13 @@ test('Should be able to edit valid fields with valid data', async () => {
 
 test('Profile edit should fail with invalid data or invalid id', async () => {
     // Invalid id
-    await request(app).patch('/users/123').send({username: 'Mike3'}).expect(400)
+    await request(app).patch('/users/123').send({username: 'Mike3'}).set(...userOneAuth).expect(400)
     // Username taken
-    await request(app).patch(`/users/${userOneId}`).send({username: 'Jane'}).expect(400)
+    await request(app).patch(`/users/${userOneId}`).send({username: 'Jane'}).set(...userOneAuth).expect(400)
     // Email taken
-    await request(app).patch(`/users/${userOneId}`).send({email: 'jane@example.com'}).expect(400)
+    await request(app).patch(`/users/${userOneId}`).send({email: 'jane@example.com'}).set(...userOneAuth).expect(400)
     // Custom error messages
-    const response = await request(app).patch(`/users/${userOneId}`).send({age: -1, email: 'mike@', password: 'password'}).expect(400)
+    const response = await request(app).patch(`/users/${userOneId}`).send({age: -1, email: 'mike@', password: 'password'}).set(...userOneAuth).expect(400)
     const errors = response.body.errors
     // Invalid age
     expect(errors.age.message).toBe('Age must be a positive number.')
@@ -131,7 +142,7 @@ test('Profile edit should fail with invalid data or invalid id', async () => {
 // Delete profile
 test('Should delete profile with valid id', async () => {
     // Correct status code
-    const response = await request(app).delete(`/users/${userOneId}`).expect(200)
+    await request(app).delete(`/users/${userOneId}`).set(...userOneAuth).expect(200)
     // Assert the database was changed correctly
     const user = await User.findById(userOneId)
     expect(user).toBeNull()
@@ -139,5 +150,5 @@ test('Should delete profile with valid id', async () => {
 
 test('User deletion should fail with invalid data', async () => {
     // Correct status code
-    await request(app).delete('/users/123').expect(400)
+    await request(app).delete('/users/123').set(...userOneAuth).expect(400)
 })
