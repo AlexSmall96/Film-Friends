@@ -176,7 +176,7 @@ test('Search for profiles should be unsuccessful when not authenticated', async 
 // Edit profile
 test('Should be able to edit valid fields with valid data', async () => {
     // Correct status code
-    await request(app).patch(`/users/${userOneId}`).send({
+    await request(app).patch(`/users/me`).send({
         username: 'Mike2',
         email: 'mike2@example.com',
         age: 28,
@@ -188,15 +188,13 @@ test('Should be able to edit valid fields with valid data', async () => {
     expect(user.email).toBe('mike2@example.com')
     expect(user.age).toBe(28)
 })
-test('Profile edit should fail with invalid data or invalid id', async () => {
-    // Invalid id
-    await request(app).patch('/users/123').send({username: 'Mike3'}).set(...userOneAuth).expect(400)
+test('Profile edit should fail with invalid data', async () => {
     // Username taken
-    await request(app).patch(`/users/${userOneId}`).send({username: 'Jane'}).set(...userOneAuth).expect(400)
+    await request(app).patch(`/users/me`).send({username: 'Jane'}).set(...userOneAuth).expect(400)
     // Email taken
-    await request(app).patch(`/users/${userOneId}`).send({email: 'jane@example.com'}).set(...userOneAuth).expect(400)
+    await request(app).patch(`/users/me`).send({email: 'jane@example.com'}).set(...userOneAuth).expect(400)
     // Custom error messages
-    const response = await request(app).patch(`/users/${userOneId}`).send({age: -1, email: 'mike@', password: 'password'}).set(...userOneAuth).expect(400)
+    const response = await request(app).patch(`/users/me`).send({age: -1, email: 'mike@', password: 'password'}).set(...userOneAuth).expect(400)
     const errors = response.body.errors
     // Invalid age
     expect(errors.age.message).toBe('Age must be a positive number.')
@@ -207,26 +205,22 @@ test('Profile edit should fail with invalid data or invalid id', async () => {
 })
 test('Profile edit should be unsuccessful when not authenticated', async () => {
     // Correct status code
-    const response = await request(app).patch(`/users/${userOneId}`).send({username: 'Mike3'}).expect(401)
+    const response = await request(app).patch(`/users/me`).send({username: 'Mike3'}).expect(401)
     // Correct error message
     expect(response.body.error).toBe('Please authenticate.')
 })
 
 // Delete profile
-test('Should delete profile with valid id', async () => {
+test('Should delete profile when authenticated', async () => {
     // Correct status code
-    await request(app).delete(`/users/${userOneId}`).set(...userOneAuth).expect(200)
+    await request(app).delete(`/users/me`).set(...userOneAuth).expect(200)
     // Assert the database was changed correctly
     const user = await User.findById(userOneId)
     expect(user).toBeNull()
 })
-test('User deletion should fail with invalid data', async () => {
-    // Correct status code
-    await request(app).delete('/users/123').set(...userOneAuth).expect(400)
-})
 test('Profile delete should be unsuccessful when not authenticated', async () => {
     // Correct status code
-    const response = await request(app).delete(`/users/${userOneId}`).expect(401)
+    const response = await request(app).delete(`/users/me`).expect(401)
     // Correct error message
     expect(response.body.error).toBe('Please authenticate.')
 })

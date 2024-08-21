@@ -70,13 +70,10 @@ router.get('/users/', auth, async (req, res) => {
 })
 
 // Edit profile
-router.patch('/users/:id', auth, async (req, res) => {
-    const _id = req.params.id
+router.patch('/users/me', auth, async (req, res) => {
+    const _id = req.user._id
     try {
         const user = await User.findByIdAndUpdate(_id, req.body, {new: true, runValidators: true})
-        if (!user) {
-            return res.status(404).send()
-        }
         res.send(user)
     } catch (e) {
         res.status(400).send(e)
@@ -84,13 +81,10 @@ router.patch('/users/:id', auth, async (req, res) => {
 })
 
 // Delete account
-router.delete('/users/:id', auth, async (req, res) => {
-    const _id = req.params.id
+router.delete('/users/me', auth, async (req, res) => {
+    const _id = req.user._id
     try {
         const user = await User.findOneAndDelete({_id:_id})
-        if (!user) {
-            return res.status(404).send()
-        }
         res.send(user)
     } catch (e) {
         res.status(400).send(e)
