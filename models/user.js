@@ -51,6 +51,14 @@ const userSchema = new mongoose.Schema({
     }]
 })
 
+// Virtual field for Film owned by User
+userSchema.virtual('films', {
+    ref: 'Film',
+    localField: '_id',
+    foreignField: 'owner'
+})
+
+
 // Filters the user data to hide private data from response
 userSchema.methods.toJSON = function () {
     const user = this
