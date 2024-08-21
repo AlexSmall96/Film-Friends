@@ -8,6 +8,7 @@ const JWT_SECRET = process.env.JWT_SECRET
 
 // Define test data
 const userOneId = new mongoose.Types.ObjectId()
+const userTwoId = new mongoose.Types.ObjectId()
 const userSearchAId = new mongoose.Types.ObjectId()
 const userSearchBId = new mongoose.Types.ObjectId()
 const userOne = {
@@ -19,17 +20,28 @@ const userOne = {
         token: jwt.sign({_id: userOneId}, JWT_SECRET)
     }]
 }
+const userTwo = {
+    _id: userTwoId,
+    username: 'Steve',
+    email: 'steve@example.com',
+    password: '123green@',
+    tokens: [{
+        token: jwt.sign({_id: userTwoId}, JWT_SECRET)
+    }]
+}
 const userOneAuth = ['Authorization', `Bearer ${userOne.tokens[0].token}`]
+const userTwoAuth = ['Authorization', `Bearer ${userTwo.tokens[0].token}`]
 const userSearchA = { _id: userSearchAId, username: 'Jane', email: 'jane@example.com', password: '34red>?'}
 const userSearchB = { _id: userSearchBId, username: 'Jane44', email: 'jane44@another.com', password: '34green>?'}
-const filmOneA = {title: 'film one a', imdbID: 't345', owner: userOneId}
-const filmOneB = {title: 'film one b', imdbID: 's345', owner: userOneId}
+const filmOneA = {title: 'film one a', imdbID: 't345', owner: userOneId, public: true}
+const filmOneB = {title: 'film one b', imdbID: 's345', owner: userOneId, public: false}
 
 // Wipe database before each test and setup test data
 beforeEach(async () => {
     await User.deleteMany()
     await Film.deleteMany()
     await new User(userOne).save()
+    await new User(userTwo).save()
     await new User(userSearchA).save()
     await new User(userSearchB).save()
     await new Film(filmOneA).save()
@@ -75,15 +87,30 @@ test('User sign up should fail with invalid data', async () => {
 })
 
 // View profile tests
-test('Should be able to view users profile and film list', async () => {
+test('User should be able to view their own profile and all films', async () => {
+    // userOne views their own profile
     // Correct status code
     const response = await request(app).get(`/users/${userOneId}`).set(...userOneAuth).expect(200)
     // Correct data is returned
-    expect(response.body.user.username).toBe('Mike')
-    expect(response.body.user.email).toBe('mike@example.com')
+    expect(response.body.profile.username).toBe('Mike')
+    expect(response.body.profile.email).toBe('mike@example.com')
     expect(response.body.films.length).toBe(2)
     expect(response.body.films[0].title).toBe('film one a')
     expect(response.body.films[1].title).toBe('film one b')
+})
+
+test('User should be able to view another users username, age and public films', async () => {
+    // userTwo views userOne's profile
+    // Correct status code
+    const response = await request(app).get(`/users/${userOneId}`).set(...userTwoAuth).expect(200)
+    // Correct data is returned
+    expect(response.body.profile.username).toBe('Mike')
+    expect(response.body.profile.age).toBe(0)
+    expect(response.body.films.length).toBe(1)
+    expect(response.body.films[0].title).toBe('film one a')
+    // Private data is not returned
+    expect(Object.keys(response.body.profile).includes('email')).toBe(false)
+    expect(Object.keys(response.body.profile).includes('password')).toBe(false)
 })
 
 test('Get profile should fail with invalid id', async () => {

@@ -21,18 +21,23 @@ router.post('/users', async (req, res) => {
 
 // Logout
 
-// View profile
-// Need to add authentication to hide private data (email, password, private films)
+// View a users profile
 router.get('/users/:id', auth, async (req, res) => {
-    const _id = req.params.id
+    const routerId = req.params.id
     try {
-        const user = await User.findById(_id)
-        const films = await Film.find({owner: _id})
-        res.status(200).send({ user, films })
+        let profile = await User.findById(routerId)
+        let films = await Film.find({owner: routerId})
+        if (req.user.id !== routerId) {
+            profile = {age:profile.age, username: profile.username}
+            films = films.filter(film => film.public === true)
+        }
+        res.status(200).send({ profile, films })
     } catch (e) {
+        console.log(e)
         res.status(400).send(e)
     }
 })
+
 
 // Search for profiles
 router.get('/users/', auth, async (req, res) => {
