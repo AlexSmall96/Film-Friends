@@ -14,6 +14,8 @@ Alex Small | [GitHub](https://github.com/AlexSmall96) | [LinkedIn](https://www.l
 ### Process Flow Diagrams
 #### Login and Sign Up
 ![Login and Sign up](documentation/process-flows/SignInSignUp.png)
+#### Save a new Film
+![Save a new Film](documentation/process-flows/FilmCreate.png)
 ### Database Schema
 The below diagram was used to model the database schema. An interactive version can be found [here](https://dbdocs.io/alex.small739/Film-Friends-Db-Schema?view=relationships).
 Descriptions of the database tables and fields are as follows:
