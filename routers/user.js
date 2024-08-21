@@ -4,8 +4,6 @@ const User = require('../models/user')
 const Film = require('../models/film')
 const auth = require('../middleware/auth')
 
-// User Endpoints go here
-
 // Sign up
 router.post('/users', async (req, res) => {
     const user = new User(req.body)
@@ -38,7 +36,6 @@ router.post('/users/logout', auth, async (req, res) => {
         res.status(500).send()
     }
 })
-
 
 // View a users profile
 router.get('/users/:id', auth, async (req, res) => {
@@ -82,12 +79,11 @@ router.patch('/users/me', auth, async (req, res) => {
 
 // Delete account
 router.delete('/users/me', auth, async (req, res) => {
-    const _id = req.user._id
     try {
-        const user = await User.findOneAndDelete({_id:_id})
-        res.send(user)
+        await req.user.deleteOne()
+        res.send(req.user)
     } catch (e) {
-        res.status(400).send(e)
+        res.status(500).send()
     }
 })
 

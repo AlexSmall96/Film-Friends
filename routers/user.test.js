@@ -216,6 +216,11 @@ test('Should delete profile when authenticated', async () => {
     // Assert the database was changed correctly
     const user = await User.findById(userOneId)
     expect(user).toBeNull()
+    // Assert that users films have also been deleted
+    const filmOneASearch = await Film.find({title: 'film one a'})
+    const filmOneBSearch = await Film.find({title: 'film one b'})
+    expect(filmOneASearch.length).toBe(0)
+    expect(filmOneBSearch.length).toBe(0)
 })
 test('Profile delete should be unsuccessful when not authenticated', async () => {
     // Correct status code

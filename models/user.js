@@ -3,6 +3,7 @@ const validator = require('validator')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const JWT_SECRET = process.env.JWT_SECRET
+const Film = require('./film')
 
 // Define User model
 const userSchema = new mongoose.Schema({
@@ -98,6 +99,14 @@ userSchema.pre('save', async function (next) {
     }
     next()
 })
+
+// Delete all users films when user is removed
+userSchema.pre('deleteOne', { document: true, query: false }, async function (next) {
+    const user = this;
+    await Film.deleteMany({ owner: user._id });
+    next();
+ })
+
 
 const User = mongoose.model('User', userSchema)
 
