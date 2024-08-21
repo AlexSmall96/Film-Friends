@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-const validator = require('validator')
 
 const filmSchema = new mongoose.Schema({
     title: {
@@ -38,7 +37,7 @@ const filmSchema = new mongoose.Schema({
         type: String,
         default: ''
     }
-})
+}, {timestamps: true})
 
 const Film = mongoose.model('Film', filmSchema)
 

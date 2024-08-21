@@ -50,7 +50,7 @@ const userSchema = new mongoose.Schema({
             required: true
         }
     }]
-})
+}, {timestamps: true})
 
 // Virtual field for Film owned by User
 userSchema.virtual('films', {

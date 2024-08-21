@@ -43,6 +43,9 @@ router.get('/users/:id', auth, async (req, res) => {
     try {
         let profile = await User.findById(routerId)
         let films = await Film.find({owner: routerId})
+            .sort({createdAt: -1})
+            .limit(req.query.limit)
+            .skip(req.query.skip)
         if (req.user.id !== routerId) {
             profile = {age:profile.age, username: profile.username}
             films = films.filter(film => film.public === true)
@@ -60,7 +63,10 @@ router.get('/users/', auth, async (req, res) => {
     const username = new RegExp(`^${req.query.username.trim()}`, "i")
     try {
         const users = await User.find( { username: { $regex:username } } )
-        res.status(200).send({ users })
+        .sort({updatedAt: -1})
+        .limit(req.query.limit)
+        .skip(req.query.skip)
+        res.status(200).send(users)
     } catch (e) {
         res.status(400).send(e)
     }

@@ -11,6 +11,7 @@ const userOneId = new mongoose.Types.ObjectId()
 const userTwoId = new mongoose.Types.ObjectId()
 const userSearchAId = new mongoose.Types.ObjectId()
 const userSearchBId = new mongoose.Types.ObjectId()
+const userSearchCId = new mongoose.Types.ObjectId()
 const userOne = {
     _id: userOneId, 
     username: 'Mike', 
@@ -33,8 +34,11 @@ const userOneAuth = ['Authorization', `Bearer ${userOne.tokens[0].token}`]
 const userTwoAuth = ['Authorization', `Bearer ${userTwo.tokens[0].token}`]
 const userSearchA = { _id: userSearchAId, username: 'Jane', email: 'jane@example.com', password: '34red>?'}
 const userSearchB = { _id: userSearchBId, username: 'Jane44', email: 'jane44@another.com', password: '34green>?'}
+const userSearchC = { _id: userSearchCId, username: 'Jane55', email: 'jane55@another.com', password: '34pink>?'}
 const filmOneA = {title: 'film one a', imdbID: 't345', owner: userOneId, public: true}
 const filmOneB = {title: 'film one b', imdbID: 's345', owner: userOneId, public: false}
+const filmOneC = {title: 'film one c', imdbID: 'u345', owner: userOneId, public: false}
+const filmOneD = {title: 'film one d', imdbID: 'v345', owner: userOneId, public: false}
 
 // Wipe database before each test and setup test data
 beforeEach(async () => {
@@ -44,8 +48,11 @@ beforeEach(async () => {
     await new User(userTwo).save()
     await new User(userSearchA).save()
     await new User(userSearchB).save()
+    await new User(userSearchC).save()
     await new Film(filmOneA).save()
     await new Film(filmOneB).save()
+    await new Film(filmOneC).save()
+    await new Film(filmOneD).save()
 })
 
 // Close database connection after tests have run
@@ -124,9 +131,17 @@ test('User should be able to view their own profile and all films', async () => 
     // Correct data is returned
     expect(response.body.profile.username).toBe('Mike')
     expect(response.body.profile.email).toBe('mike@example.com')
-    expect(response.body.films.length).toBe(2)
-    expect(response.body.films[0].title).toBe('film one a')
-    expect(response.body.films[1].title).toBe('film one b')
+    expect(response.body.films.length).toBe(4)
+    // Test pagination
+    const paginatedResponse1 = await request(app).get(`/users/${userOneId}?limit=2&skip=0`).set(...userOneAuth).expect(200)
+    const paginatedResponse2 = await request(app).get(`/users/${userOneId}?limit=2&skip=2`).set(...userOneAuth).expect(200)
+    expect(paginatedResponse1.body.films.length).toBe(2)
+    expect(paginatedResponse2.body.films.length).toBe(2)
+    // Test sorting
+    expect(paginatedResponse1.body.films[0].title).toBe('film one d')
+    expect(paginatedResponse1.body.films[1].title).toBe('film one c')
+    expect(paginatedResponse2.body.films[0].title).toBe('film one b')
+    expect(paginatedResponse2.body.films[1].title).toBe('film one a')
 })
 test('User should be able to view another users username, age and public films', async () => {
     // userTwo views userOne's profile
@@ -156,14 +171,21 @@ test('View profile should fail with invalid id', async () => {
 test('Should be able to search for user by username', async () => {
     // Search 1: Search for ' JAne' - should return Jane and Jane44 with status code 200
     const resultsForJane = await request(app).get('/users/?username= JAne').set(...userOneAuth).expect(200)
-    expect(resultsForJane.body.users.length).toBe(2)
+    expect(resultsForJane.body.length).toBe(3)
+    // Test pagination
+    const resultsForJanePaginated1 = await request(app).get('/users/?username=Jane&limit=1&skip=0').set(...userOneAuth).expect(200)
+    const resultsForJanePaginated2 = await request(app).get('/users/?username=Jane&limit=2&skip=2').set(...userOneAuth).expect(200)
+    expect(resultsForJanePaginated1.body.length).toBe(1)
+    expect(resultsForJanePaginated2.body.length).toBe(1)
+    // Test Sorting
+    expect(resultsForJanePaginated1.body[0].username).toBe('Jane55')
     // Search 2: Search for 'Jane44 ' - should only return Jane44 with status code 200
     const resultsForJane44 = await request(app).get('/users/?username=Jane44 ').set(...userOneAuth).expect(200)
-    expect(resultsForJane44.body.users.length).toBe(1)
-    expect(resultsForJane44.body.users[0].email).toBe('jane44@another.com')
+    expect(resultsForJane44.body.length).toBe(1)
+    expect(resultsForJane44.body[0].email).toBe('jane44@another.com')
     // Search 3: Search for abc - should return no results with status code 200
     const resultsForAbc = await request(app).get('/users/?username=abc').set(...userOneAuth).expect(200)
-    expect(resultsForAbc.body.users.length).toBe(0)
+    expect(resultsForAbc.body.length).toBe(0)
 })
 test('Search for profiles should be unsuccessful when not authenticated', async () => {
     // Correct status code
