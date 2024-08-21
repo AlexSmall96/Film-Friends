@@ -1,9 +1,10 @@
 const express = require('express')
 const router = new express.Router()
 const Film = require('../models/film')
+const auth = require('../middleware/auth')
 
 // Create a film (save film to watchlist)
-router.post('/films', async (req, res) => {
+router.post('/films', auth, async (req, res) => {
     const film = new Film(req.body)
     try {
         await film.save()
@@ -15,7 +16,7 @@ router.post('/films', async (req, res) => {
 
 // View film data for one film (get multiple films is handled by router.get('/users/:id, ...) in routers/user.js)
 // Need to add to authentication to ensure user is owner of film
-router.get('/films/:id', async (req, res) => {
+router.get('/films/:id', auth, async (req, res) => {
     const _id = req.params.id
     try {
         const film = await Film.findById(_id)
@@ -26,7 +27,7 @@ router.get('/films/:id', async (req, res) => {
 })
 
 // Update film data
-router.patch('/films/:id', async (req, res) => {
+router.patch('/films/:id', auth, async (req, res) => {
     const _id = req.params.id
     try {
         const film = await Film.findByIdAndUpdate(_id, req.body, {new: true, runValidators: true})
@@ -40,7 +41,7 @@ router.patch('/films/:id', async (req, res) => {
 })
 
 // Delete film
-router.delete('/films/:id', async (req, res) => {
+router.delete('/films/:id', auth, async (req, res) => {
     const _id = req.params.id
     try {
         const film = await Film.findOneAndDelete({_id:_id})
