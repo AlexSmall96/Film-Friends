@@ -15,14 +15,16 @@ router.post('/films', auth, async (req, res) => {
 })
 
 // View film data for one film (get multiple films is handled by router.get('/users/:id, ...) in routers/user.js)
-// Need to add to authentication to ensure user is owner of film
 router.get('/films/:id', auth, async (req, res) => {
     const _id = req.params.id
     try {
-        const film = await Film.findById(_id)
-        res.status(200).send({ film })
+        const film = await Film.findOne({_id, owner: req.user._id})
+        if (!film) {
+            return res.status(404).send()
+        }
+        res.send(film)
     } catch (e) {
-        res.status(400).send(e)
+        res.status(500).send(e)
     }
 })
 
@@ -30,7 +32,7 @@ router.get('/films/:id', auth, async (req, res) => {
 router.patch('/films/:id', auth, async (req, res) => {
     const _id = req.params.id
     try {
-        const film = await Film.findByIdAndUpdate(_id, req.body, {new: true, runValidators: true})
+        const film = await Film.findOneAndUpdate({_id, owner: req.user._id}, req.body, {new: true, runValidators: true})
         if (!film) {
             return res.status(404).send()
         }

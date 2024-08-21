@@ -76,12 +76,12 @@ test('Should view data for a single film', async () => {
     // Correct status code
     const response = await request(app).get(`/films/${filmThree._id}`).set(...userThreeAuth).expect(200)
     // Correct data is recieved
-    expect(response.body.film.title).toBe('film two')
-    expect(response.body.film.imdbID).toBe('g123')
+    expect(response.body.title).toBe('film two')
+    expect(response.body.imdbID).toBe('g123')
 })
 test('Get film should fail with invalid id', async () => {
     // Correct status code
-    await request(app).get('/films/123').set(...userThreeAuth).expect(400)
+    await request(app).get('/films/123').set(...userThreeAuth).expect(500)
 })
 test('Get film should fail when not authenticated', async () => {
     // Correct status code
