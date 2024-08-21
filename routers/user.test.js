@@ -85,6 +85,31 @@ test('User sign up should fail with invalid data', async () => {
     // Invalid password
     expect(errors.password.message).toBe('Password cannot contain "password"')
 })
+// Login tests
+test('Should be able to login with valid credentials', async () => {
+    // Correct status code
+    const response = await request(app).post('/users/login')
+    .send({email: userOne.email, password: userOne.password})
+    .expect(200)
+    // Correct token is created
+    expect(response.body.user.tokens.length).toBe(2)
+    expect(response.body.token).toBe(response.body.user.tokens[1].token)
+})
+
+test('Login should fail with invalid credentials', async () => {
+    // Correct status code
+    await request(app).post('/users/login')
+    .send({email: userOne.email, password: 'wrongpassword'})
+    .expect(400)
+})
+
+// Logout tests
+test('Logout should be successful when authenticated', async () => {
+    // Correct status code
+    const response = await request(app).post('/users/logout').set(...userOneAuth).expect(200)
+    // Token has been removed from tokens array
+    expect(userOne.tokens.length).toBe(1)
+})
 
 // View profile tests
 test('User should be able to view their own profile and all films', async () => {
