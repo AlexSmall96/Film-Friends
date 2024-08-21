@@ -51,7 +51,16 @@ const userSchema = new mongoose.Schema({
     }]
 })
 
-//
+// Filters the user data to hide private data from response
+userSchema.methods.toJSON = function () {
+    const user = this
+    const userObject = user.toObject()
+    delete userObject.password
+    delete userObject.tokens
+    return userObject
+}
+
+// Genereate authentication token when loggin in or signing up
 userSchema.methods.generateAuthToken = async function () {
     const user = this
     const token = jwt.sign({ _id: user._id.toString() }, JWT_SECRET)
