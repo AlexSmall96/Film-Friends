@@ -46,7 +46,7 @@ router.patch('/films/:id', auth, async (req, res) => {
 router.delete('/films/:id', auth, async (req, res) => {
     const _id = req.params.id
     try {
-        const film = await Film.findOneAndDelete({_id:_id})
+        const film = await Film.findOneAndDelete({_id:_id, owner: req.user._id})
         if (!film) {
             return res.status(404).send()
         }

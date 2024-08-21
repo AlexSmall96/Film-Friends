@@ -8,6 +8,7 @@ const JWT_SECRET = process.env.JWT_SECRET
 
 // Define test data
 const userThreeId = new mongoose.Types.ObjectId()
+const userFourId = new mongoose.Types.ObjectId()
 const filmThreeId = new mongoose.Types.ObjectId()
 const userThree = {
     _id: userThreeId, 
@@ -18,7 +19,17 @@ const userThree = {
         token: jwt.sign({_id: userThreeId}, JWT_SECRET)
     }]
 }
+const userFour = {
+    _id: userFourId, 
+    username: 'Sarah', 
+    email: 'sarah@example.com', 
+    password: '56when!!',
+    tokens: [{
+        token: jwt.sign({_id: userFourId}, JWT_SECRET)
+    }]
+}
 const userThreeAuth = ['Authorization', `Bearer ${userThree.tokens[0].token}`]
+const userFourAuth = ['Authorization', `Bearer ${userFour.tokens[0].token}`]
 const filmThree = {_id: filmThreeId, title: 'film two', imdbID: 'g123', owner: userThreeId}
 
 // Wipe database before each test and setup test data
@@ -26,6 +37,7 @@ beforeEach(async () => {
     await User.deleteMany()
     await Film.deleteMany()
     await new User(userThree).save()
+    await new User(userFour).save()
     await new Film(filmThree).save()
 })
 
@@ -79,6 +91,10 @@ test('Should view data for a single film', async () => {
     expect(response.body.title).toBe('film two')
     expect(response.body.imdbID).toBe('g123')
 })
+test('Get film should fail if user is not owner of film', async () => {
+    // Correct status code
+    await request(app).get(`/films/${filmThree._id}`).set(...userFourAuth).expect(404)
+})
 test('Get film should fail with invalid id', async () => {
     // Correct status code
     await request(app).get('/films/123').set(...userThreeAuth).expect(500)
@@ -106,6 +122,10 @@ test('Should update film with valid data', async () => {
     expect(film.public).toBe(true)
     expect(film.userRating).toBe(4.5)
     expect(film.notes).toBe("a great film, would reccomend")
+})
+test('Update film should fail if user is not owner of film', async () => {
+    // Correct status code
+    await request(app).patch(`/films/${filmThree._id}`).send({'watched': true}).set(...userFourAuth).expect(404)
 })
 test('Film update should fail with invalid data or invalid id', async () => {
     // Invalid id
@@ -135,6 +155,10 @@ test('Should delete film with valid id', async () => {
 test('Film deletion should fail with invalid data', async () => {
     // Correct status code
     await request(app).delete('/films/123').set(...userThreeAuth).expect(400)
+})
+test('Delete film should fail if user is not owner of film', async () => {
+    // Correct status code
+    await request(app).delete(`/films/${filmThree._id}`).set(...userFourAuth).expect(404)
 })
 test('Film deletion should fail when not authenticated', async () => {
     // Correct status code
