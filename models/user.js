@@ -62,6 +62,12 @@ userSchema.virtual('films', {
     foreignField: 'owner'
 })
 
+// Virtual field for requests sent to/from User
+userSchema.virtual('requests', {
+    ref: 'Request',
+    localField: '_id',
+    foreignField: ['sender', 'reciever']
+})
 
 // Filters the user data to hide private data from response
 userSchema.methods.toJSON = function () {
