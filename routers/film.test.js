@@ -63,16 +63,13 @@ test('Should create a new film', async () => {
 })
 test('Film creation should fail with invalid data', async () => {
     // imdbID already taken
-    await request(app).post('/films').send({title: 'film three', imdbID: 'g123', owner: userThreeId}).set(...userThreeAuth)
+    await request(app).post('/films').send({title: 'film three', imdbID: 'g123'}).set(...userThreeAuth)
     .expect(400)
     // Missing title
-    await request(app).post('/films').send({imdbID: 'e123', owner: userThreeId}).set(...userThreeAuth)
-    .expect(400)
-    // Missing owner
-    await request(app).post('/films').send({title: 'film three', imdbID: 'f123'}).set(...userThreeAuth)
+    await request(app).post('/films').send({imdbID: 'e123'}).set(...userThreeAuth)
     .expect(400)
     // Invalid rating
-    await request(app).post('/films').send({title: 'film three', imdbID: 'h123', owner: userThreeId, userRating: 6}).set(...userThreeAuth)
+    await request(app).post('/films').send({title: 'film three', imdbID: 'h123', userRating: 6}).set(...userThreeAuth)
     .expect(400)
 })
 test('Film creation should fail when not authenticated', async () => {

@@ -5,8 +5,9 @@ const auth = require('../middleware/auth')
 
 // Create a film (save film to watchlist)
 router.post('/films', auth, async (req, res) => {
-    const film = new Film(req.body)
+    const owner = req.user._id
     try {
+        const film = new Film({owner, ...req.body})
         await film.save()
         res.status(201).send({ film })
     } catch (e) {
