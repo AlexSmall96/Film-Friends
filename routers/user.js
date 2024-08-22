@@ -57,7 +57,6 @@ router.get('/users/:id', auth, async (req, res) => {
     }
 })
 
-
 // Search for profiles
 router.get('/users/', auth, async (req, res) => {
     const username = new RegExp(`^${req.query.username.trim()}`, "i")

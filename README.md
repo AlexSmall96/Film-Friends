@@ -149,3 +149,6 @@ The below dev.to article was used to deploy the project to [Render](https://dash
 
 
 - [https://dev.to/pixelrena/deploying-your-reactjs-expressjs-server-to-rendercom-4jbo](https://dev.to/pixelrena/deploying-your-reactjs-expressjs-server-to-rendercom-4jbo)
+
+Uploading images to cloudinary
+- https://dev.to/njong_emy/how-to-store-images-in-mongodb-using-cloudinary-mern-stack-imo

@@ -17,6 +17,7 @@ const userOne = {
     username: 'Mike', 
     email: 'mike@example.com', 
     password: '56what!!',
+    image: 'https://res.cloudinary.com/dojzptdbc/image/upload/v1691658951/media/images/pexels-photo-1043474_mfhznv.jpg',
     tokens: [{
         token: jwt.sign({_id: userOneId}, JWT_SECRET)
     }]
