@@ -1,63 +1,22 @@
 const request = require('supertest')
 const app = require('../setupApp')
-const mongoose = require('mongoose')
-const jwt = require('jsonwebtoken')
 const User = require('../models/user')
 const Film = require('../models/film')
-const JWT_SECRET = process.env.JWT_SECRET
 
-// Define test data
-const userOneId = new mongoose.Types.ObjectId()
-const userTwoId = new mongoose.Types.ObjectId()
-const userSearchAId = new mongoose.Types.ObjectId()
-const userSearchBId = new mongoose.Types.ObjectId()
-const userSearchCId = new mongoose.Types.ObjectId()
-const userOne = {
-    _id: userOneId, 
-    username: 'Mike', 
-    email: 'mike@example.com', 
-    password: '56what!!',
-    image: 'https://res.cloudinary.com/dojzptdbc/image/upload/v1691658951/media/images/pexels-photo-1043474_mfhznv.jpg',
-    tokens: [{
-        token: jwt.sign({_id: userOneId}, JWT_SECRET)
-    }]
-}
-const userTwo = {
-    _id: userTwoId,
-    username: 'Steve',
-    email: 'steve@example.com',
-    password: '123green@',
-    tokens: [{
-        token: jwt.sign({_id: userTwoId}, JWT_SECRET)
-    }]
-}
-const userOneAuth = ['Authorization', `Bearer ${userOne.tokens[0].token}`]
-const userTwoAuth = ['Authorization', `Bearer ${userTwo.tokens[0].token}`]
-const userSearchA = { _id: userSearchAId, username: 'Jane', email: 'jane@example.com', password: '34red>?'}
-const userSearchB = { _id: userSearchBId, username: 'Jane44', email: 'jane44@another.com', password: '34green>?'}
-const userSearchC = { _id: userSearchCId, username: 'Jane55', email: 'jane55@another.com', password: '34pink>?'}
-const filmOneA = {title: 'film one a', imdbID: 't345', owner: userOneId, public: true}
-const filmOneB = {title: 'film one b', imdbID: 's345', owner: userOneId, public: false}
-const filmOneC = {title: 'film one c', imdbID: 'u345', owner: userOneId, public: false}
-const filmOneD = {title: 'film one d', imdbID: 'v345', owner: userOneId, public: false}
+// Import test data and functions from setupRouterTests.js
+const {
+    wipeDBAndSaveData,
+    closeConnection,
+    userOne,
+    userOneAuth,
+    userTwoAuth,
+} = require('./testing/setupRouterTests')
 
 // Wipe database before each test and setup test data
-beforeEach(async () => {
-    await User.deleteMany()
-    await Film.deleteMany()
-    await new User(userOne).save()
-    await new User(userTwo).save()
-    await new User(userSearchA).save()
-    await new User(userSearchB).save()
-    await new User(userSearchC).save()
-    await new Film(filmOneA).save()
-    await new Film(filmOneB).save()
-    await new Film(filmOneC).save()
-    await new Film(filmOneD).save()
-})
+beforeEach(wipeDBAndSaveData)
 
 // Close database connection after tests have run
-afterAll(() => mongoose.connection.close())
+afterAll(closeConnection)
 
 // Sign up Tests
 test('Should sign up a new user', async () => {
@@ -128,14 +87,14 @@ test('Logout should be unsuccessful when not authenticated', async () => {
 test('User should be able to view their own profile and all films', async () => {
     // userOne views their own profile
     // Correct status code
-    const response = await request(app).get(`/users/${userOneId}`).set(...userOneAuth).expect(200)
+    const response = await request(app).get(`/users/${userOne._id}`).set(...userOneAuth).expect(200)
     // Correct data is returned
     expect(response.body.profile.username).toBe('Mike')
     expect(response.body.profile.email).toBe('mike@example.com')
     expect(response.body.films.length).toBe(4)
     // Test pagination
-    const paginatedResponse1 = await request(app).get(`/users/${userOneId}?limit=2&skip=0`).set(...userOneAuth).expect(200)
-    const paginatedResponse2 = await request(app).get(`/users/${userOneId}?limit=2&skip=2`).set(...userOneAuth).expect(200)
+    const paginatedResponse1 = await request(app).get(`/users/${userOne._id}?limit=2&skip=0`).set(...userOneAuth).expect(200)
+    const paginatedResponse2 = await request(app).get(`/users/${userOne._id}?limit=2&skip=2`).set(...userOneAuth).expect(200)
     expect(paginatedResponse1.body.films.length).toBe(2)
     expect(paginatedResponse2.body.films.length).toBe(2)
     // Test sorting
@@ -147,7 +106,7 @@ test('User should be able to view their own profile and all films', async () => 
 test('User should be able to view another users username, age and public films', async () => {
     // userTwo views userOne's profile
     // Correct status code
-    const response = await request(app).get(`/users/${userOneId}`).set(...userTwoAuth).expect(200)
+    const response = await request(app).get(`/users/${userOne._id}`).set(...userTwoAuth).expect(200)
     // Correct data is returned
     expect(response.body.profile.username).toBe('Mike')
     expect(response.body.profile.age).toBe(0)
@@ -159,7 +118,7 @@ test('User should be able to view another users username, age and public films',
 })
 test('View profile should be unsuccessful when not authenticated', async () => {
     // Correct status code
-    const response = await request(app).get(`/users/${userOneId}`).expect(401)
+    const response = await request(app).get(`/users/${userOne._id}`).expect(401)
     // Correct error message
     expect(response.body.error).toBe('Please authenticate.')
 })
@@ -170,27 +129,27 @@ test('View profile should fail with invalid id', async () => {
 
 // Search for profiles
 test('Should be able to search for user by username', async () => {
-    // Search 1: Search for ' JAne' - should return Jane and Jane44 with status code 200
-    const resultsForJane = await request(app).get('/users/?username= JAne').set(...userOneAuth).expect(200)
-    expect(resultsForJane.body.length).toBe(3)
-    // Test pagination
-    const resultsForJanePaginated1 = await request(app).get('/users/?username=Jane&limit=1&skip=0').set(...userOneAuth).expect(200)
-    const resultsForJanePaginated2 = await request(app).get('/users/?username=Jane&limit=2&skip=2').set(...userOneAuth).expect(200)
-    expect(resultsForJanePaginated1.body.length).toBe(1)
-    expect(resultsForJanePaginated2.body.length).toBe(1)
-    // Test Sorting
-    expect(resultsForJanePaginated1.body[0].username).toBe('Jane55')
-    // Search 2: Search for 'Jane44 ' - should only return Jane44 with status code 200
-    const resultsForJane44 = await request(app).get('/users/?username=Jane44 ').set(...userOneAuth).expect(200)
-    expect(resultsForJane44.body.length).toBe(1)
-    expect(resultsForJane44.body[0].email).toBe('jane44@another.com')
+    // Search 1: Search for ' ALex' - should return alex0...alex9 with status code 200
+    const resultsForAlex = await request(app).get('/users/?username= ALex').set(...userOneAuth).expect(200)
+    expect(resultsForAlex.body.length).toBe(10)
+    // Test pagination - should return the correct number per page
+    const resultsForAlexPaginated1 = await request(app).get('/users/?username=Alex&limit=5&skip=0').set(...userOneAuth).expect(200)
+    const resultsForAlexPaginated2 = await request(app).get('/users/?username=Alex&limit=3&skip=3').set(...userOneAuth).expect(200)
+    expect(resultsForAlexPaginated1.body.length).toBe(5)
+    expect(resultsForAlexPaginated2.body.length).toBe(3)
+    // Test Sorting - last updated should be the first in list
+    expect(resultsForAlexPaginated1.body[0].username).toBe('alex9')
+    // Search 2: Search for 'alex2 ' - should only return alex2 with status code 200
+    const resultsForAlex2 = await request(app).get('/users/?username=alex2 ').set(...userOneAuth).expect(200)
+    expect(resultsForAlex2.body.length).toBe(1)
+    expect(resultsForAlex2.body[0].email).toBe('alex2@example.com')
     // Search 3: Search for abc - should return no results with status code 200
     const resultsForAbc = await request(app).get('/users/?username=abc').set(...userOneAuth).expect(200)
     expect(resultsForAbc.body.length).toBe(0)
 })
 test('Search for profiles should be unsuccessful when not authenticated', async () => {
     // Correct status code
-    const response = await request(app).get('/users/?username= JAne').expect(401)
+    const response = await request(app).get('/users/?username= ALex').expect(401)
     // Correct error message
     expect(response.body.error).toBe('Please authenticate.')
 })
@@ -205,16 +164,16 @@ test('Should be able to edit valid fields with valid data', async () => {
         password: 'new12345'
     }).set(...userOneAuth).expect(200)
     // Assert that the database was changed correctly
-    const user = await User.findById(userOneId)
+    const user = await User.findById(userOne._id)
     expect(user.username).toBe('Mike2')
     expect(user.email).toBe('mike2@example.com')
     expect(user.age).toBe(28)
 })
 test('Profile edit should fail with invalid data', async () => {
     // Username taken
-    await request(app).patch(`/users/me`).send({username: 'Jane'}).set(...userOneAuth).expect(400)
+    await request(app).patch(`/users/me`).send({username: 'alex1'}).set(...userOneAuth).expect(400)
     // Email taken
-    await request(app).patch(`/users/me`).send({email: 'jane@example.com'}).set(...userOneAuth).expect(400)
+    await request(app).patch(`/users/me`).send({email: 'alex1@example.com'}).set(...userOneAuth).expect(400)
     // Custom error messages
     const response = await request(app).patch(`/users/me`).send({age: -1, email: 'mike@', password: 'password'}).set(...userOneAuth).expect(400)
     const errors = response.body.errors
@@ -237,7 +196,7 @@ test('Should delete profile when authenticated', async () => {
     // Correct status code
     await request(app).delete(`/users/me`).set(...userOneAuth).expect(200)
     // Assert the database was changed correctly
-    const user = await User.findById(userOneId)
+    const user = await User.findById(userOne._id)
     expect(user).toBeNull()
     // Assert that users films have also been deleted
     const filmOneASearch = await Film.find({title: 'film one a'})
