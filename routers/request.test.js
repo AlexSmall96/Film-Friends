@@ -70,11 +70,11 @@ test('Should be able to get all non declined friend requests', async () => {
     // Excludes declined requests
     response.body.requests.map(request => expect(request.declined).toBe(false))
     // Test pagination and sorting
-    // Accepted friend request should be first in list, last to be updated should be second
+    // Last to be updated should be first in list, accepted request should be last
     const user1 = await User.find({username: 'user1'})
     const user9 = await User.find({username: 'user9'})
-    const id1 = response.body.requests[0].reciever
-    const id9 = response.body.requests[1].sender
+    const id1 = response.body.requests[8].reciever
+    const id9 = response.body.requests[0].sender
     expect(user1[0].id).toBe(id1)
     expect(user9[0].id).toBe(id9)
     // Should get the correct number per page
