@@ -17,7 +17,7 @@ Alex Small | [GitHub](https://github.com/AlexSmall96) | [LinkedIn](https://www.l
 #### Save a new Film
 ![Save a new Film](documentation/process-flows/FilmCreate.png)
 #### Search for Users and Send Friend Requests
-![Search for Users and Send Friend Requests](documentation/process-flows/SearchForUsers.png)
+![Search for Users and Send Friend Requests](documentation/process-flows/SearchAndFriendRequest.png)
 ### Database Schema
 The below diagram was used to model the database schema. An interactive version can be found [here](https://dbdocs.io/alex.small739/Film-Friends-Db-Schema?view=relationships).
 Descriptions of the database tables and fields are as follows:
