@@ -76,14 +76,6 @@ const wipeDBAndSaveData = async () => {
             accepted: i == 1
         }).save()
     }
-    // Auto generate 10 users to test username search pagination and sorting
-    for (let i=0; i<10; i++){
-        await new User({
-            username: `alex${i}`,
-            email: `alex${i}@example.com`,
-            password: `alex${i}pd123`
-        }).save()
-    }
 }
 
 // Close database connection after tests have run

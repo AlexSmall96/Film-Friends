@@ -129,27 +129,27 @@ test('View profile should fail with invalid id', async () => {
 
 // Search for profiles
 test('Should be able to search for user by username', async () => {
-    // Search 1: Search for ' ALex' - should return alex0...alex9 with status code 200
-    const resultsForAlex = await request(app).get('/users/?username= ALex').set(...userOneAuth).expect(200)
-    expect(resultsForAlex.body.length).toBe(10)
+    // Search 1: Search for ' USer' - should return user0...user9 with status code 200
+    const resultsForUser = await request(app).get('/users/?username= USer').set(...userOneAuth).expect(200)
+    expect(resultsForUser.body.length).toBe(10)
     // Test pagination - should return the correct number per page
-    const resultsForAlexPaginated1 = await request(app).get('/users/?username=Alex&limit=5&skip=0').set(...userOneAuth).expect(200)
-    const resultsForAlexPaginated2 = await request(app).get('/users/?username=Alex&limit=3&skip=3').set(...userOneAuth).expect(200)
-    expect(resultsForAlexPaginated1.body.length).toBe(5)
-    expect(resultsForAlexPaginated2.body.length).toBe(3)
+    const resultsForUserPaginated1 = await request(app).get('/users/?username=User&limit=5&skip=0').set(...userOneAuth).expect(200)
+    const resultsForUserPaginated2 = await request(app).get('/users/?username=User&limit=3&skip=3').set(...userOneAuth).expect(200)
+    expect(resultsForUserPaginated1.body.length).toBe(5)
+    expect(resultsForUserPaginated2.body.length).toBe(3)
     // Test Sorting - last updated should be the first in list
-    expect(resultsForAlexPaginated1.body[0].username).toBe('alex9')
-    // Search 2: Search for 'alex2 ' - should only return alex2 with status code 200
-    const resultsForAlex2 = await request(app).get('/users/?username=alex2 ').set(...userOneAuth).expect(200)
-    expect(resultsForAlex2.body.length).toBe(1)
-    expect(resultsForAlex2.body[0].email).toBe('alex2@example.com')
+    expect(resultsForUserPaginated1.body[0].username).toBe('user9')
+    // Search 2: Search for 'user2 ' - should only return user2 with status code 200
+    const resultsForUser2 = await request(app).get('/users/?username=user2 ').set(...userOneAuth).expect(200)
+    expect(resultsForUser2.body.length).toBe(1)
+    expect(resultsForUser2.body[0].email).toBe('user2@example.com')
     // Search 3: Search for abc - should return no results with status code 200
     const resultsForAbc = await request(app).get('/users/?username=abc').set(...userOneAuth).expect(200)
     expect(resultsForAbc.body.length).toBe(0)
 })
 test('Search for profiles should be unsuccessful when not authenticated', async () => {
     // Correct status code
-    const response = await request(app).get('/users/?username= ALex').expect(401)
+    const response = await request(app).get('/users/?username= User').expect(401)
     // Correct error message
     expect(response.body.error).toBe('Please authenticate.')
 })
@@ -171,9 +171,9 @@ test('Should be able to edit valid fields with valid data', async () => {
 })
 test('Profile edit should fail with invalid data', async () => {
     // Username taken
-    await request(app).patch(`/users/me`).send({username: 'alex1'}).set(...userOneAuth).expect(400)
+    await request(app).patch(`/users/me`).send({username: 'user1'}).set(...userOneAuth).expect(400)
     // Email taken
-    await request(app).patch(`/users/me`).send({email: 'alex1@example.com'}).set(...userOneAuth).expect(400)
+    await request(app).patch(`/users/me`).send({email: 'user1@example.com'}).set(...userOneAuth).expect(400)
     // Custom error messages
     const response = await request(app).patch(`/users/me`).send({age: -1, email: 'mike@', password: 'password'}).set(...userOneAuth).expect(400)
     const errors = response.body.errors
