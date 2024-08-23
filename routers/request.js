@@ -27,4 +27,20 @@ router.post('/requests', auth, async (req, res) => {
     }
 })
 
+// Get friend requests and friends
+// Returns all accepted or pending requests user has sent or has recieved
+// Excludes declined requests
+router.get('/requests', auth, async (req, res) => {
+    const _id = req.user._id
+    try {
+        const requests = await Request.find({$or: [{sender: _id, declined: false}, {reciever: _id, declined: false}]})        
+            .sort({accepted: -1, updatedAt: -1})
+            .limit(req.query.limit)
+            .skip(req.query.skip)
+        res.status(200).send({requests})
+    } catch (e) {
+        res.status(400).send(e)
+    }
+})
+
 module.exports = router
