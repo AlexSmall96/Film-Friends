@@ -57,4 +57,18 @@ router.patch('/requests/:id', auth, async (req, res) => {
     }
 })
 
+// Delete request
+router.delete('/requests/:id', auth, async (req, res) => {
+    const _id = req.params.id
+    try {
+        const request = await Request.findOneAndDelete({_id:_id, sender: req.user._id})
+        if (!request) {
+            return res.status(404).send()
+        }
+        res.send(request)
+    } catch (e) {
+        res.status(400).send(e)
+    }
+})
+
 module.exports = router

@@ -117,3 +117,26 @@ test('Update friend request should fail when not authenticated', async () => {
     // Correct error message
     expect(response.body.error).toBe('Please authenticate.')
 })
+
+// Delete friend requests
+test('Sender of friend request should be able to delete it', async () => {
+    // Correct status code
+    await request(app).delete(`/requests/${requestOne._id}`).set(...userTwoAuth).expect(200)
+    // Assert the database was changed correctly
+    const req = await Request.findById(requestOne._id)
+    expect(req).toBeNull()
+})
+test('Delete friend request should fail with invalid id', async () => {
+    // Correct status code
+    await request(app).delete('/requests/123').set(...userTwoAuth).expect(400)
+})
+test('Delete friend request should fail if user is not sender', async () => {
+    // Correct status code
+    await request(app).delete(`/requests/${requestOne._id}`).set(...userThreeAuth).expect(404)
+})
+test('Delete friend request should fail when not authenticated', async () => {
+    // Correct status code
+    const response = await request(app).delete(`/requests/${requestOne._id}`).expect(401)
+    // Correct error message
+    expect(response.body.error).toBe('Please authenticate.')
+})
