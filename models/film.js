@@ -39,6 +39,13 @@ const filmSchema = new mongoose.Schema({
     }
 }, {timestamps: true})
 
+// Virtual field for Film used in reccomendation
+filmSchema.virtual('reccomendations', {
+    ref: 'Reccomendation',
+    localField: '_id',
+    foreignField: 'film'
+})
+
 const Film = mongoose.model('Film', filmSchema)
 
 module.exports = Film

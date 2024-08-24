@@ -22,6 +22,13 @@ const requestSchema = new mongoose.Schema({
     },
 }, {timestamps: true})
 
+// Virtual field for Reccomendation based on request
+requestSchema.virtual('reccomendations', {
+    ref: 'Reccomendation',
+    localField: '_id',
+    foreignField: 'request'
+})
+
 const Request = mongoose.model('Request', requestSchema)
 
 module.exports = Request

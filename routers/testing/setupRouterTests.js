@@ -10,6 +10,7 @@ const userOneId = new mongoose.Types.ObjectId()
 const userTwoId = new mongoose.Types.ObjectId()
 const userThreeId = new mongoose.Types.ObjectId()
 const filmOneAId = new mongoose.Types.ObjectId()
+const filmTwoId = new mongoose.Types.ObjectId()
 const requestOneId = new mongoose.Types.ObjectId()
 const userOne = {
     _id: userOneId, 
@@ -46,6 +47,7 @@ const filmOneA = {_id: filmOneAId, title: 'film one a', imdbID: 't345', owner: u
 const filmOneB = {title: 'film one b', imdbID: 's345', owner: userOneId, public: false}
 const filmOneC = {title: 'film one c', imdbID: 'u345', owner: userOneId, public: false}
 const filmOneD = {title: 'film one d', imdbID: 'v345', owner: userOneId, public: false}
+const filmTwo = {_id: filmTwoId, title: 'film two', imdbID: 'e123', owner: userTwoId, public: false}
 const requestOne = {_id: requestOneId, sender: userTwoId, reciever: userThreeId}
 
 // Wipe database before each test and setup test data
@@ -60,6 +62,7 @@ const wipeDBAndSaveData = async () => {
     await new Film(filmOneB).save()
     await new Film(filmOneC).save()
     await new Film(filmOneD).save()
+    await new Film(filmTwo).save()
     await new Request(requestOne).save()
     // Auto generate 10 users to test request pagination and sorting
     for (let i=0; i<10; i++){
@@ -92,5 +95,6 @@ module.exports = {
     userTwoAuth,
     userThreeAuth,
     filmOneA,
+    filmTwo,
     requestOne
 }

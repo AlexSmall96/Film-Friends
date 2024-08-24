@@ -8,6 +8,7 @@ require('./db/mongoose')
 const userRouter = require('./routers/user')
 const filmRouter = require('./routers/film')
 const requestRouter = require('./routers/request')
+const recRouter = require('./routers/reccomendation')
 
 // Setup express app
 const app = express()
@@ -15,5 +16,6 @@ app.use(express.json())
 app.use(userRouter)
 app.use(filmRouter)
 app.use(requestRouter)
+app.use(recRouter)
 
 module.exports = app

@@ -69,6 +69,13 @@ userSchema.virtual('requests', {
     foreignField: ['sender', 'reciever']
 })
 
+// Virtual field for reccomenations
+userSchema.virtual('reccomendations', {
+    ref: 'Reccomendation',
+    localField: '_id',
+    foreignField: 'reciever'
+})
+
 // Filters the user data to hide private data from response
 userSchema.methods.toJSON = function () {
     const user = this
