@@ -13,6 +13,9 @@ router.post('/reccomendations', auth, async (req, res) => {
         if (film.owner.toString()!== req.user.id){
             return res.status(400).send({error: "You can't reccomend a film you haven't saved."})
         }
+        if (!film.public) {
+            return res.status(400).send({error: "Please mark this film as public before you reccomend it to others."})
+        }
         const reciever = req.body.reciever
         const friendRequest = await Request.findOne({sender: req.user._id, reciever, accepted: true})
         if (!friendRequest){
@@ -40,4 +43,5 @@ router.get('/reccomendations', auth, async (req, res) => {
     }
 })
 
+// Update a reccomendation (comment or like)
 module.exports = router

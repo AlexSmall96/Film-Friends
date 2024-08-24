@@ -16,7 +16,8 @@ const {
     userThreeAuth,
     requestOne,
     filmOneA,
-    filmTwo
+    filmTwo,
+    filmThree,
 } = require('./testing/setupRouterTests')
 
 // Wipe database before each test and setup test data
@@ -46,6 +47,17 @@ describe('Send Reccomendations:', () => {
             .expect(400)
         // Correct error message
         expect(response.body.error).toBe("You can't send a reccomendation to this user because you are not friends.")
+    })
+    test('User cannot send reccomendation if the film is not public', async () => {
+        // Update film public field to false
+        await Film.findByIdAndUpdate(filmTwo._id, {public: false})
+        // Correct status code
+        const response = await request(app).post('/reccomendations')
+            .set(...userTwoAuth)
+            .send({film: filmTwo._id, reciever: userThree._id})
+            .expect(400)
+        // Correct error message
+        expect(response.body.error).toBe("Please mark this film as public before you reccomend it to others.")
     })
     test('User can send reccomendation if they own the film and are friends with the reciever', async () => {
         // Update friend request to be accepted
