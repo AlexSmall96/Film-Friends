@@ -64,10 +64,6 @@ test('Should view data for a single film', async () => {
     expect(response.body.title).toBe('film one a')
     expect(response.body.imdbID).toBe('t345')
 })
-test('Get film should fail if user is not owner of film', async () => {
-    // Correct status code
-    await request(app).get(`/films/${filmOneA._id}`).set(...userTwoAuth).expect(404)
-})
 test('Get film should fail with invalid id', async () => {
     // Correct status code
     await request(app).get('/films/123').set(...userOneAuth).expect(500)

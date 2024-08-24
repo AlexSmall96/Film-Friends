@@ -19,7 +19,7 @@ router.post('/films', auth, async (req, res) => {
 router.get('/films/:id', auth, async (req, res) => {
     const _id = req.params.id
     try {
-        const film = await Film.findOne({_id, owner: req.user._id})
+        const film = await Film.findById(_id)
         if (!film) {
             return res.status(404).send()
         }
