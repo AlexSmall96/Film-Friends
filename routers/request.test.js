@@ -12,6 +12,7 @@ const {
     userOneAuth,
     userTwoAuth,
     userThreeAuth,
+    requestOne
 } = require('./testing/setupRouterTests')
 
 // Wipe database before each test and setup test data
@@ -86,6 +87,33 @@ test('Should be able to get all non declined friend requests', async () => {
 test('Get friend requests should fail when not authenticated', async () => {
     // Correct status code
     const response = await request(app).get('/requests').expect(401)
+    // Correct error message
+    expect(response.body.error).toBe('Please authenticate.')
+})
+
+// Update friend requests
+test('Reciever of friend request should be able to accept or decline it', async () => {
+    // Correct status code
+    const response = await request(app).patch(`/requests/${requestOne._id}`).set(...userThreeAuth).send({
+        accepted: true,
+        declined: true
+    }).expect(200)
+    // Assert the database was changed correctly
+    const req = await Request.findById(requestOne._id)
+    expect(req.accepted).toBe(true)
+    expect(req.declined).toBe(true)
+})
+test('Update friend request should fail with invalid id', async () => {
+    // Correct status code
+    await request(app).patch('/requests/123').set(...userThreeAuth).send({accepted:true}).expect(400)
+})
+test('Update friend request should fail if user is not reciever', async () => {
+    // Correct status code
+    await request(app).patch(`/requests/${requestOne._id}`).set(...userTwoAuth).send({accepted:true}).expect(404)
+})
+test('Update friend request should fail when not authenticated', async () => {
+    // Correct status code
+    const response = await request(app).patch(`/requests/${requestOne._id}`).send({accepted:true}).expect(401)
     // Correct error message
     expect(response.body.error).toBe('Please authenticate.')
 })
