@@ -2,7 +2,7 @@ const request = require('supertest')
 const app = require('../setupApp')
 const User = require('../models/user')
 const Request = require('../models/request')
-const film = require('../models/film')
+const Film = require('../models/film')
 
 // Import test data and functions from setupRouterTests.js
 const {
@@ -66,6 +66,34 @@ describe('Send Reccomendations:', () => {
     test('Reccomendation should fail when not authenticated', async () => {
         // Correct status code
         const response = await request(app).post('/reccomendations').send({film: filmTwo._id, reciever: userThree._id}).expect(401)
+        // Correct error message
+        expect(response.body.error).toBe('Please authenticate.')
+    })
+})
+
+// Get reccomendations
+describe('Get all reccomendations:', () => {
+    test('Should be able to get all of users reccomendations', async () => {
+        // Correct status code
+        const response = await request(app).get('/reccomendations').set(...userOneAuth).expect(200)
+        // Correct number of reccomendations
+        expect(response.body.reccomendations.length).toBe(10)
+        // Last updated should be first in list
+        const lastFilm = await Film.findById(response.body.reccomendations[0].film) 
+        expect(lastFilm.title).toBe('A film reccomended by user9')
+        // Test pagination
+        const paginatedResponseOne = await request(app).get('/reccomendations/?limit=5&skip=5')
+            .set(...userOneAuth)
+            .expect(200)
+        const paginatedResponseTwo = await request(app).get('/reccomendations/?limit=4&skip=7')
+            .set(...userOneAuth)
+            .expect(200)
+        expect(paginatedResponseOne.body.reccomendations.length).toBe(5)
+        expect(paginatedResponseTwo.body.reccomendations.length).toBe(3)
+    })
+    test('Get reccomendations fails if user is not authenticated', async () => {
+        // Correct status code
+        const response = await request(app).get('/reccomendations').expect(401)
         // Correct error message
         expect(response.body.error).toBe('Please authenticate.')
     })

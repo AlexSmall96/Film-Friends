@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken')
 const User = require('../../models/user')
 const Film = require('../../models/film')
 const Request = require('../../models/request')
+const Reccomendation = require('../../models/reccomendation')
 const JWT_SECRET = process.env.JWT_SECRET
 
 // Define test data
@@ -55,6 +56,7 @@ const wipeDBAndSaveData = async () => {
     await User.deleteMany()
     await Film.deleteMany()
     await Request.deleteMany()
+    await Reccomendation.deleteMany()
     await new User(userOne).save()
     await new User(userTwo).save()
     await new User(userThree).save()
@@ -78,6 +80,23 @@ const wipeDBAndSaveData = async () => {
             reciever: i < 5 ? user._id : userOneId,
             declined: i == 2,
             accepted: i == 1
+        }).save()
+        // Create 10 acccepted requests and 10 reccomendations to test reccomendation pagination and sorting
+        await new Request({
+            sender: user._id,
+            reciever: userOneId,
+            accepted: true
+        }).save()
+        let filmId = new mongoose.Types.ObjectId()
+        let film = await new Film({
+            _id: filmId,
+            title: `A film reccomended by user${i}`,
+            imdbID: `imdbID${i}`,
+            owner: user._id
+        }).save()
+        await new Reccomendation({
+            film: film._id,
+            reciever: userOneId,
         }).save()
     }
 }

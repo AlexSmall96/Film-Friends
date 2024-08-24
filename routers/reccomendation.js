@@ -26,4 +26,18 @@ router.post('/reccomendations', auth, async (req, res) => {
     }
 })
 
+// Get all reccomendations
+router.get('/reccomendations', auth, async (req, res) => {
+    const _id = req.user._id
+    try {
+        const reccomendations = await Reccomendation.find({reciever:_id})
+            .sort({updatedAt: -1})
+            .limit(req.query.limit)
+            .skip(req.query.skip)
+        res.status(200).send({reccomendations}) 
+    } catch (e) {
+        res.status(400).send(e)
+    }
+})
+
 module.exports = router
