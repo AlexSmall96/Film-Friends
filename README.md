@@ -43,11 +43,24 @@ This phase involved the brainstorming of the initial idea as well as designing t
 
 
 #### Sprint 2: Backend Functionality
-The backend logic for the project was written in [Node.js](https://nodejs.org/en). The [Express](https://expressjs.com/) framework was used to create all the HTTP endpoints required based on the process flow diagram and the database schema. [MongoDB](https://www.mongodb.com/) was used for both the development and production database, with [Postman](https://www.postman.com/) being used to test the Express code and simulate HTTP requests before the front-end section of the site was built. 
+The backend logic for the project was written in [Node.js](https://nodejs.org/en). The [Express](https://expressjs.com/) framework was used to create all the HTTP endpoints required based on the process flow diagram and the database schema. [MongoDB](https://www.mongodb.com/) was used for both the development and production database. A local database was used for both development and automated testing, with [Postman](https://www.postman.com/) being used to test the Express code and simulate HTTP requests before the front-end section of the site was built. [Studio 3T](https://studio3t.com/) was used to validate requests made through postman, and monitor changes in the local database during development. 
 
-![Postman requests](documentation/methodology/Postman.png)
+Postman HTTP Requests               |           Studio 3T Database Analysis
+:-------------------------:| :-------------------------: 
+![](documentation/methodology/Postman.png)              |![](documentation/methodology/studio3t.png) | 
+
+Collections in Studio 3T:
+
+![](documentation/methodology/users.png)
+![](documentation/methodology/films.png)
+![](documentation/methodology/requests.png)
+![](documentation/methodology/reccomendations.png)
 
 Automated testing using [jest](https://jestjs.io/) and the [supertest package](https://www.npmjs.com/package/supertest) was implemented for all HTTP requests in parallel to development, and an associated test file can be found alongside each of the router files in [this folder](https://github.com/AlexSmall96/Film-Friends/tree/main/routers). See [Testing](#testing) for details.
+
+The methodology in this section was inspired by the below Udemy course.
+ - [https://www.udemy.com/course/the-complete-nodejs-developer-course-2](https://www.udemy.com/course/the-complete-nodejs-developer-course-2)
+
 #### Sprint 3: Frontend Functionality
 
 
