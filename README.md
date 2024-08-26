@@ -26,9 +26,9 @@ Contains User's login and profile data.
 - **Films**
 Films that the user has saved. The public field determines whether or not others can see the film on the user's list. The watched field is true or false depending on whether the user has watched the film or not.
 - **Requests**
-Friend requests between users. Sender_id is the user ID of the requester, and reciver_id is the user ID of the user receiving the friend request. Accepted is true or false depending if the user has accepted the friend request.
+Friend requests between users. Sender is the user ID of the requester, and reciever is the user ID of the user receiving the friend request. Accepted is true or false depending if the user has accepted the friend request.
 - **Reccomendations**
-Film recommendations between users. Request_id is the id of the request that must be made and accepted prior to sending a recommendation. The receiver can set liked to true and add a comment on the recommendation.
+Film recommendations between users. Reciever is the id of the user that recieves the request which must be made and accepted prior to sending a recommendation. The receiver can set liked to true and add a comment on the recommendation.
 
 
 ![Databse Schema](documentation/images/Film-Friends-Db-Schema.png)
