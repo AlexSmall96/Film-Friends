@@ -21,7 +21,7 @@ router.post('/reccomendations', auth, async (req, res) => {
         if (!friendRequest){
             return res.status(400).send({error: "You can't send a reccomendation to this user because you are not friends."})
         }
-        const reccomendation = new Reccomendation(req.body)
+        const reccomendation = new Reccomendation({sender: req.user._id, ...req.body})
         await reccomendation.save()
         res.status(201).send({ reccomendation })
     } catch (e) {
@@ -33,7 +33,7 @@ router.post('/reccomendations', auth, async (req, res) => {
 router.get('/reccomendations', auth, async (req, res) => {
     const _id = req.user._id
     try {
-        const reccomendations = await Reccomendation.find({reciever:_id})
+        const reccomendations = await Reccomendation.find({$or: [{reciever:_id}, {sender:_id}]})
             .sort({updatedAt: -1})
             .limit(req.query.limit)
             .skip(req.query.skip)

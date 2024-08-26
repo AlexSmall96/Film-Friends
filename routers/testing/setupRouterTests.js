@@ -53,7 +53,7 @@ const filmOneD = {title: 'film one d', imdbID: 'v345', owner: userOneId, public:
 const filmTwo = {_id: filmTwoId, title: 'film two', imdbID: 'e123', owner: userTwoId, public: true}
 const filmThree = {_id: filmThreeId, title: 'film three', imdbID: 'f123', owner: userTwoId, public: false}
 const requestOne = {_id: requestOneId, sender: userTwoId, reciever: userThreeId}
-const recOne = {_id: recOneId, film: filmOneAId, reciever: userTwoId}
+const recOne = {_id: recOneId, film: filmOneAId, reciever: userTwoId, sender: userOneId}
 
 // Wipe database before each test and setup test data
 const wipeDBAndSaveData = async () => {
@@ -97,6 +97,7 @@ const wipeDBAndSaveData = async () => {
         await new Reccomendation({
             film: film._id,
             reciever: userOneId,
+            sender: user._id
         }).save()
     }
 }

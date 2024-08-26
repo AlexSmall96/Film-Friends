@@ -6,6 +6,11 @@ const recSchema = new mongoose.Schema({
         required: true,
         ref: 'Film'
     },
+    sender: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'User'
+    },
     reciever: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,

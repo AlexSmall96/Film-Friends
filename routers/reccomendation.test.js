@@ -91,7 +91,7 @@ describe('Get all reccomendations:', () => {
         // Correct status code
         const response = await request(app).get('/reccomendations').set(...userOneAuth).expect(200)
         // Correct number of reccomendations
-        expect(response.body.reccomendations.length).toBe(10)
+        expect(response.body.reccomendations.length).toBe(11)
         // Last updated should be first in list
         const lastFilm = await Film.findById(response.body.reccomendations[0].film) 
         expect(lastFilm.title).toBe('A film reccomended by user9')
@@ -99,7 +99,7 @@ describe('Get all reccomendations:', () => {
         const paginatedResponseOne = await request(app).get('/reccomendations/?limit=5&skip=5')
             .set(...userOneAuth)
             .expect(200)
-        const paginatedResponseTwo = await request(app).get('/reccomendations/?limit=4&skip=7')
+        const paginatedResponseTwo = await request(app).get('/reccomendations/?limit=4&skip=8')
             .set(...userOneAuth)
             .expect(200)
         expect(paginatedResponseOne.body.reccomendations.length).toBe(5)
