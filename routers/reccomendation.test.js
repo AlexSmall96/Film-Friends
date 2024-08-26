@@ -2,6 +2,7 @@ const request = require('supertest')
 const app = require('../setupApp')
 const User = require('../models/user')
 const Request = require('../models/request')
+const Reccomendation = require('../models/reccomendation')
 const Film = require('../models/film')
 
 // Import test data and functions from setupRouterTests.js
@@ -18,6 +19,7 @@ const {
     filmOneA,
     filmTwo,
     filmThree,
+    recOne
 } = require('./testing/setupRouterTests')
 
 // Wipe database before each test and setup test data
@@ -48,7 +50,7 @@ describe('Send Reccomendations:', () => {
         // Correct error message
         expect(response.body.error).toBe("You can't send a reccomendation to this user because you are not friends.")
     })
-    test('User cannot send reccomendation if the film is not public', async () => {
+    test("User can't send reccomendation if the film is not public", async () => {
         // Update film public field to false
         await Film.findByIdAndUpdate(filmTwo._id, {public: false})
         // Correct status code
@@ -67,6 +69,11 @@ describe('Send Reccomendations:', () => {
             .set(...userTwoAuth)
             .send({film: filmTwo._id, reciever: userThree._id})
             .expect(201)
+        // Assert that the database was changed correctly
+        const reccomendation = await Reccomendation.findById(response.body.reccomendation._id)
+        expect(reccomendation).not.toBeNull()
+        expect(reccomendation.liked).toBe(false)
+        expect(reccomendation.message).toBe("Hey! Check out this awesome film I've just watched. I think you'll love it!")
     })
     test('Reccomendation should fail with invalid data', async () => {
         // Correct status code
@@ -106,6 +113,36 @@ describe('Get all reccomendations:', () => {
     test('Get reccomendations fails if user is not authenticated', async () => {
         // Correct status code
         const response = await request(app).get('/reccomendations').expect(401)
+        // Correct error message
+        expect(response.body.error).toBe('Please authenticate.')
+    })
+})
+
+// Update a reccomendation (comment or like)
+describe('Update a reccomendation:', () => {
+    test('Should be able to update a reccomendation if user is reciever', async () => {
+        // Correct status code
+        await request(app).patch(`/reccomendations/${recOne._id}`)
+            .set(...userTwoAuth)
+            .send({
+                liked: true,
+                comment: 'I really enjoyed this film, thanks for reccomending it.'
+            })
+            .expect(200)
+        // Assert that the database was changed correctly
+        const reccomendation = await Reccomendation.findById(recOne._id)
+        expect(reccomendation.liked).toBe(true)
+        expect(reccomendation.comment).toBe("I really enjoyed this film, thanks for reccomending it.")
+    })
+    test('Update reccomendation should fail with invalid id', async () => {
+        await request(app).patch('/reccomendations/123').set(...userTwoAuth).expect(400)
+    })
+    test('Update reccomendation should fail if user is not reciever', async () => {
+        await request(app).patch(`/reccomendations/${recOne._id}`).set(...userOneAuth).expect(404)
+    })
+    test('Update reccomendation should fail if user is not authenticated', async () => {
+        // Correct status code
+        const response = await request(app).patch(`/reccomendations/${recOne._id}`).expect(401)
         // Correct error message
         expect(response.body.error).toBe('Please authenticate.')
     })

@@ -44,4 +44,17 @@ router.get('/reccomendations', auth, async (req, res) => {
 })
 
 // Update a reccomendation (comment or like)
+router.patch('/reccomendations/:id', auth, async (req, res) => {
+    const _id = req.params.id
+    try {
+        const reccomendation = await Reccomendation.findOneAndUpdate({_id, reciever: req.user._id}, req.body, {new: true, runValidators: true})
+        if (!reccomendation) {
+            return res.status(404).send()
+        }
+        res.send(reccomendation)
+    } catch (e) {
+        res.status(400).send(e)
+    }
+})
+
 module.exports = router
