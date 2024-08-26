@@ -52,7 +52,6 @@ router.get('/users/:id', auth, async (req, res) => {
         }
         res.status(200).send({ profile, films })
     } catch (e) {
-        console.log(e)
         res.status(400).send(e)
     }
 })

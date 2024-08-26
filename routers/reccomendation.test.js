@@ -1,6 +1,5 @@
 const request = require('supertest')
 const app = require('../setupApp')
-const User = require('../models/user')
 const Request = require('../models/request')
 const Reccomendation = require('../models/reccomendation')
 const Film = require('../models/film')
@@ -9,16 +8,12 @@ const Film = require('../models/film')
 const {
     wipeDBAndSaveData,
     closeConnection,
-    userOne,
-    userTwo,
     userThree,
     userOneAuth,
     userTwoAuth,
-    userThreeAuth,
     requestOne,
     filmOneA,
     filmTwo,
-    filmThree,
     recOne
 } = require('./testing/setupRouterTests')
 

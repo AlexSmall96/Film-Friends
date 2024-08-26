@@ -28,7 +28,7 @@
     "start": "react-scripts start",
     "dev": "env-cmd config/dev.env nodemon server.js",
     "build": "react-scripts build",
-    "test": "env-cmd config/test.env jest --watch",
+    "test": "env-cmd config/test.env jest --watch --runInBand",
     "eject": "react-scripts eject"
   },
   "jest": {

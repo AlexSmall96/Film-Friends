@@ -86,12 +86,7 @@ const wipeDBAndSaveData = async () => {
             declined: i == 2,
             accepted: i == 1
         }).save()
-        // Create 10 acccepted requests and 10 reccomendations to test reccomendation pagination and sorting
-        await new Request({
-            sender: user._id,
-            reciever: userOneId,
-            accepted: true
-        }).save()
+        // Create 10 reccomendations to test reccomendation pagination and sorting
         let filmId = new mongoose.Types.ObjectId()
         let film = await new Film({
             _id: filmId,
