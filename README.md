@@ -31,22 +31,23 @@ Friend requests between users. Sender is the user ID of the requester, and recie
 Film recommendations between users. Sender is the id of the user that sends the reccomendation and reciever is the id of the user that recieves the reccomendation. A request must be made and accepted prior to sending a recommendation. The receiver can set liked to true and add a comment on the recommendation.
 
 
-![Databse Schema](documentation/images/Film-Friends-Db-Schema.png)
+![Databse Schema](documentation/db/Film-Friends-Db-Schema.png)
 ### Methodology
 The project used an agile methodology and was divided into 5 sprints. Throughout, a kanban board was used to plan and track progress.
 
 
-![Initial Kanban Board](documentation/images/KanbanBoardInitial.png)
+![Initial Kanban Board](documentation/methodology/KanbanBoardInitial.png)
 - Include a picture of a finished kanban board
 #### Sprint 1: Planning and Documentation
 This phase involved the brainstorming of the initial idea as well as designing the theme and layout of the user interface. The process flow diagram was created to plan a high-level overview of the functionality of the site. The process flow diagram was then used as a guide in deciding the database schema, creating the wireframes, and the backend site logic.
 
 
 #### Sprint 2: Backend Functionality
-The backend logic for the project was written in [Node.js](https://nodejs.org/en). The [Express](https://expressjs.com/) framework was used to create all the HTTP endpoints required based on the process flow diagram and the database schema. [MongoDB](https://www.mongodb.com/) was used for both the development and production database, with [Postman](https://www.postman.com/) being used to test the Express code and simulate HTTP requests before the front-end section of the site was built. Automated testing using [jest](https://jestjs.io/) and the [supertest package](https://www.npmjs.com/package/supertest) was implemented for all HTTP requests in parallel to development, and an associated test file can be found alongside each of the router files in [this folder](https://github.com/AlexSmall96/Film-Friends/tree/main/routers).
-- Include pictures of finished postman requests.
+The backend logic for the project was written in [Node.js](https://nodejs.org/en). The [Express](https://expressjs.com/) framework was used to create all the HTTP endpoints required based on the process flow diagram and the database schema. [MongoDB](https://www.mongodb.com/) was used for both the development and production database, with [Postman](https://www.postman.com/) being used to test the Express code and simulate HTTP requests before the front-end section of the site was built. 
 
+![Postman requests](documentation/methodology/Postman.png)
 
+Automated testing using [jest](https://jestjs.io/) and the [supertest package](https://www.npmjs.com/package/supertest) was implemented for all HTTP requests in parallel to development, and an associated test file can be found alongside each of the router files in [this folder](https://github.com/AlexSmall96/Film-Friends/tree/main/routers). See [Testing](#testing) for details.
 #### Sprint 3: Frontend Functionality
 
 
