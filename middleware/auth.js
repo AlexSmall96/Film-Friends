@@ -1,3 +1,8 @@
+/* 
+The code in this file is based on material from the below Udemy course
+https://www.udemy.com/course/the-complete-nodejs-developer-course-2
+*/
+
 const jwt = require('jsonwebtoken')
 const User = require('../models/user')
 const JWT_SECRET = process.env.JWT_SECRET

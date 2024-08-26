@@ -1,5 +1,8 @@
 // This file sets up the express app and serves the static files for the front end section of the site
-
+/* 
+The code in this file was taken from the below article
+https://dev.to/pixelrena/deploying-your-reactjs-expressjs-server-to-rendercom-4jbo
+*/
 // Import necessary packages
 const path = require('path')
 const dotenv = require('dotenv')
