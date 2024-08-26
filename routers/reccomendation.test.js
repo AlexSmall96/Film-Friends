@@ -119,7 +119,7 @@ describe('Get all reccomendations:', () => {
 })
 
 // Update a reccomendation (comment or like)
-describe('Update a reccomendation:', () => {
+describe('Delete a reccomendation:', () => {
     test('Should be able to update a reccomendation if user is reciever', async () => {
         // Correct status code
         await request(app).patch(`/reccomendations/${recOne._id}`)
@@ -143,6 +143,31 @@ describe('Update a reccomendation:', () => {
     test('Update reccomendation should fail if user is not authenticated', async () => {
         // Correct status code
         const response = await request(app).patch(`/reccomendations/${recOne._id}`).expect(401)
+        // Correct error message
+        expect(response.body.error).toBe('Please authenticate.')
+    })
+})
+
+// Delete a reccomendation (comment or like)
+describe('Update a reccomendation:', () => {
+    test('Should be able to delete a reccomendation if user is owner of associated film', async () => {
+        // Correct status code
+        await request(app).delete(`/reccomendations/${recOne._id}`)
+            .set(...userOneAuth)
+            .expect(200)
+        //Assert that the database was changed correctly
+        const reccomendation = await Reccomendation.findById(recOne._id)
+        expect(reccomendation).toBe(null)
+    })
+    test('Update reccomendation should fail with invalid id', async () => {
+        await request(app).delete('/reccomendations/123').set(...userOneAuth).expect(400)
+    })
+    test('Update reccomendation should fail if user is not owner of associated film', async () => {
+        await request(app).delete(`/reccomendations/${recOne._id}`).set(...userTwoAuth).expect(404)
+    })
+    test('Update reccomendation should fail if user is not authenticated', async () => {
+        // Correct status code
+        const response = await request(app).delete(`/reccomendations/${recOne._id}`).expect(401)
         // Correct error message
         expect(response.body.error).toBe('Please authenticate.')
     })

@@ -57,4 +57,23 @@ router.patch('/reccomendations/:id', auth, async (req, res) => {
     }
 })
 
+// Delete a reccomendation
+router.delete('/reccomendations/:id', auth, async (req, res) => {
+    const _id = req.params.id
+    try {
+        const reccomendation = await Reccomendation.findById(_id)
+        if (!reccomendation) {
+            return res.status(404).send()
+        }
+        const film = await Film.findById(reccomendation.film)
+        if (film.owner.toString() !== req.user.id) {
+            return res.status(404).send()
+        }
+        await Reccomendation.findOneAndDelete({_id:_id})
+        res.send(reccomendation)
+    } catch (e) {
+        res.status(400).send(e)
+    }
+})
+
 module.exports = router
