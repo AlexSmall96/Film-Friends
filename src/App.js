@@ -1,24 +1,28 @@
-import logo from './logo.svg';
-import './App.css';
+import { Route, Switch } from 'react-router-dom';
+import NavBar from './components/NavBar';
+import Home from './pages/Home';
+import Profile from './pages/Profile';
+import Films from './pages/Films';
+import Friends from './pages/Friends';
+import Reccomendations from './pages/Reccomendations';
+import Signup from './pages/Signup';
+import Login from './pages/Login';
+import { BrowserRouter as Router } from 'react-router-dom/cjs/react-router-dom.min';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Film Friends
-        </a>
-      </header>
-    </div>
+    <Router>
+      <NavBar  />
+        <Switch>
+          <Route exact path='/' render={() => <Home />} />
+          <Route exact path='/films' render={() => <Films />} />
+          <Route exact path='/friends' render={() => <Friends />} />
+          <Route exact path='/reccomendations' render={() => <Reccomendations />} />
+          <Route exact path='/profile' render={() => <Profile />} />
+          <Route exact path='/signup' render={() => <Signup />} />
+          <Route exact path='/login' render={() => <Login />} />
+        </Switch>
+    </Router>
   );
 }
 
