@@ -17,6 +17,9 @@ const port = process.env.PORT
 const buildPath = path.join(__dirname, 'build')
 app.use(express.static(buildPath))
 app.use(cors())
+app.use(() => {
+  res.header("Access-Control-Allow-Origin", "*")
+})
 dotenv.config()
 
 // gets the static files from the build folder
