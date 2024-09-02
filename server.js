@@ -19,6 +19,8 @@ app.use(express.static(buildPath))
 app.use(cors())
 app.use(() => {
   res.header("Access-Control-Allow-Origin", "*")
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+  res.header("Access-Control-Allow-Headers", "*")
 })
 dotenv.config()
 
