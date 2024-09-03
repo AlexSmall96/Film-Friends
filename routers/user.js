@@ -8,9 +8,11 @@ const router = new express.Router()
 const User = require('../models/user')
 const Film = require('../models/film')
 const auth = require('../middleware/auth')
+const cors = require('cors')
 
 // Sign up
-router.post('/users', async (req, res) => {
+router.options('/users', cors())
+router.post('/users', cors(), async (req, res) => {
     const user = new User(req.body)
     try {
         await user.save()
@@ -62,7 +64,7 @@ router.get('/users/:id', auth, async (req, res) => {
 })
 
 // Search for profiles
-router.get('/users/', auth, async (req, res) => {
+router.get('/users/', async (req, res) => {
     const username = new RegExp(`^${req.query.username.trim()}`, "i")
     try {
         const users = await User.find( { username: { $regex:username } } )
