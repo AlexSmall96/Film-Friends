@@ -30,6 +30,9 @@ app.get('*', (req, res) => {
 })
 
 // Showing that the server is online and running and listening for changes
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`Server is online on port: ${port}`)
 })
+
+server.keepAliveTimeout = 120000;
+server.headersTimeout = 120000
