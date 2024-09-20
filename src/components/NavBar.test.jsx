@@ -1,15 +1,34 @@
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
-import App from '../App'
-import { render, screen} from '@testing-library/react';
-import '@testing-library/jest-dom'
+import NavBar from '../components/NavBar';
+import React from 'react';
+import '@testing-library/jest-dom/vitest';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event'
+import { CurrentUserContext } from '../contexts/CurrentUserContext';
+import { BrowserRouter as Router } from 'react-router-dom/cjs/react-router-dom.min';
+import { describe, test, expect, afterEach } from 'vitest';
+import { cleanup } from '@testing-library/react';
+
+const renderWithContext = (component, currentUser = null) => {
+    return render(
+        <CurrentUserContext.Provider value={{currentUser}}>
+            <Router>
+                {component}
+            </Router>
+        </CurrentUserContext.Provider>
+    )
+}
+
+afterEach(() => {
+    cleanup();
+});
 
 // Test all nav links and form are present
-describe('Correct nav links and search bar are rednered', () => {
-    test('When no currentUser is provided, should render only logged out nav links', () => {
-        render(<App currentUser={null} />)
+describe('Correct nav links and search bar are rendered', () => {
+    test('renders only logged out nav links when no currentUser is provided', () => {
+        renderWithContext(<NavBar />)
         const loggedOutNames = [/Sign up/i, /Login/i]
         const loggedInNames = [/My Films/i, /Profile/i, 'Friends', /Reccomendations/i]
         // Logged out links should be present
@@ -35,9 +54,13 @@ describe('Correct nav links and search bar are rednered', () => {
     })
     test('When currentUser is provided, should render only logged in nav links', () => {
         const currentUser = {
-            user: {_id: '123'}
+            user : {
+                username: 'User One',
+                _id: '123'
+            },
+            token: '123'
         }
-        render(<App currentUser={currentUser}/>)
+        renderWithContext(<NavBar />, currentUser)
         const loggedOutNames = [/Sign up/i, /Login/i]
         const loggedInNames = [/My Films/i, /Profile/i, 'Friends', /Reccomendations/i]
         // Logged out links should not be present
@@ -64,8 +87,8 @@ describe('Correct nav links and search bar are rednered', () => {
 })
 
 describe('Nav links take user to correct page',() => {
-    test('Clicking logged out nav links changes text on home page and changes url', async () => {
-        render(<App currentUser={null} />)
+    test('Clicking logged out nav links changes url', async () => {
+        renderWithContext(<NavBar />)
         const user = userEvent.setup()
         // Test logged out links
         const loggedOutNames = ['Sign up', 'Login']
@@ -77,31 +100,25 @@ describe('Nav links take user to correct page',() => {
         let n = loggedOutNames.length
         // Loop through links
         for (let i=0;i<n;i++) {
-            // Corresponding heading should not be present before clicking on link
-            let heading = screen.queryByRole('heading', {
-                name: loggedOutNames[i]
-            })
-            expect(heading).not.toBeInTheDocument()
             // Url shouldn't contain name of link
             expect(global.window.location.href).not.toContain(loggedOutNames[i].replace(' ', '').toLowerCase())
             // Click on link
             await user.click(loggedOutNavlinks[i])
-            // Heading now should now be present
-            heading = screen.getByRole('heading', {
-                name: loggedOutNames[i]
-            })
-            expect(heading).toBeInTheDocument()
             // Url should have changed to contain link name
             expect(global.window.location.href).toContain(loggedOutNames[i].replace(' ', '').toLowerCase())
         }
     })
-    test('Clicking logged in nav links changes text on home page and changes url', async () => {
+    test('Clicking logged in nav links, excluding logout, changes url', async () => {
         const currentUser = {
-            user: {_id: '123'}
+            user : {
+                username: 'User One',
+                _id: '123'
+            },
+            token: '123'
         }
-        render(<App currentUser={currentUser} />)
+        renderWithContext(<NavBar />, currentUser)
         const user = userEvent.setup()
-        // Test logged in links
+        // Test logged out links
         const loggedInNames = ['My Films', 'Profile', 'Friends', 'Reccomendations']
         const loggedInNavlinks = loggedInNames.map(
             linkName => screen.getByRole('link', {
@@ -111,36 +128,12 @@ describe('Nav links take user to correct page',() => {
         let n = loggedInNames.length
         // Loop through links
         for (let i=0;i<n;i++) {
-            // Corresponding heading should not be present before clicking on link
-            let heading = screen.queryByRole('heading', {
-                name: loggedInNames[i]
-            })
-            expect(heading).not.toBeInTheDocument()
             // Url shouldn't contain name of link
             expect(global.window.location.href).not.toContain(loggedInNames[i].replace(' ', '').toLowerCase())
             // Click on link
             await user.click(loggedInNavlinks[i])
-            // Heading now should now be present
-            heading = screen.getByRole('heading', {
-                name: loggedInNames[i]
-            })
-            expect(heading).toBeInTheDocument()
             // Url should have changed to contain link name
             expect(global.window.location.href).toContain(loggedInNames[i].replace(' ', '').toLowerCase())
         }
-        // Test clicking on logo takes user back to home page
-        const logo = screen.getByRole('heading', {
-            name:'Film Friends'
-        })
-        let homePageHeading = screen.queryByRole('heading', {
-            name: 'Home Page'
-        })
-        expect(homePageHeading).not.toBeInTheDocument()
-        await user.click(logo)
-        homePageHeading = screen.getByRole('heading', {
-            name: 'Home Page'
-        })
-        expect(homePageHeading).toBeInTheDocument()
     })
 })
-
