@@ -17,6 +17,7 @@ const port = process.env.PORT
 const buildPath = path.join(__dirname, 'build')
 app.use(express.static(buildPath))
 app.use(cors())
+
 app.use(() => {
   res.header("Access-Control-Allow-Origin", "*")
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")

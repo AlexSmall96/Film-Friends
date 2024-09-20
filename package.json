@@ -7,11 +7,13 @@
   },
   "private": true,
   "dependencies": {
-    "@testing-library/jest-dom": "^5.16.1",
+    "@testing-library/jest-dom": "^6.1.4",
+    "axios": "^1.7.5",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "jsdom": "^22.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongodb-legacy": "^6.1.0",
     "mongoose": "^8.5.1",
@@ -20,6 +22,7 @@
     "react-dom": "^18.3.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "5.0.1",
+    "undici": "^6.19.8",
     "validator": "^13.12.0",
     "web-vitals": "^2.1.4"
   },
@@ -27,11 +30,8 @@
     "start": "react-scripts start",
     "dev": "env-cmd config/dev.env nodemon server.js",
     "build": "react-scripts build",
-    "test": "env-cmd config/test.env jest --watch --runInBand",
+    "test": "env-cmd config/test.env vitest --watch",
     "eject": "react-scripts eject"
-  },
-  "jest": {
-    "testEnvironment": "node"
   },
   "eslintConfig": {
     "extends": [
@@ -58,12 +58,11 @@
     "@babel/preset-react": "^7.24.7",
     "@testing-library/react": "^16.0.0",
     "@testing-library/user-event": "^14.5.2",
-    "babel-jest": "^29.7.0",
     "env-cmd": "^8.0.2",
-    "jest": "^29.7.0",
-    "jest-environment-jsdom": "^29.7.0",
+    "msw": "^2.4.8",
     "nodemon": "^3.1.4",
     "react-test-renderer": "^18.3.1",
-    "supertest": "^7.0.0"
+    "supertest": "^7.0.0",
+    "vitest": "^2.1.1"
   }
 }

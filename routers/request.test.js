@@ -7,6 +7,7 @@ const request = require('supertest')
 const app = require('../setupApp')
 const User = require('../models/user')
 const Request = require('../models/request')
+import { beforeEach, afterAll, describe, test, expect } from 'vitest'
 
 // Import test data and functions from setupRouterTests.js
 const {

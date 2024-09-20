@@ -8,7 +8,7 @@ const router = new express.Router()
 const Request = require('../models/request')
 const auth = require('../middleware/auth')
 
-// Create a friend request
+// Create a friend request 
 router.post('/requests', auth, async (req, res) => {
     const sender = req.user.id
     const reciever = req.body.reciever

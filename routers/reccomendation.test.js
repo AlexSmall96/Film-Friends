@@ -8,6 +8,7 @@ const app = require('../setupApp')
 const Request = require('../models/request')
 const Reccomendation = require('../models/reccomendation')
 const Film = require('../models/film')
+import { beforeEach, afterAll, describe, test, expect } from 'vitest'
 
 // Import test data and functions from setupRouterTests.js
 const {

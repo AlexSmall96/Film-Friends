@@ -6,6 +6,7 @@ https://www.udemy.com/course/the-complete-nodejs-developer-course-2
 const request = require('supertest')
 const app = require('../setupApp')
 const Film = require('../models/film')
+import { beforeEach, afterAll, describe, test, expect } from 'vitest'
 
 // Import test data and functions from setupRouterTests.js
 const {

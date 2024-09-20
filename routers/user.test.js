@@ -7,6 +7,7 @@ const request = require('supertest')
 const app = require('../setupApp')
 const User = require('../models/user')
 const Film = require('../models/film')
+import { beforeEach, afterAll, describe, test, expect } from 'vitest'
 
 // Import test data and functions from setupRouterTests.js
 const {
@@ -90,6 +91,23 @@ describe('Logout:', () => {
         const response = await request(app).post('/users/logout').expect(401)
         // Correct error message
         expect(response.body.error).toBe('Please authenticate.')
+    })
+})
+
+// Check token tests
+describe('Check Token:', () => {
+    test('Valid token should return a 200 status code', async () => {
+        await request(app).get('/users/token').set(...userOneAuth).expect(200)
+    })
+    test('Invalid or expired token should return a 401 status code', async () => {
+        // No token
+        await request(app).get('/users/token').expect(401)
+        // Invalid token
+        await request(app).get('/users/token').set('Authorization', `Bearer 123`).expect(401)
+        // Expired token
+        // Logout user so token expires
+        await request(app).post('/users/logout').set(...userOneAuth)
+        await request(app).get('/users/token').set(...userOneAuth).expect(401)
     })
 })
 

@@ -13,8 +13,13 @@ const filmSchema = new mongoose.Schema({
     },
     imdbID: {
         type: String,
-        unique: true,
-        trim: true
+        trim: true,
+    },
+    poster: {
+       type:String,
+    },
+    year: {
+        type: String
     },
     watched: {
         type: Boolean,
