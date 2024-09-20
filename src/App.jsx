@@ -5,8 +5,8 @@ import Profile from './pages/Profile';
 import Films from './pages/Films';
 import Friends from './pages/Friends';
 import Reccomendations from './pages/Reccomendations';
-import Signup from './pages/Signup';
-import Login from './pages/Login';
+import Signup from './pages/auth/Signup';
+import Login from './pages/auth/Login';
 import { BrowserRouter as Router } from 'react-router-dom/cjs/react-router-dom.min';
 import {CurrentUserProvider} from './contexts/CurrentUserContext'
 import React from 'react';
