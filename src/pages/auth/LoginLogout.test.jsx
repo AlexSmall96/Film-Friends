@@ -4,30 +4,17 @@
 import App from '../../App';
 import React from 'react';
 import '@testing-library/jest-dom/vitest';
-import { render, screen, cleanup, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event'
-import { describe, test, expect, afterEach, beforeAll, afterAll, beforeEach } from 'vitest';
+import { describe, test, expect } from 'vitest';
 import { HttpResponse, http } from "msw";
 import { server } from '../../mocks/server'
-import { handlers } from '../../mocks/handlers';
 import {CurrentUserProvider} from '../../contexts/CurrentUserContext'
 import Login from './Login'
+import setupTests from '../../test-utils/setupTests';
 const url = 'http://localhost:3001'
 
-beforeAll(() => {
-    server.listen()
-})
-
-beforeEach(() => {
-    server.resetHandlers(...handlers)
-})
-afterEach(() => {
-    cleanup()
-})
-  
-afterAll(() => {
-    server.close()
-})
+setupTests()
 
 describe('Login/logout success ', () => {
     test('User logs in and logs out successfully and is redirected to home page after each', async () => {

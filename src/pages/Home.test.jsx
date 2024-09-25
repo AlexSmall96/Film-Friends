@@ -3,43 +3,19 @@
  */
 import React from 'react';
 import '@testing-library/jest-dom/vitest';
-import { render, screen, cleanup, fireEvent, waitFor } from '@testing-library/react';
+import { screen, cleanup, fireEvent, waitFor } from '@testing-library/react';
 import {within} from '@testing-library/dom'
 import userEvent from '@testing-library/user-event'
-import { describe, test, expect, afterEach, beforeAll, afterAll, beforeEach } from 'vitest';
+import { describe, test, expect } from 'vitest';
 import { HttpResponse, http } from "msw";
 import { server } from '../mocks/server'
 import {handlers} from '../mocks/handlers'
+import setupTests from '../test-utils/setupTests';
 import Home from './Home';
-import { CurrentUserContext } from '../contexts/CurrentUserContext';
-import { BrowserRouter as Router } from 'react-router-dom/cjs/react-router-dom.min';
+import renderWithContext from '../test-utils/renderWithContext';
 const url = 'http://localhost:3001'
 
-const renderWithContext = (component, currentUser = {user : {username: 'User One',_id: '123'}, token: '123'}) => {
-    return render(
-        <Router>
-            <CurrentUserContext.Provider value={{currentUser}}>
-                    {component}
-            </CurrentUserContext.Provider>
-        </Router>
-    )
-}
-
-beforeAll(() => {
-    server.listen()
-})
-
-beforeEach(() => {
-    server.resetHandlers(...handlers)
-})
-
-afterEach(() => {
-    cleanup()
-})
-  
-afterAll(() => {
-    server.close()
-})
+setupTests()
 
 describe('RENDERING ELEMENTS', () => {
     test('Heading and search bar are rendered', () => {

@@ -4,22 +4,11 @@
 import NavBar from '../components/NavBar';
 import React from 'react';
 import '@testing-library/jest-dom/vitest';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event'
-import { CurrentUserContext } from '../contexts/CurrentUserContext';
-import { BrowserRouter as Router } from 'react-router-dom/cjs/react-router-dom.min';
 import { describe, test, expect, afterEach } from 'vitest';
 import { cleanup } from '@testing-library/react';
-
-const renderWithContext = (component, currentUser = null) => {
-    return render(
-        <CurrentUserContext.Provider value={{currentUser}}>
-            <Router>
-                {component}
-            </Router>
-        </CurrentUserContext.Provider>
-    )
-}
+import renderWithContext from '../test-utils/renderWithContext';
 
 afterEach(() => {
     cleanup();
@@ -28,7 +17,7 @@ afterEach(() => {
 // Test all nav links and form are present
 describe('Correct nav links and search bar are rendered', () => {
     test('renders only logged out nav links when no currentUser is provided', () => {
-        renderWithContext(<NavBar />)
+        renderWithContext(<NavBar />, null)
         const loggedOutNames = [/Sign up/i, /Login/i]
         const loggedInNames = [/My Films/i, /Profile/i, 'Friends', /Reccomendations/i]
         // Logged out links should be present
@@ -53,14 +42,7 @@ describe('Correct nav links and search bar are rendered', () => {
         expect(logo).toBeInTheDocument()
     })
     test('When currentUser is provided, should render only logged in nav links', () => {
-        const currentUser = {
-            user : {
-                username: 'User One',
-                _id: '123'
-            },
-            token: '123'
-        }
-        renderWithContext(<NavBar />, currentUser)
+        renderWithContext(<NavBar />)
         const loggedOutNames = [/Sign up/i, /Login/i]
         const loggedInNames = [/My Films/i, /Profile/i, 'Friends', /Reccomendations/i]
         // Logged out links should not be present
@@ -88,7 +70,7 @@ describe('Correct nav links and search bar are rendered', () => {
 
 describe('Nav links take user to correct page',() => {
     test('Clicking logged out nav links changes url', async () => {
-        renderWithContext(<NavBar />)
+        renderWithContext(<NavBar />, null)
         const user = userEvent.setup()
         // Test logged out links
         const loggedOutNames = ['Sign up', 'Login']
@@ -109,14 +91,7 @@ describe('Nav links take user to correct page',() => {
         }
     })
     test('Clicking logged in nav links, excluding logout, changes url', async () => {
-        const currentUser = {
-            user : {
-                username: 'User One',
-                _id: '123'
-            },
-            token: '123'
-        }
-        renderWithContext(<NavBar />, currentUser)
+        renderWithContext(<NavBar />)
         const user = userEvent.setup()
         // Test logged out links
         const loggedInNames = ['My Films', 'Profile', 'Friends', 'Reccomendations']

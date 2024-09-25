@@ -4,24 +4,15 @@
 import App from '../../App';
 import React from 'react';
 import '@testing-library/jest-dom/vitest';
-import { render, screen, cleanup, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event'
-import { describe, test, expect, afterEach, beforeAll, afterAll } from 'vitest';
+import { describe, test, expect } from 'vitest';
 import { HttpResponse, http } from "msw";
 import { server } from '../../mocks/server'
+import setupTests from '../../test-utils/setupTests';
 const url = 'http://localhost:3001'
 
-beforeAll(() => {
-    server.listen()
-})
-  
-afterEach(() => {
-    cleanup()
-})
-  
-afterAll(() => {
-    server.close()
-})
+setupTests()
 
 describe('Signing up with valid data', () => {
     test('Submitting form with valid data takes user to login page', async () => {
