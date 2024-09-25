@@ -7,10 +7,14 @@ const express = require('express')
 const router = new express.Router()
 const Film = require('../models/film')
 const auth = require('../middleware/auth')
+const OMDB_API_KEY = process.env.OMDB_API_KEY
 
 // Create a film (save film to watchlist)
 router.post('/films', auth, async (req, res) => {
     const owner = req.user._id
+    if (req.body.poster == 'N/A') {
+        req.body.poster = 'https://res.cloudinary.com/dojzptdbc/image/upload/v1726945998/default-movie_uajvdm.png'
+    }
     try {
         const film = new Film({owner, ...req.body})
         await film.save()
@@ -31,6 +35,19 @@ router.get('/films/:id', auth, async (req, res) => {
         res.send(film)
     } catch (e) {
         res.status(500).send(e)
+    }
+})
+
+// Gets film data from OMDB API
+router.get('/filmData', async (req, res) => {
+    const search = req.query.search
+    const page = req.query.page
+    try {
+        const response = await fetch(`https://www.omdbapi.com/?apikey=${OMDB_API_KEY}&s=${search}&page=${page}`)
+        const filmResults = await response.json()
+        res.send(filmResults)
+    } catch (e) {
+        res.send(e)
     }
 })
 
