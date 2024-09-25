@@ -9,6 +9,7 @@ import userEvent from '@testing-library/user-event'
 import { describe, test, expect, afterEach, beforeAll, afterAll } from 'vitest';
 import { HttpResponse, http } from "msw";
 import { server } from '../../mocks/server'
+const url = 'http://localhost:3001'
 
 beforeAll(() => {
     server.listen()
@@ -63,7 +64,7 @@ describe('Signing up with invalid data', () => {
     test("Missing data displays appropriate error message and doesn't redirect user to login page", async () => {
         // Reset http response to assume empty form data was sent
         server.resetHandlers(
-            http.post('http://localhost:3001/users', () => {
+            http.post(`${url}/users`, () => {
                 return HttpResponse.json({
                 errors: {
                     username: {
@@ -107,7 +108,7 @@ describe('Signing up with invalid data', () => {
         However, since we are mocking the server response, testing this case in addition is unecessary.
         */
         server.resetHandlers(
-            http.post('http://localhost:3001/users', () => {
+            http.post(`${url}/users`, () => {
                 return HttpResponse.json({
                 errors: {
                     email: {
@@ -117,8 +118,7 @@ describe('Signing up with invalid data', () => {
                     message: 'Password cannot contain "password"'
                     }
                 }
-                }, {status: 400
-                })
+                }, {status: 400})
             })
         )
         // Render app
@@ -144,15 +144,14 @@ describe('Signing up with invalid data', () => {
         Since, we are mocking the server response, testing this case in addition is unecessary.
         */
         server.resetHandlers(
-            http.post('http://localhost:3001/users', () => {
+            http.post(`${url}/users`, () => {
                 return HttpResponse.json({
                 errorResponse: {
                     keyValue: {
                         username: 'error',
                     }
                 }
-                }, {status: 400
-                })
+                }, {status: 400})
             })
         )
         // Render app

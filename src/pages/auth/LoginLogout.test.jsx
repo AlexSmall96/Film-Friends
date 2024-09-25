@@ -6,16 +6,21 @@ import React from 'react';
 import '@testing-library/jest-dom/vitest';
 import { render, screen, cleanup, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event'
-import { describe, test, expect, afterEach, beforeAll, afterAll } from 'vitest';
+import { describe, test, expect, afterEach, beforeAll, afterAll, beforeEach } from 'vitest';
 import { HttpResponse, http } from "msw";
 import { server } from '../../mocks/server'
+import { handlers } from '../../mocks/handlers';
 import {CurrentUserProvider} from '../../contexts/CurrentUserContext'
 import Login from './Login'
+const url = 'http://localhost:3001'
 
 beforeAll(() => {
     server.listen()
 })
-  
+
+beforeEach(() => {
+    server.resetHandlers(...handlers)
+})
 afterEach(() => {
     cleanup()
 })
@@ -106,7 +111,7 @@ describe('Login/logout success ', () => {
 describe('Login failure', () => {
     test('Invalid login data shows appropriate error message', async () => {
         server.resetHandlers(
-            http.post('http://localhost:3001/users/login', () => {
+            http.post(`${url}/users/login`, () => {
                 return HttpResponse.json(null, {status: 400})
             })
         )
@@ -126,7 +131,7 @@ describe('Login failure', () => {
 
     test('Any other error shows appropriate errror message', async () => {
         server.resetHandlers(
-            http.post('http://localhost:3001/users/login', () => {
+            http.post(`${url}/users/login`, () => {
                 return HttpResponse.json(null, {status: 500})
             })
         )
