@@ -16,7 +16,7 @@ const {
     userOne,
     userOneAuth,
     userTwoAuth,
-} = require('./testing/setupRouterTests')
+} = require('./test-utils/setupRouterTests')
 
 // Wipe database before each test and setup test data
 beforeEach(wipeDBAndSaveData)
@@ -25,7 +25,7 @@ beforeEach(wipeDBAndSaveData)
 afterAll(closeConnection)
 
 // Sign up Tests
-describe('Sign Up:', () => {
+describe('SIGN UP', () => {
     test('Should sign up a new user', async () => {
         // Correct status code
         const response = await request(app).post('/users').send({username: 'Alex', email: 'alex@example.com', password: 'Red123@!'}).expect(201)
@@ -61,7 +61,7 @@ describe('Sign Up:', () => {
 })
 
 // Login tests
-describe('Login:', () => {
+describe('LOGIN', () => {
     test('Should be able to login with valid credentials', async () => {
         // Correct status code
         const response = await request(app).post('/users/login')
@@ -79,7 +79,7 @@ describe('Login:', () => {
 })
 
 // Logout tests
-describe('Logout:', () => {
+describe('LOGOUT', () => {
     test('Logout should be successful when authenticated', async () => {
         // Correct status code
         await request(app).post('/users/logout').set(...userOneAuth).expect(200)
@@ -95,7 +95,7 @@ describe('Logout:', () => {
 })
 
 // Check token tests
-describe('Check Token:', () => {
+describe('CHECK TOKEN', () => {
     test('Valid token should return a 200 status code', async () => {
         await request(app).get('/users/token').set(...userOneAuth).expect(200)
     })
@@ -112,35 +112,25 @@ describe('Check Token:', () => {
 })
 
 // View profile tests
-describe('View profile:', () => {
-    test('User should be able to view their own profile and all films', async () => {
+describe('VIEW PROFILE', () => {
+    test('User should be able to view their own profile', async () => {
         // userOne views their own profile
         // Correct status code
         const response = await request(app).get(`/users/${userOne._id}`).set(...userOneAuth).expect(200)
         // Correct data is returned
         expect(response.body.profile.username).toBe('Mike')
         expect(response.body.profile.email).toBe('mike@example.com')
-        expect(response.body.films.length).toBe(4)
-        // Test pagination
-        const paginatedResponse1 = await request(app).get(`/users/${userOne._id}?limit=2&skip=0`).set(...userOneAuth).expect(200)
-        const paginatedResponse2 = await request(app).get(`/users/${userOne._id}?limit=2&skip=2`).set(...userOneAuth).expect(200)
-        expect(paginatedResponse1.body.films.length).toBe(2)
-        expect(paginatedResponse2.body.films.length).toBe(2)
-        // Test sorting
-        expect(paginatedResponse1.body.films[0].title).toBe('film one d')
-        expect(paginatedResponse1.body.films[1].title).toBe('film one c')
-        expect(paginatedResponse2.body.films[0].title).toBe('film one b')
-        expect(paginatedResponse2.body.films[1].title).toBe('film one a')
+        expect(response.body.profile.image).toBe('https://res.cloudinary.com/dojzptdbc/image/upload/v1691658951/media/images/pexels-photo-1043474_mfhznv.jpg')
+        expect(response.body.profile.age).toBe(0)
     })
-    test('User should be able to view another users username, age and public films', async () => {
+    test('User should be able to view another users username, age and profile image', async () => {
         // userTwo views userOne's profile
         // Correct status code
         const response = await request(app).get(`/users/${userOne._id}`).set(...userTwoAuth).expect(200)
         // Correct data is returned
         expect(response.body.profile.username).toBe('Mike')
         expect(response.body.profile.age).toBe(0)
-        expect(response.body.films.length).toBe(1)
-        expect(response.body.films[0].title).toBe('film one a')
+        expect(response.body.profile.image).toBe('https://res.cloudinary.com/dojzptdbc/image/upload/v1691658951/media/images/pexels-photo-1043474_mfhznv.jpg')
         // Private data is not returned
         expect(Object.keys(response.body.profile).includes('email')).toBe(false)
         expect(Object.keys(response.body.profile).includes('password')).toBe(false)
@@ -158,7 +148,7 @@ describe('View profile:', () => {
 })
 
 // Search for profiles
-describe('Search for profiles', () => {
+describe('SEARCH FOR PROFILES', () => {
     test('Should be able to search for user by username', async () => {
         // Search 1: Search for ' USer' - should return user0...user9 with status code 200
         const resultsForUser = await request(app).get('/users/?username= USer').set(...userOneAuth).expect(200)
@@ -187,7 +177,7 @@ describe('Search for profiles', () => {
 })
 
 // Edit profile
-describe('Edit Profile', () => {
+describe('EDIT PROFILE', () => {
     test('Should be able to edit valid fields with valid data', async () => {
         // Correct status code
         await request(app).patch(`/users/me`).send({
@@ -227,7 +217,7 @@ describe('Edit Profile', () => {
 
 
 // Delete profile
-describe('Delete Profile', () => {
+describe('DELETE PROFILE', () => {
     test('Should delete profile when authenticated', async () => {
         // Correct status code
         await request(app).delete(`/users/me`).set(...userOneAuth).expect(200)

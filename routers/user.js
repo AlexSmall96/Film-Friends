@@ -8,6 +8,14 @@ const router = new express.Router()
 const User = require('../models/user')
 const Film = require('../models/film')
 const auth = require('../middleware/auth')
+const cloudinary = require("cloudinary").v2
+
+cloudinary.config({
+    cloud_name: process.env.CLOUD_NAME,
+    api_key: process.env.API_KEY,
+    api_secret: process.env.API_SECRET
+})
+
 
 // Sign up
 router.post('/users', async (req, res) => {
@@ -52,15 +60,10 @@ router.get('/users/:id', auth, async (req, res) => {
     const routerId = req.params.id
     try {
         let profile = await User.findById(routerId)
-        let films = await Film.find({owner: routerId})
-            .sort({createdAt: -1})
-            .limit(req.query.limit)
-            .skip(req.query.skip)
         if (req.user.id !== routerId) {
-            profile = {age:profile.age, username: profile.username}
-            films = films.filter(film => film.public === true)
+            profile = {age:profile.age, username: profile.username, image: profile.image}
         }
-        res.status(200).send({ profile, films })
+        res.status(200).send({ profile })
     } catch (e) {
         res.status(400).send(e)
     }
@@ -80,11 +83,32 @@ router.get('/users/', auth, async (req, res) => {
     }
 })
 
+/* 
+The below function recieves an image from the client and uploads it to cloudinary
+taken from https://dev.to/njong_emy/how-to-store-images-in-mongodb-using-cloudinary-mern-stack-imo
+*/
+const uploadToCloudinary = async (path, folder = "my-profile") => {
+    try {
+      const data = await cloudinary.uploader.upload(path, { folder: folder });
+      return { url: data.secure_url, publicId: data.public_id };
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
+};
+
 // Edit profile
 router.patch('/users/me', auth, async (req, res) => {
     const _id = req.user._id
+    let body = {}
     try {
-        const user = await User.findByIdAndUpdate(_id, req.body, {new: true, runValidators: true})
+        if (req.body.image) {
+            const {imageURL} = uploadToCloudinary(req.body.image)
+            body = {image: imageURL, ...req.body}
+        } else {
+            body = req.body
+        }
+        const user = await User.findByIdAndUpdate(_id, body, {new: true, runValidators: true})
         res.send(user)
     } catch (e) {
         res.status(400).send(e)
