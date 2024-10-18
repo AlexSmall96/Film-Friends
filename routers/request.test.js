@@ -19,7 +19,7 @@ const {
     userTwoAuth,
     userThreeAuth,
     requestOne
-} = require('./testing/setupRouterTests')
+} = require('./test-utils/setupRouterTests')
 
 // Wipe database before each test and setup test data
 beforeEach(wipeDBAndSaveData)
@@ -30,7 +30,7 @@ afterAll(closeConnection)
 // Tests //
 
 // Send Friend Request
-describe('Send Friend Request', () => {
+describe('SEND FRIEND REQUEST', () => {
     test('User should be able send a request to another user if there is no existing request between them.', async () => {
         // Correct status code
         const response = await request(app).post('/requests').send({reciever: userTwo._id}).set(...userOneAuth).expect(201)
@@ -71,7 +71,7 @@ describe('Send Friend Request', () => {
 })
 
 // Get friend requests
-describe('Get friend requests', () => {
+describe('GET FRIEND REQUESTS', () => {
     test('Should be able to get all non declined friend requests', async () => {
         // Correct status code
         const response = await request(app).get('/requests').set(...userOneAuth).expect(200)
@@ -102,7 +102,7 @@ describe('Get friend requests', () => {
 })
 
 // Update friend requests
-describe('Update friend requests', () => {
+describe('UPDATE FRIEND REQUESTS', () => {
     test('Reciever of friend request should be able to accept or decline it', async () => {
         // Correct status code
         const response = await request(app).patch(`/requests/${requestOne._id}`).set(...userThreeAuth).send({
@@ -131,7 +131,7 @@ describe('Update friend requests', () => {
 })
 
 // Delete friend requests
-describe('Delete friend requests', () => {
+describe('DELETE FRIEND REQUESTS', () => {
     test('Sender of friend request should be able to delete it', async () => {
         // Correct status code
         await request(app).delete(`/requests/${requestOne._id}`).set(...userTwoAuth).expect(200)

@@ -21,7 +21,7 @@ const {
     filmOneA,
     filmTwo,
     recOne
-} = require('./testing/setupRouterTests')
+} = require('./test-utils/setupRouterTests')
 
 // Wipe database before each test and setup test data
 beforeEach(wipeDBAndSaveData)
@@ -32,7 +32,7 @@ afterAll(closeConnection)
 // Tests //
 
 // Create reccomendations
-describe('Send Reccomendations:', () => {
+describe('SEND RECCOMENDATIONS', () => {
     test("User can't reccomend a film they don't own", async () => {
         // Correct status code
         const response = await request(app).post('/reccomendations')
@@ -92,7 +92,7 @@ describe('Send Reccomendations:', () => {
 })
 
 // Get reccomendations
-describe('Get all reccomendations:', () => {
+describe('GET USERS RECCOMENDATIONS', () => {
     test('Should be able to get all of users reccomendations', async () => {
         // Correct status code
         const response = await request(app).get('/reccomendations').set(...userOneAuth).expect(200)
@@ -100,7 +100,7 @@ describe('Get all reccomendations:', () => {
         expect(response.body.reccomendations.length).toBe(11)
         // Last updated should be first in list
         const lastFilm = await Film.findById(response.body.reccomendations[0].film) 
-        expect(lastFilm.title).toBe('A film reccomended by user9')
+        expect(lastFilm.Title).toBe('A film reccomended by user9')
         // Test pagination
         const paginatedResponseOne = await request(app).get('/reccomendations/?limit=5&skip=5')
             .set(...userOneAuth)
@@ -120,7 +120,7 @@ describe('Get all reccomendations:', () => {
 })
 
 // Update a reccomendation (comment or like)
-describe('Delete a reccomendation:', () => {
+describe('DELETE A RECCOMENDATION', () => {
     test('Should be able to update a reccomendation if user is reciever', async () => {
         // Correct status code
         await request(app).patch(`/reccomendations/${recOne._id}`)
@@ -150,7 +150,7 @@ describe('Delete a reccomendation:', () => {
 })
 
 // Delete a reccomendation (comment or like)
-describe('Update a reccomendation:', () => {
+describe('UPDATE A RECCOMENDATION', () => {
     test('Should be able to delete a reccomendation if user is owner of associated film', async () => {
         // Correct status code
         await request(app).delete(`/reccomendations/${recOne._id}`)
