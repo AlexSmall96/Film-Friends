@@ -6,7 +6,7 @@ https://www.udemy.com/course/the-complete-nodejs-developer-course-2
 const mongoose = require('mongoose')
 
 const filmSchema = new mongoose.Schema({
-    title: {
+    Title: {
         type: String,
         required: true,
         trim: true
@@ -15,11 +15,14 @@ const filmSchema = new mongoose.Schema({
         type: String,
         trim: true,
     },
-    poster: {
+    Poster: {
        type:String,
     },
-    year: {
+    Year: {
         type: String
+    },
+    Type: {
+        type:String
     },
     watched: {
         type: Boolean,
