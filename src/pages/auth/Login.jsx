@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { axiosReq } from '../../api/axiosDefaults';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { useCurrentUser } from '../../contexts/CurrentUserContext'
+import { Button, Form, Image } from 'react-bootstrap';
 
 const Login = () => {
     // Declare hooks
@@ -41,18 +42,25 @@ const Login = () => {
     // Render login page
     return (
         <>
-            <h1>Login</h1>
-            <form onSubmit={handleSubmit} >
-                {/* EMAIL */}
-                <label htmlFor='email' id='email-lbl'>Email:</label>
-                <input type='text' name='email' aria-labelledby='email-lbl' onChange={handleChange}></input>
+            <Image width={300} src='https://res.cloudinary.com/dojzptdbc/image/upload/v1730298790/loginImage_tpvqcy.png' alt='A film take board'></Image>
+            <Form onSubmit={handleSubmit} style={{maxWidth: '500px', margin: 'auto'}}>
+                {/* EMAIL */}   
+                <Form.Group className="mb-3">
+                    <Form.Label id='email-lbl'>Email address</Form.Label>
+                    <Form.Control onChange={handleChange} type="email" name='email' placeholder="Email" aria-labelledby='email-lbl' />
+                </Form.Group>
                 {/* PASSWORD */}
-                <label htmlFor='password' id='password-lbl'>Password:</label>
-                <input type='password' aria-labelledby='password-lbl' name='password' onChange={handleChange}></input>
-                <button type='submit'>Login</button>
+                <Form.Group className="mb-3">
+                    <Form.Label id='password-lbl'>Password</Form.Label>
+                    <Form.Control onChange={handleChange} type="password" name='password' placeholder="Password" aria-labelledby='password-lbl' />
+                </Form.Group>
                 {/* ERROR */}
-                {error? (<p>{error}</p>):('')} 
-            </form>
+                {error? (<p>{error}</p>):('')}
+                <Button variant="secondary" type="submit">
+                    Login
+                </Button>
+                <p>Don't have an account?<Button variant='link' onClick={() => history.push('/signup')}>Sign up</Button></p>
+            </Form>
         </>
     )
 }
