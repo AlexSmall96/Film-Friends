@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { axiosReq } from '../../api/axiosDefaults';
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import { Link, useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import { Button, Form, Image } from 'react-bootstrap';
+import { NavLink } from 'react-router-dom/cjs/react-router-dom';
 
 const Signup = () => {
     // Declare hooks
@@ -55,25 +57,34 @@ const Signup = () => {
     // Render signup page
     return (
         <>
-            <h1>Sign up</h1>
-            <form data-testid='signup-form' onSubmit={handleSubmit} >
-                {/* USERNAME */}
-                <label htmlFor='username' id='username-lbl'>Username:</label>
-                <input type='text' name='username' aria-labelledby='username-lbl' onChange={handleChange}></input>
-                {/* USERNAME ERROR */}
-                {errors.username? (errors.username.message? (<p>{errors.username.message}</p>):(<p>{errors.username}</p>)):('')}
-                {/* EMAIL */}   
-                <label htmlFor='email' id='email-lbl'>Email:</label>
-                <input type='text' name='email' aria-labelledby='email-lbl' onChange={handleChange}></input>
+            <Image width={300} src='https://res.cloudinary.com/dojzptdbc/image/upload/v1730293188/signupImage_ohgj8z.png' alt='A roll of film tape'></Image>
+            <Form onSubmit={handleSubmit} style={{maxWidth: '500px', margin: 'auto'}}>
+                {/* EMAIL */}
+                <Form.Group className="mb-3">
+                    <Form.Label id='email-lbl'>Email address</Form.Label>
+                    <Form.Control onChange={handleChange} type="email" name='email' placeholder="Email" aria-labelledby='email-lbl' />
+                </Form.Group>
                 {/* EMAIL ERROR */}
                 {errors.email? (errors.email.message? (<p>{errors.email.message}</p>):(<p>{errors.email}</p>)):('')}
+                {/* USERNAME */}
+                <Form.Group className="mb-3">
+                    <Form.Label id='username-lbl'>Username</Form.Label>
+                    <Form.Control onChange={handleChange} type="text" name='username' placeholder="Username" aria-labelledby='username-lbl'/>
+                </Form.Group>
+                {/* USERNAME ERROR */}
+                {errors.username? (errors.username.message? (<p>{errors.username.message}</p>):(<p>{errors.username}</p>)):('')}
                 {/* PASSWORD */}
-                <label id='password-lbl' htmlFor='password'>Password:</label>
-                <input type='password' aria-labelledby='password-lbl' name='password' onChange={handleChange}></input>
+                <Form.Group className="mb-3">
+                    <Form.Label id='password-lbl'>Password</Form.Label>
+                    <Form.Control onChange={handleChange} type="password" name='password' placeholder="Password" aria-labelledby='password-lbl' />
+                </Form.Group>
                 {/* PASSWORD ERROR */}
                 {errors.password? (<p>{errors.password.message}</p>):('')}
-                <button type='submit'>Sign Up</button>
-            </form>
+                <Button variant="secondary" type="submit">
+                    Sign Up
+                </Button>
+                <p>Already have an account?<Button variant='link' onClick={() => history.push('/login')}>Login</Button></p>
+            </Form>
         </>
     )
 }

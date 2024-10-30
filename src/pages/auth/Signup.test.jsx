@@ -1,39 +1,58 @@
 /**
  * @vitest-environment jsdom
  */
-import App from '../../App';
+import Signup from './Signup';
 import React from 'react';
 import '@testing-library/jest-dom/vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event'
 import { describe, test, expect } from 'vitest';
-import { HttpResponse, http } from "msw";
 import { server } from '../../mocks/server'
-import setupTests from '../../test-utils/setupTests';
+import { HttpResponse, http } from "msw";
+import setupTests from '../../test-utils/setupTests'
+import renderWithContext from '../../test-utils/renderWithContext';
 const url = 'http://localhost:3001'
 
 setupTests()
 
-describe('Signing up with valid data', () => {
-    test('Submitting form with valid data takes user to login page', async () => {
-        // Render app
-        render(<App />)
-        // Find and click sign up link
-        const signup = screen.getByRole('link', {name: /Sign up/i})
-        const user = userEvent.setup()
-        await user.click(signup)
-        // Assert sign up heading is rendered
-        const signupHeading = screen.getByRole('heading', {name: /Sign up/i})
-        expect(signupHeading).toBeInTheDocument()
-        // Assert that form inputs and submit button are rendered
+describe('RENDERING ELEMENTS', () => {
+    test('Sign up form and image are rendered correctly', async () => {
+        // Render component
+        const { history } = renderWithContext(<Signup />, null, 'signup', null)
+        // Find image
+        const image = screen.getByRole('img', {name: /A roll of film tape/i})
+        expect(image).toBeInTheDocument()
+        // Find inputs
+        const emailInput = screen.getByRole('textbox', {name: /Email address/i})
         const usernameInput = screen.getByRole('textbox', {name: /Username/i})
-        const emailInput = screen.getByRole('textbox', {name: /Email/i})
-        const passwordInput = screen.getByLabelText('Password:')
-        const submitButton = screen.getByRole('button')
+        const passwordInput = screen.getByLabelText('Password')
         expect(usernameInput).toBeInTheDocument()
         expect(emailInput).toBeInTheDocument()
         expect(passwordInput).toBeInTheDocument()
-        expect(submitButton).toBeInTheDocument()
+        // Find submit button
+        const signUpbutton = screen.getByRole('button', {name: /Sign Up/i})
+        expect(signUpbutton).toBeInTheDocument()
+        // Find text for login redirect
+        const loginText = screen.getByText('Already have an account?')
+        expect(loginText).toBeInTheDocument()
+        // Find login button
+        const loginButton = screen.getByRole('button', {name: /Login/i} )
+        expect(loginButton).toBeInTheDocument()
+        // Clicking login button redirects user to login page
+        const user = userEvent.setup()
+        await user.click(loginButton)
+        expect(history.location.pathname).toContain('/login')
+    })
+})
+
+describe('SIGN UP WITH VALID DATA', () => {
+    test('Submitting form with valid data takes user to login page', async () => {
+        // Render component
+        const { history } = renderWithContext(<Signup />, null, 'signup', null)
+        // Find inputs
+        const emailInput = screen.getByRole('textbox', {name: /Email address/i})
+        const usernameInput = screen.getByRole('textbox', {name: /Username/i})
+        const passwordInput = screen.getByLabelText('Password')
         // Assert that the user can input data into form
         fireEvent.change(usernameInput, {target: {value: 'user one'}})
         fireEvent.change(emailInput, {target: {value: 'user@email.com'}})
@@ -42,17 +61,16 @@ describe('Signing up with valid data', () => {
         expect(emailInput.value).toBe('user@email.com')
         expect(passwordInput.value).toBe('mypwd12345')
         // Assert that submitting form redirects user to login page
-        /* 
-        Since sign up data validation is handled by the backend, 
-        the default mock server returns with a 201 status, regardless of input.
-        */
-        await user.click(submitButton)
-        expect(global.window.location.href).toContain('login')
+        const signUpbutton = screen.getByRole('button', {name: /Sign up/i})
+        const user = userEvent.setup()
+        expect(history.location.pathname).not.toContain('/login')
+        await user.click(signUpbutton)
+        expect(history.location.pathname).toContain('/login')
     })
 })
 
-describe('Signing up with invalid data', () => {
-    test("Missing data displays appropriate error message and doesn't redirect user to login page", async () => {
+describe('SIGN UP WITH INVALID DATA', () => {
+    test('Missing data displays appropriate error message and does not redirect user to login page', async () => {
         // Reset http response to assume empty form data was sent
         server.resetHandlers(
             http.post(`${url}/users`, () => {
@@ -72,15 +90,12 @@ describe('Signing up with invalid data', () => {
                 })
             })
         )
-        // Render app
-        render(<App />)
-        // Find sign up link
-        const signup = screen.getByRole('link', {name: /Sign up/i})
+        // Render component
+        const { history } = renderWithContext(<Signup />, null, 'signup', null)
+        // Find sign up button
+        const signUpbutton = screen.getByRole('button', {name: /Sign up/i})
         const user = userEvent.setup()
-        await user.click(signup)
-        // Submit sign up form to replicate empty input being sent
-        const submitButton = screen.getByRole('button')
-        await user.click(submitButton)
+        await user.click(signUpbutton)
         // Assert the correct error messages are present
         const usernameError = screen.getByText('Path `username` is required.')
         const emailError = screen.getByText('Path `email` is required.')
@@ -89,7 +104,7 @@ describe('Signing up with invalid data', () => {
         expect(emailError).toBeInTheDocument()
         expect(passwordError).toBeInTheDocument()
         // Assert that user has not been redirected to login page
-        expect(global.window.location.href).toContain('signup')
+        expect(history.location.pathname).not.toContain('/login')
     })
     test("Invalid email or password displays appropriate error message and doesn't redirect user to login page", async () => {
         // Reset http response to assume form data was sent with invalid username and password
@@ -112,22 +127,19 @@ describe('Signing up with invalid data', () => {
                 }, {status: 400})
             })
         )
-        // Render app
-        render(<App />)
-        // Find and click sign up link
-        const signup = screen.getByRole('link', {name: /Sign up/i})
+        // Render component
+        const { history } = renderWithContext(<Signup />, null, 'signup', null)
+        // Find sign up button
+        const signUpbutton = screen.getByRole('button', {name: /Sign up/i})
         const user = userEvent.setup()
-        await user.click(signup)
-        // Submit sign up form to replicate invalid input being sent
-        const submitButton = screen.getByRole('button')
-        await user.click(submitButton)
+        await user.click(signUpbutton)
         // Assert the correct error messages are present
         const emailError = screen.getByText('Email is invalid')
         const passwordError = screen.getByText('Password cannot contain "password"')
         expect(emailError).toBeInTheDocument()
         expect(passwordError).toBeInTheDocument()
         // Assert that user has not been redirected to login page
-        expect(global.window.location.href).toContain('signup')
+        expect(history.location.pathname).not.toContain('/login')
     })
     test("Taken username displays appropriate error message and doesn't redirect user to login page", async () => {
         /* 
@@ -145,20 +157,16 @@ describe('Signing up with invalid data', () => {
                 }, {status: 400})
             })
         )
-        // Render app
-        render(<App />)
-        // Find and click sign up link
-        const signup = screen.getByRole('link', {name: /Sign up/i})
+        // Render component
+        const { history } = renderWithContext(<Signup />, null, 'signup', null)
+        // Find sign up button
+        const signUpbutton = screen.getByRole('button', {name: /Sign up/i})
         const user = userEvent.setup()
-        await user.click(signup)
-        // Submit sign up form to replicate invalid input being sent
-        const submitButton = screen.getByRole('button')
-        await user.click(submitButton)
+        await user.click(signUpbutton)
         // Assert the correct error messages are present
         const usernameError = screen.getByText('Username taken.')
         expect(usernameError).toBeInTheDocument()
         // Assert that user has not been redirected to login page
-        expect(global.window.location.href).toContain('signup')
+        expect(history.location.pathname).not.toContain('/login')
     })
 })
-
