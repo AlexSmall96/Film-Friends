@@ -2,10 +2,10 @@
  * @vitest-environment jsdom
  */
 import Login from './Login';
-import App from '../../App';
+import NavBar from '../../components/NavBar';
 import React from 'react';
 import '@testing-library/jest-dom/vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event'
 import { describe, test, expect } from 'vitest';
 import { HttpResponse, http } from "msw";
@@ -22,11 +22,12 @@ setupTests()
 
 const globalHistory = createMemoryHistory({ initialEntries: ['/login'] })
 
-const MockComponent = () => {
+const MockLogin = () => {
     return (
         <CurrentUserProvider>
             <Router history={globalHistory}>
-                <Route path={'/login'} render={() => <Login />} />
+                <NavBar />
+                    <Route path={'/login'} render={() => <Login />} />
             </Router>
         </CurrentUserProvider>
     )
@@ -52,17 +53,17 @@ describe('RENDERING ELEMENTS', () => {
         // Find signup button
         const signupButton = screen.getByRole('button', {name: /Sign up/i})
         expect(signupButton).toBeInTheDocument()
-        // Clicking signup button redirects user to login page
+        // Clicking signup button redirects user to sign up page
         const user = userEvent.setup()
         await user.click(signupButton)
         expect(history.location.pathname).toContain('/signup')
     })
 })
 
-describe('LOGIN SUCCESS', () => {
-    test('Submitting form with valid data takes user to home page', async () => {
+describe('LOGIN / LOGOUT SUCCESS', () => {
+    test('Submitting form with valid data takes user to home page, logout changes which links are displayed in navbar', async () => {
         // Render component
-        render(<MockComponent />)
+        render(<MockLogin />)
         // Find inputs
         const emailInput = screen.getByRole('textbox', {name: /Email address/i})
         const passwordInput = screen.getByLabelText('Password')
@@ -76,6 +77,32 @@ describe('LOGIN SUCCESS', () => {
         const user = userEvent.setup()
         await user.click(loginButton)
         expect(globalHistory.location.pathname).not.toContain('/login')
+        // Clicking logout changes icons
+        const logoutLink = screen.getByRole('link', {name: /Logout/i})
+        expect(logoutLink).toBeInTheDocument()
+        await user.click(logoutLink)
+        const loggedOutNames = [/Sign up/i, /Login/i]
+        const loggedInNames = [/My Films/i, /Profile/i, 'Friends', /Reccomendations/i]
+        // Logged out links should be present
+        loggedOutNames.map(
+            linkName => expect(screen.getByRole('link', {
+                name: linkName
+            })).toBeInTheDocument()
+        )
+        // Logged in links should not be present
+        loggedInNames.map(
+            linkName => expect(screen.queryByRole('link', {
+                name: linkName
+            })).not.toBeInTheDocument()
+        )
+        // Logout list item should not be present
+        const logout = screen.queryByText('Logout')
+        expect(logout).not.toBeInTheDocument()
+        // Logo should be present
+        const logo = screen.getByRole('link', {
+            name: 'Film Friends'
+        })
+        expect(logo).toBeInTheDocument()
     })
 })
 
