@@ -1,45 +1,46 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
 import { axiosReq } from '../api/axiosDefaults';
 import { useCurrentUser } from '../contexts/CurrentUserContext';
+import { Container, Navbar, Nav, Form, Row, Col } from 'react-bootstrap'
 
 const NavBar = () => {
     const { currentUser, setCurrentUser  } = useCurrentUser()
     const handleLogout = async () => {
+      localStorage.clear()
         try {
             await axiosReq.post('/users/logout', {}, {
                 headers: {'Authorization': `Bearer ${currentUser?.token}`}
             })
-            localStorage.removeItem('storedUser')
             setCurrentUser(null)
+            
         } catch(err) {
             console.log(err)
         }
     }
     const loggedInIcons = 
     <>
-        <li> <NavLink to='/myfilms'>My Films</NavLink></li>
-        <li> <NavLink to={`/profile/${currentUser?.user._id}`}>Profile</NavLink></li>
-        <li> <NavLink to='/friends'>Friends</NavLink></li>
-        <li> <NavLink to='/reccomendations'>Reccomendations</NavLink></li>
-        <li> <NavLink to='/' onClick={handleLogout}>Logout</NavLink></li>
+        <Nav.Link href={`/films/${currentUser?.user._id}`}>My Films</Nav.Link>
+        <Nav.Link href={`/profile/${currentUser?.user._id}`}>Profile</Nav.Link>
+        <Nav.Link href='/friends'>Friends</Nav.Link>
+        <Nav.Link href='/reccomendations'>Reccomendations</Nav.Link>
+        <Nav.Link href='/' onClick={handleLogout}>Logout</Nav.Link>
     </>
     const loggedOutIcons = 
     <>
-        <li> <NavLink to='/signup'>Sign up</NavLink></li>
-        <li> <NavLink to='/login'>Login</NavLink></li>
+        <Nav.Link href='/signup'>Sign up</Nav.Link>
+        <Nav.Link href='/login'>Login</Nav.Link>
     </>
     return (
-        <div>
-            <NavLink to='/'><h1>Film Friends</h1></NavLink>
-            <ul>
-                {currentUser ? loggedInIcons : loggedOutIcons}
-            </ul>
-            <form >
-                <label htmlFor='friend-search' id='friend-lbl'>Find your friends</label>
-                <input type='search' name='friend-search' aria-labelledby='friend-lbl'></input>
-            </form>
-        </div>
+        <Navbar bg="light" data-bs-theme="light">
+          	<Container>
+            	<Navbar.Brand href="/">Film Friends</Navbar.Brand>
+            		<Row>
+              			<Nav className="me-auto">
+                			{currentUser? loggedInIcons: loggedOutIcons}
+              			</Nav>
+            		</Row>
+          	</Container>
+      	</Navbar>
     )
 }
 
