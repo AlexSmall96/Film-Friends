@@ -57,7 +57,7 @@ const filmOneC = {Title: 'film one c', imdbID: 'u345', owner: userOneId, public:
 const filmOneD = {Title: 'film one d', imdbID: 'v345', owner: userOneId, public: false}
 const filmTwo = {_id: filmTwoId, Title: 'film two', imdbID: 'e123', owner: userTwoId, public: true}
 const filmThree = {_id: filmThreeId, Title: 'film three', imdbID: 'f123', owner: userTwoId, public: false}
-const requestOne = {_id: requestOneId, sender: userTwoId, reciever: userThreeId}
+const requestOne = {_id: requestOneId, sender: userTwoId, reciever: userThreeId, senderUsername: 'Steve', recieverUsername:'claire'}
 const recOne = {_id: recOneId, film: filmOneAId, reciever: userTwoId, sender: userOneId}
 
 // Wipe database before each test and setup test data
@@ -89,7 +89,9 @@ const wipeDBAndSaveData = async () => {
             sender: i < 5 ? userOneId : user._id, 
             reciever: i < 5 ? user._id : userOneId,
             declined: i == 2,
-            accepted: i == 1
+            accepted: i == 1,
+            senderUsername: `user${i}`,
+            recieverUsername: 'Mike'
         }).save()
         // Create 10 reccomendations to test reccomendation pagination and sorting
         let filmId = new mongoose.Types.ObjectId()

@@ -40,6 +40,8 @@ describe('SEND FRIEND REQUEST', () => {
         // Assertions about the response
         expect(response.body.request.accepted).toBe(false)
         expect(response.body.request.declined).toBe(false)
+        expect(response.body.request.senderUsername).toBe('Mike')
+        expect(response.body.request.recieverUsername).toBe('Steve')
     })
     test('User should not be able to send a request to the same person twice', async () => {
         // Correct status code

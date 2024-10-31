@@ -17,6 +17,22 @@ const requestSchema = new mongoose.Schema({
         required: true,
         ref: 'User'
     },
+    senderUsername: {
+        type: String,
+        required: true
+    },
+    recieverUsername: {
+        type: String,
+        required: true
+    },
+    senderImage: {
+        type: String,
+        default: 'https://res.cloudinary.com/dojzptdbc/image/upload/v1687104476/default_profile_k3tfhd.jpg'
+    },
+    recieverImage: {
+        type: String,
+        default: 'https://res.cloudinary.com/dojzptdbc/image/upload/v1687104476/default_profile_k3tfhd.jpg'
+    },
     accepted: {
         type: Boolean,
         default: false
