@@ -1,7 +1,7 @@
 import React from 'react';
 import { axiosReq } from '../api/axiosDefaults';
 import { useCurrentUser } from '../contexts/CurrentUserContext';
-import { Container, Navbar, Nav, Form, Row, Col } from 'react-bootstrap'
+import { Container, Navbar, Nav, Image, Row,} from 'react-bootstrap'
 
 const NavBar = () => {
     const { currentUser, setCurrentUser  } = useCurrentUser()
@@ -33,7 +33,12 @@ const NavBar = () => {
     return (
         <Navbar bg="light" data-bs-theme="light">
           	<Container>
-            	<Navbar.Brand href="/">Film Friends</Navbar.Brand>
+            	<Navbar.Brand href="/">
+                    <h3>Film
+                        <Image alt='A bag of popcorn' style={{marginLeft: '-13px', marginRight: '-13px'}} width={70} src='https://res.cloudinary.com/dojzptdbc/image/upload/v1729082084/popcorn_hzmb1v.png' />
+                    Friends
+                    </h3>
+                </Navbar.Brand>
             		<Row>
               			<Nav className="me-auto">
                 			{currentUser? loggedInIcons: loggedOutIcons}

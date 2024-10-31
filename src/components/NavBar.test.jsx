@@ -33,9 +33,13 @@ describe('RENDERING CORRECT NAV LINKS', () => {
         expect(logout).not.toBeInTheDocument()
         // Logo should be present
         const logo = screen.getByRole('link', {
-            name: 'Film Friends'
+            name: 'Film A bag of popcorn Friends'
         })
         expect(logo).toBeInTheDocument()
+        // Image should be present in logo and have correct source
+        const image = screen.getByRole('img')
+        expect(image).toBeInTheDocument()
+        expect(image.src).toBe('https://res.cloudinary.com/dojzptdbc/image/upload/v1729082084/popcorn_hzmb1v.png' )
     })
     test('When current user is provided, only logged in links are rendered', async () => {
         renderWithContext(<NavBar />)
@@ -58,7 +62,7 @@ describe('RENDERING CORRECT NAV LINKS', () => {
         expect(logout).toBeInTheDocument()
         // Logo should be present
         const logo = screen.getByRole('link', {
-            name: 'Film Friends'
+            name: 'Film A bag of popcorn Friends'
         })
         expect(logo).toBeInTheDocument()
     })
