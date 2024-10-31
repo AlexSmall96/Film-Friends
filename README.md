@@ -126,10 +126,15 @@ The wireframes below were created to plan the app's front-end layout. A large vi
 ![](documentation/wireframes/Reccomendations.png)
 
 
-**Sign up/Login Page**
+**Sign up**
 
 
 ![](documentation/wireframes/Signup.png)
+
+**Login Page**
+
+
+![](documentation/wireframes/Login.png)
 
 
 **Films Page**
