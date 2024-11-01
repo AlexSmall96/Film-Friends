@@ -1,290 +1,220 @@
 /**
  * @vitest-environment jsdom
  */
+import Home from './Home';
 import React from 'react';
 import '@testing-library/jest-dom/vitest';
-import { screen, cleanup, fireEvent, waitFor } from '@testing-library/react';
-import {within} from '@testing-library/dom'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event'
 import { describe, test, expect } from 'vitest';
-import { HttpResponse, http } from "msw";
-import { server } from '../mocks/server'
-import {handlers} from '../mocks/handlers'
-import setupTests from '../test-utils/setupTests';
-import Home from './Home';
+import {CurrentUserProvider} from '../contexts/CurrentUserContext'
+import setupTests from '../test-utils/setupTests'
 import renderWithContext from '../test-utils/renderWithContext';
+import { server } from '../mocks/server';
+import { handlers } from '../mocks/handlers';
+import { HttpResponse, http } from "msw";
 const url = 'http://localhost:3001'
 
 setupTests()
 
+// Create films array to update get films handler
+// Only imdbIDs are required as it is only being used to determine film button text
+const user2UpdatedFilms = [
+    {
+        imdbID: "tt0080684",
+    },
+    {
+		imdbID: "tt0076759",
+	}, {
+		imdbID: "tt0120915",		
+	}, {
+		imdbID: "tt0120737",		
+	}
+]
+
 describe('RENDERING ELEMENTS', () => {
-    test('Heading and search bar are rendered', () => {
+    test('Search box, search button, and hero image are present', async () => {
         renderWithContext(<Home />, null)
-        const heading = screen.getByRole('heading')
-        expect(heading).toBeInTheDocument()
-        const searchBox = screen.getByRole('searchbox')
+        // Find searchbox
+        const searchBox = screen.getByRole('textbox')
         expect(searchBox).toBeInTheDocument()
+        // Find search button
+        const searchButton = screen.getByRole('button')
+        expect(searchButton).toBeInTheDocument()
+        // Find image
+        const image = screen.getByRole('img', {name: /A close up of film tape/i})
+        expect(image).toBeInTheDocument()
+        expect(image.src).toBe('https://res.cloudinary.com/dojzptdbc/image/upload/v1729270408/movie2_h1bnwo.png')
     })
-    test('User can input text into search bar', () => {
+    test('Results message not yet present', async () => {
         renderWithContext(<Home />, null)
-        const searchBox = screen.getByRole('searchbox')
-        fireEvent.change(searchBox, {target: {value: 'star wars'}})
-        expect(searchBox.value).toBe('star wars')
-    })
-    test('Pagination not rendered yet, no buttons rendered', () => {
-        renderWithContext(<Home />, null)
-        const pageTabs = screen.queryByRole('list')
-        expect(pageTabs).not.toBeInTheDocument()
-        const button = screen.queryByRole('button')
-        expect(button).not.toBeInTheDocument()
+        const message = screen.queryByText('Showing results 1 to 3 of 3')
+        expect(message).not.toBeInTheDocument()
     })
 })
 
 describe('FILM SEARCH FUNCTIONALITY', () => {
-    test('Correct data is returned with valid query, no save buttons appear if user is not logged in ', async () => {
+    test('Searching with empty query does nothing', async () => {
         renderWithContext(<Home />, null)
-        const searchBox = screen.getByRole('searchbox', {name: /Search for a film/i})
-        fireEvent.change(searchBox, {target: {value: 'star wars'}})
-        await waitFor(() => {
-            // Results appear
-            const resultsTable = screen.getByRole('table');
-            expect(resultsTable).toBeInTheDocument();
-            // No buttons present
-            const buttons = within(resultsTable).queryByRole('button')
-            expect(buttons).not.toBeInTheDocument()
-            // Correct data is returned, should only be 2 out of the 3 as games are not included
-            const filmOne = screen.getByText(
-                'Title: Star Wars: Episode IV - A New Hope, Year: 1977, Type: movie'
-            )
-            const filmTwo = screen.getByText(
-                'Title: Star Wars: Episode V - The Empire Strikes Back, Year: 1980, Type: series'
-            )
-            const filmThree = screen.queryByText(
-                'Title: Star Wars: Episode VI - Return of the Jedi, Year: 1983, Type: game'
-            )
-            expect(filmOne).toBeInTheDocument()
-            expect(filmTwo).toBeInTheDocument()
-            expect(filmThree).not.toBeInTheDocument()
-            // Image urls are used correctly, N/A is replaced with default image hosted on cloudinary
-            const images = screen.getAllByRole('img')
-            expect(images).toHaveLength(2)
-            expect(images[0].src).toBe('https://res.cloudinary.com/dojzptdbc/image/upload/v1726945998/default-movie_uajvdm.png')
-            expect(images[1].src).toBe("https://m.media-amazon.com/images/M/MV5BYmU1NDRjNDgtMzhiMi00NjZmLTg5NGItZDNiZjU5NTU4OTE0XkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_SX300.jpg")
-        });
+        // Find search button
+        const searchButton = screen.getByRole('button')
+        const user = userEvent.setup()
+        // Click search button with empty query
+        await user.click(searchButton)
+        // Image should still be present
+        const image = screen.getByRole('img', {name: /A close up of film tape/i})
+        expect(image).toBeInTheDocument()
     })
-
-    test('Pagination tab appears when user searches with valid query', async () => {
-        renderWithContext(<Home />)
-        const searchBox = screen.getByRole('searchbox', {name: /Search for a film/i})
+    test('Searching with valid query produces correct results', async () => {
+        renderWithContext(<Home />, null)
+        // Find searchbox and search button
+        const searchBox = screen.getByRole('textbox')
+        const searchButton = screen.getByRole('button')
+        // Input search query
         fireEvent.change(searchBox, {target: {value: 'star wars'}})
-        await waitFor(() => {
-            // Results appear with pagination component above
-            const pageTabs = screen.getByRole('list')
-            // Should show 1 tab with text '1'
-            expect(pageTabs.children).toHaveLength(1)
-            const currentPageTab = within(pageTabs).getByText('1')
-            expect(currentPageTab).toBeInTheDocument()
-        })
+        const user = userEvent.setup()
+        await user.click(searchButton)
+        // Pagination message should be present
+        const message = screen.getByText('Showing results 1 to 3 of 3')
+        expect(message).toBeInTheDocument()
+        // Pagination component should not be present because results are only 1 page
+        const pagination = screen.queryByRole('list')
+        expect(pagination).not.toBeInTheDocument()
     })
-    test('Clicking pagination buttons changes search results', async () => {
-        // Create an array of 21 films to test pagination
-        const resultsArray = []
-        for (let i=0;i<21;i++) {
-            let film = {
-                Title: `film ${i}`,
-                Year: '1996',
-                imdbID: `film${i}ID`,
-                Type: 'movie',
-                Poster: 'N/A'
-            }
-            resultsArray.push(film)
-        }
-        // Reset handlers to use page query
-        server.resetHandlers(
-            http.get(`${url}/filmData/`, ({request}) => {
-                const url = new URL(request.url)
-                const currentPage = url.searchParams.get('page')
-                const startIndex = 10 * (currentPage - 1)
-                const endIndex = 10 * (currentPage - 1) + 10
-                return HttpResponse.json({
-                    Search: resultsArray.slice(startIndex, endIndex),
-                    totalResults: 21,
-                    Response: true
-                }, {status: 200})
-            }), ...handlers
-        )
-        renderWithContext(<Home />)
-        const searchBox = screen.getByRole('searchbox', {name: /Search for a film/i})
+    test('Pagination works as expected when results are long enough', async () => {
+        renderWithContext(<Home />, null)
+        // Find searchbox and search button
+        const searchBox = screen.getByRole('textbox')
+        const searchButton = screen.getByRole('button')
+        // Input search query
         fireEvent.change(searchBox, {target: {value: 'film'}})
-        await waitFor(() => {
-            // Results appear with pagination component above
-            const pageTabs = screen.getByRole('list')
-            // Should be 5 tabs initially
-            expect(pageTabs.children).toHaveLength(5)
-            // Correct pagination message should appear
-            expect(screen.getByText('Showing results 1 to 10 of 21')).toBeInTheDocument()
-            // Only the first 10 films should be present
-            for (let i=0;i<21;i++) {
-                if (i < 10){
-                    expect(screen.getByText(`Title: film ${i}, Year: 1996, Type: movie`)).toBeInTheDocument()
-                } else {
-                    expect(screen.queryByText(`Title: film ${i}, Year: 1996, Type: movie`)).not.toBeInTheDocument()
-                }
-            }
-        })
-        const pageTabs = screen.getByRole('list')
         const user = userEvent.setup()
-        await waitFor(() => {
-            // Click the next page button
-            user.click(pageTabs.children[1].children[0])
-            // Correct pagination message should appear
-            expect(screen.getByText('Showing results 11 to 20 of 21')).toBeInTheDocument()
-            // Only films 10 - 20 should be present
-            for (let i=0;i<21;i++) {
-                if (10 <= i && i < 20){
-                    expect(screen.getByText(`Title: film ${i}, Year: 1996, Type: movie`)).toBeInTheDocument()
-                } else {
-                    expect(screen.queryByText(`Title: film ${i}, Year: 1996, Type: movie`)).not.toBeInTheDocument()
-                }
-            }
-        })
-        await waitFor(() => {
-            // Click the next page button
-            user.click(pageTabs.children[3].children[0])
-            // Correct pagination message should appear
-            expect(screen.getByText('Showing results 21 to 21 of 21')).toBeInTheDocument()
-            // Final film should appear
-            expect(screen.getByText(`Title: film ${20}, Year: 1996, Type: movie`)).toBeInTheDocument()
-        })
+        await user.click(searchButton)
+        // Pagination message should be present
+        const pageOneMessage = screen.getByText('Showing results 1 to 10 of 20')
+        expect(pageOneMessage).toBeInTheDocument()
+        // Pagination component should be present
+        const pagination = screen.getByRole('list')
+        expect(pagination).toBeInTheDocument()
+        // Correct films are displayed
+        for (let i=0;i<10;i++) {
+            expect(screen.getByText(`film ${i}`)).toBeInTheDocument()
+        }
+        // Clicking pagination should change film results and message
+        await user.click(pagination.children[1].children[0])
+        const pageTwoMessage = screen.getByText('Showing results 11 to 20 of 20')
+        expect(pageTwoMessage).toBeInTheDocument()
+        // Correct films are displayed
+        for (let i=10;i<20;i++) {
+            expect(screen.getByText(`film ${i}`)).toBeInTheDocument()
+        }
     })
-
-    test('Sign up and Log in buttons appear if user is not logged in, and redirect user to correct page', async () => {
+    test('Searching with invalid query produces error message', async () => {
         renderWithContext(<Home />, null)
-        let searchBox = screen.getByRole('searchbox', {name: /Search for a film/i})
-        fireEvent.change(searchBox, {target: {value: 'star wars'}})
+        // Find searchbox and search button
+        const searchBox = screen.getByRole('textbox')
+        const searchButton = screen.getByRole('button')
+        // Input invalid search query
+        fireEvent.change(searchBox, {target: {value: 'starwars2'}})
         const user = userEvent.setup()
-        await waitFor(() => {
-            // Sign in button appears
-            let signUpButton = screen.getByRole('button', {name: /Sign Up/i})
-            expect(signUpButton).toBeInTheDocument()
-            // Click sign up button
-            user.click(signUpButton)
-            // URl should have changed
-            expect(global.window.location.href).toContain('signup')
-        })
-        cleanup()
+        await user.click(searchButton)
+        const errorMessage = screen.getByText('There are no results matching your search.')
+        expect(errorMessage).toBeInTheDocument()
+        // No images should be present
+        const images = screen.queryByRole('img')
+        expect(images).not.toBeInTheDocument()
+        // Pagination should not be present
+        const pagination = screen.queryByRole('list')
+        expect(pagination).not.toBeInTheDocument()
+    })
+    test('No results are displayed if search is too general, hero image is displayed', async () => {
         renderWithContext(<Home />, null)
-        searchBox = screen.getByRole('searchbox', {name: /Search for a film/i})
-        fireEvent.change(searchBox, {target: {value: 'star wars'}})
-        await waitFor(() => {
-            // login button appears
-            let loginButton = screen.getByRole('button', {name: /Login/i})
-            expect(loginButton).toBeInTheDocument()
-            // Click login button
-            user.click(loginButton)
-            // URl should have changed
-            expect(global.window.location.href).toContain('login')
-        })
-    })
-
-    test('Correct buttons appear in search results if user is logged in', async () => {
-        renderWithContext(<Home />)
-        let searchBox = screen.getByRole('searchbox', {name: /Search for a film/i})
-        fireEvent.change(searchBox, {target: {value: 'star wars'}})
-        await waitFor(() => {
-            const buttons = screen.getAllByRole('button')
-            // First button has text go to watchlist
-            expect(buttons[0]).toHaveTextContent('Go to watchlist')
-            // Second and third buttons are save to watchlist button
-            expect(buttons[1]).toHaveTextContent('Save to public watchlist.')
-            expect(buttons[2]).toHaveTextContent('Save to private watchlist.')
-        })
-    })
-    test('No data is returned if search has too many matches', async () => {
-        renderWithContext(<Home />)
-        server.resetHandlers(
-            http.get(`${url}/filmData/`, () => {
-                return HttpResponse.json({
-                    Response: "False",
-                    Error: "Too many results."
-                }, {status: 200})
-            }), ...handlers
-        )
-        const searchBox = screen.getByRole('searchbox')
+        // Find searchbox and search button
+        const searchBox = screen.getByRole('textbox')
+        const searchButton = screen.getByRole('button')
+        // Input too general search query
         fireEvent.change(searchBox, {target: {value: 'the'}})
-        // Expect table of film results not to appear
-        const resultsTable = screen.queryByRole('table')
-        expect(resultsTable).not.toBeInTheDocument()
-        // Customer error message should not have been rendered
-        const errorMessage = screen.queryByText('There are no results matching your search.')
-        expect(errorMessage).not.toBeInTheDocument()
-    })
-
-    test('Error message is displayed if no matches found', async () => {
-        renderWithContext(<Home />)
-        server.resetHandlers(
-            http.get(`${url}/filmData/`, () => {
-                return HttpResponse.json({
-                    Response: "False",
-                    Error: 'Movie not found!'
-                }, {status: 200})
-            }), ...handlers
-        )
-        const searchBox = screen.getByRole('searchbox')
-        fireEvent.change(searchBox, {target: {value: 'thee'}})
-        // Customer error message should have been rendered
-        await waitFor(() => {
-            const errorMessage = screen.getByText('There are no results matching your search.')
-            expect(errorMessage).toBeInTheDocument()
-        })
+        const user = userEvent.setup()
+        await user.click(searchButton)
+        // Hero Image should be present
+        const image = screen.getByRole('img', {name: /A close up of film tape/i})
+        expect(image).toBeInTheDocument()
     })
 })
 
 describe('BUTTON FUNCTIONALITY', () => {
-    test('Go to watchlist button redirects user to profile page', async () => {
-        renderWithContext(<Home />)
-        const searchBox = screen.getByRole('searchbox', {name: /Search for a film/i})
+    test('When user is not logged in, login and sign up buttons appear above search results', async () => {
+        renderWithContext(<Home />, null)
+        // Find searchbox and search button
+        const searchBox = screen.getByRole('textbox')
+        const searchButton = screen.getByRole('button')
+        // Input search query
         fireEvent.change(searchBox, {target: {value: 'star wars'}})
         const user = userEvent.setup()
-        // Clicking go to watchlist button takes user to profile page
-        await waitFor(() => {
-            const buttons = screen.getAllByRole('button')
-            user.click(buttons[0])
-            expect(global.window.location.href).toContain(`/profile/123`)
-        })
+        await user.click(searchButton)
+        // Login and sign up buttons should appear
+        const loginButton = screen.getByRole('button', {name: /Login/i})
+        const signupButton = screen.getByRole('button', {name: /Sign up/i})
+        expect(loginButton).toBeInTheDocument()
+        expect(signupButton).toBeInTheDocument()
+        // Buttons redirect user to correct page
+        await user.click(loginButton)
+        expect(global.window.location.href).toContain('/login')
+        await user.click(signupButton)
+        expect(global.window.location.href).toContain('/signup')
     })
-    test('Clicking save to watchlist buttons changes button text', async () => {
-        // Clicking save to watchlist buttons changes button text to 'Go to watchlist'
+    test('When user is logged in, correct buttons appear in search results and function as expected', async () => {
         renderWithContext(<Home />)
-        const searchBox = screen.getByRole('searchbox', {name: /Search for a film/i})
+        // Find searchbox and search button
+        const searchBox = screen.getByRole('textbox')
+        const searchButton = screen.getByRole('button')
+        // Input search query
         fireEvent.change(searchBox, {target: {value: 'star wars'}})
-        await waitFor(() => {
-            // Should only be 1 button with text 'Go to watchlist'
-            expect(screen.getAllByText('Go to watchlist')).toHaveLength(1)
-        })
-        // Reset user data handler to mock how data would change
+        const user = userEvent.setup()
+        await user.click(searchButton)
+        // Two films should have save button, 1 film should have go to watchlist button
+        let goToWatchListButtons = screen.getAllByRole('button', {name: /Go to watchlist/i})
+        expect(goToWatchListButtons).toHaveLength(1)
+        const saveButtons = screen.getAllByRole('button', {name: /Save/i})
+        expect(saveButtons).toHaveLength(2)
+        // Clicking go to watchlist button should redirect user to films page
+        await user.click(goToWatchListButtons[0])
+        expect(global.window.location.href).toContain('/films/user2id')
+        // Dropdown options not yet showing
+        let saveToPublicWatchlist = screen.queryByRole('button', {name: /Save to Public Watchlist/i})
+        let saveToPrivateWatchlist = screen.queryByRole('button', {name: /Save to Private Watchlist/i})
+        expect(saveToPublicWatchlist).not.toBeInTheDocument()
+        expect(saveToPrivateWatchlist).not.toBeInTheDocument()
+        // Clicking save button reveals dropdown options
+        await user.click(saveButtons[0])
+        saveToPublicWatchlist = screen.getByRole('button', {name: /Save to Public Watchlist/i})
+        saveToPrivateWatchlist = screen.getByRole('button', {name: /Save to Private Watchlist/i})
+        expect(saveToPublicWatchlist).toBeInTheDocument()
+        expect(saveToPrivateWatchlist).toBeInTheDocument()
+        // Clicking save to watchlist changes button text
+        // Reset handlers to reflect how database would change
         server.resetHandlers(
-            http.get(`${url}/users/:id`, () => {
-                return HttpResponse.json({
-                    profile : {},
-                    films: [
-                        {imdbID:'tt0076759'},
-                        {imdbID: 'tt0080684'}
-                    ]
-                }, {status: 200})
+            http.get(`${url}/films/user2id`, () => {
+                    return HttpResponse.json({
+                        films: user2UpdatedFilms
+                    }, {status: 200})
             }), ...handlers
         )
-        // Get buttons that save a film
-        const saveButtons = screen.getAllByText('Save to public watchlist.')
-        const user = userEvent.setup()
-        // Click a save button to save that film
-        await user.click(saveButtons[0])
-        await waitFor(() => {
-            // Should now be 2 buttons with text 'Go to watchlist'
-            expect(screen.getAllByText('Go to watchlist')).toHaveLength(2)
-            // No buttons should have text 'Save to public/private watchlist.'
-            expect(screen.queryAllByText('Save to public watchlist.')).toHaveLength(0)
-            expect(screen.queryAllByText('Save to private watchlist.')).toHaveLength(0)
-        })
+        // Should still only be 1 go to watchlist button
+        goToWatchListButtons = screen.getAllByRole('button', {name: /Go to watchlist/i})
+        expect(goToWatchListButtons).toHaveLength(1)
+        // Save film
+        await user.click(saveToPublicWatchlist)
+        goToWatchListButtons = screen.getAllByRole('button', {name: /Go to watchlist/i})
+        // Should now be 2 go to watchlist buttons and 1 save button
+        const buttons = screen.getAllByRole('button')
+        expect(buttons[1]).toHaveTextContent('Go to watchlist')
+        expect(buttons[2]).toHaveTextContent('Go to watchlist')
+        expect(buttons[3]).toHaveTextContent('Save')
+        // Dropdown options should be gone
+        saveToPublicWatchlist = screen.queryByRole('button', {name: /Save to Public Watchlist/i})
+        saveToPrivateWatchlist = screen.queryByRole('button', {name: /Save to Private Watchlist/i})
+        expect(saveToPrivateWatchlist).not.toBeInTheDocument()
+        expect(saveToPublicWatchlist).not.toBeInTheDocument()
     })
 })

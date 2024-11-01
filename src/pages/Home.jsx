@@ -3,6 +3,8 @@ import { axiosReq } from '../api/axiosDefaults';
 import { useCurrentUser } from '../contexts/CurrentUserContext';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import ResultsPagination from '../components/ResultsPagination'
+import { Button, Container, Col, Form, Image, Row} from 'react-bootstrap';
+import Film from '../components/Film'
 
 const Home = () => {
     // Contexts
@@ -12,6 +14,7 @@ const Home = () => {
     const [searchResults, setSearchResults] = useState([])
     // Initialize state variables
     const [query, setQuery] = useState('')
+    const [search, setSearch] = useState('')
     const [filmIds, setFilmIds] = useState([])
     const [currentPage, setCurrentPage] = useState(1)
     const [finalPage, setFinalPage] = useState(1)
@@ -27,7 +30,7 @@ const Home = () => {
                 return null
             }
             try {
-                const response = await axiosReq.get(`/users/${id}`, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
+                const response = await axiosReq.get(`/films/${id}`, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
                 setFilmIds(response.data.films.map(film => film.imdbID))
             } catch (err) {
                 console.log(err)
@@ -37,13 +40,10 @@ const Home = () => {
         const fetchFilmData = async () => {
             try {
                 // Get data from API, either using event.target or query state variable as the search
-                const response = await axiosReq.get(`filmData/?search=${query}&page=${currentPage}`)
+                const response = await axiosReq.get(`filmSearch/?search=${query}&page=${currentPage}`)
                     if (!response.data.Error){
                         // Set search results
-                        const allResults = response.data.Search
-                        setSearchResults(
-                            allResults.filter(result => result.Type === 'movie' || result.Type === 'series')
-                        )
+                        setSearchResults(response.data.Search)
                         // Set final page and total results for pagination
                         setFinalPage(
                             Math.ceil(0.1 * response.data.totalResults)
@@ -66,15 +66,19 @@ const Home = () => {
 
     // Update the search query and current page state
     const handleChange = (event) => {
-        setQuery(event.target.value)
+        setSearch(event.target.value)
         setCurrentPage(1)
         setError('')
     }
 
+    const handleClick = () => {
+        setQuery(search)
+    }
+
     // Saves a film to users watchlist, can be called via the buttons for each film result
-    const saveFilm = async (title, imdbID, poster, year, publicFilm) => {
+    const saveFilm = async (Title, imdbID, Poster, Year, Type, publicFilm) => {
         try {
-            await axiosReq.post('/films', {title, imdbID, poster, year, public: publicFilm}, {
+            await axiosReq.post('/films', {Title, imdbID, Poster, Year, Type, public: publicFilm}, {
                 headers: {'Authorization': `Bearer ${currentUser.token}`}
             })
             setFilmSaved(imdbID)
@@ -85,17 +89,24 @@ const Home = () => {
 
     return (
         <>
-            {/* HEADER AND SEARCH BAR*/}
-            <h1>Home Page</h1>
-            <form>
-                <label htmlFor='film-search' id='film-lbl'>Search for a film</label>
-                <input name='film-search' aria-labelledby='film-lbl' type='search' onChange={handleChange}></input>
-            </form>
+            {/* SEARCH BAR*/}
+            <Form>
+                <Row style={{width:'50%', margin: 'auto'}}>
+                    <Col xs={10} sm={10}>
+                        <Form.Group className="mb-3" >
+                            <Form.Control onChange={handleChange} type='text' placeholder="Search for a film" />
+                        </Form.Group>
+                    </Col>
+                    <Col xs={1} sm={1}>
+                        <Button onClick={handleClick} variant='outline-secondary'><i className="fa-solid fa-magnifying-glass"></i></Button>
+                    </Col>
+                </Row>
+            </Form>
             {/* SEARCH RESULTS */}
             {searchResults.length? (
                 <>
                 {/* PAGINATION BUTTONS */}
-                <ResultsPagination currentPage={currentPage} setCurrentPage={setCurrentPage} finalPage={finalPage} />
+                {finalPage > 1 ? <ResultsPagination currentPage={currentPage} setCurrentPage={setCurrentPage} finalPage={finalPage} />: '' }
                 {/* PAGINATION MESSAGE */}
                 <p>
                     {currentPage !== finalPage ? (
@@ -107,48 +118,33 @@ const Home = () => {
                 {/* LOGIN AND SIGNUP BUTTONS IF NOT ALREADY LOGGED IN */}
                 {!currentUser? (
                     <div>
-                        <button onClick={() => history.push('/signup')}>Sign up</button> or <button onClick={() => history.push('/login')}>Login</button> to save and share films
+                        <Button variant='secondary' onClick={() => history.push('/signup')}>Sign up</Button> or <Button variant='secondary' onClick={() => history.push('/login')}>Login</Button> to save and share films
                     </div>):('')
-                }
-                <table>
-                    <tbody>
-                    {/* SEARCH RESULTS */}
-                    {searchResults.map(result =>
-                        <tr key={result.imdbID}>
-                            <td>{`Title: ${result.Title}, Year: ${result.Year}, Type: ${result.Type}`}</td>
-                            <td><img src={result.Poster !== 'N/A' ? (result.Poster):('https://res.cloudinary.com/dojzptdbc/image/upload/v1726945998/default-movie_uajvdm.png')} alt={`Poster for ${result.Title}`} /></td>
-                            <td>
-                                {currentUser?(
-                                        filmIds.includes(result.imdbID) ? (
-                                            <>
-                                                <p>Film saved</p>
-                                                <button onClick={() => history.push(`/profile/${id}`)}>Go to watchlist</button>
-                                            </>
-                                        ):(
-                                            <>
-                                                <button 
-                                                    type='submit' 
-                                                    onClick={
-                                                        () => saveFilm(result.Title, result.imdbID, result.Poster, result.Year, true)
-                                                    }>{`Save to public watchlist.`}
-                                                </button>
-                                                <button 
-                                                    type='submit' 
-                                                    onClick={
-                                                        () => saveFilm(result.Title, result.imdbID, result.Poster, result.Year, true)
-                                                    }>{`Save to private watchlist.`}
-                                                </button>
-                                            </>
-                                        )
-                                    ):('')
-                                }
-                            </td>
-                        </tr>
-                    )}
-                    </tbody>                    
-                </table>
+                }   
+                    
+                    <Container>
+                            {/* SEARCH RESULTS */}
+                            {searchResults.map(
+                                film => 
+                                    <Film 
+                                        key={film.imdbID} 
+                                        film={film}
+                                        filmsPage={false}
+                                        saveFilm={saveFilm} 
+                                        history={history} 
+                                        currentUserId={id}
+                                        saved={filmIds.includes(film.imdbID)} 
+                                        handleFilmChange={null}
+                                    />
+                            )}  
+                    </Container>
                 </>
-            ):(<p>{error}</p>)}
+            ):(
+                error !== '' ? (
+                    <p>{error}</p>
+                ):(<Image alt='A close up of film tape' width={400} src='https://res.cloudinary.com/dojzptdbc/image/upload/v1729270408/movie2_h1bnwo.png'/>
+                )
+            )}
         </>
     )
 }
