@@ -3,85 +3,92 @@ import {Button, Col, Dropdown, Row, Image, Overlay, OverlayTrigger, Tooltip, For
 import appStyles from '../App.module.css'
 import styles from '../styles/Films.module.css'
 import { useCurrentUser } from '../contexts/CurrentUserContext';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import EllipsisMenu from './EllipsisMenu';
 import IconRating from './IconRating';
+
 // Displays film poster and data, either individually or as a list of search results/saved films 
-const Film = ({
-    film,
-    rating,
-    watched,
+const Film = ({ 
+    filmData, 
+    fullView, 
+    filmsPage, 
+    isOwner, 
+    username, 
     saveFilm, 
-    history,  
     saved, 
-    fullView,
-    selected,
-    handleFilmChange,
-    handleWatchedChange,
-    handleRatingChange,
-    handlePublicChange,
-    handleDelete,
-    handleShare,
-    publicFilm,
-    isOwner,
-    filmsPage
-}) => {
+    omdbData, 
+    viewingData,
+    updateViewingData, 
+    setCurrentFilmIds, 
+    setViewingData,
+    handleDelete, 
+    handleShare, 
+    }) => {
+
     const { currentUser } = useCurrentUser()
-    const ratings = [1, 2, 3, 4, 5]
+    const history = useHistory()
+    const ratingValues = [1, 2, 3, 4, 5]
     // Define handle save function
-    const saveToPublicList = () => saveFilm(film.Title, film.imdbID, film.Poster, film.Year, film.Type, true)
-    const saveToPrivateList = () => saveFilm(film.Title, film.imdbID, film.Poster, film.Year, film.Type, false)
+    const saveToPublicList = () => saveFilm(filmData.Title, filmData.imdbID, filmData.Poster, filmData.Year, filmData.Type, true)
+    const saveToPrivateList = () => saveFilm(filmData.Title, filmData.imdbID, filmData.Poster, filmData.Year, filmData.Type, false)
 
     return (
-        <Row onClick={!fullView && filmsPage? () => handleFilmChange(film, null) : null} className={!fullView && filmsPage? styles.filmRow: ''} style={{padding: '2px', textAlign: 'left', backgroundColor: selected? 'lightgrey':'' }}>
+        <Row onClick={
+            !fullView? () => {
+                setCurrentFilmIds({imdbID: filmData.imdbID, database: filmData._id})
+                setViewingData({watched: filmData.watched, userRating: filmData.userRating})
+            }: null
+            } className={!fullView && filmsPage? styles.filmRow: ''} style={{padding: '2px', textAlign: 'left'}}>
             {/* FILM POSTER */}
             <Col sm={4}>
                 <Image 
-                    key={film.imdbID} 
-                    src={film.Poster !== 'N/A'? film.Poster : 'https://res.cloudinary.com/dojzptdbc/image/upload/v1726945998/default-movie_uajvdm.png'} 
+                    key={fullView? omdbData.imdbID: filmData.imdbID} 
+                    src={
+                        fullView? 
+                            omdbData.Poster !== 'N/A'? omdbData.Poster : 'https://res.cloudinary.com/dojzptdbc/image/upload/v1726945998/default-movie_uajvdm.png'
+                        : 
+                            filmData.Poster !== 'N/A'? filmData.Poster : 'https://res.cloudinary.com/dojzptdbc/image/upload/v1726945998/default-movie_uajvdm.png'
+                    } 
                     width={fullView? 800: 100} 
                     thumbnail
-                    className={`${selected? styles.selected : !fullView && filmsPage? styles.unselected: ''}`}
-                    
                 />
             </Col>
             {/* FILM INFO */}
             <Col sm={8}>   
                 <h5>
-                    {film.Title}
-                    {fullView?(
-                        <EllipsisMenu handleDelete={handleDelete} publicFilm={publicFilm} handlePublicChange={handlePublicChange} handleShare={handleShare} />
-                    ):('')}
+                    {fullView? omdbData.Title : filmData.Title}
+                    {fullView && isOwner? <EllipsisMenu handleDelete={handleDelete} handleShare={handleShare} updateViewingData={updateViewingData} viewingData={viewingData} /> : '' }
                 </h5>
                 {fullView? 
                     (
                         <>
-                            <p>{`${film.Director !== 'N/A'? film.Director + ', ' : ''}${film.Year}, ${film.Type}`}</p>
-                            <p className={appStyles.smallFont}>{film.Plot}</p>
-                            <p>{film.Runtime !== 'N/A'? film.Runtime : ''}</p>
+                            <p>{`${omdbData.Director !== 'N/A'? omdbData.Director + ', ' : ''}${omdbData.Year}, ${omdbData.Type}`}</p>
+                            <p className={appStyles.smallFont}>{omdbData.Plot}</p>
+                            <p>{omdbData.Runtime !== 'N/A'? omdbData.Runtime : ''}</p>
                             <p>
-                                {film.imdb? <IconRating index={0} value={film.imdb} />: ''}
-                                {film.rt? <IconRating index={1} value={film.rt} /> : ''}
-                                {film.mc? <IconRating index={2} value={film.mc} /> : ''}
+                                {omdbData.imdb? <IconRating index={0} value={omdbData.imdb} />: ''}
+                                {omdbData.rt? <IconRating index={1} value={omdbData.rt} /> : ''}
+                                {omdbData.mc? <IconRating index={2} value={omdbData.mc} /> : ''}
                             </p>
                             <Form>
                             <Form.Check 
                                 type='checkbox'
                                 label='Watched'
-                                onChange={handleWatchedChange}
-                                checked={watched}
+                                checked={filmData.watched || false}
                                 disabled={!isOwner}
+                                onChange={updateViewingData}
                             />
                             <p>
-                                {isOwner? ('Your Rating: '):(`${currentUser.user.username}'s Rating:`)}
-                                {ratings.map(
-                                    i => <span key={i} className={`fa fa-star ${rating >= i ? styles.checked : ''}`} onClick={isOwner? () => handleRatingChange(i) : null}></span>
+                                {isOwner? ('Your Rating: '):(`${username}'s Rating:`)}
+                                {ratingValues.map(
+                                    value => <span onClick={isOwner? () => updateViewingData(null, value):null} key={value} className={`fa fa-star ${filmData.userRating >= value ? styles.checked : ''}`}></span>
                                 )}
                             </p>
                         </Form>
                         </>
                     ):(
                         <>
-                            <p>{`${film.Year}, ${film.Type}`}</p>
+                            <p>{`${filmData.Year}, ${filmData.Type}`}</p>
                             {!filmsPage && currentUser? (
                                 !saved? (
                                     <>

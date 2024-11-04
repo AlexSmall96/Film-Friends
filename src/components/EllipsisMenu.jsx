@@ -2,11 +2,10 @@ import React, { useState, useRef } from 'react';
 import { Overlay } from 'react-bootstrap';
 import appStyles from '../App.module.css'
 
-const EllipsisMenu = ({handleDelete, handlePublicChange, publicFilm, handleShare}) => {
+const EllipsisMenu = ({handleDelete, handleShare, updateViewingData, viewingData}) => {
     
     const [show, setShow] = useState(false);
     const target = useRef(null)
-
 
     return (
         <div style={{float: 'right'}}>
@@ -32,7 +31,7 @@ const EllipsisMenu = ({handleDelete, handlePublicChange, publicFilm, handleShare
                 >
                     <p onClick={handleShare} className={appStyles.hover}><i className="fa-solid fa-share"></i> Share</p>
                     <p className={appStyles.hover} onClick={handleDelete}><i className="fa-regular fa-trash-can"></i> Remove from Watchlist</p>
-                    <p className={appStyles.hover} onClick={handlePublicChange}><i className="fa-solid fa-pen"></i> {publicFilm? 'Make Private': 'Make Public'}</p>
+                    <p className={appStyles.hover} onClick={() => updateViewingData(null, null, !viewingData.public)}><i className="fa-solid fa-pen"></i> {viewingData.public? 'Make Private': 'Make Public'}</p>
                 </div>)
             }
             </Overlay>
