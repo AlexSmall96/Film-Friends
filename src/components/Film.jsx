@@ -57,7 +57,7 @@ const Film = ({
             </Col>
             {/* FILM INFO */}
             <Col sm={8}>   
-                <h5>
+                <h5 className={fullView? appStyles.bold: appStyles.medium}>
                     {fullView? omdbData.Title : filmData.Title}
                     {fullView && isOwner? <EllipsisMenu handleDelete={handleDelete} handleShare={handleShare} updateViewingData={updateViewingData} viewingData={viewingData} /> : '' }
                 </h5>

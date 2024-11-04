@@ -145,7 +145,21 @@ const Films = () => {
                             />
                         </Row>):('')}
                     <Row>
-                        <Col md={8} style={{marginTop: '20px'}}>
+                        {width > 599?(
+                            <Col md={4} style={{marginTop: '30px', borderStyle:'solid', borderColor:'grey', borderWidth:'0.5px', borderRadius: '1rem', display:'inline'}}>
+                                {/* FILTER BUTTONS */}
+                                <Filters isOwner={isOwner} filter={filter} setFilter={setFilter} sort={setSort} username={username} mobile={false}/>
+                                { /* FILMS LIST */}
+                                <div className={styles.filmsListBody}>
+                                {filteredFilms.length? (
+                                    filteredFilms.map(
+                                        film => <Film key={film.imdbID} filmData={film} fullView={false} filmsPage={true} setCurrentFilmIds={setCurrentFilmIds} setViewingData={setViewingData}  />
+                                    )
+                                ):('No films matching criteria.')}
+                                </div>
+                            </Col>
+                        ):('')}
+                        <Col md={8} style={{marginTop: '30px'}}>
                             {/* SELECTED FILM */}
                             <Film
                                 filmData={viewingData}
@@ -160,18 +174,7 @@ const Films = () => {
                                 handleShare={handleShare}
                             />
                         </Col>
-                        {width > 599?(
-                            <Col md={4} style={{marginTop: '10px', borderStyle:'solid', borderColor:'grey', borderWidth:'0.5px', borderRadius: '1rem', display:'inline'}}>
-                                {/* FILTER BUTTONS */}
-                                <Filters isOwner={isOwner} filter={filter} setFilter={setFilter} sort={setSort} username={username} mobile={false}/>
-                                { /* FILMS LIST */}
-                                {filteredFilms.length? (
-                                    filteredFilms.map(
-                                        film => <Film key={film.imdbID} filmData={film} fullView={false} filmsPage={true} setCurrentFilmIds={setCurrentFilmIds} setViewingData={setViewingData}  />
-                                    )
-                                ):('No films matching criteria.')}
-                            </Col>
-                        ):('')}
+
                     </Row>
                     </>
                 ):(<p>You don't have any films saved yet.</p>)
