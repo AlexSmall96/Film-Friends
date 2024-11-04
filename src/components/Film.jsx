@@ -6,6 +6,7 @@ import { useCurrentUser } from '../contexts/CurrentUserContext';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import EllipsisMenu from './EllipsisMenu';
 import IconRating from './IconRating';
+import useWindowDimensions from '../hooks/useWindowDimensions';
 
 // Displays film poster and data, either individually or as a list of search results/saved films 
 const Film = ({ 
@@ -25,6 +26,7 @@ const Film = ({
     handleShare, 
     }) => {
 
+    const { height, width } = useWindowDimensions();
     const { currentUser } = useCurrentUser()
     const history = useHistory()
     const ratingValues = [1, 2, 3, 4, 5]
@@ -49,7 +51,7 @@ const Film = ({
                         : 
                             filmData.Poster !== 'N/A'? filmData.Poster : 'https://res.cloudinary.com/dojzptdbc/image/upload/v1726945998/default-movie_uajvdm.png'
                     } 
-                    width={fullView? 800: 100} 
+                    width={fullView? (width > 599? 800:300): 100} 
                     thumbnail
                 />
             </Col>

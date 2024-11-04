@@ -7,11 +7,15 @@ import styles from '../../styles/Films.module.css'
 import appStyles from '../../App.module.css'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import Film from '../../components/Film';
+import useWindowDimensions from '../../hooks/useWindowDimensions';
+import Filters from '../../components/Filters'
 
 const Films = () => {
     // Hooks
     const { id } = useParams()
     const history = useHistory()
+    const { height, width } = useWindowDimensions();
+
     // Contexts
     const { currentUser } = useCurrentUser()
     // Initialize state variables
@@ -124,6 +128,22 @@ const Films = () => {
         <Container>
             {hasLoaded ? (
                 allFilms.length ? (
+                    <>
+                    {width <= 599? (
+                        <Row>
+                            <Filters 
+                                isOwner={isOwner} 
+                                filter={filter} 
+                                setFilter={setFilter} 
+                                sort={setSort} 
+                                username={username} 
+                                mobile={true} 
+                                filteredFilms={filteredFilms} 
+                                title={omdbData.Title}
+                                setCurrentFilmIds={setCurrentFilmIds}
+                                setViewingData={setViewingData}
+                            />
+                        </Row>):('')}
                     <Row>
                         <Col md={8} style={{marginTop: '20px'}}>
                             {/* SELECTED FILM */}
@@ -140,36 +160,20 @@ const Films = () => {
                                 handleShare={handleShare}
                             />
                         </Col>
-                        <Col md={4} style={{marginTop: '10px', borderStyle:'solid', borderColor:'grey', borderWidth:'0.5px', borderRadius: '1rem', display:'inline'}}>
-                            {/* FILTER BUTTONS */}
-                            {isOwner? (
-                                <DropdownButton variant='outline-secondary' title={`Your ${filter.public? 'Public': 'Private'} Watchlist`}>
-                                    <Dropdown.Item onClick={!filter.public ? () => setFilter({public: true, watched: filter.watched}): null}>Public</Dropdown.Item>
-                                    <Dropdown.Item onClick={filter.public ? () => setFilter({public: false, watched: filter.watched}): null}>Private</Dropdown.Item>
-                                </DropdownButton>
-                            ):(
-                                `${username}'s Watchlist`
-                            )}
-                            <div style={{display: 'block', margin: '5px 0px 5px 0px'}}>
-                                <DropdownButton className={`${styles.filmSortButton} ${appStyles.smallFont}`} variant='outline-secondary' title={sort === 'title'? 'A-Z': 'Last updated'}>
-                                    <Dropdown.Item onClick={sort !== 'title' ? () => setSort('title'):null}>A-Z</Dropdown.Item>
-                                    <Dropdown.Item onClick={sort === 'title' ? () => setSort(null):null}>Last Updated</Dropdown.Item>
-                                </DropdownButton>
-                                <DropdownButton 
-                                className={`${styles.filmSortButton} ${appStyles.smallFont}`} variant='outline-secondary' title={filter.watched}>
-                                    <Dropdown.Item onClick={filter.watched !== 'All' ? () => {setFilter({public: filter.public, watched: 'All'})} : null}>All</Dropdown.Item>
-                                    <Dropdown.Item onClick={filter.watched !== 'Watched' ? () => {setFilter({public: filter.public, watched: 'Watched'})} : null}>Watched</Dropdown.Item>
-                                    <Dropdown.Item onClick={filter.watched !== 'Still to watch' ? () => {setFilter({public: filter.public, watched: 'Still to watch'})} : null}>Still to Watch</Dropdown.Item>  
-                                </DropdownButton>
-                            </div>
-                            { /* FILMS LIST */}
-                            {filteredFilms.length? (
-                                filteredFilms.map(
-                                    film => <Film key={film.imdbID} filmData={film} fullView={false} filmsPage={true} setCurrentFilmIds={setCurrentFilmIds} setViewingData={setViewingData}  />
-                                )
-                            ):('No films matching criteria.')}
-                        </Col>
+                        {width > 599?(
+                            <Col md={4} style={{marginTop: '10px', borderStyle:'solid', borderColor:'grey', borderWidth:'0.5px', borderRadius: '1rem', display:'inline'}}>
+                                {/* FILTER BUTTONS */}
+                                <Filters isOwner={isOwner} filter={filter} setFilter={setFilter} sort={setSort} username={username} mobile={false}/>
+                                { /* FILMS LIST */}
+                                {filteredFilms.length? (
+                                    filteredFilms.map(
+                                        film => <Film key={film.imdbID} filmData={film} fullView={false} filmsPage={true} setCurrentFilmIds={setCurrentFilmIds} setViewingData={setViewingData}  />
+                                    )
+                                ):('No films matching criteria.')}
+                            </Col>
+                        ):('')}
                     </Row>
+                    </>
                 ):(<p>You don't have any films saved yet.</p>)
             ):(<Spinner />)}
         </Container>
