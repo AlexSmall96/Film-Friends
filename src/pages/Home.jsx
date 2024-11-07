@@ -128,13 +128,13 @@ const Home = () => {
                                 film => 
                                     <Film 
                                         key={film.imdbID} 
-                                        film={film}
+                                        filmData={film}
+                                        fullView={false}
                                         filmsPage={false}
                                         saveFilm={saveFilm} 
                                         history={history} 
                                         currentUserId={id}
                                         saved={filmIds.includes(film.imdbID)} 
-                                        handleFilmChange={null}
                                     />
                             )}  
                     </Container>

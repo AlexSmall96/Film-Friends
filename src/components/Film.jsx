@@ -36,7 +36,7 @@ const Film = ({
 
     return (
         <Row onClick={
-            !fullView? () => {
+            !fullView && filmsPage? () => {
                 setCurrentFilmIds({imdbID: filmData.imdbID, database: filmData._id})
                 setViewingData({watched: filmData.watched, userRating: filmData.userRating})
             }: null
@@ -108,7 +108,7 @@ const Film = ({
                                 ):(
                                     <>
                                         <p className={appStyles.smallFont}><i className="fa-solid fa-check"></i> Saved</p>
-                                        <Button  variant='outline-secondary' onClick={() => history.push(`/films/${currentUser.user._id}`)}>Go to watchlist</Button>
+                                        <Button variant='outline-secondary' onClick={() => history.push(`/films/${currentUser.user._id}`)}>Go to watchlist</Button>
                                     </>
                                 )
                             ):('')}
