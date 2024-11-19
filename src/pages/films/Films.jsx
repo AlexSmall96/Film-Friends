@@ -122,7 +122,7 @@ const Films = () => {
         }
     }
     
-    const handleShare = () => history.push(`/reccomendations/send/${currentFilmIds.database}`)
+    const handleShare = () => history.push(`/reccomendations/send/films/${currentFilmIds.database}`)
 
     return (
         <Container>
@@ -146,7 +146,7 @@ const Films = () => {
                         </Row>):('')}
                     <Row>
                         {width > 599?(
-                            <Col md={4} style={{marginTop: '30px', borderStyle:'solid', borderColor:'grey', borderWidth:'0.5px', borderRadius: '1rem', display:'inline'}}>
+                            <Col sm={{span: 12, order: 2}} md={{span:4, order: 1}} style={{marginTop: '30px', borderStyle:'solid', borderColor:'grey', borderWidth:'0.5px', borderRadius: '1rem', display:'inline'}}>
                                 {/* FILTER BUTTONS */}
                                 <Filters isOwner={isOwner} filter={filter} setFilter={setFilter} sort={setSort} username={username} mobile={false}/>
                                 { /* FILMS LIST */}
@@ -159,7 +159,7 @@ const Films = () => {
                                 </div>
                             </Col>
                         ):('')}
-                        <Col md={8} style={{marginTop: '30px'}}>
+                        <Col sm={{span: 12, order: 1}} md={{span:8, order:2}} style={{marginTop: '30px'}}>
                             {/* SELECTED FILM */}
                             <Film
                                 filmData={viewingData}
