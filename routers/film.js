@@ -27,7 +27,8 @@ router.post('/films', auth, async (req, res) => {
 // Get a users films
 router.get('/films/:id', auth, async (req, res) => {
     const routerId = req.params.id
-    const sortObj = req.query.sort === 'true' ? ({Title: 1, updatedAt: -1}):({updatedAt: -1})
+    const filmId = req.query.filmId
+    const sortObj = req.query.sort === 'A-Z' ? ({Title: 1, updatedAt: -1}):({updatedAt: -1})
     try {
         let films = await Film.find({owner: routerId})
             .sort(sortObj)
@@ -36,6 +37,10 @@ router.get('/films/:id', auth, async (req, res) => {
         if (req.user.id !== routerId) {
             films = films.filter(film => film.public === true)
         }
+        if (filmId) {
+            const matchingFilm = films.filter(film => film._id === filmId)
+            return res.status(200).send(matchingFilm[0])
+        } 
         res.status(200).send({ films })
     } catch (e) {
         res.status(400).send(e)
@@ -55,9 +60,10 @@ router.get('/filmSearch', async (req, res) => {
     }
 })
 
-// Gets data for a single film from OMDB API
+// Gets data for a single film from OMDB API and users rating / watched data
 router.get('/filmData', async (req, res) => {
-    const imdbID = req.query.i
+    const imdbID = req.query.imdbID
+    const _id = req.query.databaseID
     try {
         const response = await fetch(`https://www.omdbapi.com/?apikey=${OMDB_API_KEY}&i=${imdbID}`)
         const filmData = await response.json()
@@ -65,7 +71,14 @@ router.get('/filmData', async (req, res) => {
         const imdb = ratings.filter(rating => rating.Source === 'Internet Movie Database')[0]?.Value || null
         const rt = ratings.filter(rating => rating.Source === 'Rotten Tomatoes')[0]?.Value || null
         const mc = ratings.filter(rating => rating.Source === 'Metacritic')[0]?.Value || null
-        res.send({imdb, rt, mc, ...filmData})
+        if (_id) {
+            const savedFilm = await Film.findOne({imdbID, _id})
+            const userRating = savedFilm.userRating
+            const watched = savedFilm.watched
+            const public = savedFilm.public
+            return res.send({userRating, watched, public, imdb, rt, mc, ...filmData})
+        }
+    return res.send({imdb, rt, mc, ...filmData})
     } catch (e) {
         res.send(e)
     }
