@@ -20,7 +20,7 @@ const Home = () => {
     const [finalPage, setFinalPage] = useState(1)
     const [totalResults, setTotalResults] = useState(0)
     const [error, setError] = useState('')
-    const [filmSaved, setFilmSaved] = useState('')
+    const [updated, setUpdated] = useState(false)
     const id = currentUser?.user._id || null
 
     useEffect(() => {
@@ -62,7 +62,7 @@ const Home = () => {
         }
         fetchFilmIds()
         fetchFilmData()
-    }, [currentPage, query, currentUser, id, filmSaved])
+    }, [currentPage, query, currentUser, id, updated])
 
     // Update the search query and current page state
     const handleChange = (event) => {
@@ -81,7 +81,7 @@ const Home = () => {
             await axiosReq.post('/films', {Title, imdbID, Poster, Year, Type, public: publicFilm}, {
                 headers: {'Authorization': `Bearer ${currentUser.token}`}
             })
-            setFilmSaved(imdbID)
+            setUpdated(!updated)
         } catch(err){
             console.log(err)
         }
