@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import {Button, Col, Dropdown, Row, Image, Overlay, OverlayTrigger, Tooltip, Form} from 'react-bootstrap'
 import appStyles from '../App.module.css'
 import styles from '../styles/Films.module.css'
@@ -7,39 +7,49 @@ import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import EllipsisMenu from './EllipsisMenu';
 import IconRating from './IconRating';
 import useWindowDimensions from '../hooks/useWindowDimensions';
-
+import ShareModal from './ShareModal';
+import { axiosReq } from '../api/axiosDefaults';
 // Displays film poster and data, either individually or as a list of search results/saved films 
 const Film = ({ 
     filmData, 
     fullView, 
-    filmsPage, 
+    filmsPage,
+    reccomendatonsPage,
     isOwner, 
     username, 
     saveFilm, 
     saved, 
-    omdbData, 
+    omdbData,
+    filmId,
     viewingData,
     updateViewingData, 
     setCurrentFilmIds, 
     setViewingData,
     handleDelete, 
-    handleShare, 
+    handleShare,
     }) => {
-
-    const { height, width } = useWindowDimensions();
+    const { width } = useWindowDimensions();
     const { currentUser } = useCurrentUser()
     const history = useHistory()
     const ratingValues = [1, 2, 3, 4, 5]
     // Define handle save function
-    const saveToPublicList = () => saveFilm(filmData.Title, filmData.imdbID, filmData.Poster, filmData.Year, filmData.Type, true)
-    const saveToPrivateList = () => saveFilm(filmData.Title, filmData.imdbID, filmData.Poster, filmData.Year, filmData.Type, false)
-
+    const saveToPublicList = 
+        fullView?
+            () => saveFilm(omdbData.Title, omdbData.imdbID, omdbData.Poster, omdbData.Year, omdbData.Type, true)
+        : 
+            () => saveFilm(filmData.Title, filmData.imdbID, filmData.Poster, filmData.Year, filmData.Type, true)
+    const saveToPrivateList = 
+        fullView?
+            () => saveFilm(omdbData.Title, omdbData.imdbID, omdbData.Poster, omdbData.Year, omdbData.Type, false)
+        :
+            () => saveFilm(filmData.Title, filmData.imdbID, filmData.Poster, filmData.Year, filmData.Type, false)
+    
     return (
         <Row onClick={
             !fullView && filmsPage? () => {
                 setCurrentFilmIds({imdbID: filmData.imdbID, database: filmData._id})
                 setViewingData({watched: filmData.watched, userRating: filmData.userRating})
-            }: null
+            }:null
             } className={!fullView && filmsPage? styles.filmRow: ''} style={{padding: '2px', textAlign: 'left'}}>
             {/* FILM POSTER */}
             <Col sm={4}>
@@ -59,7 +69,8 @@ const Film = ({
             <Col sm={8}>   
                 <h5 className={fullView? appStyles.bold: appStyles.medium}>
                     {fullView? omdbData.Title : filmData.Title}
-                    {fullView && isOwner? <EllipsisMenu handleDelete={handleDelete} handleShare={handleShare} updateViewingData={updateViewingData} viewingData={viewingData} /> : '' }
+                    {fullView && isOwner? 
+                    <EllipsisMenu handleDelete={handleDelete} handleShare={handleShare} updateViewingData={updateViewingData} viewingData={viewingData} omdbData={omdbData} filmId={filmId} /> : '' }
                 </h5>
                 {fullView? 
                     (
@@ -73,25 +84,43 @@ const Film = ({
                                 {omdbData.mc? <IconRating index={2} value={omdbData.mc} /> : ''}
                             </p>
                             <Form>
-                            <Form.Check 
-                                type='checkbox'
-                                label='Watched'
-                                checked={filmData.watched || false}
-                                disabled={!isOwner}
-                                onChange={updateViewingData}
-                            />
+                            {isOwner ?
+                                    <Form.Check 
+                                        type='checkbox'
+                                        label='Watched'
+                                        checked={filmData.watched || false}
+                                        disabled={!isOwner}
+                                        onChange={updateViewingData}
+                                    />                            
+                            :''}
                             <p>
-                                {isOwner? ('Your Rating: '):(`${username}'s Rating:`)}
-                                {ratingValues.map(
+                                {isOwner? ('Your Rating: '): viewingData.watched ? (`${username}'s Rating:`):''}
+                                {isOwner || viewingData.watched ? ratingValues.map(
                                     value => <span onClick={isOwner? () => updateViewingData(null, value):null} key={value} className={`fa fa-star ${filmData.userRating >= value ? styles.checked : ''}`}></span>
-                                )}
+                                ):''}
                             </p>
+                            {/* SAVE / GO TO WATCHLIST BUTTONS IF NOT OWNER OF FILMS LIST */}
+                            {!isOwner? 
+                             !saved?
+                                <Dropdown>
+                                <Dropdown.Toggle variant="outline-secondary" id="dropdown-basic">
+                                    Save to your watchlist
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu>
+                                    <Dropdown.Item onClick={saveToPublicList}>Save to Public Watchlist</Dropdown.Item>
+                                    <Dropdown.Item onClick={saveToPrivateList}>Save to Private Watchlist</Dropdown.Item>
+                                </Dropdown.Menu>
+                                </Dropdown>
+                            :
+                            <>
+                                <p className={appStyles.smallFont}><i className="fa-solid fa-check"></i> Saved to your watchlist</p>                           
+                            </> : ''}
                         </Form>
                         </>
                     ):(
                         <>
                             <p>{`${filmData.Year}, ${filmData.Type}`}</p>
-                            {!filmsPage && currentUser? (
+                            {(!filmsPage && !reccomendatonsPage ) && currentUser? (
                                 !saved? (
                                     <>
                                         {/* SAVE / GO TO WATCHLIST BUTTONS */}
