@@ -38,7 +38,7 @@ const EllipsisMenu = ({handleDelete, handleShare, updateViewingData, viewingData
             const response = await axiosReq.get(`/requests/?limit=10000&skip=0`, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
             const acceptedRequests = response.data.filter(req => req.accepted)
             const reccomendationsResponse = await axiosReq.get('/reccomendations', {headers: {'Authorization': `Bearer ${currentUser.token}`}})
-            const alreadyReccomended = reccomendationsResponse.data.filter(rec => rec.film.imdbID === omdbData.imdbID)
+            const alreadyReccomended = reccomendationsResponse.data.fullReccomendations.filter(rec => rec.film.imdbID === omdbData.imdbID)
             const alreadyReccomendedUsernames = alreadyReccomended.map(rec => rec.reciever.username)
             setFriends(acceptedRequests.filter(request => request.isSender? !alreadyReccomendedUsernames.includes(request.reciever.username):!alreadyReccomendedUsernames.includes(request.sender.username)))
             setAllFriends(acceptedRequests)
@@ -151,7 +151,7 @@ const EllipsisMenu = ({handleDelete, handleShare, updateViewingData, viewingData
                 Close
               </Button>
               <Button disabled={recipient === null} variant="primary" onClick={handleSend}>
-                Send
+                {sent && !hasLoaded ? 'Sending...' : 'Send'}
               </Button>
             </Modal.Footer>
             

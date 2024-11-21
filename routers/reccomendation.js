@@ -38,11 +38,12 @@ router.post('/reccomendations', auth, async (req, res) => {
 // Get all reccomendations
 router.get('/reccomendations', auth, async (req, res) => {
     const _id = req.user._id
+    const page = req.query.page
     try {
         const reccomendations = await Reccomendation.find({$or: [{reciever:_id}, {sender:_id}]})
             .sort({updatedAt: -1})
-            .limit(req.query.limit)
-            .skip(req.query.skip)
+            .limit(10)
+            .skip(10 * (page - 1))
             let fullReccomendations = []
             for (let rec of reccomendations) {
                 const senderUser = await User.findById(rec.sender)
@@ -68,7 +69,9 @@ router.get('/reccomendations', auth, async (req, res) => {
                     updatedAt: rec.updatedAt
                     })
             }
-        res.status(200).send(fullReccomendations) 
+        const allRecs = await Reccomendation.find({$or: [{reciever:_id}, {sender:_id}]})
+        const totalResults = allRecs.length
+        res.status(200).send({fullReccomendations, totalResults}) 
     } catch (e) {
         res.status(400).send(e)
     }
