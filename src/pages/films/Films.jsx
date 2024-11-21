@@ -9,10 +9,13 @@ import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import Film from '../../components/Film';
 import useWindowDimensions from '../../hooks/useWindowDimensions';
 import Filters from '../../components/Filters'
+import axios from 'axios';
 
 const Films = () => {
     // Hooks
     const { id } = useParams()
+    const { imdbID } = useParams()
+    const { database } = useParams()
     const history = useHistory()
     const { height, width } = useWindowDimensions();
 
@@ -20,10 +23,11 @@ const Films = () => {
     const { currentUser } = useCurrentUser()
     // Initialize state variables
     const [username, setUsername] = useState('')
+    const [currentUsersFilmIds, setCurrentUsersFilmIds] = useState([])
     const [allFilms, setAllFilms] = useState([])
     const [filteredFilms, setFilteredFilms] = useState([])
     const [viewingData, setViewingData] = useState({watched: false, userRating: ''})
-    const [currentFilmIds, setCurrentFilmIds] = useState({imdbID: '', database: ''})
+    const [currentFilmIds, setCurrentFilmIds] = useState({imdbID: imdbID || '', database: database || ''})
     const [omdbData, setOmdbData] = useState({})
     const [sort, setSort] = useState('')
     const [filter, setFilter] = useState({
@@ -31,7 +35,7 @@ const Films = () => {
         watched: 'All'
     })
     const [hasLoaded, setHasLoaded] = useState(false)
-
+    const [updated, setUpdated] = useState(false)
     // Check if current user is owner of film list
     const isOwner = currentUser.user._id === id
 
@@ -40,6 +44,18 @@ const Films = () => {
             await axiosReq.delete(`/films/${currentFilmIds.database}`, {headers: {'Authorization': `Bearer ${currentUser.token}`}} )
             setCurrentFilmIds({imdbID: '', database: ''})
         } catch (err) {
+            console.log(err)
+        }
+    }
+
+    // Saves a film to users watchlist, can be called via the buttons for each film result
+    const saveFilm = async (Title, imdbID, Poster, Year, Type, publicFilm) => {
+        try {
+            await axiosReq.post('/films', {Title, imdbID, Poster, Year, Type, public: publicFilm}, {
+                headers: {'Authorization': `Bearer ${currentUser.token}`}
+            })
+            setUpdated(!updated)
+        } catch(err){
             console.log(err)
         }
     }
@@ -76,12 +92,22 @@ const Films = () => {
                 console.log(err)
             }
         }
-        // Only call fetchUsername if current user is not owner of film list
+        // Get current users films to determine which films have already been saved
+        const fetchCurrentUsersFilmIds = async () => {
+            try {
+                const response = await axiosReq.get(`/films/${currentUser.user._id}`, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
+                setCurrentUsersFilmIds(response.data.films.map(film => film.imdbID))
+            } catch (err) {
+                
+            }
+        }
+        // Only call fetchUsername and fetchCurrentUsersFilmIds  if current user is not owner of film list
         if (!isOwner) {
             fetchUsername()
+            fetchCurrentUsersFilmIds()
         }
         fetchFilms()
-    }, [sort, filter, currentUser.token, id, isOwner, viewingData, currentFilmIds.imdbID])
+    }, [sort, filter, currentUser.token, id, isOwner, viewingData, currentFilmIds.imdbID, updated])
 
     useEffect(() => {   
         // Get individual film data from OMDB API for main view
@@ -135,7 +161,8 @@ const Films = () => {
                                 isOwner={isOwner} 
                                 filter={filter} 
                                 setFilter={setFilter} 
-                                sort={setSort} 
+                                sort={sort} 
+                                setSort={setSort}
                                 username={username} 
                                 mobile={true} 
                                 filteredFilms={filteredFilms} 
@@ -148,7 +175,7 @@ const Films = () => {
                         {width > 599?(
                             <Col sm={{span: 12, order: 2}} md={{span:4, order: 1}} style={{marginTop: '30px', borderStyle:'solid', borderColor:'grey', borderWidth:'0.5px', borderRadius: '1rem', display:'inline'}}>
                                 {/* FILTER BUTTONS */}
-                                <Filters isOwner={isOwner} filter={filter} setFilter={setFilter} sort={setSort} username={username} mobile={false}/>
+                                <Filters isOwner={isOwner} filter={filter} setFilter={setFilter} sort={sort} username={username} setSort={setSort} mobile={false}/>
                                 { /* FILMS LIST */}
                                 <div className={styles.filmsListBody}>
                                 {filteredFilms.length? (
@@ -163,10 +190,15 @@ const Films = () => {
                             {/* SELECTED FILM */}
                             <Film
                                 filmData={viewingData}
+                                filmId={currentFilmIds.database}
                                 omdbData={omdbData}
                                 fullView={true}
                                 filmsPage={true}
                                 isOwner={isOwner}
+                                saved={currentUsersFilmIds.includes(omdbData.imdbID)}
+                                updated={updated}
+                                setUpdated={setUpdated}
+                                saveFilm={saveFilm}
                                 username={username}
                                 viewingData={viewingData}
                                 updateViewingData={updateViewingData}
