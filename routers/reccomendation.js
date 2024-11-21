@@ -9,12 +9,13 @@ const Reccomendation = require('../models/reccomendation')
 const Film = require('../models/film')
 const Request = require('../models/request')
 const auth = require('../middleware/auth')
+const User = require('../models/user')
 
 // Create a reccomendation (send reccomendation to friend)
 router.post('/reccomendations', auth, async (req, res) => {
     try {
         const filmId = req.body.film
-        const film = await Film.findById(filmId)
+        const film = await Film.findById(filmId) 
         if (film.owner.toString()!== req.user.id){
             return res.status(400).send({error: "You can't reccomend a film you haven't saved."})
         }
@@ -22,7 +23,7 @@ router.post('/reccomendations', auth, async (req, res) => {
             return res.status(400).send({error: "Please mark this film as public before you reccomend it to others."})
         }
         const reciever = req.body.reciever
-        const friendRequest = await Request.findOne({sender: req.user._id, reciever, accepted: true})
+        const friendRequest = await Request.findOne({$or:[{sender: req.user._id, reciever, accepted: true}, {sender: reciever, reciever: req.user._id, accepted: true}]})
         if (!friendRequest){
             return res.status(400).send({error: "You can't send a reccomendation to this user because you are not friends."})
         }
@@ -42,7 +43,32 @@ router.get('/reccomendations', auth, async (req, res) => {
             .sort({updatedAt: -1})
             .limit(req.query.limit)
             .skip(req.query.skip)
-        res.status(200).send({reccomendations}) 
+            let fullReccomendations = []
+            for (let rec of reccomendations) {
+                const senderUser = await User.findById(rec.sender)
+                const recieverUser = await User.findById(rec.reciever)
+                const film = await Film.findById(rec.film)
+                fullReccomendations.push({
+                    film,
+                    isSender: senderUser.username === req.user.username,
+                    _id: rec._id,
+                    sender: {
+                        _id: rec.sender,
+                        username: senderUser.username,
+                        image: senderUser.image
+                    },
+                    reciever: {
+                        _id: rec.reciever,
+                        username: recieverUser.username,
+                        image: recieverUser.image
+                    },
+                    liked: rec.liked,
+                    message: rec.message,
+                    createdAt: rec.createdAt,
+                    updatedAt: rec.updatedAt
+                    })
+            }
+        res.status(200).send(fullReccomendations) 
     } catch (e) {
         res.status(400).send(e)
     }
