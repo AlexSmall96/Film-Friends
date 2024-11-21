@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Overlay, Dropdown, Modal, Button, Image, Form } from 'react-bootstrap';
+import { Overlay, Dropdown, Modal, Button, Image, Form, Spinner } from 'react-bootstrap';
 import appStyles from '../App.module.css'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { CustomMenu, CustomToggle } from './CustomDropDown';
@@ -19,7 +19,8 @@ const EllipsisMenu = ({handleDelete, handleShare, updateViewingData, viewingData
     const [allFriends, setAllFriends] = useState([])
     const [updated, setUpdated] = useState(false)
     const [sent, setSent] = useState(false)
-    
+    const [hasLoaded, setHasLoaded] = useState(false)
+
     const handleShowModal = () => {
         setShowModal(true)
         setShowMenu(false)
@@ -41,8 +42,8 @@ const EllipsisMenu = ({handleDelete, handleShare, updateViewingData, viewingData
             const alreadyReccomendedUsernames = alreadyReccomended.map(rec => rec.reciever.username)
             setFriends(acceptedRequests.filter(request => request.isSender? !alreadyReccomendedUsernames.includes(request.reciever.username):!alreadyReccomendedUsernames.includes(request.sender.username)))
             setAllFriends(acceptedRequests)
+            setHasLoaded(true)
         }
-
         fetchRequests()
     }, [currentUser.token, updated, omdbData])
 
@@ -57,6 +58,7 @@ const EllipsisMenu = ({handleDelete, handleShare, updateViewingData, viewingData
             setUpdated(!updated)
             setRecipient(null)
             setSent(true)
+            setHasLoaded(false)
         } catch (err) {
             console.log(err)
         }
@@ -98,50 +100,61 @@ const EllipsisMenu = ({handleDelete, handleShare, updateViewingData, viewingData
         </div>
               <Modal show={showModal} onHide={handleCloseModal}>
               <Modal.Header closeButton>
-                {recipient? (
-                    <p>Sending to: </p>
+            {hasLoaded? 
+              recipient? 
+                <p>Sending to: </p>
+            :
+                <p>{sent? friends.length? 'Film Shared. Select another user to share.' :`Film Shared. You've shared this film with all your friends.`: ''}</p>
+            
+            :''}
+            {hasLoaded?
+              friends.length?
+              <Dropdown>
+              <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
+              {recipient?.username || 'Select recipient'}
+              </Dropdown.Toggle>
+              <Dropdown.Menu as={CustomMenu}>
+                  <div style={{maxHeight: '400px', overflowY: 'scroll'}}>
+                  {friends.map(
+                      friend => <Dropdown.Item key={friend._id} 
+                                  onClick={() => setRecipient(friend.isSender? friend.reciever : friend.sender)}>
+                                      {friend.isSender? friend.reciever.username : friend.sender.username}
+                                  </Dropdown.Item>
+                  )}
+                  </div>
+
+              </Dropdown.Menu>
+              </Dropdown>
+              : 
+              ''
+            :''}
+            </Modal.Header>
+            <Modal.Body>
+                {hasLoaded? (
+                <>
+                    <Image src={omdbData.Poster} width={50}/>
+                    {omdbData.Title}
+                </>
                 ):(
-                    <p>{sent? friends.length? 'Film Shared. Select another user to share.' :`You've shared this film with all your friends.`: ''}</p>
+                    <Spinner />
                 )}
-                {friends.length?
-                <Dropdown>
-                <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
-                {recipient?.username || 'Select recipient'}
-                </Dropdown.Toggle>
-                <Dropdown.Menu as={CustomMenu}>
-                    <div style={{maxHeight: '400px', overflowY: 'scroll'}}>
-                    {friends.map(
-                        friend => <Dropdown.Item key={friend._id} 
-                                    onClick={() => setRecipient(friend.isSender? friend.reciever : friend.sender)}>
-                                        {friend.isSender? friend.reciever.username : friend.sender.username}
-                                    </Dropdown.Item>
-                    )}
-                    </div>
 
-                </Dropdown.Menu>
-                </Dropdown>
-                : 
-                ''}
+            </Modal.Body>
+            <Modal.Footer>
+                  <Form>
+                      <Form.Label>Message</Form.Label>
+                      <Form.Control style={!recipient? {color: 'grey'}:{color: 'black'}} readOnly={recipient === null} value={message} onChange={handleMessageChange}>
 
-              </Modal.Header>
-              <Modal.Body>
-                <Image src={omdbData.Poster} width={50}/>
-                {omdbData.Title}
-              </Modal.Body>
-              <Modal.Footer>
-                    <Form>
-                        <Form.Label>Message</Form.Label>
-                        <Form.Control style={!recipient? {color: 'grey'}:{color: 'black'}} readOnly={recipient === null} value={message} onChange={handleMessageChange}>
-
-                        </Form.Control>
-                    </Form>
-                <Button variant="secondary" onClick={handleCloseModal}>
-                  Close
-                </Button>
-                <Button disabled={recipient === null} variant="primary" onClick={handleSend}>
-                  Send
-                </Button>
-              </Modal.Footer>
+                      </Form.Control>
+                  </Form>
+              <Button variant="secondary" onClick={handleCloseModal}>
+                Close
+              </Button>
+              <Button disabled={recipient === null} variant="primary" onClick={handleSend}>
+                Send
+              </Button>
+            </Modal.Footer>
+            
             </Modal>
             </>
     )
