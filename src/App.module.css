@@ -1,5 +1,16 @@
 .App {
   text-align: center;
+  font-family: "Nanum Gothic", sans-serif;
+}
+
+.App i:hover {
+  color:blue;
+  cursor: pointer;
+}
+
+.App ul {
+  width: 25%;
+  margin: auto;
 }
 
 .App-logo {
@@ -25,7 +36,20 @@
 }
 
 .App-link {
-  color: #61dafb;
+  color: #61dafb; 
+}
+
+.bold {
+  font-weight: 600;
+}
+
+.medium {
+  font-size: medium;
+}
+
+.hover:hover{
+  cursor: pointer;
+  color: rgb(8, 8, 146);
 }
 
 @keyframes App-logo-spin {
@@ -35,4 +59,8 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.smallFont {
+  font-size: small;
 }
