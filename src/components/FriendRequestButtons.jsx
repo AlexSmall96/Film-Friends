@@ -25,7 +25,7 @@ const FriendRequestButtons = ({status, searchResult, sendRequest, handleShare, h
     const friendsButtons = accepted ? 
         <>
             <ShareModal handleShare={handleShare} user={user} />
-            <DeleteModal handleDelete={handleDelete} user={user} />
+            <DeleteModal handleDelete={handleDelete} message={`Are you sure you want to remove ${user.username} as a friend?`} />
         </> : 
             sent?
                 <DeleteModal handleDelete={handleDelete} user={user} />
