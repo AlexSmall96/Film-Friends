@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { axiosReq } from '../../api/axiosDefaults';
 import { useCurrentUser } from '../../contexts/CurrentUserContext';
-import { Container, Image, Row, Col, Button, Tooltip, OverlayTrigger, Stack, DropdownButton, Dropdown, Spinner} from 'react-bootstrap';
+import { Container, Image, Row, Col, Button, Tooltip, OverlayTrigger, DropdownButton, Dropdown, Spinner} from 'react-bootstrap';
 import Film from '../../components/Film'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import useWindowDimensions from '../../hooks/useWindowDimensions';
-import ResultsPagination from '../../components/ResultsPagination'
 import styles from '../../styles/Films.module.css'
 import sortBy from 'array-sort-by'
+import DeleteModal from '../../components/DeleteModal'
 
 const Reccomendations = () => {
     const {currentUser} = useCurrentUser()
@@ -17,9 +17,8 @@ const Reccomendations = () => {
     const [usernames, setUsernames] = useState([])
     const [sort, setSort] = useState('Last Sent')
     const [hasLoaded, setHasLoaded] = useState(false)
-    const [currentPage, setCurrentPage] = useState(1)
-    const [finalPage, setFinalPage] = useState(1)
-    const [totalResults, setTotalResults] = useState(0)
+    const [updated, setUpdated] = useState(false)
+
     useEffect(() => {
         const fetchReccomendations = async () => {
             const response = await axiosReq.get(`/reccomendations/`, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
@@ -27,19 +26,28 @@ const Reccomendations = () => {
             const filteredReccomendations = allReccomendations.filter(rec => filter === 'All' ? true : rec.sender.username === filter)
             const sortedReccomendations = sort === 'Film Title' ? sortBy(filteredReccomendations, (rec) => rec.film.Title) : filteredReccomendations
             setReccomendations(sortedReccomendations)
-            setTotalResults(response.data.totalResults)
             const allUsernames = allReccomendations.map(rec => rec.sender.username)
             setUsernames([...new Set(allUsernames)])
             setHasLoaded(true)
         }
         fetchReccomendations()
-    }, [filter, sort, currentUser.token,])
+    }, [filter, sort, currentUser.token, updated])
 
     const renderTooltip = (username, message) => (
         <Tooltip id="button-tooltip">
           {`${username}: ${message}`}
         </Tooltip>
     )
+    const deleteReccomendation = async (id) => {
+        try {
+            await axiosReq.delete(`/reccomendations/${id}`, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
+            setUpdated(!updated)
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+
     const ratingValues = [1, 2, 3, 4, 5]
     return (
         <Container>
@@ -69,10 +77,10 @@ const Reccomendations = () => {
                             <Image onClick={() => history.push(`/profile/${rec.sender._id}`)} src={rec.sender.image} width={50}/>
                         </OverlayTrigger>
                     </Col>
-                    <Col md={6}>
+                    <Col md={5}>
                         <Film key={rec.film.imdbID} filmData={rec.film} fullView={false} filmsPage={false} reccomendatonsPage={true} />
                     </Col>
-                    <Col md={5}>
+                    <Col md={4}>
                         {rec.film.public ? (
                             <>
                                 {`${rec.sender.username}'s rating: `}
@@ -84,9 +92,15 @@ const Reccomendations = () => {
                                         onClick={() => history.push(`/films/${rec.film.owner}/${rec.film.imdbID}/${rec.film._id}`)} 
                                         variant='link'>{`${rec.sender.username}'s watchlist`}
                                     </Button>
-                                </p>                        
+                                </p>
                             </>
                         ):(`${rec.sender.username} has made this film private.`)}
+
+                    </Col>
+                    <Col md={2}>
+                        <p>
+                            <DeleteModal handleDelete={() => deleteReccomendation(rec._id)} message={`Are you sure you want to remove ${rec.film.Title} from your reccomendations?`} />
+                        </p>
                     </Col>
                 </Row>
                 )}
