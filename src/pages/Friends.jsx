@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { axiosReq } from '../api/axiosDefaults';
 import { useCurrentUser } from '../contexts/CurrentUserContext';
-import { Card, Container, Button, Dropdown, DropdownButton, Row, Col, Form, Stack, Image } from 'react-bootstrap';
+import { Card, Container, Dropdown, DropdownButton, Row, Col, Form, Spinner } from 'react-bootstrap';
 import User from '../components/User';
 import FriendRequestButtons from '../components/FriendRequestButtons'
-import ResultsPagination from '../components/ResultsPagination'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import sortBy from 'array-sort-by'
 
@@ -15,15 +14,17 @@ const Friends = () => {
     const { currentUser } = useCurrentUser()
     // Initialize state variables
     const [requests, setRequests] = useState([])
+    const [allRequests, setAllRequests] = useState([])
     const [requestIds, setRequestIds] = useState([])
     const [search, setSearch] = useState('')
     const [searchResults, setSearchResults] = useState([])
     const [filter, setFilter] = useState('All')
     const [sort, setSort] = useState('A-Z')
-    const [currentPage, setCurrentPage] = useState(1)
-    const [finalPage, setFinalPage] = useState(1)
     const [updated, setUpdated] = useState(false)
-   
+    const [hasLoadedFriends, setHasLoadedFriends] = useState(false)
+    const [hasLoadedSearch, setHasLoadedSearch] = useState(true)
+    const [hasUpdated, setHasUpdated] = useState(true)
+
     const sortRequest = (req, sort) => {
         return sort === 'A-Z' ? req.isSender? req.reciever.username: req.sender.username: req.updatedAt
     }
@@ -33,14 +34,16 @@ const Friends = () => {
         // Creates a request ids array to be used to determine text in search results
         const fetchRequests = async () => {
             try {
-                const response = await axiosReq.get(`/requests/?limit=10&skip=${10 * (currentPage - 1)}`, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
+                const response = await axiosReq.get(`/requests/`, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
                 const filteredResponse = response.data.filter(request => filter === 'Friends'? request.accepted : filter === 'Pending Requests'? !request.accepted : true)
                 const sortedResponse = sortBy(filteredResponse, (req) => sortRequest(req, sort))
+                setAllRequests(response.data)
                 setRequests(sortedResponse)  
-                setFinalPage(Math.ceil(0.1 * filteredResponse.length))
                 setRequestIds(
                     response.data.map(request => request.reciever._id).concat(response.data.map(request => request.sender._id))
                 )
+                setHasLoadedFriends(true)
+                setHasUpdated(true)
             } catch (err) {
                 console.log(err)
             }
@@ -50,6 +53,7 @@ const Friends = () => {
             try {
                 const response = await axiosReq.get(`/users/?username=${search}`, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
                 setSearchResults(response.data)
+                setHasLoadedSearch(true)
             } catch (err) {
                 console.log(err)
             }
@@ -58,8 +62,15 @@ const Friends = () => {
         fetchUsers()
     }, [search, filter, sort, currentUser.user._id, currentUser.token, updated])
 
+    useEffect(() => {
+        setHasUpdated(false)
+    }, [filter, sort])
+
     // Handle change for search bar
     const handleChange = (event) => {
+        if (event.target.value !== '') {
+            setHasLoadedSearch(false)
+        }
         setSearch(event.target.value)
         if (event.target.value === '') {    
             setSearch('')
@@ -122,7 +133,8 @@ const Friends = () => {
                 </Form>
             </Row>
                 <Card>
-                    {searchResults.length && search !== '' ? searchResults.map(
+                    {hasLoadedSearch ? 
+                    searchResults.length && search !== '' ? searchResults.map(
                         result => 
                             <div key={result._id}>
                                 <User data={result} searchResult={true} />
@@ -132,47 +144,48 @@ const Friends = () => {
                                     sendRequest={() => sendRequest(result._id)} 
                                 />
                             </div>
-                    ):('')}
+                    ):(''):(<Spinner />)}
+
                 </Card>
             </Col>
             <Col md={6}>
+            {hasLoadedFriends?(
                 <Card>
-                    <DropdownButton style={{marginTop: '5px'}} variant='outline-secondary' id="dropdown-basic-button" title={filter}>
-                        <Dropdown.Item onClick={() => setFilter('All')}>All</Dropdown.Item>
-                        <Dropdown.Item onClick={() => setFilter('Friends')}>Friends</Dropdown.Item>
-                        <Dropdown.Item onClick={() => setFilter('Pending Requests')}>Pending Requests</Dropdown.Item>
-                    </DropdownButton>
-                    <DropdownButton style={{marginTop: '5px'}} variant='outline-secondary' id="dropdown-basic-button" title={sort}>
-                        <Dropdown.Item onClick={() => setSort('A-Z')}>A-Z</Dropdown.Item>
-                        <Dropdown.Item onClick={() => setSort('Last Updated')}>Last Updated</Dropdown.Item>
-                    </DropdownButton>
-                    {finalPage > 1?<ResultsPagination currentPage={currentPage} setCurrentPage={setCurrentPage} finalPage={finalPage}/>:''}
-                    <p>
-                        {currentPage !== finalPage ? (
-                            `Showing results ${10 * (currentPage - 1) + 1} to ${10 * (currentPage - 1) + 10} of ${requests.length}`
-                        ):(
-                            `Showing results ${10 * (currentPage - 1) + 1} to ${requests.length} of ${requests.length}`
-                        )}
-                    </p>
-                    {requests.length? requests.map(
-                        request =>
-                            <Row key={request._id}>
-                                <Col>
-                                    <User data={request.isSender? request.reciever : request.sender} searchResult={false}/>
-                                </Col>
-                                <Col>
-                                    <FriendRequestButtons 
-                                        status={{accepted: request.accepted, sent: request.isSender, recieved: !request.isSender}} 
-                                        searchResult={false}
-                                        handleShare={request.accepted? () => history.push(`reccomendations/send/users/${request.isSender? request.reciever._id : request.sender._id}`) : null}
-                                        handleDelete={request.isSender || request.accepted ? () => deleteRequest(request._id) : null}
-                                        handleUpdate={!request.accepted ? (accepted) => updateRequest(accepted, request._id) : null}
-                                        user={request.isSender? request.reciever : request.sender}
-                                    />
-                                </Col>
-                            </Row> 
-                    ):('')}
-                </Card>           
+                    {allRequests.length?
+                    <>
+                        <DropdownButton style={{marginTop: '5px'}} variant='outline-secondary' id="dropdown-basic-button" title={filter}>
+                            <Dropdown.Item onClick={() => setFilter('All')}>All</Dropdown.Item>
+                            <Dropdown.Item onClick={() => setFilter('Friends')}>Friends</Dropdown.Item>
+                            <Dropdown.Item onClick={() => setFilter('Pending Requests')}>Pending Requests</Dropdown.Item>
+                        </DropdownButton>
+                        <DropdownButton style={{marginTop: '5px'}} variant='outline-secondary' id="dropdown-basic-button" title={sort}>
+                            <Dropdown.Item onClick={() => setSort('A-Z')}>A-Z</Dropdown.Item>
+                            <Dropdown.Item onClick={() => setSort('Last Updated')}>Last Updated</Dropdown.Item>
+                        </DropdownButton>
+                        {hasUpdated?
+                            requests.length?   
+                            requests.map(
+                                request =>
+                                    <Row key={request._id}>
+                                        <Col>
+                                            <User data={request.isSender? request.reciever : request.sender} searchResult={false}/>
+                                        </Col>
+                                        <Col>
+                                            <FriendRequestButtons 
+                                                status={{accepted: request.accepted, sent: request.isSender, recieved: !request.isSender}} 
+                                                searchResult={false}
+                                                handleShare={request.accepted? () => history.push(`reccomendations/send/users/${request.isSender? request.reciever._id : request.sender._id}`) : null}
+                                                handleDelete={request.isSender || request.accepted ? () => deleteRequest(request._id) : null}
+                                                handleUpdate={!request.accepted ? (accepted) => updateRequest(accepted, request._id) : null}
+                                                user={request.isSender? request.reciever : request.sender}
+                                            />
+                                        </Col>
+                                    </Row> )
+                        : 'No requests matching current criteria'
+                           : <Spinner />}
+                    </> :"You don't have any friends yet."}
+                </Card> 
+            ):(<Spinner />)}
             </Col>
             </Row>
         </Container>
