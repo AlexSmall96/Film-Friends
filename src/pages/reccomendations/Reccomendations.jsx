@@ -19,22 +19,21 @@ const Reccomendations = () => {
     const [hasLoaded, setHasLoaded] = useState(false)
     const [currentPage, setCurrentPage] = useState(1)
     const [finalPage, setFinalPage] = useState(1)
-
+    const [totalResults, setTotalResults] = useState(0)
     useEffect(() => {
         const fetchReccomendations = async () => {
-            const response = await axiosReq.get(`/reccomendations/?page=${currentPage}`, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
+            const response = await axiosReq.get(`/reccomendations/`, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
             const allReccomendations = response.data.fullReccomendations.filter(rec => !rec.isSender)
             const filteredReccomendations = allReccomendations.filter(rec => filter === 'All' ? true : rec.sender.username === filter)
             const sortedReccomendations = sort === 'Film Title' ? sortBy(filteredReccomendations, (rec) => rec.film.Title) : filteredReccomendations
             setReccomendations(sortedReccomendations)
-            const totalResults = response.data.totalResults
-            setFinalPage(Math.ceil(0.1 * totalResults))
+            setTotalResults(response.data.totalResults)
             const allUsernames = allReccomendations.map(rec => rec.sender.username)
             setUsernames([...new Set(allUsernames)])
             setHasLoaded(true)
         }
         fetchReccomendations()
-    }, [filter, sort, currentUser.token, currentPage ])
+    }, [filter, sort, currentUser.token,])
 
     const renderTooltip = (username, message) => (
         <Tooltip id="button-tooltip">
@@ -58,9 +57,9 @@ const Reccomendations = () => {
                 <Dropdown.Item onClick={() => setSort('Film Title')}>Film Title</Dropdown.Item>
                 <Dropdown.Item onClick={() => setSort('Last Sent')}>Last Sent</Dropdown.Item>
             </DropdownButton>
-            <ResultsPagination currentPage={currentPage} finalPage={finalPage} setCurrentPage={setCurrentPage} setHasLoaded={setHasLoaded}/>
+            <div style={{maxHeight: '600px', overflowY:'scroll', overflowX: 'hidden'}}>
                 {reccomendations.map(rec =>
-                <Row key={rec._id}>
+                <Row key={rec._id} style={{borderWidth: '0.1px', borderColor: 'lightgrey', borderStyle: 'solid'}}>
                     <Col md={1}>
                         <OverlayTrigger
                             placement="bottom"
@@ -91,7 +90,8 @@ const Reccomendations = () => {
                     </Col>
                 </Row>
                 )}
-                </>
+            </div>
+            </>
             ):(
                 <Spinner />
             )}
