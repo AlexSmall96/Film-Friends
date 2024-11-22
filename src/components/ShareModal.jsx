@@ -1,21 +1,23 @@
 import React, {useState, useEffect} from 'react';
-import { Button, Dropdown, DropdownButton, Modal, Form, Image, Tooltip, OverlayTrigger, Spinner } from 'react-bootstrap';
+import { Button, Dropdown, DropdownButton, Modal, Form, Image, Tooltip, Spinner } from 'react-bootstrap';
 import User from './User';
 import { axiosReq } from '../api/axiosDefaults';
 import { useCurrentUser } from '../contexts/CurrentUserContext';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 
 const ShareModal = ({user}) => {
     const { currentUser } = useCurrentUser()
+    const history = useHistory()
     const [films, setFilms] = useState([])
     const [allFilms, setAllFilms] = useState([])
     const [sort, setSort] = useState('Last Updated')
     const [message, setMessage] = useState("Hey! Check out this awesome film I've just watched. I think you'll love it! ")
-    const [feedback, setFeedback] = useState('')
     const [selectedFilm, setSelectedFilm] = useState(null)
-    const [reccomendations, setReccomendations] = useState([])
     const [updated, setUpdated] = useState(false)
     const [sent, setSent] = useState(false)
     const [hasLoaded, setHasLoaded] = useState(false)
+    const [show, setShow] = useState(false);
+    
 
     useEffect(() => {
         const fetchFilms = async () => {
@@ -32,8 +34,10 @@ const ShareModal = ({user}) => {
                 console.log(err)
             }
         }
-        fetchFilms()
-    }, [currentUser, sort, updated, user.username])
+        if (show) {
+            fetchFilms()
+        }
+    }, [currentUser, sort, updated, user.username, show])
 
     const handleShowModal = () => {
         setShow(true)
@@ -65,40 +69,20 @@ const ShareModal = ({user}) => {
         }
     }
 
-    const renderTooltip = (username) => (
-        <Tooltip id="button-tooltip">
-            {`You've shared all your public films with ${username}.`}
-        </Tooltip>
-    );
-
-    const [show, setShow] = useState(false);
     return (
-        <>
-            {films.length ? 
+        <> 
                 <Button style={{marginRight: '5px'}} variant="outline-secondary" onClick={handleShowModal}>
                     <i className="fa-solid fa-clapperboard"></i> Share 
                 </Button>   
-            :
-            allFilms.length? 
-                <OverlayTrigger
-                    placement="left"
-                    delay={{ show: 250, hide: 400 }}
-                    overlay={renderTooltip(user.username)}
-                >
-                        <span style={{marginRight: '5px', color: 'grey'}}><i className="fa-solid fa-check"></i> <i className="fa-solid fa-clapperboard"></i></span>
-                </OverlayTrigger>
-            :''}
-
-
-            
-
             <Modal show={show} onHide={() => setShow(false)}>
                 <Modal.Header>
                     Sending to: <User data={user} searchResult={true}/>
                 </Modal.Header>
                 <Modal.Body>
-                    {hasLoaded?(
+                    {hasLoaded? 
+                        allFilms.length?
                         <>
+                        
                             {selectedFilm  ? (
                                 <span>Film Selected: <Image src={selectedFilm?.Poster} width={50}/></span>
                             ):(
@@ -116,10 +100,15 @@ const ShareModal = ({user}) => {
                                 </p>
                             )}
                             </div> 
+                        </>:<>
+                            You don't have any public films. 
+                            <p>
+                                <Button onClick={() => history.push('/films')} variant='link'>Go to your watchlist</Button> to mark a film as public.
+                            </p>
                         </>
-                    ):(
+                    :
                         <Spinner />
-                    )}
+                    }
                 </Modal.Body>
                 <Modal.Footer>
                     <Form>
