@@ -17,7 +17,8 @@ const Reccomendations = () => {
     const [usernames, setUsernames] = useState([])
     const [sort, setSort] = useState('Last Sent')
     const [hasLoaded, setHasLoaded] = useState(false)
-    const [updated, setUpdated] = useState(false)
+    const [hasUpdated, setHasUpdated] = useState(true)
+    const [deleted, setDeleted] = useState(false)
 
     useEffect(() => {
         const fetchReccomendations = async () => {
@@ -29,9 +30,14 @@ const Reccomendations = () => {
             const allUsernames = allReccomendations.map(rec => rec.sender.username)
             setUsernames([...new Set(allUsernames)])
             setHasLoaded(true)
+            setHasUpdated(true)
         }
         fetchReccomendations()
-    }, [filter, sort, currentUser.token, updated])
+    }, [filter, sort, currentUser.token, deleted])
+
+    useEffect(() => {
+        setHasUpdated(false) 
+    }, [filter, sort])
 
     const renderTooltip = (username, message) => (
         <Tooltip id="button-tooltip">
@@ -41,7 +47,7 @@ const Reccomendations = () => {
     const deleteReccomendation = async (id) => {
         try {
             await axiosReq.delete(`/reccomendations/${id}`, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
-            setUpdated(!updated)
+            setDeleted(!deleted)
         } catch (err) {
             console.log(err)
         }
@@ -65,46 +71,49 @@ const Reccomendations = () => {
                 <Dropdown.Item onClick={() => setSort('Film Title')}>Film Title</Dropdown.Item>
                 <Dropdown.Item onClick={() => setSort('Last Sent')}>Last Sent</Dropdown.Item>
             </DropdownButton>
+            {hasUpdated? (
             <div style={{maxHeight: '600px', overflowY:'scroll', overflowX: 'hidden'}}>
-                {reccomendations.map(rec =>
-                <Row key={rec._id} style={{borderWidth: '0.1px', borderColor: 'lightgrey', borderStyle: 'solid'}}>
-                    <Col md={1}>
-                        <OverlayTrigger
-                            placement="bottom"
-                            delay={{ show: 250, hide: 400 }}
-                            overlay={renderTooltip(rec.sender.username, rec.message)}
-                        >
-                            <Image onClick={() => history.push(`/profile/${rec.sender._id}`)} src={rec.sender.image} width={50}/>
-                        </OverlayTrigger>
-                    </Col>
-                    <Col md={5}>
-                        <Film key={rec.film.imdbID} filmData={rec.film} fullView={false} filmsPage={false} reccomendatonsPage={true} />
-                    </Col>
-                    <Col md={4}>
-                        {rec.film.public ? (
-                            <>
-                                {`${rec.sender.username}'s rating: `}
-                                {ratingValues.map(
-                                            value => <span key={value} className={`fa fa-star ${rec.film.userRating >= value ? styles.checked : ''}`}></span>
-                                )}  
-                                <p>
-                                    <Button 
-                                        onClick={() => history.push(`/films/${rec.film.owner}/${rec.film.imdbID}/${rec.film._id}`)} 
-                                        variant='link'>{`${rec.sender.username}'s watchlist`}
-                                    </Button>
-                                </p>
-                            </>
-                        ):(`${rec.sender.username} has made this film private.`)}
+            {reccomendations.map(rec =>
+            <Row key={rec._id} style={{borderWidth: '0.1px', borderColor: 'lightgrey', borderStyle: 'solid'}}>
+                <Col md={1}>
+                    <OverlayTrigger
+                        placement="bottom"
+                        delay={{ show: 250, hide: 400 }}
+                        overlay={renderTooltip(rec.sender.username, rec.message)}
+                    >
+                        <Image onClick={() => history.push(`/profile/${rec.sender._id}`)} src={rec.sender.image} width={50}/>
+                    </OverlayTrigger>
+                </Col>
+                <Col md={5}>
+                    <Film key={rec.film.imdbID} filmData={rec.film} fullView={false} filmsPage={false} reccomendatonsPage={true} />
+                </Col>
+                <Col md={4}>
+                    {rec.film.public ? (
+                        <>
+                            {`${rec.sender.username}'s rating: `}
+                            {ratingValues.map(
+                                        value => <span key={value} className={`fa fa-star ${rec.film.userRating >= value ? styles.checked : ''}`}></span>
+                            )}  
+                            <p>
+                                <Button 
+                                    onClick={() => history.push(`/films/${rec.film.owner}/${rec.film.imdbID}/${rec.film._id}`)} 
+                                    variant='link'>{`${rec.sender.username}'s watchlist`}
+                                </Button>
+                            </p>
+                        </>
+                    ):(`${rec.sender.username} has made this film private.`)}
 
-                    </Col>
-                    <Col md={2}>
-                        <p>
-                            <DeleteModal handleDelete={() => deleteReccomendation(rec._id)} message={`Are you sure you want to remove ${rec.film.Title} from your reccomendations?`} />
-                        </p>
-                    </Col>
-                </Row>
-                )}
-            </div>
+                </Col>
+                <Col md={2}>
+                    <p>
+                        <DeleteModal handleDelete={() => deleteReccomendation(rec._id)} message={`Are you sure you want to remove ${rec.film.Title} from your reccomendations?`} />
+                    </p>
+                </Col>
+            </Row>
+            )}
+        </div>
+            ):<Spinner />}
+
             </>
             ):(
                 <Spinner />
