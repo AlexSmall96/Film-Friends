@@ -7,6 +7,7 @@ const express = require('express')
 const router = new express.Router()
 const Film = require('../models/film')
 const auth = require('../middleware/auth')
+const Reccomendation = require('../models/reccomendation')
 const OMDB_API_KEY = process.env.OMDB_API_KEY
 
 // Create a film (save film to watchlist)
@@ -106,6 +107,7 @@ router.delete('/films/:id', auth, async (req, res) => {
         if (!film) {
             return res.status(404).send()
         }
+        await Reccomendation.deleteMany({film : film._id})
         res.send(film)
     } catch (e) {
         res.status(400).send(e)
