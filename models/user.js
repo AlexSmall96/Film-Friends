@@ -40,6 +40,7 @@ const userSchema = new mongoose.Schema({
     },
     image:{
         type: String,
+        default: 'https://res.cloudinary.com/dojzptdbc/image/upload/v1687104476/default_profile_k3tfhd.jpg'
     },
     password: {
         type: String,
@@ -90,7 +91,7 @@ userSchema.methods.toJSON = function () {
     return userObject
 }
 
-// Genereate authentication token when loggin in or signing up
+// Genereate authentication token when logging in or signing up
 userSchema.methods.generateAuthToken = async function () {
     const user = this
     const token = jwt.sign({ _id: user._id.toString() }, JWT_SECRET)
@@ -120,14 +121,6 @@ userSchema.pre('save', async function (next) {
     }
     next()
 })
-
-// Delete all users films when user is removed
-userSchema.pre('deleteOne', { document: true, query: false }, async function (next) {
-    const user = this;
-    await Film.deleteMany({ owner: user._id });
-    next();
- })
-
 
 const User = mongoose.model('User', userSchema)
 

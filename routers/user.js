@@ -8,6 +8,8 @@ const router = new express.Router()
 const User = require('../models/user')
 const Film = require('../models/film')
 const auth = require('../middleware/auth')
+const Reccomendation = require('../models/reccomendation')
+const Request = require('../models/request')
 const cloudinary = require("cloudinary").v2
 
 cloudinary.config({
@@ -60,9 +62,12 @@ router.get('/users/:id', auth, async (req, res) => {
     const routerId = req.params.id
     try {
         let profile = await User.findById(routerId)
-        if (req.user.id !== routerId) {
+        // Check if viewer (current user) is owner of profile
+        if (req.user.id !== routerId) { 
             profile = {age:profile.age, username: profile.username, image: profile.image}
+            return res.status(200).send({ profile })
         }
+        // Send profile data
         res.status(200).send({ profile })
     } catch (e) {
         res.status(400).send(e)
@@ -73,10 +78,11 @@ router.get('/users/:id', auth, async (req, res) => {
 router.get('/users/', auth, async (req, res) => {
     const username = new RegExp(`^${req.query.username.trim()}`, "i")
     try {
-        const users = await User.find( { username: { $regex:username } } )
+        const allUsers = await User.find( { username: { $regex:username } } )
         .sort({updatedAt: -1})
         .limit(req.query.limit)
         .skip(req.query.skip)
+        const users = allUsers.filter(user => user.username !== req.user.username)
         res.status(200).send(users)
     } catch (e) {
         res.status(400).send(e)
@@ -118,7 +124,10 @@ router.patch('/users/me', auth, async (req, res) => {
 // Delete account
 router.delete('/users/me', auth, async (req, res) => {
     try {
-        await req.user.deleteOne()
+        await User.findOneAndDelete({_id: req.user._id})
+        await Film.deleteMany({owner: req.user._id})
+        await Reccomendation.deleteMany({sender: req.user._id})
+        await Request.deleteMany({$or: [{sender: req.user._id}, {reciever:req.user._id}]})
         res.send(req.user)
     } catch (e) {
         res.status(500).send()
