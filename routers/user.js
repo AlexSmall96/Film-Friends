@@ -65,7 +65,26 @@ router.get('/users/:id', auth, async (req, res) => {
         // Check if viewer (current user) is owner of profile
         if (req.user.id !== routerId) { 
             profile = {age:profile.age, username: profile.username, image: profile.image}
-            return res.status(200).send({ profile })
+            // Calculate similarity score
+            // Find current users films
+            const viewersFilms = await Film.find({owner: req.user.id, public: true, watched: true})
+            const ratings = []
+            // Check if curent users and profile owner have film in common
+            for (let viewersFilm of viewersFilms) {
+                const ownersFilm = await Film.findOne({owner: routerId, imdbID: viewersFilm.imdbID, public: true, watched: true })
+                if (ownersFilm) {
+                    ratings.push({viewerRating: viewersFilm.userRating, ownerRating: ownersFilm.userRating})
+                }
+            }
+            // Calculate difference in ratings
+            // For each film, 20% is taken away from %100 for each point that the two users differ in thier ratings
+            // The returned score is the average of this difference across all common films
+            const initialValue = 0
+            const callBack = (total, rating) => (1 - 0.2 * Math.abs(rating.viewerRating - rating.ownerRating)) + total
+            const ratingsSum = ratings.reduce(callBack, initialValue)
+            const similarity = ratingsSum / ratings.length
+            // Send profile data and similarity score
+            return res.status(200).send({ profile, similarity })
         }
         // Send profile data
         res.status(200).send({ profile })

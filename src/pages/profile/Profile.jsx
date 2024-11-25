@@ -13,7 +13,7 @@ const Profile = () => {
     const { currentUser } = useCurrentUser()
     // Initialize state variables
     const [profile, setProfile] = useState({})
-    const [similarity, setSimilarity] = useState('80%')
+    const [similarity, setSimilarity] = useState(0)
     const [hasLoaded, setHasLoaded] = useState(true)
     const [isFriend, setIsFriend] = useState(false)
     const [isPending, setIsPending] = useState(false)
@@ -25,6 +25,7 @@ const Profile = () => {
             try {
                 const response = await axiosReq.get(`/users/${id}`, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
                 setProfile(response.data.profile)
+                setSimilarity(parseFloat(100 * response.data.similarity).toFixed(0)+"%")
                 // setSimilarity(response.data.similarity)
             } catch (err) {
                 console.log(err)
@@ -54,7 +55,7 @@ const Profile = () => {
     // Sends a friend request to owner of profile
     const sendRequest = async () => {
         try {
-            await axiosReq.post('/requests', {id}, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
+            await axiosReq.post('/requests', {reciever: id}, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
             setUpdated(!updated)
         } catch (err) {
             console.log(err)
@@ -72,7 +73,7 @@ const Profile = () => {
                 <h3>{profile.username}</h3>
                     {/* PUBLIC PROFILE INFO */}
                     <p>{`Username: ${profile.username}, Age: ${profile.age}`}</p>
-                    <p>{similarity}</p>
+                    {!isOwner && isFriend? (<p>{similarity}</p>):('')}
                     <img src={profile.image} height={200} width={200} alt={`Profile picture for ${profile.username}`}  />
                     {/* EMAIL AND EDIT BUTTON IF USER IS OWNER OF PROFILE */}
                     {isOwner? 
