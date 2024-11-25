@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useHistory  } from 'react-router-dom/cjs/react-router-dom.min';
 import { axiosReq } from '../../api/axiosDefaults';
 import { useCurrentUser } from '../../contexts/CurrentUserContext';
-import { Spinner, Button } from 'react-bootstrap';
+import { Spinner, Button, OverlayTrigger, Tooltip, } from 'react-bootstrap';
 
 const Profile = () => {
     // Hooks
@@ -14,7 +14,7 @@ const Profile = () => {
     // Initialize state variables
     const [profile, setProfile] = useState({})
     const [similarity, setSimilarity] = useState(0)
-    const [hasLoaded, setHasLoaded] = useState(true)
+    const [hasLoaded, setHasLoaded] = useState(false)
     const [isFriend, setIsFriend] = useState(false)
     const [isPending, setIsPending] = useState(false)
     const [updated, setUpdated] = useState(false)
@@ -26,12 +26,10 @@ const Profile = () => {
                 const response = await axiosReq.get(`/users/${id}`, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
                 setProfile(response.data.profile)
                 setSimilarity(parseFloat(100 * response.data.similarity).toFixed(0)+"%")
-                // setSimilarity(response.data.similarity)
             } catch (err) {
                 console.log(err)
             }
         }
-        // Get the users publics films to calculate similarity score
         // Gets the ids of the users who are friends with owner of profile
         const fetchUsersFriendIds = async () => {
             try {
@@ -44,6 +42,7 @@ const Profile = () => {
                 const pendingIds = pendingRequests.map(request => request.reciever._id).concat(pendingRequests.map(request => request.sender._id))
                 // Check if current users pending requests contain the profile owner
                 setIsPending(pendingIds.includes(id))
+                setHasLoaded(true)
             } catch (err) {
                 console.log(err)
             }
@@ -64,7 +63,13 @@ const Profile = () => {
 
     // Check if current user is owner of profile
     const isOwner = currentUser.user._id === id
-    
+
+    const renderTooltip = () => (
+        <Tooltip id="button-tooltip">
+            {`Based on public films that you and ${profile.username} have both watched, your ratings are ${similarity} similar.`}
+        </Tooltip>
+    );
+
     return (
         <>  
             {/* HEADER */}
@@ -73,7 +78,6 @@ const Profile = () => {
                 <h3>{profile.username}</h3>
                     {/* PUBLIC PROFILE INFO */}
                     <p>{`Username: ${profile.username}, Age: ${profile.age}`}</p>
-                    {!isOwner && isFriend? (<p>{similarity}</p>):('')}
                     <img src={profile.image} height={200} width={200} alt={`Profile picture for ${profile.username}`}  />
                     {/* EMAIL AND EDIT BUTTON IF USER IS OWNER OF PROFILE */}
                     {isOwner? 
@@ -84,9 +88,17 @@ const Profile = () => {
                                 <Button variant='outline-secondary' onClick={() => history.push(`/films/${id}`)}>Go to your watchlist</Button>
                             </>
                         ):(
-                            isFriend? 
-                                (
-                                    <Button variant='outline-secondary' onClick={() => history.push(`/films/${id}`)}>{`Go to ${profile.username}'s watchlist`}</Button>
+                            isFriend? (
+                                <>
+                                    <OverlayTrigger
+                                        placement="top"
+                                        delay={{ show: 250, hide: 400 }}
+                                        overlay={renderTooltip()}
+                                    >
+                                        <p>{`Film Rating Similarity: ${similarity}`}</p>
+                                    </OverlayTrigger>
+                                    <Button variant='outline-secondary' onClick={() => history.push(`/films/${id}`)}>{`Go to ${profile.username}'s watchlist`}</Button>                                
+                                </>
                                 ):(
                                     isPending ? 
                                         (
