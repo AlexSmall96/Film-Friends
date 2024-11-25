@@ -95,7 +95,7 @@ router.patch('/requests/:id', auth, async (req, res) => {
 router.delete('/requests/:id', auth, async (req, res) => {
     const _id = req.params.id
     try {
-        const request = await Request.findOneAndDelete({_id:_id, sender: req.user._id})
+        const request = await Request.findOneAndDelete({_id:_id})
         if (!request) {
             return res.status(404).send()
         }
