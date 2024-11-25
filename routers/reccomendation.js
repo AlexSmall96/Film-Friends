@@ -42,8 +42,6 @@ router.get('/reccomendations', auth, async (req, res) => {
     try {
         const reccomendations = await Reccomendation.find({$or: [{reciever:_id}, {sender:_id}]})
             .sort({updatedAt: -1})
-            .limit(10)
-            .skip(10 * (page - 1))
             let fullReccomendations = []
             for (let rec of reccomendations) {
                 const senderUser = await User.findById(rec.sender)
@@ -69,9 +67,7 @@ router.get('/reccomendations', auth, async (req, res) => {
                     updatedAt: rec.updatedAt
                     })
             }
-        const allRecs = await Reccomendation.find({$or: [{reciever:_id}, {sender:_id}]})
-        const totalResults = allRecs.length
-        res.status(200).send({fullReccomendations, totalResults}) 
+        res.status(200).send({fullReccomendations}) 
     } catch (e) {
         res.status(400).send(e)
     }
@@ -99,8 +95,7 @@ router.delete('/reccomendations/:id', auth, async (req, res) => {
         if (!reccomendation) {
             return res.status(404).send()
         }
-        const film = await Film.findById(reccomendation.film)
-        if (film.owner.toString() !== req.user.id) {
+        if (reccomendation.reciever.toString() !== req.user.id) {
             return res.status(404).send()
         }
         await Reccomendation.findOneAndDelete({_id:_id})
