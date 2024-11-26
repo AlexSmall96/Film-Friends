@@ -12,6 +12,7 @@ import Login from './pages/auth/Login';
 import { BrowserRouter as Router } from 'react-router-dom/cjs/react-router-dom.min';
 import {CurrentUserProvider} from './contexts/CurrentUserContext'
 import ResetPassword from './pages/auth/PasswordReset';
+import ProfileDelete from './pages/profile/ProfileDelete'
 import styles from './App.module.css'
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
               <Route exact path='/profile/:id' render={() => <Profile  />} />
               <Route exact path='/profile/edit/:id' render={() => <ProfileEdit  />} />
               <Route exact path='/profile/edit/password/:id' render={() => <ResetPassword />} />
+              <Route exact path='/profile/delete/:id' render={() => <ProfileDelete />} />
               <Route exact path='/signup' render={() => <Signup />} />
               <Route exact path='/login' render={() => <Login />} />
             </Switch>
