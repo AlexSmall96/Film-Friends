@@ -11,6 +11,7 @@ const auth = require('../middleware/auth')
 const Reccomendation = require('../models/reccomendation')
 const Request = require('../models/request')
 const cloudinary = require("cloudinary").v2
+const nodemailer = require("nodemailer");
 
 cloudinary.config({
     cloud_name: process.env.CLOUD_NAME,
@@ -93,6 +94,44 @@ router.get('/users/:id', auth, async (req, res) => {
     }
 })
 
+/* 
+The code to validate and send to an email address was taken from the following article
+https://medium.com/@elijahechekwu/sending-emails-in-node-express-js-with-nodemailer-gmail-part-1-67b7da4ae04b
+*/
+
+// Check email address
+router.post('/users/sendEmail', async (req, res) => {
+    try {
+        const email = req.body.email
+        const account = await User.findOne({email})
+        if (!account) {
+            return res.status(404).send({error: 'No account was found associated with the given email address.'})
+        }
+        const transporter = nodemailer.createTransport({
+            service: process.env.SMTP_SERVICE,
+            auth: {
+                user: process.env.SMTP_MAIL,
+                pass: process.env.SMTP_PASS
+            }
+        });
+        const OTP = req.body.OTP
+        const mailOptions = {
+            from: process.env.SMTP_MAIL,
+            to: email,
+            subject: 'Your Film Friends OTP for password reset.',
+            text: `Your one time passcode (OTP) is ${OTP}. This will expire in 10 minutes.`
+        };
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                return res.status(500).send({error: "Couldn't send email due to system issues. Please try again later."})
+            }
+            res.status(200).send({message: 'A one time passcode (OTP) has been sent to your email address. Please enter it below to recover your account.'})
+        });
+    } catch (err) {
+        res.status(500).send({error: "Couldn't send email due to system issues. Please try again later."})
+    }
+})
+
 // Search for profiles
 router.get('/users/', auth, async (req, res) => {
     const username = new RegExp(`^${req.query.username.trim()}`, "i")
@@ -137,6 +176,19 @@ router.patch('/users/me', auth, async (req, res) => {
         res.send(user)
     } catch (e) {
         res.status(400).send(e)
+    }
+})
+
+router.patch('/users/resetPassword', async (req, res) => {
+    try {
+        const email = req.body.email
+        const password = req.body.password
+        const user = await User.findOne({email})
+        user.password = password    
+        await user.save()
+        res.status(200).send(user)
+    } catch (err) {
+        res.status(400).send(err)
     }
 })
 
