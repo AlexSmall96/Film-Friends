@@ -2,7 +2,9 @@ import React, {useState, useEffect, useRef} from 'react';
 import { axiosReq } from '../api/axiosDefaults';
 import { useCurrentUser } from '../contexts/CurrentUserContext';
 import { Container, Navbar, Nav, Image, Row, Form, Dropdown, Toast,  ToastContainer, Button, Overlay, NavDropdown} from 'react-bootstrap'
+import { Link } from 'react-router-dom/cjs/react-router-dom';
 import User from './User';
+
 
 const NavBar = () => {
     const [searchResults, setSearchResults] = useState([])
@@ -25,14 +27,30 @@ const NavBar = () => {
     }
     const loggedInIcons = 
     <>
-        <Nav.Link href={`/films/${currentUser?.user._id}`}>My Films</Nav.Link>
-        <Nav.Link href='/friends'>Friends</Nav.Link>
-        <Nav.Link href='/reccomendations'>Reccomendations</Nav.Link>
+        <Link to={`/films/${currentUser?.user._id}`}>My Films</Link>
+        <Link to='/friends'>Friends</Link>
+        <Link to='/reccomendations'>Reccomendations</Link>
         <NavDropdown title={<Image src={currentUser?.user.image} width={50} roundedCircle/>} id="basic-nav-dropdown">
-            <NavDropdown.Item href={`/profile/${currentUser?.user._id}`}><i className="fa-solid fa-user"></i> Profile</NavDropdown.Item>
-            <NavDropdown.Item href={`/profile/edit/${currentUser?.user._id}`}><i className="fa-solid fa-pen-to-square"></i> Edit Profile</NavDropdown.Item>
-            <NavDropdown.Item onClick={handleLogout} href="/"><i className="fa-solid fa-right-from-bracket"></i> Logout</NavDropdown.Item>
-            <NavDropdown.Item href={`/profile/delete/${currentUser?.user._id}`}><i className="fa-solid fa-trash-can"></i> Delete Account</NavDropdown.Item>
+            <NavDropdown.Item>
+                <Link to={`/profile/${currentUser?.user._id}`}>
+                    <i className="fa-solid fa-user"></i> Profile
+                </Link>
+            </NavDropdown.Item>
+            <NavDropdown.Item>
+                <Link to={`/profile/edit/${currentUser?.user._id}`}>
+                    <i className="fa-solid fa-pen-to-square"></i> Edit Profile
+                </Link>
+            </NavDropdown.Item>
+            <NavDropdown.Item>
+                <Link onClick={handleLogout} to={'/'}>
+                    <i className="fa-solid fa-right-from-bracket"></i> Logout
+                </Link>
+            </NavDropdown.Item>
+            <NavDropdown.Item>
+                <Link to={`/profile/delete/${currentUser?.user._id}`}>
+                    <i className="fa-solid fa-trash-can"></i> Delete Account
+                </Link>
+            </NavDropdown.Item>
         </NavDropdown>
     </>
 
