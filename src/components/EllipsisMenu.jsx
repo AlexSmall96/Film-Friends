@@ -5,14 +5,15 @@ import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { CustomMenu, CustomToggle } from './CustomDropDown';
 import { useCurrentUser } from '../contexts/CurrentUserContext';
 import { axiosReq } from '../api/axiosDefaults';
-
+import { useCurrentFilm } from '../contexts/CurrentFilmContext';
 /* 
 Ellipsis menu - used as a subcomponent of the film component when rendered on films page
 Allows user to share film, delete film, or make public / private
 */
-const EllipsisMenu = ({handleDelete, updateViewingData, viewingData, omdbData, filmId}) => {
+const EllipsisMenu = () => {
     // Contexts
     const {currentUser} = useCurrentUser()
+    const {currentFilmIds, setCurrentFilmIds, viewingData, omdbData, updateViewingData} = useCurrentFilm()
     // Hooks
     const history = useHistory()
     // Initialise state variables
@@ -68,7 +69,7 @@ const EllipsisMenu = ({handleDelete, updateViewingData, viewingData, omdbData, f
         try {
             // Post data
             await axiosReq.post('/reccomendations', {
-                film: filmId,
+                film: currentFilmIds.database,
                 sender: currentUser.user._id,
                 reciever: recipient._id,
                 message
@@ -78,6 +79,15 @@ const EllipsisMenu = ({handleDelete, updateViewingData, viewingData, omdbData, f
             setSent(true)
             setHasLoaded(false)
             setUpdated(!updated)
+        } catch (err) {
+            console.log(err)
+        }
+    }
+    // Handle Delete - Removes film from watchlist
+    const handleDelete = async () => {
+        try {
+            await axiosReq.delete(`/films/${currentFilmIds.database}`, {headers: {'Authorization': `Bearer ${currentUser.token}`}} )
+            setCurrentFilmIds({imdbID: '', database: ''})
         } catch (err) {
             console.log(err)
         }
@@ -110,8 +120,8 @@ const EllipsisMenu = ({handleDelete, updateViewingData, viewingData, omdbData, f
                         >   
                             {/* SHARE, REMOVE AND MAKE PUBLIC / PRIVATE OPTIONS */}
                             <p onClick={handleShowModal} className={appStyles.hover}><i className="fa-solid fa-share"></i> Share</p>
-                            <p className={appStyles.hover} onClick={handleDelete}><i className="fa-regular fa-trash-can"></i> Remove from Watchlist</p>
                             <p className={appStyles.hover} onClick={() => updateViewingData(null, null, !viewingData.public)}><i className="fa-solid fa-pen"></i> {viewingData.public? 'Make Private': 'Make Public'}</p>
+                            <p className={appStyles.hover} onClick={handleDelete}><i className="fa-regular fa-trash-can"></i> Remove from Watchlist</p>
                         </div>)
                     }
                 </Overlay>

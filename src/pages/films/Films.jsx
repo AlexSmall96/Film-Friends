@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom/cjs/react-router-dom.min';
 import { axiosReq } from '../../api/axiosDefaults';
 import { useCurrentUser } from '../../contexts/CurrentUserContext';
-import { Button, Col, Container, Row, Dropdown, DropdownButton, Spinner } from 'react-bootstrap';
+import {Col, Container, Row, Spinner } from 'react-bootstrap';
 import styles from '../../styles/Films.module.css'
 import appStyles from '../../App.module.css'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import Film from '../../components/Film';
 import useWindowDimensions from '../../hooks/useWindowDimensions';
 import Filters from '../../components/Filters'
-import axios from 'axios';
+import { useCurrentFilm } from '../../contexts/CurrentFilmContext';
 
 const Films = () => {
     // Hooks
@@ -21,44 +21,20 @@ const Films = () => {
 
     // Contexts
     const { currentUser } = useCurrentUser()
+    const {currentFilmIds, setCurrentFilmIds, viewingData, setViewingData, omdbData, setOmdbData, updated, setUpdated} = useCurrentFilm()
     // Initialize state variables
     const [username, setUsername] = useState('')
-    const [currentUsersFilmIds, setCurrentUsersFilmIds] = useState([])
+    const [currentUsersFilmIds, setCurrentUsersFilmIds, ] = useState([])
     const [allFilms, setAllFilms] = useState([])
     const [filteredFilms, setFilteredFilms] = useState([])
-    const [viewingData, setViewingData] = useState({watched: false, userRating: ''})
-    const [currentFilmIds, setCurrentFilmIds] = useState({imdbID: imdbID || '', database: database || ''})
-    const [omdbData, setOmdbData] = useState({})
     const [sort, setSort] = useState('')
     const [filter, setFilter] = useState({
         public: true,
         watched: 'All'
     })
     const [hasLoaded, setHasLoaded] = useState(false)
-    const [updated, setUpdated] = useState(false)
     // Check if current user is owner of film list
     const isOwner = currentUser.user._id === id
-
-    const handleDelete = async () => {
-        try {
-            await axiosReq.delete(`/films/${currentFilmIds.database}`, {headers: {'Authorization': `Bearer ${currentUser.token}`}} )
-            setCurrentFilmIds({imdbID: '', database: ''})
-        } catch (err) {
-            console.log(err)
-        }
-    }
-
-    // Saves a film to users watchlist, can be called via the buttons for each film result
-    const saveFilm = async (Title, imdbID, Poster, Year, Type, publicFilm) => {
-        try {
-            await axiosReq.post('/films', {Title, imdbID, Poster, Year, Type, public: publicFilm}, {
-                headers: {'Authorization': `Bearer ${currentUser.token}`}
-            })
-            setUpdated(!updated)
-        } catch(err){
-            console.log(err)
-        }
-    }
 
     useEffect(() => {
         // Check if a film matches current criteria specified by filters
@@ -73,7 +49,7 @@ const Films = () => {
         const fetchFilms = async () => {
             const response = await axiosReq.get(`/films/${id}/?sort=${sort}`, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
             const fullResponse = response.data.films
-            const filteredResponse = response.data.films.filter(film => checkFilm(film))
+            const filteredResponse = await response.data.films.filter(film => checkFilm(film))
             setAllFilms(fullResponse)
             setFilteredFilms(filteredResponse)
             if (currentFilmIds.imdbID === '') {
@@ -81,7 +57,8 @@ const Films = () => {
                     imdbID: filteredResponse[0].imdbID,
                     database: filteredResponse[0]._id
                 })
-            } 
+            }
+            setHasLoaded(true)
         }
         // Get the username associated with the film list
         const fetchUsername = async () => {
@@ -125,30 +102,7 @@ const Films = () => {
             }
         }
         getOMDBData()
-        setHasLoaded(true)
     }, [currentFilmIds])
-
-    const updateViewingData = async (event, value, publicFilm) => {
-        let reqObj, stateObj
-        if (event) {
-            reqObj = {watched: event.target.checked}
-            stateObj = {watched: event.target.checked, userRating: viewingData.userRating, public: viewingData.public}
-        } else if (value) {
-            reqObj = {userRating: value}
-            stateObj = {watched: viewingData.watched, userRating: value, public: viewingData.public}
-        } else {
-            reqObj = {public: publicFilm}
-            stateObj = {watched: viewingData.watched, userRating: viewingData.userRating, public: publicFilm}
-        }
-        try {
-            await axiosReq.patch(`/films/${currentFilmIds.database}`, reqObj, {headers: {'Authorization': `Bearer ${currentUser.token}`}} )
-            setViewingData(stateObj)
-        } catch(err) {
-            console.log(err)
-        }
-    }
-    
-    const handleShare = () => history.push(`/reccomendations/send/films/${currentFilmIds.database}`)
 
     return (
         <Container>
@@ -166,9 +120,6 @@ const Films = () => {
                                 username={username} 
                                 mobile={true} 
                                 filteredFilms={filteredFilms} 
-                                title={omdbData.Title}
-                                setCurrentFilmIds={setCurrentFilmIds}
-                                setViewingData={setViewingData}
                             />
                         </Row>):('')}
                     <Row>
@@ -180,7 +131,12 @@ const Films = () => {
                                 <div className={styles.filmsListBody}>
                                 {filteredFilms.length? (
                                     filteredFilms.map(
-                                        film => <Film key={film.imdbID} filmData={film} fullView={false} filmsPage={true} setCurrentFilmIds={setCurrentFilmIds} setViewingData={setViewingData}  />
+                                        film => <Film 
+                                                    key={film.imdbID} 
+                                                    filmData={film} 
+                                                    fullView={false} 
+                                                    filmsPage={true} 
+                                                />
                                     )
                                 ):('No films matching criteria.')}
                                 </div>
@@ -189,21 +145,11 @@ const Films = () => {
                         <Col sm={{span: 12, order: 1}} md={{span:8, order:2}} style={{marginTop: '30px'}}>
                             {/* SELECTED FILM */}
                             <Film
-                                filmData={viewingData}
-                                filmId={currentFilmIds.database}
-                                omdbData={omdbData}
                                 fullView={true}
                                 filmsPage={true}
                                 isOwner={isOwner}
                                 saved={currentUsersFilmIds.includes(omdbData.imdbID)}
-                                updated={updated}
-                                setUpdated={setUpdated}
-                                saveFilm={saveFilm}
                                 username={username}
-                                viewingData={viewingData}
-                                updateViewingData={updateViewingData}
-                                handleDelete={handleDelete}
-                                handleShare={handleShare}
                             />
                         </Col>
 

@@ -1,37 +1,25 @@
-import React, {useState, useRef, useEffect} from 'react';
-import {Button, Col, Dropdown, Row, Image, Overlay, OverlayTrigger, Tooltip, Form} from 'react-bootstrap'
+import React from 'react';
+import {Button, Col, Dropdown, Row, Image, Form} from 'react-bootstrap'
 import appStyles from '../App.module.css'
 import styles from '../styles/Films.module.css'
 import { useCurrentUser } from '../contexts/CurrentUserContext';
+import { useCurrentFilm } from '../contexts/CurrentFilmContext';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import EllipsisMenu from './EllipsisMenu';
 import IconRating from './IconRating';
 import useWindowDimensions from '../hooks/useWindowDimensions';
-import ShareModal from './ShareModal';
-import { axiosReq } from '../api/axiosDefaults';
+
 // Displays film poster and data, either individually or as a list of search results/saved films 
-const Film = ({ 
-    filmData, 
-    fullView, 
-    filmsPage,
-    reccomendatonsPage,
-    isOwner, 
-    username, 
-    saveFilm, 
-    saved, 
-    omdbData,
-    filmId,
-    viewingData,
-    updateViewingData, 
-    setCurrentFilmIds, 
-    setViewingData,
-    handleDelete, 
-    handleShare,
-    }) => {
+const Film = ({ filmData, fullView, filmsPage, reccomendatonsPage, isOwner, username, saved }) => {
+    
+    // Hooks
     const { width } = useWindowDimensions();
+    // Contexts
     const { currentUser } = useCurrentUser()
+    const {setCurrentFilmIds, viewingData, setViewingData, omdbData, updateViewingData, saveFilm} = useCurrentFilm()
     const history = useHistory()
     const ratingValues = [1, 2, 3, 4, 5]
+
     // Define handle save function
     const saveToPublicList = 
         fullView?
@@ -48,7 +36,7 @@ const Film = ({
         <Row onClick={
             !fullView && filmsPage? () => {
                 setCurrentFilmIds({imdbID: filmData.imdbID, database: filmData._id})
-                setViewingData({watched: filmData.watched, userRating: filmData.userRating})
+                setViewingData({watched: viewingData.watched, userRating: viewingData.userRating})
             }:null
             } className={!fullView && filmsPage? styles.filmRow: ''} style={{padding: '2px', textAlign: 'left'}}>
             {/* FILM POSTER */}
@@ -70,7 +58,7 @@ const Film = ({
                 <h5 className={fullView? appStyles.bold: appStyles.medium}>
                     {fullView? omdbData.Title : filmData.Title}
                     {fullView && isOwner? 
-                    <EllipsisMenu handleDelete={handleDelete} handleShare={handleShare} updateViewingData={updateViewingData} viewingData={viewingData} omdbData={omdbData} filmId={filmId} /> : '' }
+                    <EllipsisMenu /> : '' }
                 </h5>
                 {fullView? 
                     (
@@ -88,7 +76,7 @@ const Film = ({
                                     <Form.Check 
                                         type='checkbox'
                                         label='Watched'
-                                        checked={filmData.watched || false}
+                                        checked={viewingData.watched || false}
                                         disabled={!isOwner}
                                         onChange={updateViewingData}
                                     />                            
@@ -96,7 +84,7 @@ const Film = ({
                             <p>
                                 {isOwner? ('Your Rating: '): viewingData.watched ? (`${username}'s Rating:`):''}
                                 {isOwner || viewingData.watched ? ratingValues.map(
-                                    value => <span onClick={isOwner? () => updateViewingData(null, value):null} key={value} className={`fa fa-star ${filmData.userRating >= value ? styles.checked : ''}`}></span>
+                                    value => <span onClick={isOwner? () => updateViewingData(null, value):null} key={value} className={`fa fa-star ${viewingData.userRating >= value ? styles.checked : ''}`}></span>
                                 ):''}
                             </p>
                             {/* SAVE / GO TO WATCHLIST BUTTONS IF NOT OWNER OF FILMS LIST */}

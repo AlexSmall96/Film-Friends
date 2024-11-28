@@ -5,10 +5,12 @@ import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import ResultsPagination from '../components/ResultsPagination'
 import { Button, Container, Col, Form, Image, Row} from 'react-bootstrap';
 import Film from '../components/Film'
+import { useCurrentFilm } from '../contexts/CurrentFilmContext';
 
 const Home = () => {
     // Contexts
     const { currentUser } = useCurrentUser()
+    const { updated } = useCurrentFilm()
     // Hooks
     const history = useHistory()
     const [searchResults, setSearchResults] = useState([])
@@ -20,7 +22,6 @@ const Home = () => {
     const [finalPage, setFinalPage] = useState(1)
     const [totalResults, setTotalResults] = useState(0)
     const [error, setError] = useState('')
-    const [updated, setUpdated] = useState(false)
     const id = currentUser?.user._id || null
 
     useEffect(() => {
@@ -75,18 +76,6 @@ const Home = () => {
         setQuery(search)
     }
 
-    // Saves a film to users watchlist, can be called via the buttons for each film result
-    const saveFilm = async (Title, imdbID, Poster, Year, Type, publicFilm) => {
-        try {
-            await axiosReq.post('/films', {Title, imdbID, Poster, Year, Type, public: publicFilm}, {
-                headers: {'Authorization': `Bearer ${currentUser.token}`}
-            })
-            setUpdated(!updated)
-        } catch(err){
-            console.log(err)
-        }
-    }
-
     return (
         <>
             {/* SEARCH BAR*/}
@@ -131,9 +120,6 @@ const Home = () => {
                                         filmData={film}
                                         fullView={false}
                                         filmsPage={false}
-                                        saveFilm={saveFilm} 
-                                        history={history} 
-                                        currentUserId={id}
                                         saved={filmIds.includes(film.imdbID)} 
                                     />
                             )}  

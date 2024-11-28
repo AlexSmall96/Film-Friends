@@ -2,13 +2,19 @@ import React, {useState, useRef} from 'react';
 import { Button, Col, Container, Row, Dropdown, DropdownButton, Spinner } from 'react-bootstrap';
 import styles from '../styles/Films.module.css'
 import appStyles from '../App.module.css'
+import { useCurrentFilm } from '../contexts/CurrentFilmContext';
 
-const Filters = ({isOwner, filter, setFilter, sort, setSort, username, mobile, filteredFilms, title, setCurrentFilmIds, setViewingData }) => {
+const Filters = ({isOwner, filter, setFilter, sort, setSort, username, mobile, filteredFilms }) => {
+    const {
+        setCurrentFilmIds, 
+        setViewingData,
+        omdbData
+    } = useCurrentFilm()
     return (
         <>
         <Row>
         {mobile? (
-                <DropdownButton className={styles.filter}  variant='light' title={title}>
+                <DropdownButton className={styles.filter}  variant='light' title={omdbData.Title}>
                     {filteredFilms.map(
                         film => 
                             <Dropdown.Item 
@@ -43,8 +49,8 @@ const Filters = ({isOwner, filter, setFilter, sort, setSort, username, mobile, f
             <Col xs={6} sm={6} md={12}>
             <div style={{display: 'block', margin: '5px 0px 5px 0px'}}>
                 <DropdownButton className={`${styles.filmSortButton} ${styles.filter} ${appStyles.smallFont}`} variant='outline-secondary' title={sort === 'title'? 'A-Z': 'Last updated'}>
-                    <Dropdown.Item onClick={sort !== 'title' ? () => setSort('title'):null}>A-Z</Dropdown.Item>
-                    <Dropdown.Item onClick={sort === 'title' ? () => setSort(null):null}>Last Updated</Dropdown.Item>
+                    <Dropdown.Item onClick={() => setSort('A-Z')}>A-Z</Dropdown.Item>
+                    <Dropdown.Item onClick={() => setSort('')}>Last Updated</Dropdown.Item>
                 </DropdownButton>
                 <DropdownButton 
                 className={`${styles.filmSortButton} ${styles.filter} ${appStyles.smallFont}`} variant='outline-secondary' title={filter.watched}>
