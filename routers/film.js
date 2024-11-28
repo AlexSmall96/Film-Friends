@@ -11,7 +11,7 @@ const Reccomendation = require('../models/reccomendation')
 const OMDB_API_KEY = process.env.OMDB_API_KEY
 
 // Create a film (save film to watchlist)
-router.post('/films', auth, async (req, res) => {
+router.post('/data/films', auth, async (req, res) => {
     const owner = req.user._id
     if (req.body.Poster == 'N/A') {
         req.body.Poster = 'https://res.cloudinary.com/dojzptdbc/image/upload/v1726945998/default-movie_uajvdm.png'
@@ -26,7 +26,7 @@ router.post('/films', auth, async (req, res) => {
 })
 
 // Get a users films
-router.get('/films/:id', auth, async (req, res) => {
+router.get('/data/films/:id', auth, async (req, res) => {
     const routerId = req.params.id
     const filmId = req.query.filmId
     const sortObj = req.query.sort === 'A-Z' ? ({Title: 1, updatedAt: -1}):({updatedAt: -1})
@@ -49,7 +49,7 @@ router.get('/films/:id', auth, async (req, res) => {
 })
 
 // Gets film search results from OMDB API
-router.get('/filmSearch', async (req, res) => {
+router.get('/data/filmSearch', async (req, res) => {
     const search = req.query.search
     const page = req.query.page
     try {
@@ -62,7 +62,7 @@ router.get('/filmSearch', async (req, res) => {
 })
 
 // Gets data for a single film from OMDB API and users rating / watched data
-router.get('/filmData', async (req, res) => {
+router.get('/data/filmData', async (req, res) => {
     const imdbID = req.query.imdbID
     const _id = req.query.databaseID
     try {
@@ -86,7 +86,7 @@ router.get('/filmData', async (req, res) => {
 })
 
 // Update film data
-router.patch('/films/:id', auth, async (req, res) => {
+router.patch('/data/films/:id', auth, async (req, res) => {
     const _id = req.params.id
     try {
         const film = await Film.findOneAndUpdate({_id, owner: req.user._id}, req.body, {new: true, runValidators: true})
@@ -100,7 +100,7 @@ router.patch('/films/:id', auth, async (req, res) => {
 })
 
 // Delete film
-router.delete('/films/:id', auth, async (req, res) => {
+router.delete('/data/films/:id', auth, async (req, res) => {
     const _id = req.params.id
     try {
         const film = await Film.findOneAndDelete({_id:_id, owner: req.user._id})

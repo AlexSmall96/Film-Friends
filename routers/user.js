@@ -21,7 +21,7 @@ cloudinary.config({
 
 
 // Sign up
-router.post('/users', async (req, res) => {
+router.post('/data/users', async (req, res) => {
     const user = new User(req.body)
     try {
         await user.save()
@@ -32,7 +32,7 @@ router.post('/users', async (req, res) => {
 })
 
 // Login
-router.post('/users/login', async (req, res) => {
+router.post('/data/users/login', async (req, res) => {
     try {
         const user = await User.findByCredentials(req.body.email, req.body.password)
         const token = await user.generateAuthToken()
@@ -43,7 +43,7 @@ router.post('/users/login', async (req, res) => {
 })
 
 // Logout
-router.post('/users/logout', auth, async (req, res) => {
+router.post('/data/users/logout', auth, async (req, res) => {
     try {
         req.user.tokens = req.user.tokens.filter(token => token.token !== req.token )
         await req.user.save()
@@ -54,12 +54,12 @@ router.post('/users/logout', auth, async (req, res) => {
 })
 
 // Check if token is still valid
-router.get('/users/token', auth, async (req, res) => {
+router.get('/data/users/token', auth, async (req, res) => {
     res.send()
 })
 
 // View a users profile
-router.get('/users/:id', auth, async (req, res) => {
+router.get('/data/users/:id', auth, async (req, res) => {
     const routerId = req.params.id
     try {
         let profile = await User.findById(routerId)
@@ -100,7 +100,7 @@ https://medium.com/@elijahechekwu/sending-emails-in-node-express-js-with-nodemai
 */
 
 // Check email address
-router.post('/users/sendEmail', async (req, res) => {
+router.post('/data/users/sendEmail', async (req, res) => {
     try {
         const email = req.body.email
         const account = await User.findOne({email})
@@ -133,7 +133,7 @@ router.post('/users/sendEmail', async (req, res) => {
 })
 
 // Search for profiles
-router.get('/users/', auth, async (req, res) => {
+router.get('/data/users/', auth, async (req, res) => {
     const username = new RegExp(`^${req.query.username.trim()}`, "i")
     try {
         const allUsers = await User.find( { username: { $regex:username } } )
@@ -162,7 +162,7 @@ const uploadToCloudinary = async (path, folder = "my-profile") => {
 };
 
 // Edit profile
-router.patch('/users/me', auth, async (req, res) => {
+router.patch('/data/users/me', auth, async (req, res) => {
     const _id = req.user._id
     let body = {}
     try {
@@ -179,7 +179,7 @@ router.patch('/users/me', auth, async (req, res) => {
     }
 })
 
-router.patch('/users/resetPassword', async (req, res) => {
+router.patch('/data/users/resetPassword', async (req, res) => {
     try {
         const email = req.body.email
         const password = req.body.password
@@ -193,7 +193,7 @@ router.patch('/users/resetPassword', async (req, res) => {
 })
 
 // Delete account
-router.delete('/users/me', auth, async (req, res) => {
+router.delete('/data/users/me', auth, async (req, res) => {
     try {
         await User.findOneAndDelete({_id: req.user._id})
         await Film.deleteMany({owner: req.user._id})

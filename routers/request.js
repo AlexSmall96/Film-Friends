@@ -10,7 +10,7 @@ const auth = require('../middleware/auth')
 const User = require('../models/user')
 
 // Create a friend request 
-router.post('/requests', auth, async (req, res) => {
+router.post('/data/requests', auth, async (req, res) => {
     // Get sender and reciever
     const sender = req.user.id
     const reciever = req.body.reciever
@@ -41,7 +41,7 @@ router.post('/requests', auth, async (req, res) => {
 // Get friend requests and friends
 // Returns all accepted or pending requests user has sent or has recieved
 // Excludes declined requests
-router.get('/requests', auth, async (req, res) => {
+router.get('/data/requests', auth, async (req, res) => {
     const _id = req.user._id
     try {
         const requests = await Request.find({$or: [{sender: _id}, {reciever: _id, declined: false}]})        
@@ -78,7 +78,7 @@ router.get('/requests', auth, async (req, res) => {
 })            
 
 // Update request data (accept or decline)
-router.patch('/requests/:id', auth, async (req, res) => {
+router.patch('/data/requests/:id', auth, async (req, res) => {
     const _id = req.params.id
     try {
         const request = await Request.findOneAndUpdate({_id, reciever: req.user._id}, req.body, {new: true, runValidators: true})
@@ -92,7 +92,7 @@ router.patch('/requests/:id', auth, async (req, res) => {
 })
 
 // Delete request
-router.delete('/requests/:id', auth, async (req, res) => {
+router.delete('/data/requests/:id', auth, async (req, res) => {
     const _id = req.params.id
     try {
         const request = await Request.findOneAndDelete({_id:_id})

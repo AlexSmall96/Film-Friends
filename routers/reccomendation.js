@@ -12,7 +12,7 @@ const auth = require('../middleware/auth')
 const User = require('../models/user')
 
 // Create a reccomendation (send reccomendation to friend)
-router.post('/reccomendations', auth, async (req, res) => {
+router.post('/data/reccomendations', auth, async (req, res) => {
     try {
         const filmId = req.body.film
         const film = await Film.findById(filmId) 
@@ -36,9 +36,8 @@ router.post('/reccomendations', auth, async (req, res) => {
 })
 
 // Get all reccomendations
-router.get('/reccomendations', auth, async (req, res) => {
+router.get('/data/reccomendations', auth, async (req, res) => {
     const _id = req.user._id
-    const page = req.query.page
     try {
         const reccomendations = await Reccomendation.find({$or: [{reciever:_id}, {sender:_id}]})
             .sort({updatedAt: -1})
@@ -74,7 +73,7 @@ router.get('/reccomendations', auth, async (req, res) => {
 })
 
 // Update a reccomendation (comment or like)
-router.patch('/reccomendations/:id', auth, async (req, res) => {
+router.patch('/data/reccomendations/:id', auth, async (req, res) => {
     const _id = req.params.id
     try {
         const reccomendation = await Reccomendation.findOneAndUpdate({_id, reciever: req.user._id}, req.body, {new: true, runValidators: true})
@@ -88,7 +87,7 @@ router.patch('/reccomendations/:id', auth, async (req, res) => {
 })
 
 // Delete a reccomendation
-router.delete('/reccomendations/:id', auth, async (req, res) => {
+router.delete('/data/reccomendations/:id', auth, async (req, res) => {
     const _id = req.params.id
     try {
         const reccomendation = await Reccomendation.findById(_id)
