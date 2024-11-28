@@ -39,6 +39,16 @@
   color: #61dafb; 
 }
 
+a {
+  color: black;
+  text-decoration: none;
+  margin-right: 10px
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
 .bold {
   font-weight: 600;
 }
