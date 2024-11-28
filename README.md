@@ -107,6 +107,9 @@ The wireframes below were created to plan the app's front-end layout. A large vi
 
 ![](documentation/wireframes/HomePage.png)
 
+**Film Search**
+
+![](documentation/wireframes/HomeSearch.png)
 
 **Profile Page**
 
