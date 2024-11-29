@@ -8,9 +8,13 @@ import useWindowDimensions from '../../hooks/useWindowDimensions';
 import styles from '../../styles/Films.module.css'
 import sortBy from 'array-sort-by'
 import DeleteModal from '../../components/DeleteModal'
+import { FriendDataProvider } from '../../contexts/FriendDataContext';
+import { useCurrentFilm } from '../../contexts/CurrentFilmContext';
+import { set } from 'mongoose';
 
 const Reccomendations = () => {
     const {currentUser} = useCurrentUser()
+    const {currentFilmIds, setCurrentFilmIds} = useCurrentFilm()
     const history = useHistory()
     const [reccomendations, setReccomendations] = useState([])
     const [filter, setFilter] = useState('All')
@@ -53,6 +57,10 @@ const Reccomendations = () => {
         }
     }
 
+    const handleClick = (owner, imdbID, database) => {
+        setCurrentFilmIds({imdbID, database})
+        history.push(`/films/${owner}`)
+    }
     const ratingValues = [1, 2, 3, 4, 5]
     return (
         <Container>
@@ -96,8 +104,9 @@ const Reccomendations = () => {
                                                     )}  
                                                     <p>
                                                         <Button 
-                                                            onClick={() => history.push(`/films/${rec.film.owner}/${rec.film.imdbID}/${rec.film._id}`)} 
-                                                            variant='link'>{`${rec.sender.username}'s watchlist`}
+                                                            onClick={() => handleClick(rec.film.owner, rec.film.imdbID, rec.film._id)} 
+                                                            variant='link'
+                                                        >{`${rec.sender.username}'s watchlist`}
                                                         </Button>
                                                     </p>
                                                 </>
@@ -106,7 +115,9 @@ const Reccomendations = () => {
                                         </Col>
                                         <Col md={2}>
                                             <p>
-                                                <DeleteModal handleDelete={() => deleteReccomendation(rec._id)} message={`Are you sure you want to remove ${rec.film.Title} from your reccomendations?`} />
+                                                <FriendDataProvider requestId={null} user={null}>
+                                                    <DeleteModal deleteReccomendation={() => deleteReccomendation(rec._id)} message={`Are you sure you want to remove ${rec.film.Title} from your reccomendations?`} />
+                                                </FriendDataProvider>
                                             </p>
                                         </Col>
                                     </Row>
