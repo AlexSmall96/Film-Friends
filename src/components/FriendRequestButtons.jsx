@@ -1,16 +1,19 @@
-import React, {useState} from 'react';
-import { Button, Modal } from 'react-bootstrap';
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import React from 'react';
+import { Button } from 'react-bootstrap';
 import DeleteModal from './DeleteModal';
 import ShareModal from './ShareModal';
-
+import { useFriendAction } from '../contexts/FriendActionContext';
+import { useFriendData } from '../contexts/FriendDataContext';
 /* 
 Component used in friends page
 Displays appropriate text and buttons, dependent on status of friend request
 Changes what is displayed depending on wether the component is being used in search results or friends list
 */
-const FriendRequestButtons = ({status, searchResult, sendRequest, handleShare, handleDelete, handleUpdate, user}) => {
+const FriendRequestButtons = ({status, searchResult}) => {
 
+    // Friend action and data contexts
+    const {sendRequest, updateRequest} = useFriendAction()
+    const {user, requestId} = useFriendData()
     // Desctructure status fields
     const {accepted, sent, recieved} = status
 
@@ -24,20 +27,20 @@ const FriendRequestButtons = ({status, searchResult, sendRequest, handleShare, h
     // Buttons when component is used in friends list
     const friendsButtons = accepted ? 
         <>
-            <ShareModal handleShare={handleShare} user={user} />
-            <DeleteModal handleDelete={handleDelete} message={`Are you sure you want to remove ${user.username} as a friend?`} />
+            <ShareModal />
+            <DeleteModal message={`Are you sure you want to remove ${user.username} as a friend?`} />
         </> : 
             sent?
-                <DeleteModal handleDelete={handleDelete} user={user} />
+                <DeleteModal message={`Are you sure you want to remove your friend request to ${user.username}?`} />
             : 
                 <>
-                    <Button style={{marginRight: '5px'}} onClick={() => handleUpdate(true)} variant='outline-secondary'><i className="fa-solid fa-check"></i> Accept</Button>
-                    <Button onClick={() => handleUpdate(false)} variant='outline-secondary'><i className="fa-solid fa-xmark"></i> Decline</Button>                   
+                    <Button style={{marginRight: '5px'}} onClick={() => updateRequest(true, requestId)} variant='outline-secondary'><i className="fa-solid fa-check"></i> Accept</Button>
+                    <Button onClick={() => updateRequest(false, requestId)} variant='outline-secondary'><i className="fa-solid fa-xmark"></i> Decline</Button>                   
                 </>
     // Buttons when component is used in search results
     const searchResultsButtons = !accepted && !sent && !recieved ? 
         <>
-            <Button onClick={sendRequest} variant='outline-secondary'>Send Friend Request</Button>
+            <Button onClick={() => sendRequest(user._id)} variant='outline-secondary'>Send Friend Request</Button>
         </> : ''
 
     // Render text and buttons determined above

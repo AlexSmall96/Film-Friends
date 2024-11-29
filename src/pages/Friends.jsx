@@ -4,14 +4,14 @@ import { useCurrentUser } from '../contexts/CurrentUserContext';
 import { Card, Container, Dropdown, DropdownButton, Row, Col, Form, Spinner } from 'react-bootstrap';
 import User from '../components/User';
 import FriendRequestButtons from '../components/FriendRequestButtons'
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import sortBy from 'array-sort-by'
+import { FriendDataProvider } from '../contexts/FriendDataContext';
+import { useFriendAction } from '../contexts/FriendActionContext';
 
 const Friends = () => {
-    // Hooks
-    const history = useHistory()
     // Contexts
     const { currentUser } = useCurrentUser()
+    const { updated } = useFriendAction()
     // Initialize state variables
     const [requests, setRequests] = useState([])
     const [allRequests, setAllRequests] = useState([])
@@ -20,11 +20,11 @@ const Friends = () => {
     const [searchResults, setSearchResults] = useState([])
     const [filter, setFilter] = useState('All')
     const [sort, setSort] = useState('A-Z')
-    const [updated, setUpdated] = useState(false)
     const [hasLoadedFriends, setHasLoadedFriends] = useState(false)
     const [hasLoadedSearch, setHasLoadedSearch] = useState(true)
     const [hasUpdated, setHasUpdated] = useState(true)
 
+    // Callback function to sort requests based on sort variable
     const sortRequest = (req, sort) => {
         return sort === 'A-Z' ? req.isSender? req.reciever.username: req.sender.username: req.updatedAt
     }
@@ -76,36 +76,6 @@ const Friends = () => {
             setSearch('')
         }
     }
-    // Updates the status of the friend request to accepted or declined
-    const updateRequest = async (accepted, id) => {
-        const body = accepted? {accepted: true} : {declined: true}
-        try {
-            await axiosReq.patch(`/requests/${id}`, body, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
-            setUpdated(!updated)
-        } catch (err) {
-            console.log(err)
-        }
-    }
-
-    // Sends a friend request to reciever
-    const sendRequest = async (reciever) => {
-        try {
-            await axiosReq.post('/requests', {reciever}, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
-            setUpdated(!updated)
-        } catch (err) {
-            console.log(err)
-        }
-    }
-
-    // Current user can delete a friend request 
-    const deleteRequest = async (id) => {
-        try {
-            await axiosReq.delete(`/requests/${id}`, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
-            setUpdated(!updated)
-        } catch (err) {
-            console.log(err)
-        }
-    }
 
     // Takes in id and uses requests array to determine status of friend request
     const getStatus = (id) => {
@@ -124,69 +94,76 @@ const Friends = () => {
 
     return (
         <Container style={{marginTop: '10px'}}>
-
             <Row>
-            <Col md={2}>
-            <Row>
-                <Form>
-                    <Form.Control onChange={handleChange} type='text' placeholder='Find your friends'></Form.Control>
-                </Form>
-            </Row>
-                <Card>
-                    {hasLoadedSearch ? 
-                    searchResults.length && search !== '' ? searchResults.map(
-                        result => 
-                            <div key={result._id}>
-                                <User data={result} searchResult={true} />
-                                <FriendRequestButtons 
-                                    status={getStatus(result._id)} 
-                                    searchResult={true} 
-                                    sendRequest={() => sendRequest(result._id)} 
-                                />
-                            </div>
-                    ):(''):(<Spinner />)}
-
-                </Card>
-            </Col>
-            <Col md={6}>
-            {hasLoadedFriends?(
-                <Card>
-                    {allRequests.length?
-                    <>
-                        <DropdownButton style={{marginTop: '5px'}} variant='outline-secondary' id="dropdown-basic-button" title={filter}>
-                            <Dropdown.Item onClick={() => setFilter('All')}>All</Dropdown.Item>
-                            <Dropdown.Item onClick={() => setFilter('Friends')}>Friends</Dropdown.Item>
-                            <Dropdown.Item onClick={() => setFilter('Pending Requests')}>Pending Requests</Dropdown.Item>
-                        </DropdownButton>
-                        <DropdownButton style={{marginTop: '5px'}} variant='outline-secondary' id="dropdown-basic-button" title={sort}>
-                            <Dropdown.Item onClick={() => setSort('A-Z')}>A-Z</Dropdown.Item>
-                            <Dropdown.Item onClick={() => setSort('Last Updated')}>Last Updated</Dropdown.Item>
-                        </DropdownButton>
-                        {hasUpdated?
-                            requests.length?   
-                            requests.map(
-                                request =>
-                                    <Row key={request._id}>
-                                        <Col>
-                                            <User data={request.isSender? request.reciever : request.sender} searchResult={false}/>
-                                        </Col>
-                                        <Col>
+                <Col md={2}>
+                    {/* SEARCH BAR TO FIND USERS */}
+                    <Row>
+                        <Form>
+                            <Form.Control onChange={handleChange} type='text' placeholder='Find your friends'></Form.Control>
+                        </Form>
+                    </Row>
+                    {/* SEARCH RESULTS */}
+                    <Card>
+                        {hasLoadedSearch ? 
+                            searchResults.length && search !== '' ? searchResults.map(
+                                result =>
+                                    <FriendDataProvider key={result._id} requestId={null} user={result}> 
+                                        <div>
+                                            <User searchResult={true} />
                                             <FriendRequestButtons 
-                                                status={{accepted: request.accepted, sent: request.isSender, recieved: !request.isSender}} 
-                                                searchResult={false}
-                                                handleShare={request.accepted? () => history.push(`reccomendations/send/users/${request.isSender? request.reciever._id : request.sender._id}`) : null}
-                                                handleDelete={request.isSender || request.accepted ? () => deleteRequest(request._id) : null}
-                                                handleUpdate={!request.accepted ? (accepted) => updateRequest(accepted, request._id) : null}
-                                                user={request.isSender? request.reciever : request.sender}
+                                                status={getStatus(result._id)} 
+                                                searchResult={true} 
                                             />
-                                        </Col>
-                                    </Row> )
-                        : 'No requests matching current criteria'
-                           : <Spinner />}
-                    </> :"You don't have any friends yet."}
-                </Card> 
-            ):(<Spinner />)}
-            </Col>
+                                        </div>
+                                    </FriendDataProvider>
+                            ):(''):(<Spinner />)}
+                    </Card>
+                </Col>
+                <Col md={6}>
+                    {/* PENDING AND ACCEPTED FRIEND REQUESTS */}
+                    {hasLoadedFriends?(
+                        <Card>
+                            {allRequests.length?
+                                <>  
+                                    {/* DROPDOWN FILTERS */}
+                                    <DropdownButton style={{marginTop: '5px'}} variant='outline-secondary' id="dropdown-basic-button" title={filter}>
+                                        <Dropdown.Item onClick={() => setFilter('All')}>All</Dropdown.Item>
+                                        <Dropdown.Item onClick={() => setFilter('Friends')}>Friends</Dropdown.Item>
+                                        <Dropdown.Item onClick={() => setFilter('Pending Requests')}>Pending Requests</Dropdown.Item>
+                                    </DropdownButton>
+                                    <DropdownButton style={{marginTop: '5px'}} variant='outline-secondary' id="dropdown-basic-button" title={sort}>
+                                        <Dropdown.Item onClick={() => setSort('A-Z')}>A-Z</Dropdown.Item>
+                                        <Dropdown.Item onClick={() => setSort('Last Updated')}>Last Updated</Dropdown.Item>
+                                    </DropdownButton>
+                                    {/* REQUEST LIST */}
+                                    {hasUpdated?
+                                        requests.length?   
+                                            requests.map(
+                                                request =>
+                                                    <FriendDataProvider key={request._id} requestId={request._id} user={request.isSender? request.reciever : request.sender}>
+                                                        <Row >
+                                                            <Col>
+                                                                <User searchResult={false}/>
+                                                            </Col>
+                                                            <Col>
+                                                                <FriendRequestButtons 
+                                                                    status={{accepted: request.accepted, sent: request.isSender, recieved: !request.isSender}} 
+                                                                    searchResult={false}
+                                                                />
+                                                            </Col>
+                                                        </Row>
+                                                    </FriendDataProvider>
+                                            )
+                                        : 
+                                            'No requests matching current criteria'
+                                    : 
+                                        <Spinner />}
+                                </> 
+                            :
+                                "You don't have any friends yet."}
+                        </Card> 
+                    ):(<Spinner />)}
+                </Col>
             </Row>
         </Container>
     )
