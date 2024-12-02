@@ -1,18 +1,18 @@
 import React, {useState, useEffect, useRef} from 'react';
 import { axiosReq } from '../api/axiosDefaults';
 import { useCurrentUser } from '../contexts/CurrentUserContext';
-import { Container, Navbar, Nav, Image, Row, Form, Dropdown, Toast,  ToastContainer, Button, Overlay, NavDropdown} from 'react-bootstrap'
+import { Button, Container, Navbar, Nav, Image, Tooltip, Row, OverlayTrigger, NavDropdown} from 'react-bootstrap'
 import { Link } from 'react-router-dom/cjs/react-router-dom';
 import User from './User';
-
+import useWindowDimensions from '../hooks/useWindowDimensions';
 
 const NavBar = () => {
-    const [searchResults, setSearchResults] = useState([])
+    // Contexts
     const { currentUser, setCurrentUser  } = useCurrentUser()
-    const [search, setSearch] = useState('')
-    const [showMenu, setShowMenu] = useState(false);
-    const target = useRef(null)
-
+    // Hooks
+    const { mobile } = useWindowDimensions();
+    
+    // Handle logout
     const handleLogout = async () => {
         localStorage.clear()
         try {
@@ -25,12 +25,58 @@ const NavBar = () => {
             console.log(err)
         }
     }
+
+    // Tooltip for mobile icons
+    const renderTooltip = (page) => (
+        <Tooltip id="button-tooltip">
+            {page}
+        </Tooltip>
+    );
+
+    // Logged in icons: films, friends, reccomendations, user dropdown
     const loggedInIcons = 
     <>
-        <Link to={`/films/${currentUser?.user._id}`}>My Films</Link>
-        <Link to='/friends'>Friends</Link>
-        <Link to='/reccomendations'>Reccomendations</Link>
-        <NavDropdown title={<Image src={currentUser?.user.image} width={50} roundedCircle/>} id="basic-nav-dropdown">
+        <Link to={`/films/${currentUser?.user._id}`} style={{marginTop: '10px'}}>
+            {mobile? 
+                <OverlayTrigger
+                    placement="bottom"
+                    delay={{ show: 250, hide: 200 }}
+                    overlay={renderTooltip('My Films')}
+                >
+                    <Button variant='outline-secondary' style={{ padding: '6px', width: '40px', height: '40px'}}>
+                        <i className="fa-xl fa-solid fa-clapperboard"></i> 
+                    </Button>
+                </OverlayTrigger>
+            : 'My Films'}
+        </Link>
+        <Link to='/friends' style={{marginTop: '10px'}}>
+            {mobile?
+                <OverlayTrigger
+                    placement="bottom"
+                    delay={{ show: 250, hide: 200 }}
+                    overlay={renderTooltip('Friends')}
+                >
+                    <Button variant='outline-secondary' style={{ padding: '6px', width: '40px', height: '40px'}}>
+                        <i className="fa-xl fa-solid fa-users"></i> 
+                    </Button>
+                </OverlayTrigger>
+            : 'Friends'}
+        </Link>
+        <Link to='/reccomendations' style={{marginTop: '10px'}}>
+            {mobile? 
+                <OverlayTrigger
+                    placement="bottom"
+                    delay={{ show: 250, hide: 200 }}
+                    overlay={renderTooltip('Reccomendations')}
+                >                
+                    <Button variant='outline-secondary' style={{ padding: '6px', width: '40px', height: '40px'}}>
+                        <i className="fa-xl fa-solid fa-envelope"></i> 
+                    </Button>
+                </OverlayTrigger>
+            : 'Reccomendations'
+            }
+        </Link>
+        <NavDropdown title={<Image src={currentUser?.user.image} width={40} height={40} roundedCircle/>} id="basic-nav-dropdown" drop='start'>
             <NavDropdown.Item>
                 <Link to={`/profile/${currentUser?.user._id}`}>
                     <i className="fa-solid fa-user"></i> Profile
@@ -54,27 +100,24 @@ const NavBar = () => {
         </NavDropdown>
     </>
 
+    // Logged out icons: sign up and log in
     const loggedOutIcons = 
     <>
-        <Nav.Link href='/signup'>Sign up</Nav.Link>
-        <Nav.Link href='/login'>Login</Nav.Link>
+        <Link to='/signup'>Sign up</Link>
+        <Link to='/login'>Login</Link>
     </>
 
     return (
-        <Navbar bg="light" data-bs-theme="light">
-          	<Container>
-            	<Navbar.Brand href="/">
-                    <h3>Film
-                        <Image alt='A bag of popcorn' style={{marginLeft: '-13px', marginRight: '-13px'}} width={70} src='https://res.cloudinary.com/dojzptdbc/image/upload/v1729082084/popcorn_hzmb1v.png' />
-                    Friends
-                    </h3>
-                </Navbar.Brand>
-            		<Row>
-              			<Nav className="me-auto">
-                			{currentUser? loggedInIcons: loggedOutIcons}
-              			</Nav>
-            		</Row>
-          	</Container>
+        <Navbar bg="light" data-bs-theme="light" className="justify-content-between">
+            <Navbar.Brand href="/" style={{marginLeft: '10px'}}>
+                <h3>Film
+                    <Image alt='A bag of popcorn' style={{marginLeft: '-13px', marginRight: '-13px'}} width={70} src='https://res.cloudinary.com/dojzptdbc/image/upload/v1729082084/popcorn_hzmb1v.png' />
+                Friends
+                </h3>
+            </Navbar.Brand>
+            <Nav>
+                {currentUser? loggedInIcons: loggedOutIcons}
+            </Nav>
       	</Navbar>
     )
 }
