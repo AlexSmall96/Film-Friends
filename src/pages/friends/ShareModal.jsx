@@ -92,21 +92,22 @@ const ShareModal = () => {
                 <Modal.Header>
                     Sending to: <User data={user} searchResult={true}/>
                 </Modal.Header>
-                {/* MODAL BODY */}
+                {/* MODAL BODY */}  
                 <Modal.Body>
                     {hasLoaded? 
                         allFilms.length?
                             <>
-                            
                                 {selectedFilm  ? (
                                     <span>Film Selected: <Image src={selectedFilm?.Poster} width={50}/></span>
                                 ):(
                                     <p>{sent? films.length? 'Film shared. Select another film to share.':`You've shared all your public films with ${user.username}`:''}</p>
                                 )}
-                                {films.length? (<DropdownButton variant='outline-secondary' title={sort}>
-                                    <Dropdown.Item onClick={() => setSort('Last Updated')}>Last Updated</Dropdown.Item>
-                                    <Dropdown.Item onClick={() => setSort('A-Z')}>A-Z</Dropdown.Item>
-                                </DropdownButton>):('')}
+                                {films.length? (
+                                    <DropdownButton variant='outline-secondary' title={sort}>
+                                        <Dropdown.Item onClick={() => setSort('Last Updated')}>Last Updated</Dropdown.Item>
+                                        <Dropdown.Item onClick={() => setSort('A-Z')}>A-Z</Dropdown.Item>
+                                    </DropdownButton>
+                                ):('')}
                                 <div style={{height: '200px', overflowY: 'scroll'}}>
                                 {films.map(
                                     film => 
@@ -128,7 +129,7 @@ const ShareModal = () => {
                     }
                 </Modal.Body>
                 <Modal.Footer>
-                    {{/* MODAL BUTTONS */}}
+                    {/* MODAL BUTTONS */}
                     <Form>
                         <Form.Label>Message</Form.Label>
                         <Form.Control style={!selectedFilm? {color: 'grey'}:{color: 'black'}} readOnly={selectedFilm === null} value={message} onChange={handleMessageChange} />
