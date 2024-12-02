@@ -1,8 +1,8 @@
 import React, {useState, useRef} from 'react';
 import { Button, Col, Container, Row, Dropdown, DropdownButton, Spinner } from 'react-bootstrap';
-import styles from '../styles/Films.module.css'
-import appStyles from '../App.module.css'
-import { useCurrentFilm } from '../contexts/CurrentFilmContext';
+import styles from '../../styles/Films.module.css'
+import appStyles from '../../App.module.css'
+import { useCurrentFilm } from '../../contexts/CurrentFilmContext';
 
 const Filters = ({isOwner, filter, setFilter, sort, setSort, username, mobile, filteredFilms }) => {
     const {

@@ -1,11 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Overlay, Dropdown, Modal, Button, Image, Form, Spinner } from 'react-bootstrap';
-import appStyles from '../App.module.css'
+import appStyles from '../../App.module.css'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
-import { CustomMenu, CustomToggle } from './CustomDropDown';
-import { useCurrentUser } from '../contexts/CurrentUserContext';
-import { axiosReq } from '../api/axiosDefaults';
-import { useCurrentFilm } from '../contexts/CurrentFilmContext';
+import { CustomMenu, CustomToggle } from '../../components/CustomDropDown';
+import { useCurrentUser } from '../../contexts/CurrentUserContext';
+import { axiosReq } from '../../api/axiosDefaults';
+import { useCurrentFilm } from '../../contexts/CurrentFilmContext';
 /* 
 Ellipsis menu - used as a subcomponent of the film component when rendered on films page
 Allows user to share film, delete film, or make public / private

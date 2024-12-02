@@ -8,16 +8,13 @@ import appStyles from '../../App.module.css'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import Film from '../../components/Film';
 import useWindowDimensions from '../../hooks/useWindowDimensions';
-import Filters from '../../components/Filters'
+import Filters from '../films/Filters'
 import { useCurrentFilm } from '../../contexts/CurrentFilmContext';
 
 const Films = () => {
     // Hooks
     const { id } = useParams()
-    const { imdbID } = useParams()
-    const { database } = useParams()
-    const history = useHistory()
-    const { height, width } = useWindowDimensions();
+    const { width } = useWindowDimensions();
 
     // Contexts
     const { currentUser } = useCurrentUser()
