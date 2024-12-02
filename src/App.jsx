@@ -5,7 +5,7 @@ import Home from './pages/Home';
 import Profile from './pages/profile/Profile';
 import ProfileEdit from './pages/profile/ProfileEdit';
 import Films from './pages/films/Films';
-import Friends from './pages/Friends';
+import Friends from './pages/friends/Friends';
 import Reccomendations from './pages/reccomendations/Reccomendations';
 import Signup from './pages/auth/Signup';
 import Login from './pages/auth/Login';
@@ -31,7 +31,6 @@ function App() {
 							<Switch>
 								<Route exact path='/' render={() => <Home />} />
 								<Route exact path='/films/:id' render={() => <Films />} />
-								<Route exact path='/films/:id/:imdbID/:database' render={() => <Films />} />
 								<Route exact path='/friends/' render={() => <Friends />} />
 								<Route exact path='/reccomendations' render={() => <Reccomendations />} />
 								<Route exact path='/profile/:id' render={() => <Profile  />} />
