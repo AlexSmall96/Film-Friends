@@ -5,8 +5,8 @@ import styles from '../styles/Films.module.css'
 import { useCurrentUser } from '../contexts/CurrentUserContext';
 import { useCurrentFilm } from '../contexts/CurrentFilmContext';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
-import EllipsisMenu from './EllipsisMenu';
-import IconRating from './IconRating';
+import EllipsisMenu from '../pages/films/EllipsisMenu';
+import IconRating from '../pages/films/IconRating';
 import useWindowDimensions from '../hooks/useWindowDimensions';
 
 // Displays film poster and data, either individually or as a list of search results/saved films 
@@ -91,13 +91,13 @@ const Film = ({ filmData, fullView, filmsPage, reccomendatonsPage, isOwner, user
                             {!isOwner? 
                              !saved?
                                 <Dropdown>
-                                <Dropdown.Toggle variant="outline-secondary" id="dropdown-basic">
-                                    Save to your watchlist
-                                </Dropdown.Toggle>
-                                <Dropdown.Menu>
-                                    <Dropdown.Item onClick={saveToPublicList}>Save to Public Watchlist</Dropdown.Item>
-                                    <Dropdown.Item onClick={saveToPrivateList}>Save to Private Watchlist</Dropdown.Item>
-                                </Dropdown.Menu>
+                                    <Dropdown.Toggle variant="outline-secondary" id="dropdown-basic">
+                                        Save to your watchlist
+                                    </Dropdown.Toggle>
+                                    <Dropdown.Menu>
+                                        <Dropdown.Item onClick={saveToPublicList}>Save to Public Watchlist</Dropdown.Item>
+                                        <Dropdown.Item onClick={saveToPrivateList}>Save to Private Watchlist</Dropdown.Item>
+                                    </Dropdown.Menu>
                                 </Dropdown>
                             :
                             <>
