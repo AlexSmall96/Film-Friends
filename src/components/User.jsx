@@ -11,9 +11,13 @@ const User = ({searchResult}) => {
     const { user } = useFriendData()
     // Render profile image, username
     return (
-        <Row onClick={() => history.push(`/profile/${user._id}`)}>
+        <Row>
             <Col md={searchResult? 3 : 3}><Image roundedCircle src={user.image} width={searchResult? 40: 60} height={searchResult? 40: 60} /></Col>
-            <Col md={searchResult? 6 : 9} style={{textAlign:'left', paddingTop: searchResult? '3%':'7%'}} >{user.username}</Col>
+            <Col md={searchResult? 6 : 9} style={{textAlign:'left', paddingTop: searchResult? '3%':'7%'}}>
+                <Button onClick={() => history.push(`/profile/${user._id}`)} variant='link'>
+                    {user.username}
+                </Button>
+            </Col>
         </Row>
     )
 }
