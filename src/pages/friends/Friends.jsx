@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { axiosReq } from '../api/axiosDefaults';
-import { useCurrentUser } from '../contexts/CurrentUserContext';
-import { Card, Container, Dropdown, DropdownButton, Row, Col, Form, Spinner } from 'react-bootstrap';
-import User from '../components/User';
-import FriendRequestButtons from '../components/FriendRequestButtons'
+import { axiosReq } from '../../api/axiosDefaults';
+import { useCurrentUser } from '../../contexts/CurrentUserContext';
+import { Button, Card, Container, Dropdown, DropdownButton, Row, Col, Form, Spinner, Offcanvas} from 'react-bootstrap';
+import User from '../../components/User';
+import FriendRequestButtons from './FriendRequestButtons'
 import sortBy from 'array-sort-by'
-import { FriendDataProvider } from '../contexts/FriendDataContext';
-import { useFriendAction } from '../contexts/FriendActionContext';
+import { FriendDataProvider } from '../../contexts/FriendDataContext';
+import { useFriendAction } from '../../contexts/FriendActionContext';
 
 const Friends = () => {
     // Contexts
@@ -23,6 +23,7 @@ const Friends = () => {
     const [hasLoadedFriends, setHasLoadedFriends] = useState(false)
     const [hasLoadedSearch, setHasLoadedSearch] = useState(true)
     const [hasUpdated, setHasUpdated] = useState(true)
+    const [showOffCanvas, setShowOffCanvas] = useState(false);
 
     // Callback function to sort requests based on sort variable
     const sortRequest = (req, sort) => {
@@ -94,47 +95,68 @@ const Friends = () => {
 
     return (
         <Container style={{marginTop: '10px'}}>
-            <Row>
-                <Col md={2}>
-                    {/* SEARCH BAR TO FIND USERS */}
-                    <Row>
+            
+                
+                <Button variant="link" onClick={() => setShowOffCanvas(true)}>
+                    Search for users <i className="fa-solid fa-magnifying-glass"></i>
+                </Button>
+                <Offcanvas show={showOffCanvas} onHide={() => setShowOffCanvas(false)}>
+                    <Offcanvas.Header closeButton>
                         <Form>
-                            <Form.Control onChange={handleChange} type='text' placeholder='Find your friends'></Form.Control>
+                            <Form.Control onChange={handleChange} value={search} type='text' placeholder='Search for users'></Form.Control>
                         </Form>
-                    </Row>
-                    {/* SEARCH RESULTS */}
-                    <Card>
-                        {hasLoadedSearch ? 
-                            searchResults.length && search !== '' ? searchResults.map(
-                                result =>
-                                    <FriendDataProvider key={result._id} requestId={null} user={result}> 
-                                        <div>
-                                            <User searchResult={true} />
-                                            <FriendRequestButtons 
-                                                status={getStatus(result._id)} 
-                                                searchResult={true} 
-                                            />
-                                        </div>
-                                    </FriendDataProvider>
-                            ):(''):(<Spinner />)}
-                    </Card>
-                </Col>
-                <Col md={6}>
+                    </Offcanvas.Header>
+                    <Offcanvas.Body>
+                        <div style={{height: '500px', overflowY: 'scroll', overflowX: 'hidden'}}>
+                        {
+                            hasLoadedSearch ? 
+                                    searchResults.length && search !== '' ? 
+                                        searchResults.map(
+                                        result =>
+                                            <FriendDataProvider key={result._id} requestId={null} user={result}> 
+                                                <Row>
+                                                    <Col md={6}>
+                                                        <User searchResult={true} />
+                                                    </Col>
+                                                    <Col md={6}>
+                                                        <FriendRequestButtons 
+                                                            status={getStatus(result._id)} 
+                                                            searchResult={true} 
+                                                        />                                           
+                                                    </Col>
+                                                </Row>
+                                            </FriendDataProvider>
+                                    ):(''):(<Spinner />)
+                        }
+                        </div>
+                    </Offcanvas.Body>
+                </Offcanvas>
                     {/* PENDING AND ACCEPTED FRIEND REQUESTS */}
                     {hasLoadedFriends?(
                         <Card>
+                            <Card.Header>
+                                <strong style={{float: 'left'}}>Your friends</strong>
+                                    {/* DROPDOWN FILTERS */}
+                                    {allRequests.length?(
+                                        <>
+                                            <DropdownButton style={{float: 'right', display: 'inline-block'}} variant='outline-secondary' id="dropdown-basic-button" title={filter}>
+                                                <Dropdown.Item onClick={() => setFilter('All')}>All</Dropdown.Item>
+                                                <Dropdown.Item onClick={() => setFilter('Friends')}>Friends</Dropdown.Item>
+                                                <Dropdown.Item onClick={() => setFilter('Pending Requests')}>Pending Requests</Dropdown.Item>
+                                            </DropdownButton>
+                                            <DropdownButton style={{marginRight: '5px', float: 'right', display: 'inline-block'}} variant='outline-secondary' id="dropdown-basic-button" title={sort}>
+                                                <Dropdown.Item onClick={() => setSort('A-Z')}>A-Z</Dropdown.Item>
+                                                <Dropdown.Item onClick={() => setSort('Last Updated')}>Last Updated</Dropdown.Item>
+                                            </DropdownButton>                                   
+                                        </>
+
+                                    ):('')}
+
+                                
+                            </Card.Header>
                             {allRequests.length?
                                 <>  
-                                    {/* DROPDOWN FILTERS */}
-                                    <DropdownButton style={{marginTop: '5px'}} variant='outline-secondary' id="dropdown-basic-button" title={filter}>
-                                        <Dropdown.Item onClick={() => setFilter('All')}>All</Dropdown.Item>
-                                        <Dropdown.Item onClick={() => setFilter('Friends')}>Friends</Dropdown.Item>
-                                        <Dropdown.Item onClick={() => setFilter('Pending Requests')}>Pending Requests</Dropdown.Item>
-                                    </DropdownButton>
-                                    <DropdownButton style={{marginTop: '5px'}} variant='outline-secondary' id="dropdown-basic-button" title={sort}>
-                                        <Dropdown.Item onClick={() => setSort('A-Z')}>A-Z</Dropdown.Item>
-                                        <Dropdown.Item onClick={() => setSort('Last Updated')}>Last Updated</Dropdown.Item>
-                                    </DropdownButton>
+
                                     {/* REQUEST LIST */}
                                     {hasUpdated?
                                         requests.length?   
@@ -163,8 +185,8 @@ const Friends = () => {
                                 "You don't have any friends yet."}
                         </Card> 
                     ):(<Spinner />)}
-                </Col>
-            </Row>
+                
+            
         </Container>
     )
 }

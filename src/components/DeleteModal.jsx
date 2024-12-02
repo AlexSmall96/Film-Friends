@@ -1,18 +1,18 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { Button, Modal } from 'react-bootstrap';
 import { useFriendAction } from '../contexts/FriendActionContext';
 import { useFriendData } from '../contexts/FriendDataContext';
 
-const DeleteModal = ({message}) => {
+const DeleteModal = ({message, deleteReccomendation}) => {
     // Contexts
     const { deleteRequest } = useFriendAction()
-    const { requestId } = useFriendData()
+    const { requestId  } = useFriendData()
     // Initialize state variables
     const [show, setShow] = useState(false);
     const [text, setText] = useState('Yes')
     return (
         <>  
-            {/* BUTTONS TO SHOW MODAL  */}
+            {/* BUTTONS TO SHOW MODAL */}
             <Button variant="outline-secondary" onClick={() => setShow(true)}>
                 <i className="fa-regular fa-trash-can"></i> Remove
             </Button>
@@ -31,7 +31,7 @@ const DeleteModal = ({message}) => {
                     <Button variant="primary" 
                         onClick={() => {
                             setText('Deleting...')
-                            deleteRequest(requestId)
+                            deleteReccomendation? deleteReccomendation() : deleteRequest(requestId)
                         }}
                     >
                         {text}

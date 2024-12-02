@@ -1,9 +1,9 @@
 import React from 'react';
 import { Button } from 'react-bootstrap';
-import DeleteModal from './DeleteModal';
+import DeleteModal from '../../components/DeleteModal';
 import ShareModal from './ShareModal';
-import { useFriendAction } from '../contexts/FriendActionContext';
-import { useFriendData } from '../contexts/FriendDataContext';
+import { useFriendAction } from '../../contexts/FriendActionContext';
+import { useFriendData } from '../../contexts/FriendDataContext';
 /* 
 Component used in friends page
 Displays appropriate text and buttons, dependent on status of friend request
@@ -45,10 +45,18 @@ const FriendRequestButtons = ({status, searchResult}) => {
 
     // Render text and buttons determined above
     return (
-        <div>
-            <p style={{fontSize: 'small', marginBottom: '5px'}}>{searchResult? searchResultsText: friendsText}</p> 
-            <p style={{fontSize: 'small', marginBottom: '5px'}}>{searchResult? searchResultsButtons: friendsButtons}</p>
-        </div>
+        <>
+            {searchResult?(
+                <div>
+                    {searchResultsText} {searchResultsButtons}
+                </div>
+            ):(
+                <>
+                    <p style={{fontSize: 'small', marginBottom: '5px'}}>{friendsText}</p> 
+                    <p style={{fontSize: 'small', marginBottom: '5px'}}>{friendsButtons}</p> 
+                </>
+            )}
+        </>
     )
 }
 

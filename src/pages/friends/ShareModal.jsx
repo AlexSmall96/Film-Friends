@@ -1,11 +1,11 @@
 import React, {useState, useEffect} from 'react';
 import { Button, Dropdown, DropdownButton, Modal, Form, Image, Spinner } from 'react-bootstrap';
-import User from './User';
-import { axiosReq } from '../api/axiosDefaults';
-import { useCurrentUser } from '../contexts/CurrentUserContext';
+import User from '../../components/User';
+import { axiosReq } from '../../api/axiosDefaults';
+import { useCurrentUser } from '../../contexts/CurrentUserContext';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
-import { useFriendAction } from '../contexts/FriendActionContext';
-import { useFriendData } from '../contexts/FriendDataContext';
+import { useFriendAction } from '../../contexts/FriendActionContext';
+import { useFriendData } from '../../contexts/FriendDataContext';
 
 const ShareModal = () => {
     // Contexts
