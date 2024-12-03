@@ -4,8 +4,6 @@ import { useCurrentUser } from '../contexts/CurrentUserContext';
 import { Navbar, Nav, Image, NavDropdown, Offcanvas} from 'react-bootstrap'
 import { Link } from 'react-router-dom/cjs/react-router-dom';
 import appStyles from '../App.module.css'
-import styles from '../styles/NavBar.module.css'
-import User from './User';
 import useWindowDimensions from '../hooks/useWindowDimensions';
 
 const NavBar = () => {
@@ -102,7 +100,7 @@ const NavBar = () => {
     </>
 
     return (
-        <Navbar expand={'md'} sticky='top' className={`${appStyles.darkBackground} ${styles.navBar}`}>
+        <Navbar expand={'md'} sticky='top' className={`${appStyles.darkBackground}`}>
             <Navbar.Brand href="/">
                 <h3 className={`${appStyles.bold} ${appStyles.headingFont} ${appStyles.horizMargin}`}>
                     FILM
