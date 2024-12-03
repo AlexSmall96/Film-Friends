@@ -116,7 +116,7 @@ const NavBar = () => {
             >
                 <Offcanvas.Header closeButton></Offcanvas.Header>
                 <Offcanvas.Body>
-                    <Nav className="justify-content-end flex-grow-1 pe-3">
+                    <Nav className={`${appStyles.headingFont} justify-content-end flex-grow-1 pe-3`}>
                         {currentUser? loggedInIcons: loggedOutIcons}
                     </Nav>
                 </Offcanvas.Body>
