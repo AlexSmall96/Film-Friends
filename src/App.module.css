@@ -1,6 +1,6 @@
 .App {
   text-align: center;
-  font-family: "Nanum Gothic", sans-serif;
+  font-family: "Roboto Flex", sans-serif;
 }
 
 .App i:hover {
@@ -21,6 +21,10 @@
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
   }
+}
+
+.headingFont {
+  font-family: "Josefin Sans", sans-serif;
 }
 
 .App-header {
@@ -50,6 +54,11 @@ a:hover {
 
 .bold {
   font-weight: 600;
+}
+
+.negVerticalMargin {
+  margin-left: -13px; 
+  margin-right: -13px
 }
 
 .medium {
