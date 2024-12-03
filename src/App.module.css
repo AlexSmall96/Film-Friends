@@ -56,6 +56,12 @@ a:hover {
   font-weight: 600;
 }
 
+/* Margins and Paddings */
+.bigVerticalMargin {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
 .horizMargin {
   margin-left: 10px;
   margin-right: 10px;
@@ -64,6 +70,10 @@ a:hover {
 .negHorizMargin {
   margin-left: -13px; 
   margin-right: -13px
+}
+
+.noPadding {
+  padding: 0 0 0 0
 }
 
 .smallFont {
@@ -95,6 +105,6 @@ a:hover {
 }
 
 .darkBackground {
-  background-color: rgba(224, 220, 220, 0.664);
+  background-color: rgba(224, 220, 220, 1);
 }
 

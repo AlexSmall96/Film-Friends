@@ -3,9 +3,11 @@ import { axiosReq } from '../api/axiosDefaults';
 import { useCurrentUser } from '../contexts/CurrentUserContext';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import ResultsPagination from '../components/ResultsPagination'
-import { Button, Container, Col, Form, Image, Row} from 'react-bootstrap';
+import { Button, Container, Col, Form, Image, Row, Card} from 'react-bootstrap';
 import Film from '../components/Film'
 import { useCurrentFilm } from '../contexts/CurrentFilmContext';
+import SearchBar from './SearchBar';
+import appStyles from '../App.module.css'
 
 const Home = () => {
     // Contexts
@@ -15,8 +17,6 @@ const Home = () => {
     const history = useHistory()
     const [searchResults, setSearchResults] = useState([])
     // Initialize state variables
-    const [query, setQuery] = useState('')
-    const [search, setSearch] = useState('')
     const [filmIds, setFilmIds] = useState([])
     const [currentPage, setCurrentPage] = useState(1)
     const [finalPage, setFinalPage] = useState(1)
@@ -37,60 +37,13 @@ const Home = () => {
                 console.log(err)
             }
         }
-        // Update search results when search query or current page is changed
-        const fetchFilmData = async () => {
-            try {
-                // Get data from API, either using event.target or query state variable as the search
-                const response = await axiosReq.get(`filmSearch/?search=${query}&page=${currentPage}`)
-                    if (!response.data.Error){
-                        // Set search results
-                        setSearchResults(response.data.Search)
-                        // Set final page and total results for pagination
-                        setFinalPage(
-                            Math.ceil(0.1 * response.data.totalResults)
-                        )
-                        setTotalResults(response.data.totalResults)               
-                    } else {
-                        // Set custom error message depending on response from API
-                        setSearchResults([])
-                        setError(
-                            response.data.Error === 'Movie not found!' ? ('There are no results matching your search.'):('')
-                        )
-                    }
-            } catch(err){
-                setSearchResults([])
-            }
-        }
         fetchFilmIds()
-        fetchFilmData()
-    }, [currentPage, query, currentUser, id, updated])
-
-    // Update the search query and current page state
-    const handleChange = (event) => {
-        setSearch(event.target.value)
-        setCurrentPage(1)
-        setError('')
-    }
-
-    const handleClick = () => {
-        setQuery(search)
-    }
+    }, [currentUser, id, updated])
 
     return (
         <>
             {/* SEARCH BAR*/}
-            <Form>
-                <Row style={{width:'50%', margin: 'auto'}}>
-                    <Col xs={10} sm={10}>
-                        <Form.Group className="mb-3" >
-                            <Form.Control onChange={handleChange} type='text' placeholder="Search for a film" />
-                        </Form.Group>
-                    </Col>
-                    <Col xs={1} sm={1}>
-                        <Button onClick={handleClick} variant='outline-secondary'><i className="fa-solid fa-magnifying-glass"></i></Button>
-                    </Col>
-                </Row>
-            </Form>
+           <SearchBar setSearchResults={setSearchResults} setTotalResults={setTotalResults} currentPage={currentPage} setFinalPage={setFinalPage} setError={setError}/>
             {/* SEARCH RESULTS */}
             {searchResults.length? (
                 <>
