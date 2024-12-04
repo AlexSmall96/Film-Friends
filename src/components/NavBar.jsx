@@ -95,8 +95,8 @@ const NavBar = () => {
     // Logged out icons: sign up and log in
     const loggedOutIcons = 
     <>
-        <Link to='/signup'>Sign up</Link>
-        <Link to='/login'>Login</Link>
+        <Link to='/signup'><i className="fa-solid fa-user-plus"></i> Sign up</Link>
+        <Link to='/login'><i className="fa-solid fa-right-to-bracket"></i> Login</Link>
     </>
 
     return (
