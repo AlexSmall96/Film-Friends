@@ -1,16 +1,15 @@
 import React, { useEffect, useState} from 'react'
 import { axiosReq } from '../api/axiosDefaults'
-import { Button, Container, Row, Col, Form,} from 'react-bootstrap'
+import { Button, Container, Row, Col} from 'react-bootstrap'
 import appStyles from '../App.module.css'
 import styles from '../styles/Home.module.css'
-import './CustomSearchBar.module.css'
 
 /* 
 The search suggestions functionality was inspired by the following article
 https://www.dhiwise.com/post/how-to-build-react-search-bar-with-suggestions#customizing-the-autocomplete-behavior
 */
 
-const SearchBar = ({setSearchResults, setTotalResults, currentPage, setFinalPage, setError}) =>{
+const SearchBar = ({setSearchResults, setTotalResults, currentPage, setFinalPage, setError, setHasLoaded}) =>{
 	
 	// Initialize state variables
 	const [search, setSearch] = useState('')
@@ -55,7 +54,7 @@ const SearchBar = ({setSearchResults, setTotalResults, currentPage, setFinalPage
 						setFinalPage(
 							Math.ceil(0.1 * response.data.totalResults)
 						)
-						setTotalResults(response.data.totalResults)             
+						setTotalResults(response.data.totalResults)            
 					} else {
 						// If no search results found check if a suggestions item has been selected and try to find data from imdbID
 						if (imdbID !== '') {
@@ -77,6 +76,7 @@ const SearchBar = ({setSearchResults, setTotalResults, currentPage, setFinalPage
 				setError('There are no results matching your search.')
 				setSearchResults([])
 			}
+			setHasLoaded(true)
 		}
 		fetchData()
 	}, [submitted, currentPage])
@@ -109,33 +109,32 @@ const SearchBar = ({setSearchResults, setTotalResults, currentPage, setFinalPage
   	return (
 		<>
 			{/* FORM  */}
-			<Form onSubmit={handleSubmit}>
 				<Container className={`${appStyles.bigVerticalMargin}`}>
-					<Row>
-						<Col xs={10} sm={10} md={11} className={appStyles.noPadding}>
+				<form onSubmit={handleSubmit}>
+					<Row >
+						<Col xs={10} sm={10} md={11} className={`${appStyles.noPadding}`}>
 						{/* SEARCH BAR  */}
-						<Form.Control 
-							type='text' 
-							placeholder='Search for a film' 
-							style={{height: '50px', borderRadius: '1rem 0 0 1rem'}} 
-							value={search}
-							onChange={handleChange}
-						/>
+							<input 
+								type='search' 
+								placeholder='Search for a film' 
+								className={styles.searchBar}
+								value={search}
+								onChange={handleChange}
+							/>
 						</Col>
 						{/* SEARCH BUTTON */}
 						<Col xs={2} sm={2} md={1} className={appStyles.noPadding} >
-							<Button type='submit' variant='outline-secondary' className={styles.searchButton}><i className="fa-solid fa-magnifying-glass"></i></Button>
+							<Button type='submit' disabled={!search.length} variant='outline-secondary' className={styles.searchButton}><i className="fa-solid fa-magnifying-glass"></i></Button>
 						</Col>
 					</Row>
 					<Row>
-						<Col xs={10} sm={10} md={11} className={`${appStyles.noPadding} ${styles.suggestions}`}>
-							{suggestions.length && showSuggestions? 
+						<Col xs={10} sm={10} md={11} className={`${appStyles.noPadding} ${styles.suggestions} ${!(suggestions.length >=2 && showSuggestions)? styles.noBorder:''}`}>
+							{suggestions.length >= 2 && showSuggestions? 
 								suggestions.map(suggestion =>
 									<p 
 									    id={suggestion.id}
 										key={suggestion.id}
 										className='suggestion'
-										// onClick={() => handleClick(suggestion.Title, suggestion.id)}
 									>
 										{suggestion.Title}
 									</p>
@@ -143,8 +142,8 @@ const SearchBar = ({setSearchResults, setTotalResults, currentPage, setFinalPage
 							:''}
 						</Col>
 					</Row>
+					</form>
 				</Container>
-			</Form>
 		</>
   )
 }

@@ -3,7 +3,7 @@ import { axiosReq } from '../api/axiosDefaults';
 import { useCurrentUser } from '../contexts/CurrentUserContext';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import ResultsPagination from '../components/ResultsPagination'
-import { Button, Container, Col, Form, Image, Row, Card} from 'react-bootstrap';
+import { Button, Container, Image, Spinner} from 'react-bootstrap';
 import Film from '../components/Film'
 import { useCurrentFilm } from '../contexts/CurrentFilmContext';
 import SearchBar from './SearchBar';
@@ -22,6 +22,7 @@ const Home = () => {
     const [finalPage, setFinalPage] = useState(1)
     const [totalResults, setTotalResults] = useState(0)
     const [error, setError] = useState('')
+    const [hasLoaded, setHasLoaded] = useState(false)
     const id = currentUser?.user._id || null
 
     useEffect(() => {
@@ -43,47 +44,48 @@ const Home = () => {
     return (
         <>
             {/* SEARCH BAR*/}
-           <SearchBar setSearchResults={setSearchResults} setTotalResults={setTotalResults} currentPage={currentPage} setFinalPage={setFinalPage} setError={setError}/>
-            {/* SEARCH RESULTS */}
-            {searchResults.length? (
-                <>
-                {/* PAGINATION BUTTONS */}
-                {finalPage > 1 ? <ResultsPagination currentPage={currentPage} setCurrentPage={setCurrentPage} finalPage={finalPage} />: '' }
-                {/* PAGINATION MESSAGE */}
-                <p>
-                    {currentPage !== finalPage ? (
-                        `Showing results ${10 * (currentPage - 1) + 1} to ${10 * (currentPage - 1) + 10} of ${totalResults}`
+           <SearchBar setSearchResults={setSearchResults} setTotalResults={setTotalResults} currentPage={currentPage} setFinalPage={setFinalPage} setError={setError} setHasLoaded={setHasLoaded} />
+                {/* SEARCH RESULTS */}
+                {searchResults.length? (hasLoaded? (
+                    <>
+                        {/* PAGINATION BUTTONS */}
+                        {finalPage > 1 ? <ResultsPagination currentPage={currentPage} setCurrentPage={setCurrentPage} finalPage={finalPage} />: '' }
+                        {/* PAGINATION MESSAGE */}
+                        <p>
+                            {currentPage !== finalPage ? (
+                                `Showing results ${10 * (currentPage - 1) + 1} to ${10 * (currentPage - 1) + 10} of ${totalResults}`
+                            ):(
+                                `Showing results ${10 * (currentPage - 1) + 1} to ${totalResults} of ${totalResults}`
+                            )}
+                        </p>
+                        {/* LOGIN AND SIGNUP BUTTONS IF NOT ALREADY LOGGED IN */}
+                        {!currentUser? (
+                            <div>
+                                <Button variant='secondary' onClick={() => history.push('/signup')}>Sign up</Button> or <Button variant='secondary' onClick={() => history.push('/login')}>Login</Button> to save and share films
+                            </div>):('')
+                        }   
+                            <Container>
+                                    {/* SEARCH RESULTS */}
+                                    {searchResults.map(
+                                        film => 
+                                            <Film 
+                                                key={film.imdbID} 
+                                                filmData={film}
+                                                fullView={false}
+                                                filmsPage={false}
+                                                saved={filmIds.includes(film.imdbID)} 
+                                            />
+                                    )}  
+                            </Container>
+                    </>
+                ):(<Spinner />)):(
+                    error !== '' ? 
+                    (
+                        <p>{error}</p>
                     ):(
-                        `Showing results ${10 * (currentPage - 1) + 1} to ${totalResults} of ${totalResults}`
-                    )}
-                </p>
-                {/* LOGIN AND SIGNUP BUTTONS IF NOT ALREADY LOGGED IN */}
-                {!currentUser? (
-                    <div>
-                        <Button variant='secondary' onClick={() => history.push('/signup')}>Sign up</Button> or <Button variant='secondary' onClick={() => history.push('/login')}>Login</Button> to save and share films
-                    </div>):('')
-                }   
-                    
-                    <Container>
-                            {/* SEARCH RESULTS */}
-                            {searchResults.map(
-                                film => 
-                                    <Film 
-                                        key={film.imdbID} 
-                                        filmData={film}
-                                        fullView={false}
-                                        filmsPage={false}
-                                        saved={filmIds.includes(film.imdbID)} 
-                                    />
-                            )}  
-                    </Container>
-                </>
-            ):(
-                error !== '' ? (
-                    <p>{error}</p>
-                ):(<Image alt='A close up of film tape' width={400} src='https://res.cloudinary.com/dojzptdbc/image/upload/v1729270408/movie2_h1bnwo.png'/>
-                )
-            )}
+                        <Image alt='A close up of film tape' width={400} src='https://res.cloudinary.com/dojzptdbc/image/upload/v1729270408/movie2_h1bnwo.png'/>
+                    )
+                )}
         </>
     )
 }

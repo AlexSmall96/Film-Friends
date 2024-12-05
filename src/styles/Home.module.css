@@ -6,7 +6,7 @@
     max-width: 400px;
     border: 1px solid #ccc;
     border-radius: 1rem;
-    overflow-y: auto;
+    overflow-x: hidden;
     list-style: none;
     margin: 0;
     padding: 0;
@@ -26,8 +26,40 @@
     background-color: #f1f1f1;
 }
 
+.searchBar, .searchButton {
+    height: 50px;
+    width: 100%;
+    border-color: lightgray;
+}
+
+.searchBar {
+    border-radius: 1rem 0 0 1rem;
+    border-style: solid;
+    border-width: 0.1rem;
+    padding: 10px 12px 12px 40px;
+    margin-left: 1px;
+    background-image: url('https://res.cloudinary.com/dojzptdbc/image/upload/v1733406769/mg_glass_p9yfjb.png');
+    background-size: 15;
+    background-position: 10px 10px;
+    background-repeat: no-repeat;
+}
+
+.searchBar:focus{
+    outline: none;
+    border-color: rgb(28, 87, 212);
+    box-shadow: 0 0 5px rgba(5, 53, 126, 0.5);
+}
+
 .searchButton {
     border-radius: 0 1rem 1rem 0;
-    height: 50px;
-    width: 100%
+    background-color: rgb(236, 234, 234);
+}
+
+.searchButton:hover{
+    background-color: rgb(187, 182, 182);
+    border-color: lightgray;
+}
+
+.noBorder {
+    border: none;
 }
