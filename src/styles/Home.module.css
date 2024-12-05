@@ -1,3 +1,20 @@
+.searchComponents {
+    padding-top: 100px; 
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    width: 100%;
+    height: 23px;
+}
+
+.searchResults {
+    margin-top:190px;
+    height: 800px;
+    width: 100%;    
+    position: fixed;
+    overflow-y: scroll;
+}
 .suggestions {
     position: absolute;
     z-index: 1000;

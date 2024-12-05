@@ -78,7 +78,7 @@ const Home = () => {
                                     {/* SEARCH RESULTS */}
                                     {searchResults.map(
                                         film => 
-                                            <Col key={film.imdbID} md={6} sm={12}>
+                                            <Col key={film.imdbID} lg={4} md={6} sm={12}>
                                             <Film 
                                                 filmData={film}
                                                 fullView={false}
