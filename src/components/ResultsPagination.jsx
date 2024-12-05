@@ -13,32 +13,32 @@ const ResultsPagination = ({currentPage, setCurrentPage, finalPage, setHasLoaded
     }
 
     return (
-        <Pagination>
+        <Pagination  >
             {currentPage !== 1? (
                 <>
-                    <Pagination.First onClick={() => handleClick(1)} />
+                    <Pagination.First linkStyle={{color: 'black'}} onClick={() => handleClick(1)} />
                         {currentPage !== 2? (
                             <>
-                                <Pagination.Prev onClick={() => handleClick(currentPage - 1)}/>
-                                <Pagination.Ellipsis />
+                                <Pagination.Prev linkStyle={{color: 'black'}} onClick={() => handleClick(currentPage - 1)}/>
+                                <Pagination.Ellipsis linkStyle={{color: 'black'}} />
                             </>
                         ):('')}
-                    <Pagination.Item onClick={() => handleClick(currentPage - 1)}>{currentPage - 1}</Pagination.Item>
+                    <Pagination.Item linkStyle={{color: 'black'}} onClick={() => handleClick(currentPage - 1)}>{currentPage - 1}</Pagination.Item>
                 </>
             ):('')}
-            <Pagination.Item active>{currentPage}</Pagination.Item>
+            <Pagination.Item linkStyle={{color: 'white', backgroundColor: 'grey', borderColor: 'grey'}} active>{currentPage}</Pagination.Item>
             {currentPage !== finalPage? (
                 <>
-                    <Pagination.Item onClick={() => handleClick(currentPage + 1)}>
+                    <Pagination.Item linkStyle={{color: 'black'}} onClick={() => handleClick(currentPage + 1)}>
                         {currentPage + 1}
                     </Pagination.Item>
                     {currentPage !== finalPage - 1? (
                         <>
-                            <Pagination.Ellipsis />
-                            <Pagination.Next onClick={() => handleClick(currentPage + 1)}/>
+                            <Pagination.Ellipsis linkStyle={{color: 'black'}}/>
+                            <Pagination.Next  linkStyle={{color: 'black'}} onClick={() => handleClick(currentPage + 1)}/>
                         </>
                     ):('')}
-                    <Pagination.Last onClick={() => handleClick(finalPage) }/>
+                    <Pagination.Last linkStyle={{color: 'black'}} onClick={() => handleClick(finalPage) }/>
                 </>
             ):('')}
         </Pagination>

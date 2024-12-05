@@ -45,11 +45,10 @@
 a {
   color: black;
   text-decoration: none;
-  margin-right: 10px
 }
 
 a:hover {
-  text-decoration: underline;
+  color: blue;
 }
 
 .bold {
@@ -84,9 +83,8 @@ a:hover {
   font-size: medium;
 }
 
-.hover:hover{
+.clickable:hover{
   cursor: pointer;
-  color: rgb(8, 8, 146);
 }
 
 @keyframes App-logo-spin {
@@ -98,9 +96,13 @@ a:hover {
   }
 }
 
-
+.leftAlign {
+  text-align: left;
+  float: left
+}
 
 .rightAlign {
+  text-align: right;
   float: right
 }
 
