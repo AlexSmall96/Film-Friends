@@ -9,10 +9,10 @@ The search suggestions functionality was inspired by the following article
 https://www.dhiwise.com/post/how-to-build-react-search-bar-with-suggestions#customizing-the-autocomplete-behavior
 */
 
-const SearchBar = ({setSearchResults, setTotalResults, currentPage, setFinalPage, setError, setHasLoaded}) =>{
+const SearchBar = ({setSearchResults, setTotalResults, currentPage, setCurrentPage, setFinalPage, setError, setHasLoaded}) =>{
 	
 	// Initialize state variables
-	const [search, setSearch] = useState('')
+	const [search, setSearch] = useState(localStorage.getItem('search') || '')
 	const [imdbID, setImdbID] = useState('')
 	const [suggestions, setSuggestions] = useState([])
 	const [showSuggestions, setShowSuggestions] = useState(false);
@@ -39,6 +39,10 @@ const SearchBar = ({setSearchResults, setTotalResults, currentPage, setFinalPage
 			setSuggestions([])
 		}
   	}
+
+	useEffect(() => {
+		localStorage.setItem('search', search)
+	}, [search])
 
 	// Use effect to make a call to OMDB API to get actual results
 	// Triggered by current page or submitted boolean variable changing
@@ -85,6 +89,7 @@ const SearchBar = ({setSearchResults, setTotalResults, currentPage, setFinalPage
 	const handleSubmit = (event) => {
 		event?.preventDefault()
 		setShowSuggestions(false)
+		setCurrentPage(1)
 		setSubmitted(!submitted)
 	}
 
