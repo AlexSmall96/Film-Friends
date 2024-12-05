@@ -3,11 +3,12 @@ import { axiosReq } from '../api/axiosDefaults';
 import { useCurrentUser } from '../contexts/CurrentUserContext';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import ResultsPagination from '../components/ResultsPagination'
-import { Button, Container, Image, Spinner} from 'react-bootstrap';
+import { Button, Container, Image, Spinner, Row, Col, Pagination, ButtonGroup} from 'react-bootstrap';
 import Film from '../components/Film'
 import { useCurrentFilm } from '../contexts/CurrentFilmContext';
 import SearchBar from './SearchBar';
 import appStyles from '../App.module.css'
+import styles from '../styles/Home.module.css'
 
 const Home = () => {
     // Contexts
@@ -40,16 +41,13 @@ const Home = () => {
         }
         fetchFilmIds()
     }, [currentUser, id, updated])
-
     return (
         <>
+            <div className={styles.searchComponents}>
             {/* SEARCH BAR*/}
-           <SearchBar setSearchResults={setSearchResults} setTotalResults={setTotalResults} currentPage={currentPage} setFinalPage={setFinalPage} setError={setError} setHasLoaded={setHasLoaded} />
-                {/* SEARCH RESULTS */}
-                {searchResults.length? (hasLoaded? (
+            <SearchBar setSearchResults={setSearchResults} setTotalResults={setTotalResults} currentPage={currentPage} setCurrentPage={setCurrentPage} setFinalPage={setFinalPage} setError={setError} setHasLoaded={setHasLoaded} />
+                {searchResults.length && hasLoaded?(
                     <>
-                        {/* PAGINATION BUTTONS */}
-                        {finalPage > 1 ? <ResultsPagination currentPage={currentPage} setCurrentPage={setCurrentPage} finalPage={finalPage} />: '' }
                         {/* PAGINATION MESSAGE */}
                         <p>
                             {currentPage !== finalPage ? (
@@ -58,6 +56,17 @@ const Home = () => {
                                 `Showing results ${10 * (currentPage - 1) + 1} to ${totalResults} of ${totalResults}`
                             )}
                         </p>
+                        {/* PAGINATION BUTTONS */}
+                        {finalPage > 1 ? 
+                            <ResultsPagination currentPage={currentPage} finalPage={finalPage} setCurrentPage={setCurrentPage}/>                       
+                        : '' }
+                    </>
+                ):''}
+            </div>
+            <div className={styles.searchResults}>
+            {/* SEARCH RESULTS */}
+            {searchResults.length? (hasLoaded? (
+                <>
                         {/* LOGIN AND SIGNUP BUTTONS IF NOT ALREADY LOGGED IN */}
                         {!currentUser? (
                             <div>
@@ -65,17 +74,21 @@ const Home = () => {
                             </div>):('')
                         }   
                             <Container>
+                                    <Row>
                                     {/* SEARCH RESULTS */}
                                     {searchResults.map(
                                         film => 
+                                            <Col key={film.imdbID} md={6} sm={12}>
                                             <Film 
-                                                key={film.imdbID} 
                                                 filmData={film}
                                                 fullView={false}
                                                 filmsPage={false}
                                                 saved={filmIds.includes(film.imdbID)} 
                                             />
+                                            </Col>
                                     )}  
+                                    </Row>
+
                             </Container>
                     </>
                 ):(<Spinner />)):(
@@ -86,6 +99,8 @@ const Home = () => {
                         <Image alt='A close up of film tape' width={400} src='https://res.cloudinary.com/dojzptdbc/image/upload/v1729270408/movie2_h1bnwo.png'/>
                     )
                 )}
+            </div>
+               
         </>
     )
 }
