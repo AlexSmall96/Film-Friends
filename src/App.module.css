@@ -29,7 +29,7 @@
   font-weight: 600;
 }
 
-/* Margins and Paddings */
+/* Margins, Paddings and Borders */
 
 .bigVerticalMargin {
   margin-top: 20px;
@@ -63,6 +63,10 @@
 .rightAlign {
   text-align: right;
   float: right
+}
+
+.noBorder{
+  border-style: none;
 }
 
 /* Colours and shapes */
