@@ -46,6 +46,11 @@ const NavBar = () => {
     // Logged in icons: films, friends, reccomendations, user dropdown
     const loggedInIcons = 
     <>  
+        {mobile? 
+            <Nav.Link onClick={handleClick}>
+                <Link to='/'><i className="fa-solid fa-home"></i> Home</Link>
+            </Nav.Link>
+        :''}
         <Nav.Link onClick={handleClick}>
             <Link to={`/films/${currentUser?.user._id}`}>
                 <i className="fa-solid fa-clapperboard"></i> My Films
@@ -157,11 +162,6 @@ const NavBar = () => {
                 </Container>
                 </Offcanvas.Header>
                 <Offcanvas.Body>
-                    <Nav className={`${appStyles.headingFont} justify-content-end flex-grow-1 pe-3`}>
-                        <Nav.Link>
-                            <Link to='/'><i className="fa-solid fa-home"></i> Home</Link>
-                        </Nav.Link>
-                    </Nav>
                     <Nav className={`${appStyles.headingFont} justify-content-end flex-grow-1 pe-3`}>
                         {currentUser? loggedInIcons: loggedOutIcons}
                     </Nav>
