@@ -114,8 +114,12 @@ const NavBar = () => {
     // Logged out icons: sign up and log in
     const loggedOutIcons = 
     <>
-        <Link to='/signup'><i className="fa-solid fa-user-plus"></i> Sign up</Link>
-        <Link to='/login'><i className="fa-solid fa-right-to-bracket"></i> Login</Link>
+        <Nav.Link onClick={handleClick}>
+            <Link to='/signup'><i className="fa-solid fa-user-plus"></i> Sign up</Link> 
+        </Nav.Link>
+        <Nav.Link onClick={handleClick}>
+            <Link to='/login'><i className="fa-solid fa-right-to-bracket"></i> Login</Link>
+        </Nav.Link>
     </>
 
     return (
@@ -153,6 +157,11 @@ const NavBar = () => {
                 </Container>
                 </Offcanvas.Header>
                 <Offcanvas.Body>
+                    <Nav className={`${appStyles.headingFont} justify-content-end flex-grow-1 pe-3`}>
+                        <Nav.Link>
+                            <Link to='/'><i className="fa-solid fa-home"></i> Home</Link>
+                        </Nav.Link>
+                    </Nav>
                     <Nav className={`${appStyles.headingFont} justify-content-end flex-grow-1 pe-3`}>
                         {currentUser? loggedInIcons: loggedOutIcons}
                     </Nav>
