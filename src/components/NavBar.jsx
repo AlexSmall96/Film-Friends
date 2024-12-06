@@ -1,16 +1,17 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import { axiosReq } from '../api/axiosDefaults';
 import { useCurrentUser } from '../contexts/CurrentUserContext';
-import { Navbar, Nav, Image, NavDropdown, Offcanvas} from 'react-bootstrap'
+import { Navbar, Nav, Image, NavDropdown, Offcanvas, Col, Container, Row, Card} from 'react-bootstrap'
 import { Link } from 'react-router-dom/cjs/react-router-dom';
 import appStyles from '../App.module.css'
+import styles from '../styles/NavBar.module.css'
 import useWindowDimensions from '../hooks/useWindowDimensions';
 
 const NavBar = () => {
     // Contexts
     const { currentUser, setCurrentUser  } = useCurrentUser()
     // Hooks
-    const { mobile } = useWindowDimensions();
+    const { mobile, width } = useWindowDimensions();
     // Initialize state variables
     const [expanded, setExpanded] = useState(false)
     // Handle logout
@@ -27,6 +28,12 @@ const NavBar = () => {
         }
     }
 
+    useEffect(() => {
+        if (width > 767){
+            setExpanded(false)
+        }
+    }, [width])
+
     document.addEventListener('mouseup', (event) => {
         if (!event.target.classList.contains('offcanvas-body')){
             setExpanded(false) 
@@ -38,7 +45,8 @@ const NavBar = () => {
     }
     // Logged in icons: films, friends, reccomendations, user dropdown
     const loggedInIcons = 
-    <>  <Nav.Link onClick={handleClick}>
+    <>  
+        <Nav.Link onClick={handleClick}>
             <Link to={`/films/${currentUser?.user._id}`}>
                 <i className="fa-solid fa-clapperboard"></i> My Films
             </Link>
@@ -48,34 +56,34 @@ const NavBar = () => {
                 <i className="fa-solid fa-users"></i> Friends
             </Link>
         </Nav.Link>
-        <Nav.Link onClick={handleClick}>
+        <Nav.Link onClick={handleClick} className={mobile? styles.underlineSection:''}>
             <Link to='/reccomendations'>
                 <i className="fa-solid fa-envelope"></i> Reccomendations
             </Link>
         </Nav.Link>
         {mobile?(
-            <>
-            <Nav.Link onClick={handleClick}>
-                <Link to={`/profile/${currentUser?.user._id}`}>
-                    <i className="fa-solid fa-user"></i> Profile
-                </Link>
-            </Nav.Link>
-            <Nav.Link onClick={handleClick}>
-                <Link to={`/profile/edit/${currentUser?.user._id}`}>
-                    <i className="fa-solid fa-pen-to-square"></i> Edit Profile
-                </Link>
-            </Nav.Link>
-            <Nav.Link>
-                <Link onClick={handleLogout} to={'/'}>
-                        <i className="fa-solid fa-right-from-bracket"></i> Logout
-                </Link>
-            </Nav.Link>
-            <Nav.Link onClick={handleClick}>
-                <Link to={`/profile/delete/${currentUser?.user._id}`}>
-                        <i className="fa-solid fa-trash-can"></i> Delete Account
-                </Link>
-            </Nav.Link>
-            </>
+            <div className={styles.underlineSection}>
+                <Nav.Link onClick={handleClick}>
+                    <Link to={`/profile/${currentUser?.user._id}`}>
+                        <i className="fa-solid fa-user"></i> Profile
+                    </Link>
+                </Nav.Link>
+                <Nav.Link onClick={handleClick}>
+                    <Link to={`/profile/edit/${currentUser?.user._id}`}>
+                        <i className="fa-solid fa-pen-to-square"></i> Edit Profile
+                    </Link>
+                </Nav.Link>
+                <Nav.Link>
+                    <Link onClick={handleLogout} to={'/'}>
+                            <i className="fa-solid fa-right-from-bracket"></i> Logout
+                    </Link>
+                </Nav.Link>
+                <Nav.Link onClick={handleClick}>
+                    <Link to={`/profile/delete/${currentUser?.user._id}`}>
+                            <i className="fa-solid fa-trash-can"></i> Delete Account
+                    </Link>
+                </Nav.Link>
+            </div>
         ):(
             <NavDropdown title={<Image src={currentUser?.user.image} width={40} height={40} roundedCircle/>} id="basic-nav-dropdown" drop='start'>
             <NavDropdown.Item>
@@ -125,7 +133,25 @@ const NavBar = () => {
                 aria-labelledby={`offcanvasNavbarLabel-expand-md`}
                 placement="end"
             >
-                <Offcanvas.Header closeButton></Offcanvas.Header>
+                <Offcanvas.Header closeButton className={currentUser? styles.underlineSection: ''}>
+                <Container>
+                    <Row>
+                        <Col sm={2} xs={2}>
+                            <Image src={currentUser?.user.image} width={50} roundedCircle/>
+                        </Col>
+                        <Col sm={10} xs={10}>
+                        <Card border='light' className={appStyles.noBorder}>
+                            <Card.Title>
+                            <Link to={`/profile/${currentUser?.user._id}`}>
+                                 {currentUser?.user.username}
+                            </Link>
+                            </Card.Title>
+                            <Card.Subtitle className="mb-2 text-muted">{currentUser?.user.email}</Card.Subtitle>
+                        </Card>
+                        </Col>
+                    </Row>
+                </Container>
+                </Offcanvas.Header>
                 <Offcanvas.Body>
                     <Nav className={`${appStyles.headingFont} justify-content-end flex-grow-1 pe-3`}>
                         {currentUser? loggedInIcons: loggedOutIcons}
