@@ -38,9 +38,9 @@ const Film = ({ filmData, fullView, filmsPage, reccomendatonsPage, isOwner, user
                 setCurrentFilmIds({imdbID: filmData.imdbID, database: filmData._id})
                 setViewingData({watched: viewingData.watched, userRating: viewingData.userRating})
             }:null
-            } className={!fullView && filmsPage? styles.filmRow: ''} style={{padding: '2px', textAlign: 'left'}}>
+            } className={`${!fullView && filmsPage? styles.filmRow: ''} ${styles.minHeight}`} style={{padding: '2px', textAlign: 'left'}}>
             {/* FILM POSTER */}
-            <Col sm={4} md={6}>
+            <Col sm={4} md={6} xs={6}>
                 <Image 
                     key={fullView? omdbData.imdbID: filmData.imdbID} 
                     src={
@@ -49,13 +49,14 @@ const Film = ({ filmData, fullView, filmsPage, reccomendatonsPage, isOwner, user
                         : 
                             filmData.Poster !== 'N/A'? filmData.Poster : 'https://res.cloudinary.com/dojzptdbc/image/upload/v1726945998/default-movie_uajvdm.png'
                     } 
-                    width={fullView? (width > 599? 800:600): 300} 
+                    width={fullView? (width > 599? 800:600): 500} 
                     thumbnail
+                    fluid
                 />
             </Col>
             {/* FILM INFO */}
-            <Col sm={8} md={6}>   
-                <h5 className={fullView? appStyles.bold: appStyles.medium}>
+            <Col sm={8} md={6} xs={6}>   
+                <h5 className={fullView? appStyles.bold: width <= 400? appStyles.smallFont : appStyles.medium}>
                     {fullView? omdbData.Title : filmData.Title}
                     {fullView && isOwner? 
                     <EllipsisMenu /> : '' }
@@ -107,7 +108,7 @@ const Film = ({ filmData, fullView, filmsPage, reccomendatonsPage, isOwner, user
                         </>
                     ):(
                         <>
-                            <p>{`${filmData.Year}, ${filmData.Type}`}</p>
+                            <p className={width <= 400? appStyles.smallFont: ''}>{`${filmData.Year}, ${filmData.Type}`}</p>
                             {(!filmsPage && !reccomendatonsPage ) && currentUser? (
                                 !saved? (
                                     <>
