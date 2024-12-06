@@ -9,6 +9,7 @@ import { useCurrentFilm } from '../contexts/CurrentFilmContext';
 import SearchBar from './SearchBar';
 import appStyles from '../App.module.css'
 import styles from '../styles/Home.module.css'
+import useWindowDimensions from '../hooks/useWindowDimensions';
 
 const Home = () => {
     // Contexts
@@ -16,8 +17,9 @@ const Home = () => {
     const { updated } = useCurrentFilm()
     // Hooks
     const history = useHistory()
-    const [searchResults, setSearchResults] = useState([])
+    
     // Initialize state variables
+    const [searchResults, setSearchResults] = useState([])
     const [filmIds, setFilmIds] = useState([])
     const [currentPage, setCurrentPage] = useState(1)
     const [finalPage, setFinalPage] = useState(1)
@@ -42,63 +44,70 @@ const Home = () => {
         fetchFilmIds()
     }, [currentUser, id, updated])
     return (
-        <>
+        <>  
+            <div className={styles.wrapper}>
+
+            
             <div className={styles.searchComponents}>
-            {/* SEARCH BAR*/}
-            <SearchBar setSearchResults={setSearchResults} setTotalResults={setTotalResults} currentPage={currentPage} setCurrentPage={setCurrentPage} setFinalPage={setFinalPage} setError={setError} setHasLoaded={setHasLoaded} />
-                {searchResults.length && hasLoaded?(
-                    <>
-                        {/* PAGINATION MESSAGE */}
-                        <p>
-                            {currentPage !== finalPage ? (
-                                `Showing results ${10 * (currentPage - 1) + 1} to ${10 * (currentPage - 1) + 10} of ${totalResults}`
-                            ):(
-                                `Showing results ${10 * (currentPage - 1) + 1} to ${totalResults} of ${totalResults}`
-                            )}
-                        </p>
-                        {/* PAGINATION BUTTONS */}
-                        {finalPage > 1 ? 
-                            <ResultsPagination currentPage={currentPage} finalPage={finalPage} setCurrentPage={setCurrentPage}/>                       
-                        : '' }
-                    </>
-                ):''}
+                {/* SEARCH BAR*/}
+                <SearchBar setSearchResults={setSearchResults} setTotalResults={setTotalResults} currentPage={currentPage} setCurrentPage={setCurrentPage} setFinalPage={setFinalPage} setError={setError} setHasLoaded={setHasLoaded} />
+                    {searchResults.length && hasLoaded?(
+                        <>
+                            {/* PAGINATION MESSAGE */}
+                            <p>
+                                {currentPage !== finalPage ? (
+                                    `Showing results ${10 * (currentPage - 1) + 1} to ${10 * (currentPage - 1) + 10} of ${totalResults}`
+                                ):(
+                                    `Showing results ${10 * (currentPage - 1) + 1} to ${totalResults} of ${totalResults}`
+                                )}
+                            </p>
+                            {/* PAGINATION BUTTONS */}
+                            {finalPage > 1 ? 
+                                <ResultsPagination currentPage={currentPage} finalPage={finalPage} setCurrentPage={setCurrentPage}/>                       
+                            : '' }
+                        </>
+                    ):''}
+            </div>
             </div>
             <div className={styles.searchResults}>
-            {/* SEARCH RESULTS */}
-            {searchResults.length? (hasLoaded? (
-                <>
+                {/* SEARCH RESULTS */}
+                {searchResults.length? (hasLoaded? (
+                    <>
                         {/* LOGIN AND SIGNUP BUTTONS IF NOT ALREADY LOGGED IN */}
                         {!currentUser? (
                             <div>
-                                <Button variant='secondary' onClick={() => history.push('/signup')}>Sign up</Button> or <Button variant='secondary' onClick={() => history.push('/login')}>Login</Button> to save and share films
+                                <Button variant='secondary' onClick={() => history.push('/signup')}>Sign up</Button> 
+                                    or 
+                                <Button variant='secondary' onClick={() => history.push('/login')}>Login</Button> 
+                                    to save and share films
                             </div>):('')
                         }   
-                            <Container>
-                                    <Row>
-                                    {/* SEARCH RESULTS */}
-                                    {searchResults.map(
-                                        film => 
-                                            <Col key={film.imdbID} xl={4} lg={6} md={6} sm={12}>
+                        <Container>
+                                <Row>
+                                {/* SEARCH RESULTS */}
+                                {searchResults.map(
+                                    film => 
+                                        <Col key={film.imdbID} xl={4} lg={6} md={6} sm={12}>
                                             <Film 
                                                 filmData={film}
                                                 fullView={false}
                                                 filmsPage={false}
                                                 saved={filmIds.includes(film.imdbID)} 
                                             />
-                                            </Col>
-                                    )}  
-                                    </Row>
+                                        </Col>
+                                )}  
+                                </Row>
 
-                            </Container>
+                        </Container>
                     </>
-                ):(<Spinner />)):(
-                    error !== '' ? 
-                    (
-                        <p>{error}</p>
-                    ):(
-                        <Image alt='A close up of film tape' width={400} src='https://res.cloudinary.com/dojzptdbc/image/upload/v1729270408/movie2_h1bnwo.png'/>
-                    )
-                )}
+                    ):(<Spinner />)):(
+                        error !== '' ? 
+                        (
+                            <p>{error}</p>
+                        ):(
+                            <Image alt='A close up of film tape' width={400} src='https://res.cloudinary.com/dojzptdbc/image/upload/v1729270408/movie2_h1bnwo.png'/>
+                        )
+                    )}
             </div>
                
         </>

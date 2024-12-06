@@ -1,20 +1,25 @@
+.wrapper {
+    background-color: white;
+    width: 100%; 
+    height: 180px;
+    position: fixed;
+    z-index: 998;
+}
+
 .searchComponents {
     padding-top: 100px; 
+    z-index: 999;
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 999;
     width: 100%;
     height: 23px;
 }
 
 .searchResults {
     margin-top:190px;
-    height: 800px;
-    width: 100%;    
-    position: fixed;
-    overflow-y: scroll;
 }
+
 .suggestions {
     position: absolute;
     z-index: 1000;
