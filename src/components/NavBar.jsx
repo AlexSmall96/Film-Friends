@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { axiosReq } from '../api/axiosDefaults';
 import { useCurrentUser } from '../contexts/CurrentUserContext';
 import { Navbar, Nav, Image, NavDropdown, Offcanvas} from 'react-bootstrap'
@@ -11,7 +11,8 @@ const NavBar = () => {
     const { currentUser, setCurrentUser  } = useCurrentUser()
     // Hooks
     const { mobile } = useWindowDimensions();
-    
+    // Initialize state variables
+    const [expanded, setExpanded] = useState(false)
     // Handle logout
     const handleLogout = async () => {
         localStorage.clear()
@@ -20,36 +21,46 @@ const NavBar = () => {
                 headers: {'Authorization': `Bearer ${currentUser?.token}`}
             })
             setCurrentUser(null)
+            setExpanded(false)
         } catch(err) {
             console.log(err)
         }
     }
 
+    document.addEventListener('mouseup', (event) => {
+        if (!event.target.classList.contains('offcanvas-body')){
+            setExpanded(false) 
+        }
+    })
+
+    const handleClick = () => {
+        setExpanded(false)
+    }
     // Logged in icons: films, friends, reccomendations, user dropdown
     const loggedInIcons = 
-    <>  <Nav.Link>
+    <>  <Nav.Link onClick={handleClick}>
             <Link to={`/films/${currentUser?.user._id}`}>
                 <i className="fa-solid fa-clapperboard"></i> My Films
             </Link>
         </Nav.Link>
-        <Nav.Link>
+        <Nav.Link onClick={handleClick}>
             <Link to='/friends'>
                 <i className="fa-solid fa-users"></i> Friends
             </Link>
         </Nav.Link>
-        <Nav.Link>
+        <Nav.Link onClick={handleClick}>
             <Link to='/reccomendations'>
                 <i className="fa-solid fa-envelope"></i> Reccomendations
             </Link>
         </Nav.Link>
         {mobile?(
             <>
-            <Nav.Link>
+            <Nav.Link onClick={handleClick}>
                 <Link to={`/profile/${currentUser?.user._id}`}>
                     <i className="fa-solid fa-user"></i> Profile
                 </Link>
             </Nav.Link>
-            <Nav.Link>
+            <Nav.Link onClick={handleClick}>
                 <Link to={`/profile/edit/${currentUser?.user._id}`}>
                     <i className="fa-solid fa-pen-to-square"></i> Edit Profile
                 </Link>
@@ -59,7 +70,7 @@ const NavBar = () => {
                         <i className="fa-solid fa-right-from-bracket"></i> Logout
                 </Link>
             </Nav.Link>
-            <Nav.Link>
+            <Nav.Link onClick={handleClick}>
                 <Link to={`/profile/delete/${currentUser?.user._id}`}>
                         <i className="fa-solid fa-trash-can"></i> Delete Account
                 </Link>
@@ -100,7 +111,7 @@ const NavBar = () => {
     </>
 
     return (
-        <Navbar expand={'md'} sticky='top' className={`${appStyles.darkBackground}`}>
+        <Navbar expand={'md'} expanded={expanded} sticky='top' className={`${appStyles.darkBackground}`}>
             <Navbar.Brand href="/">
                 <h3 className={`${appStyles.bold} ${appStyles.headingFont} ${appStyles.horizMargin}`}>
                     FILM
@@ -108,11 +119,11 @@ const NavBar = () => {
                     FRIENDS
                 </h3>
             </Navbar.Brand>
-            <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-md`} className={`${appStyles.horizMargin}`}/>
+            <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-md`} className={`${appStyles.horizMargin}`} onClick={() => setExpanded(true)}/>
             <Navbar.Offcanvas
-              id={`offcanvasNavbar-expand-md`}
-              aria-labelledby={`offcanvasNavbarLabel-expand-md`}
-              placement="end"
+                id={`offcanvasNavbar-expand-md`}
+                aria-labelledby={`offcanvasNavbarLabel-expand-md`}
+                placement="end"
             >
                 <Offcanvas.Header closeButton></Offcanvas.Header>
                 <Offcanvas.Body>
