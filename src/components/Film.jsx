@@ -40,7 +40,7 @@ const Film = ({ filmData, fullView, filmsPage, reccomendatonsPage, isOwner, user
             }:null
             } className={!fullView && filmsPage? styles.filmRow: ''} style={{padding: '2px', textAlign: 'left'}}>
             {/* FILM POSTER */}
-            <Col sm={4}>
+            <Col sm={4} md={6}>
                 <Image 
                     key={fullView? omdbData.imdbID: filmData.imdbID} 
                     src={
@@ -49,12 +49,12 @@ const Film = ({ filmData, fullView, filmsPage, reccomendatonsPage, isOwner, user
                         : 
                             filmData.Poster !== 'N/A'? filmData.Poster : 'https://res.cloudinary.com/dojzptdbc/image/upload/v1726945998/default-movie_uajvdm.png'
                     } 
-                    width={fullView? (width > 599? 800:300): 100} 
+                    width={fullView? (width > 599? 800:600): 300} 
                     thumbnail
                 />
             </Col>
             {/* FILM INFO */}
-            <Col sm={8}>   
+            <Col sm={8} md={6}>   
                 <h5 className={fullView? appStyles.bold: appStyles.medium}>
                     {fullView? omdbData.Title : filmData.Title}
                     {fullView && isOwner? 
@@ -101,7 +101,7 @@ const Film = ({ filmData, fullView, filmsPage, reccomendatonsPage, isOwner, user
                                 </Dropdown>
                             :
                             <>
-                                <p className={appStyles.smallFont}><i className="fa-solid fa-check"></i> Saved to your watchlist</p>                           
+                                <p className={appStyles.smallFont}><i className={`fa-solid fa-check`}></i> Saved to your watchlist</p>                           
                             </> : ''}
                         </Form>
                         </>
@@ -111,21 +111,21 @@ const Film = ({ filmData, fullView, filmsPage, reccomendatonsPage, isOwner, user
                             {(!filmsPage && !reccomendatonsPage ) && currentUser? (
                                 !saved? (
                                     <>
-                                        {/* SAVE / GO TO WATCHLIST BUTTONS */}
+                                        {/* SAVE / GO TO WATCHLIST BUTTONS IF HOME PAGE  */}
                                         <Dropdown>
-                                            <Dropdown.Toggle variant="outline-secondary" id="dropdown-basic">
+                                            <Dropdown.Toggle className={appStyles.roundButton} size="sm" variant="outline-secondary" id="dropdown-basic">
                                                 Save
                                             </Dropdown.Toggle>
                                             <Dropdown.Menu>
-                                                <Dropdown.Item onClick={saveToPublicList}>Save to Public Watchlist</Dropdown.Item>
-                                                <Dropdown.Item onClick={saveToPrivateList}>Save to Private Watchlist</Dropdown.Item>
+                                                <Dropdown.Item onClick={saveToPublicList} className={`${appStyles.smallFont}`}>Save to Public Watchlist</Dropdown.Item>
+                                                <Dropdown.Item onClick={saveToPrivateList} className={`${appStyles.smallFont}`}>Save to Private Watchlist</Dropdown.Item>
                                             </Dropdown.Menu>
                                         </Dropdown>
                                     </>
                                 ):(
                                     <>
-                                        <p className={appStyles.smallFont}><i className="fa-solid fa-check"></i> Saved</p>
-                                        <Button variant='outline-secondary' onClick={() => history.push(`/films/${currentUser.user._id}`)}>Go to watchlist</Button>
+                                        <p className={`${appStyles.smallFont}`}><i className="fa-solid fa-check"></i> Saved</p>
+                                        <Button className={appStyles.roundButton} size="sm" variant='outline-secondary' onClick={() => history.push(`/films/${currentUser.user._id}`)}>Go to watchlist</Button>
                                     </>
                                 )
                             ):('')}

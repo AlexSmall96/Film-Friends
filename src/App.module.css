@@ -1,10 +1,39 @@
+/* Fonts text size/weight/decoration */
+
 .App {
   text-align: center;
   font-family: "Roboto Flex", sans-serif;
 }
 
-.App i:hover {
+.headingFont {
+  font-family: "Josefin Sans", sans-serif;
+}
+
+.smallFont {
+  font-size: small;
+}
+
+.noUnderline {
+  text-decoration: none;
+}
+
+.medium {
+  font-size: medium;
+}
+
+.App i:hover, .clickable:hover {
   cursor: pointer;
+}
+
+.bold {
+  font-weight: 600;
+}
+
+/* Margins and Paddings */
+
+.bigVerticalMargin {
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 .App ul {
@@ -12,19 +41,35 @@
   margin: auto;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.horizMargin {
+  margin-left: 10px;
+  margin-right: 10px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.negHorizMargin {
+  margin-left: -13px; 
+  margin-right: -13px
 }
 
-.headingFont {
-  font-family: "Josefin Sans", sans-serif;
+.noPadding {
+  padding: 0 0 0 0
+}
+
+.leftAlign {
+  text-align: left;
+  float: left
+}
+
+.rightAlign {
+  text-align: right;
+  float: right
+}
+
+/* Colours and shapes */
+.roundButton {
+  border-radius: 1rem;
+  background-color: rgba(241, 218, 11, 0.473);
+  border-color: rgba(241, 218, 11, 0.473);
 }
 
 .App-header {
@@ -42,6 +87,10 @@
   color: #61dafb; 
 }
 
+.greenIcon {
+  color:green;
+}
+
 a {
   color: black;
   text-decoration: none;
@@ -51,62 +100,6 @@ a:hover {
   color: blue;
 }
 
-.bold {
-  font-weight: 600;
-}
-
-/* Margins and Paddings */
-.bigVerticalMargin {
-  margin-top: 20px;
-  margin-bottom: 20px;
-}
-
-.horizMargin {
-  margin-left: 10px;
-  margin-right: 10px;
-}
-
-.negHorizMargin {
-  margin-left: -13px; 
-  margin-right: -13px
-}
-
-.noPadding {
-  padding: 0 0 0 0
-}
-
-.smallFont {
-  font-size: small;
-}
-
-.medium {
-  font-size: medium;
-}
-
-.clickable:hover{
-  cursor: pointer;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.leftAlign {
-  text-align: left;
-  float: left
-}
-
-.rightAlign {
-  text-align: right;
-  float: right
-}
-
 .darkBackground {
   background-color: rgba(224, 220, 220, 1);
 }
-
