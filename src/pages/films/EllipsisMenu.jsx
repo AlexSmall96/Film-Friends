@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Overlay, Dropdown, Modal, Button, Image, Form, Spinner } from 'react-bootstrap';
 import appStyles from '../../App.module.css'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
-import { CustomMenu, CustomToggle } from '../../components/CustomDropDown';
+import { CustomMenu, CustomToggle } from '../../components/CustomDropDown'
 import { useCurrentUser } from '../../contexts/CurrentUserContext';
 import { axiosReq } from '../../api/axiosDefaults';
 import { useCurrentFilm } from '../../contexts/CurrentFilmContext';
@@ -111,6 +111,7 @@ const EllipsisMenu = () => {
                             {...props}
                             style={{
                                 position: 'absolute',
+                                zIndex: 9999,
                                 backgroundColor: 'lightgrey',
                                 padding: '2px 10px',
                                 color: 'black',
