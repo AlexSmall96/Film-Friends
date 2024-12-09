@@ -20,6 +20,10 @@
     margin-top:190px;
 }
 
+.searchResultsLoggedOut {
+    margin-top:230px;
+}
+
 .suggestions {
     position: absolute;
     z-index: 1000;

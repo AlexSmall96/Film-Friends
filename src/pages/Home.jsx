@@ -65,23 +65,23 @@ const Home = () => {
                             {finalPage > 1 ? 
                                 <ResultsPagination currentPage={currentPage} finalPage={finalPage} setCurrentPage={setCurrentPage}/>                       
                             : '' }
+                        {/* LOGIN AND SIGNUP BUTTONS IF NOT ALREADY LOGGED IN */}
+                        {!currentUser? (
+                            <div className={appStyles.bigVerticalMargin}>
+                                <Button variant='link' onClick={() => history.push('/signup')}>Sign up</Button>
+                                or 
+                                <Button variant='link' onClick={() => history.push('/login')}>Login</Button> 
+                                    to save and share films
+                            </div>):('')
+                        } 
                         </>
                     ):''}
             </div>
             </div>
-            <div className={styles.searchResults}>
+            <div className={currentUser? styles.searchResults: styles.searchResultsLoggedOut}>
                 {/* SEARCH RESULTS */}
                 {searchResults.length? (hasLoaded? (
-                    <>
-                        {/* LOGIN AND SIGNUP BUTTONS IF NOT ALREADY LOGGED IN */}
-                        {!currentUser? (
-                            <div>
-                                <Button variant='secondary' onClick={() => history.push('/signup')}>Sign up</Button> 
-                                    or 
-                                <Button variant='secondary' onClick={() => history.push('/login')}>Login</Button> 
-                                    to save and share films
-                            </div>):('')
-                        }   
+                    <>  
                         <Container>
                                 <Row>
                                 {/* SEARCH RESULTS */}
