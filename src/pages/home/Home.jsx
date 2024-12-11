@@ -1,15 +1,15 @@
 import React, { useState, useEffect} from 'react';
-import { axiosReq } from '../api/axiosDefaults';
-import { useCurrentUser } from '../contexts/CurrentUserContext';
+import { axiosReq } from '../../api/axiosDefaults';
+import { useCurrentUser } from '../../contexts/CurrentUserContext';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
-import ResultsPagination from '../components/ResultsPagination'
+import ResultsPagination from '../../components/ResultsPagination'
 import { Button, Container, Image, Spinner, Row, Col, Pagination, ButtonGroup} from 'react-bootstrap';
-import Film from '../components/Film'
-import { useCurrentFilm } from '../contexts/CurrentFilmContext';
+import Film from '../../components/Film'
+import { useCurrentFilm } from '../../contexts/CurrentFilmContext';
 import SearchBar from './SearchBar';
-import appStyles from '../App.module.css'
-import styles from '../styles/Home.module.css'
-import useWindowDimensions from '../hooks/useWindowDimensions';
+import appStyles from '../../App.module.css'
+import styles from '../../styles/Home.module.css'
+import useWindowDimensions from '../../hooks/useWindowDimensions';
 
 const Home = () => {
     // Contexts

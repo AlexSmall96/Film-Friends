@@ -7,9 +7,9 @@ import '@testing-library/jest-dom/vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event'
 import { describe, test, expect } from 'vitest';
-import {CurrentUserProvider} from '../contexts/CurrentUserContext'
-import setupTests from '../test-utils/setupTests'
-import renderWithContext from '../test-utils/renderWithContext';
+import {CurrentUserProvider} from '../../contexts/CurrentUserContext'
+import setupTests from '../../test-utils/setupTests'
+import renderWithContext from '../../test-utils/renderWithContext';
 import { server } from '../mocks/server';
 import { handlers } from '../mocks/handlers';
 import { HttpResponse, http } from "msw";

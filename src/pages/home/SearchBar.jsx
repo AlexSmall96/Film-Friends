@@ -1,8 +1,8 @@
 import React, { useEffect, useState} from 'react'
-import { axiosReq } from '../api/axiosDefaults'
+import { axiosReq } from '../../api/axiosDefaults'
 import { Button, Container, Row, Col} from 'react-bootstrap'
-import appStyles from '../App.module.css'
-import styles from '../styles/Home.module.css'
+import appStyles from '../../App.module.css'
+import styles from '../../styles/Home.module.css'
 
 /* 
 The search suggestions functionality was inspired by the following article
