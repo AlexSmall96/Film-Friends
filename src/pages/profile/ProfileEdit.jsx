@@ -122,7 +122,7 @@ const ProfileEdit = () => {
                     <Button variant='outline-secondary' type='submit'>Update Details</Button>
                 </Form>
                 <p>{success || ''}</p>
-                <Button variant='outline-secondary'>Reset password</Button>
+                <Button variant='outline-secondary' onClick={() => history.push(`/resetPassword`)}>Reset password</Button>
                 <Button variant='outline-secondary' onClick={() => history.goBack()}>Back to my profile</Button>
                 <Button variant='outline-secondary' onClick={() => history.push(`/profile/delete/${id}`)}>Delete my account</Button>
             </>
