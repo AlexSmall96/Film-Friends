@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import NavBar from './components/NavBar';
-import Home from './pages/Home';
+import Home from './pages/home/Home.jsx';
 import Profile from './pages/profile/Profile';
 import ProfileEdit from './pages/profile/ProfileEdit';
 import Films from './pages/films/Films';
