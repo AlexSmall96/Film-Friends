@@ -54,11 +54,15 @@ const Login = () => {
                     <Form.Label id='password-lbl'>Password</Form.Label>
                     <Form.Control onChange={handleChange} type="password" name='password' placeholder="Password" aria-labelledby='password-lbl' />
                 </Form.Group>
+                
                 {/* ERROR */}
                 {error? (<p>{error}</p>):('')}
                 <Button variant="secondary" type="submit">
                     Login
                 </Button>
+                <p>
+                    <Button variant='link' onClick={() => history.push('/sendOTP/')}>Forgotten password?</Button>
+                </p>
                 <p>Don't have an account?<Button variant='link' onClick={() => history.push('/signup')}>Sign up</Button></p>
             </Form>
         </>
