@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useHistory  } from 'react-router-dom/cjs/react-router-dom.min';
 import { axiosReq } from '../../api/axiosDefaults';
 import { useCurrentUser } from '../../contexts/CurrentUserContext';
-import { Spinner, Button, OverlayTrigger, Tooltip, } from 'react-bootstrap';
+import { Spinner, Button, OverlayTrigger, Tooltip, Image, Card} from 'react-bootstrap';
+import appStyles from '../../App.module.css'
 
 const Profile = () => {
     // Hooks
@@ -78,14 +79,14 @@ const Profile = () => {
                 <h3>{profile.username}</h3>
                     {/* PUBLIC PROFILE INFO */}
                     <p>{`Username: ${profile.username}, Age: ${profile.age}`}</p>
-                    <img src={profile.image} height={200} width={200} alt={`Profile picture for ${profile.username}`}  />
+                    <Image roundedCircle src={profile.image} height={200} width={200} alt={`Profile picture for ${profile.username}`}  />
                     {/* EMAIL AND EDIT BUTTON IF USER IS OWNER OF PROFILE */}
                     {isOwner? 
                         (
                             <>
-                                <p>{`Email: ${profile.email}`}</p>
-                                <Button variant='outline-secondary' onClick={() => history.push(`/profile/edit/${currentUser.user._id}`)}>Edit Profile</Button>
-                                <Button variant='outline-secondary' onClick={() => history.push(`/films/${id}`)}>Go to your watchlist</Button>
+                                <p><i class="fa-solid fa-envelope"></i> {profile.email}</p>
+                                <Button className={appStyles.roundButton} variant='outline-secondary' onClick={() => history.push(`/profile/edit/${currentUser.user._id}`)}>Edit Profile</Button>
+                                <Button className={appStyles.roundButton} variant='outline-secondary' onClick={() => history.push(`/films/${id}`)}>Go to your watchlist</Button>
                             </>
                         ):(
                             isFriend? (
@@ -97,15 +98,15 @@ const Profile = () => {
                                     >
                                         <p>{`Film Rating Similarity: ${similarity}`}</p>
                                     </OverlayTrigger>
-                                    <Button variant='outline-secondary' onClick={() => history.push(`/films/${id}`)}>{`Go to ${profile.username}'s watchlist`}</Button>                                
+                                    <Button className={appStyles.roundButton} variant='outline-secondary' onClick={() => history.push(`/films/${id}`)}>{`Go to ${profile.username}'s watchlist`}</Button>                                
                                 </>
                                 ):(
                                     isPending ? 
                                         (
-                                            <><p>Friend Request Sent</p><Button variant='outline-secondary' onClick={() => history.push('/friends')}>Go to your friends list</Button></>
+                                            <><p>Friend Request Sent</p><Button className={appStyles.roundButton} variant='outline-secondary' onClick={() => history.push('/friends')}>Go to your friends list</Button></>
                                             
                                         ):(
-                                            <Button variant='outline-secondary' onClick={sendRequest}>Send friend request</Button>
+                                            <Button className={appStyles.roundButton} variant='outline-secondary' onClick={sendRequest}>Send friend request</Button>
                                         )
                                 )
                         )
