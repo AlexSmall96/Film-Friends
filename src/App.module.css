@@ -25,6 +25,10 @@
   cursor: pointer;
 }
 
+.clickable:hover{
+  color:blue;
+}
+
 .bold {
   font-weight: 600;
 }
@@ -34,6 +38,10 @@
 .bigVerticalMargin {
   margin-top: 20px;
   margin-bottom: 20px;
+}
+
+.verticalMargin {
+  margin-top: 10px;
 }
 
 .App ul {

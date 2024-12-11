@@ -120,9 +120,9 @@ const EllipsisMenu = () => {
                             }}
                         >   
                             {/* SHARE, REMOVE AND MAKE PUBLIC / PRIVATE OPTIONS */}
-                            <p onClick={handleShowModal} className={appStyles.hover}><i className="fa-solid fa-share"></i> Share</p>
-                            <p className={appStyles.hover} onClick={() => updateViewingData(null, null, !viewingData.public)}><i className="fa-solid fa-pen"></i> {viewingData.public? 'Make Private': 'Make Public'}</p>
-                            <p className={appStyles.hover} onClick={handleDelete}><i className="fa-regular fa-trash-can"></i> Remove from Watchlist</p>
+                            <p onClick={handleShowModal} className={appStyles.clickable}><i className="fa-solid fa-share"></i> Share</p>
+                            <p className={appStyles.clickable} onClick={() => updateViewingData(null, null, !viewingData.public)}><i className="fa-solid fa-pen"></i> {viewingData.public? 'Make Private': 'Make Public'}</p>
+                            <p className={appStyles.clickable} onClick={handleDelete}><i className="fa-regular fa-trash-can"></i> Remove from Watchlist</p>
                         </div>)
                     }
                 </Overlay>
