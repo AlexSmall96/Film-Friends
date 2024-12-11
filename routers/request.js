@@ -71,6 +71,13 @@ router.get('/data/requests', auth, async (req, res) => {
                 updatedAt: request.updatedAt
                 })
         }
+        if (req.query.username){
+            const username = new RegExp(`^${req.query.username.trim()}`, "i")
+            const filteredByUsername = fullRequests.filter(
+                request => request.isSender? username.test(request.reciever.username) : username.test(request.sender.username)
+            )
+            return res.status(200).send(filteredByUsername)
+        }
         res.status(200).send(fullRequests)
     } catch (e) {
         res.status(400).send(e)
