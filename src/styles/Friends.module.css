@@ -1,0 +1,18 @@
+.searchBar {
+    border-radius: 1rem;
+    border-style: solid;
+    border-width: 0.1rem;
+    padding: 10px 12px 12px 40px;
+    margin-left: 1px;
+    width: 100%;
+    background-image: url('https://res.cloudinary.com/dojzptdbc/image/upload/v1733406769/mg_glass_p9yfjb.png');
+    background-size: 15;
+    background-position: 10px 10px;
+    background-repeat: no-repeat;
+}
+
+.searchBar:focus{
+    outline: none;
+    border-color: rgb(28, 87, 212);
+    box-shadow: 0 0 5px rgba(5, 53, 126, 0.5);
+}
