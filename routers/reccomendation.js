@@ -35,38 +35,46 @@ router.post('/data/reccomendations', auth, async (req, res) => {
     }
 })
 
+// Helper function used in get reccomendations to enrich reccomendation with extra data
+const enrichReccomendation = async (rec, currentUser) => {
+    const senderUser = await User.findById(rec.sender)
+    const recieverUser = await User.findById(rec.reciever)
+    const isSender = senderUser.username === currentUser.username
+    const sender = {
+        _id: rec.sender,
+        username: senderUser.username,
+        image: senderUser.image
+    }
+    const reciever = {
+        _id: rec.reciever,
+        username: recieverUser.username,
+        image: recieverUser.image     
+    }
+    const enrichedReccomendation = {
+        isSender, 
+        _id: rec._id, 
+        sender, 
+        reciever, 
+        liked: rec.liked,
+        message: rec.message,
+        createdAt: rec.createdAt,
+        updatedAt: rec.updatedAt
+    }
+    return enrichedReccomendation
+}
+
 // Get all reccomendations
 router.get('/data/reccomendations', auth, async (req, res) => {
     const _id = req.user._id
     try {
+        // Find all users sent or recieved reccomendations
         const reccomendations = await Reccomendation.find({$or: [{reciever:_id}, {sender:_id}]})
             .sort({updatedAt: -1})
-            let fullReccomendations = []
-            for (let rec of reccomendations) {
-                const senderUser = await User.findById(rec.sender)
-                const recieverUser = await User.findById(rec.reciever)
-                const film = await Film.findById(rec.film)
-                fullReccomendations.push({
-                    film,
-                    isSender: senderUser.username === req.user.username,
-                    _id: rec._id,
-                    sender: {
-                        _id: rec.sender,
-                        username: senderUser.username,
-                        image: senderUser.image
-                    },
-                    reciever: {
-                        _id: rec.reciever,
-                        username: recieverUser.username,
-                        image: recieverUser.image
-                    },
-                    liked: rec.liked,
-                    message: rec.message,
-                    createdAt: rec.createdAt,
-                    updatedAt: rec.updatedAt
-                    })
-            }
-        res.status(200).send({fullReccomendations}) 
+        // Use enrichReccomendation function to add profile data to reccomendation
+        const enrichedReccomendations = await Promise.all(reccomendations.map(
+            rec => enrichReccomendation(rec, req.user)  
+        ))
+        res.status(200).send({enrichedReccomendations}) 
     } catch (e) {
         res.status(400).send(e)
     }
