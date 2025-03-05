@@ -53,7 +53,7 @@ const EllipsisMenu = () => {
             const acceptedRequests = await response.data.filter(req => req.accepted)
             // Get all reccomendations to determine who film has already been shared with
             const reccomendationsResponse = await axiosReq.get('/reccomendations', {headers: {'Authorization': `Bearer ${currentUser.token}`}})
-            const alreadyReccomended = await reccomendationsResponse.data.fullReccomendations.filter(rec => rec.film?.imdbID === omdbData?.imdbID)
+            const alreadyReccomended = await reccomendationsResponse.data.filter(rec => rec.film?.imdbID === omdbData?.imdbID)
             const alreadyReccomendedUsernames = await alreadyReccomended.map(rec => rec.reciever.username)
             // Filter friend requests based on already sent reccomendations
             const filteredRequests = await acceptedRequests.filter(request => request.isSender? !alreadyReccomendedUsernames.includes(request.reciever.username):!alreadyReccomendedUsernames.includes(request.sender.username))

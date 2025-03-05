@@ -74,7 +74,7 @@ router.get('/data/reccomendations', auth, async (req, res) => {
         const enrichedReccomendations = await Promise.all(reccomendations.map(
             rec => enrichReccomendation(rec, req.user)  
         ))
-        res.status(200).send({enrichedReccomendations}) 
+        res.status(200).send(enrichedReccomendations) 
     } catch (e) {
         res.status(400).send(e)
     }
