@@ -24,7 +24,7 @@ const Films = () => {
     const [currentUsersFilmIds, setCurrentUsersFilmIds, ] = useState([])
     const [allFilms, setAllFilms] = useState([])
     const [filteredFilms, setFilteredFilms] = useState([])
-    const [sort, setSort] = useState('')
+    const [sort, setSort] = useState('Last Updated')
     const [filter, setFilter] = useState({
         public: true,
         watched: 'All'
@@ -49,7 +49,7 @@ const Films = () => {
             const filteredResponse = await response.data.films.filter(film => checkFilm(film))
             setAllFilms(fullResponse)
             setFilteredFilms(filteredResponse)
-            if (currentFilmIds.imdbID === '') {
+            if (currentFilmIds.imdbID === '' && filteredResponse.length) {
                 setCurrentFilmIds({
                     imdbID: filteredResponse[0].imdbID,
                     database: filteredResponse[0]._id
@@ -121,33 +121,35 @@ const Films = () => {
                         </Row>):('')}
                     <Row>
                         {width > 599?(
-                            <Col sm={{span: 12, order: 2}} md={{span:4, order: 1}} style={{marginTop: '30px', borderStyle:'solid', borderColor:'grey', borderWidth:'0.5px', borderRadius: '1rem', display:'inline'}}>
+                            <Col sm={{span: 12, order: 2}} md={{span:4, order: 1}} className={`${styles.filmsList} ${appStyles.bigVerticalMargin}`}>
                                 {/* FILTER BUTTONS */}
                                 <Filters isOwner={isOwner} filter={filter} setFilter={setFilter} sort={sort} username={username} setSort={setSort} mobile={false}/>
                                 { /* FILMS LIST */}
-                                <div className={styles.filmsListBody}>
+                                <div className={`${styles.filmsListBody} ${appStyles.verticalMargin}`}>
                                 {filteredFilms.length? (
-                                    filteredFilms.map(
-                                        film => <Film 
-                                                    key={film.imdbID} 
-                                                    filmData={film} 
-                                                    fullView={false} 
-                                                    filmsPage={true} 
-                                                />
+                                    filteredFilms.map(film => 
+                                        <Film 
+                                            key={film.imdbID} 
+                                            filmData={film} 
+                                            fullView={false} 
+                                            filmsPage={true} 
+                                        />
                                     )
                                 ):('No films matching criteria.')}
                                 </div>
                             </Col>
                         ):('')}
-                        <Col sm={{span: 12, order: 1}} md={{span:8, order:2}} style={{marginTop: '30px'}}>
+                        <Col sm={{span: 12, order: 1}} md={{span:8, order:2}} className={`${appStyles.bigVerticalMargin}`}>
                             {/* SELECTED FILM */}
-                            <Film
-                                fullView={true}
-                                filmsPage={true}
-                                isOwner={isOwner}
-                                saved={currentUsersFilmIds.includes(omdbData.imdbID)}
-                                username={username}
-                            />
+                            {currentFilmIds.imdbID?
+                                <Film
+                                    fullView={true}
+                                    filmsPage={true}
+                                    isOwner={isOwner}
+                                    saved={currentUsersFilmIds.includes(omdbData.imdbID)}
+                                    username={username}
+                                />:''
+                            }
                         </Col>
 
                     </Row>
