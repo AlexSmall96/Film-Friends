@@ -5,6 +5,7 @@ import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import ResultsPagination from '../../components/ResultsPagination'
 import { Button, Container, Image, Spinner, Row, Col, Pagination, ButtonGroup} from 'react-bootstrap';
 import Film from '../../components/Film'
+import FilmPreview from '../../components/FilmPreview'
 import { useCurrentFilm } from '../../contexts/CurrentFilmContext';
 import SearchBar from './SearchBar';
 import appStyles from '../../App.module.css'
@@ -14,7 +15,6 @@ import useWindowDimensions from '../../hooks/useWindowDimensions';
 const Home = () => {
     // Contexts
     const { currentUser } = useCurrentUser()
-    const { updated } = useCurrentFilm()
     // Hooks
     const history = useHistory()
     
@@ -26,7 +26,20 @@ const Home = () => {
     const [totalResults, setTotalResults] = useState(0)
     const [error, setError] = useState('')
     const [hasLoaded, setHasLoaded] = useState(false)
+    const [updated, setUpdated] = useState(false)
     const id = currentUser?.user._id || null
+
+    // Saves a film to users watchlist, can be called via the buttons for each film result
+    const saveFilm = async (Title, imdbID, Poster, Year, Type, publicFilm) => {
+        try {
+            await axiosReq.post('/films', {Title, imdbID, Poster, Year, Type, public: publicFilm}, {
+                headers: {'Authorization': `Bearer ${currentUser.token}`}
+            })
+            setUpdated(!updated)
+        } catch(err){
+            console.log(err)
+        }
+    }
 
     useEffect(() => {
         // Gets the imdbIds of the users saved films, to determine which buttons should appear next to film result
@@ -43,11 +56,10 @@ const Home = () => {
         }
         fetchFilmIds()
     }, [currentUser, id, updated])
+
     return (
         <>  
             <div className={styles.wrapper}>
-
-            
             <div className={styles.searchComponents}>
                 {/* SEARCH BAR*/}
                 <SearchBar setSearchResults={setSearchResults} setTotalResults={setTotalResults} currentPage={currentPage} setCurrentPage={setCurrentPage} setFinalPage={setFinalPage} setError={setError} setHasLoaded={setHasLoaded} />
@@ -84,20 +96,20 @@ const Home = () => {
                     <>  
                         <Container>
                                 <Row>
-                                {/* SEARCH RESULTS */}
-                                {searchResults.map(
-                                    film => 
-                                        <Col key={film.imdbID} xl={4} lg={6} md={6} sm={12}>
-                                            <Film 
-                                                filmData={film}
-                                                fullView={false}
-                                                filmsPage={false}
-                                                saved={filmIds.includes(film.imdbID)} 
+                                    {/* SEARCH RESULTS */}
+                                    {searchResults.map(
+                                        film =>
+                                            <FilmPreview 
+                                                key={film.imdbID} 
+                                                film={film} 
+                                                homePage={true} 
+                                                saveFilm={saveFilm} 
+                                                savedToWatchlist={filmIds.includes(film.imdbID)}
+                                                updated={updated}
+                                                setUpdated={setUpdated} 
                                             />
-                                        </Col>
-                                )}  
+                                    )}  
                                 </Row>
-
                         </Container>
                     </>
                     ):(<Spinner />)):(
