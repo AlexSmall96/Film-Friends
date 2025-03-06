@@ -11,10 +11,11 @@ import DeleteModal from '../../components/DeleteModal'
 import { FriendDataProvider } from '../../contexts/FriendDataContext';
 import { useCurrentFilm } from '../../contexts/CurrentFilmContext';
 import { set } from 'mongoose';
+import FilmPreview from '../../components/FilmPreview';
 
 const Reccomendations = () => {
     const {currentUser} = useCurrentUser()
-    const {currentFilmIds, setCurrentFilmIds} = useCurrentFilm()
+    const {setCurrentFilmIds} = useCurrentFilm()
     const history = useHistory()
     const [reccomendations, setReccomendations] = useState([])
     const [filter, setFilter] = useState('All')
@@ -27,7 +28,7 @@ const Reccomendations = () => {
     useEffect(() => {
         const fetchReccomendations = async () => {
             const response = await axiosReq.get(`/reccomendations/`, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
-            const allReccomendations = response.data.fullReccomendations.filter(rec => !rec.isSender)
+            const allReccomendations = response.data.filter(rec => !rec.isSender)
             const filteredReccomendations = allReccomendations.filter(rec => filter === 'All' ? true : rec.sender.username === filter)
             const sortedReccomendations = sort === 'Film Title' ? sortBy(filteredReccomendations, (rec) => rec.film.Title) : filteredReccomendations
             setReccomendations(sortedReccomendations)
@@ -93,7 +94,9 @@ const Reccomendations = () => {
                                             </OverlayTrigger>
                                         </Col>
                                         <Col md={5}>
-                                            <Film key={rec.film.imdbID} filmData={rec.film} fullView={false} filmsPage={false} reccomendatonsPage={true} />
+                                            <FilmPreview 
+                                                film={rec.film}
+                                            />
                                         </Col>
                                         <Col md={4}>
                                             {rec.film.public ? (

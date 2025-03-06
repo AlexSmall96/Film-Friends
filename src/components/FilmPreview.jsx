@@ -10,17 +10,23 @@ import IconRating from '../pages/films/IconRating';
 import useWindowDimensions from '../hooks/useWindowDimensions';
 
 // Displays film poster and data either as a list of search results, saved films or reccomendations
-const FilmPreview = ({film, homePage, saveFilm, savedToWatchlist}) => {
+const FilmPreview = ({film, homePage, filmsPage, saveFilm, savedToWatchlist}) => {
+
     const { currentUser } = useCurrentUser()
+    const {setCurrentFilmIds, viewingData, setViewingData} = useCurrentFilm()
     const history = useHistory()
 
     const handleSave = (publicFilm) => {
         saveFilm(film.Title, film.imdbID, film.Poster, film.Year, film.Type, publicFilm)
     }
 
+    const handleClick = () => {
+        setCurrentFilmIds({imdbID: film.imdbID, database: film._id})
+        setViewingData({watched: viewingData.watched, userRating: viewingData.userRating})
+    }
+
     return (
-        <Col md={4}>
-            <Row>
+            <Row onClick={filmsPage? handleClick : null}>
                 <Col md={6}>
                     <Image 
                         src={film.Poster} 
@@ -52,10 +58,6 @@ const FilmPreview = ({film, homePage, saveFilm, savedToWatchlist}) => {
                     :''}
                 </Col>
             </Row>
-
-            
-        </Col>
-        
     )
 }
 

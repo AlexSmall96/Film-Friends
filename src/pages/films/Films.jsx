@@ -7,6 +7,7 @@ import styles from '../../styles/Films.module.css'
 import appStyles from '../../App.module.css'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import Film from '../../components/Film';
+import FilmPreview from '../../components/FilmPreview';
 import useWindowDimensions from '../../hooks/useWindowDimensions';
 import Filters from '../films/Filters'
 import { useCurrentFilm } from '../../contexts/CurrentFilmContext';
@@ -82,7 +83,7 @@ const Films = () => {
         }
         fetchFilms()
     }, [sort, filter, currentUser.token, id, isOwner, viewingData, currentFilmIds.imdbID, updated])
-
+    
     useEffect(() => {   
         // Get individual film data from OMDB API for main view
         const getOMDBData = async () => {
@@ -128,11 +129,10 @@ const Films = () => {
                                 <div className={`${styles.filmsListBody} ${appStyles.verticalMargin}`}>
                                 {filteredFilms.length? (
                                     filteredFilms.map(film => 
-                                        <Film 
+                                        <FilmPreview 
                                             key={film.imdbID} 
-                                            filmData={film} 
-                                            fullView={false} 
-                                            filmsPage={true} 
+                                            film={film} 
+                                            filmsPage={true}  
                                         />
                                     )
                                 ):('No films matching criteria.')}
