@@ -4,12 +4,19 @@ import { Button, Dropdown } from 'react-bootstrap';
 import { useCurrentUser } from '../contexts/CurrentUserContext';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 
-const SaveDropown = ({savedToWatchlist, saveFilm, film}) => {
+const SaveDropown = ({savedToWatchlist, saveFilm, film, updated, setUpdated}) => {
     const { currentUser } = useCurrentUser()
     const history = useHistory()
 
     const handleSave = (publicFilm) => {
         saveFilm(film.Title, film.imdbID, film.Poster, film.Year, film.Type, publicFilm)
+    }
+
+    const goToWatchlist = () => {
+        history.push(`/films/${currentUser.user._id}`)
+        if (setUpdated){
+            setUpdated(!updated)
+        }
     }
 
     return (
@@ -27,7 +34,7 @@ const SaveDropown = ({savedToWatchlist, saveFilm, film}) => {
             :
                 <>
                     <p className={`${appStyles.smallFont}`}><i className="fa-solid fa-check"></i> Saved</p>
-                    <Button onClick={() => history.push(`/films/${currentUser.user._id}`)} className={appStyles.roundButton} variant="outline-secondary" size="sm">Go to watchlist</Button>        
+                    <Button onClick={goToWatchlist} className={appStyles.roundButton} variant="outline-secondary" size="sm">Go to watchlist</Button>        
                 </> 
             }
         </>
