@@ -1,32 +1,17 @@
 import React from 'react';
-import {Button, Col, Dropdown, Row, Image, Form, Tooltip, OverlayTrigger} from 'react-bootstrap'
+import {Button, Col, Dropdown, Row, Image} from 'react-bootstrap'
 import appStyles from '../App.module.css'
 import styles from '../styles/Films.module.css'
 import { useCurrentUser } from '../contexts/CurrentUserContext';
 import { useCurrentFilm } from '../contexts/CurrentFilmContext';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
-import EllipsisMenu from '../pages/films/EllipsisMenu';
-import IconRating from '../pages/films/IconRating';
 import useWindowDimensions from '../hooks/useWindowDimensions';
+import SaveDropown from './SaveDropdown';
 
 // Displays film poster and data either as a list of search results, saved films or reccomendations
-const FilmPreview = ({film, homePage, filmsPage, saveFilm, savedToWatchlist}) => {
-
-    const { currentUser } = useCurrentUser()
-    const {setCurrentFilmIds, viewingData, setViewingData} = useCurrentFilm()
-    const history = useHistory()
-
-    const handleSave = (publicFilm) => {
-        saveFilm(film.Title, film.imdbID, film.Poster, film.Year, film.Type, publicFilm)
-    }
-
-    const handleClick = () => {
-        setCurrentFilmIds({imdbID: film.imdbID, database: film._id})
-        setViewingData({watched: viewingData.watched, userRating: viewingData.userRating})
-    }
-
+const FilmPreview = ({film, showDropdown, saveFilm, handleClick, savedToWatchlist}) => {
     return (
-            <Row onClick={filmsPage? handleClick : null}>
+            <Row onClick={handleClick ?? null}>
                 <Col md={6}>
                     <Image 
                         src={film.Poster} 
@@ -38,23 +23,8 @@ const FilmPreview = ({film, homePage, filmsPage, saveFilm, savedToWatchlist}) =>
                 <Col md={6} className={appStyles.leftAlign}>
                     <h5 className={appStyles.smallFont}>{film.Title}</h5>
                     <p className={appStyles.smallFont}>{film.Year}, {film.Type}</p>
-                    {homePage? 
-                        !savedToWatchlist?
-                            <Dropdown>
-                            <Dropdown.Toggle className={appStyles.roundButton} size="sm" variant="outline-secondary" id="dropdown-basic">
-                                Save
-                            </Dropdown.Toggle>
-                            <Dropdown.Menu>
-                                <Dropdown.Item onClick={() => handleSave(true) }>Save to Public Watchlist</Dropdown.Item>
-                                <Dropdown.Item onClick={() => handleSave(false) }>Save to Private Watchlist</Dropdown.Item>
-                            </Dropdown.Menu>
-                            </Dropdown>
-                        :
-                            <>
-                                <p className={`${appStyles.smallFont}`}><i className="fa-solid fa-check"></i> Saved</p>
-                                <Button onClick={() => history.push(`/films/${currentUser.user._id}`)} className={appStyles.roundButton} variant="outline-secondary" size="sm">Go to watchlist</Button>
-                            </>
-                        
+                    {showDropdown? 
+                        <SaveDropown saveFilm={saveFilm} film={film} savedToWatchlist={savedToWatchlist} />
                     :''}
                 </Col>
             </Row>
