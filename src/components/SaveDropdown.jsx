@@ -1,24 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import appStyles from '../App.module.css'
 import { Button, Dropdown } from 'react-bootstrap';
 import { useCurrentUser } from '../contexts/CurrentUserContext';
+import { useCurrentFilm } from '../contexts/CurrentFilmContext';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 
-const SaveDropown = ({savedToWatchlist, saveFilm, film, updated, setUpdated}) => {
+const SaveDropown = ({savedToWatchlist, saveFilm}) => {
     const { currentUser } = useCurrentUser()
+    const { omdbData } = useCurrentFilm()
     const history = useHistory()
 
     const handleSave = (publicFilm) => {
-        saveFilm(film.Title, film.imdbID, film.Poster, film.Year, film.Type, publicFilm)
+        saveFilm(omdbData.Title, omdbData.imdbID, omdbData.Poster, omdbData.Year, omdbData.Type, publicFilm)
     }
 
     const goToWatchlist = () => {
         history.push(`/films/${currentUser.user._id}`)
-        if (setUpdated){
-            setUpdated(!updated)
-        }
     }
-
+    
     return (
         <>
             {!savedToWatchlist?
@@ -34,7 +33,7 @@ const SaveDropown = ({savedToWatchlist, saveFilm, film, updated, setUpdated}) =>
             :
                 <>
                     <p className={`${appStyles.smallFont}`}><i className="fa-solid fa-check"></i> Saved</p>
-                    <Button onClick={goToWatchlist} className={appStyles.roundButton} variant="outline-secondary" size="sm">Go to watchlist</Button>        
+                    <Button onClick={goToWatchlist} className={appStyles.roundButton} variant="outline-secondary" size="sm">Go to your watchlist</Button>        
                 </> 
             }
         </>

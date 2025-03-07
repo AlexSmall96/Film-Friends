@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import {Container, Row, Col, Image} from 'react-bootstrap'
+import {Container, Row, Col} from 'react-bootstrap'
 import { useParams } from 'react-router-dom/cjs/react-router-dom.min';
 import { axiosReq } from '../../api/axiosDefaults';
 import { useCurrentUser } from '../../contexts/CurrentUserContext';
 import FilmPreview from '../../components/FilmPreview';
 import Film from './Film'
 import Filters from './Filters';
+import { useCurrentFilm } from '../../contexts/CurrentFilmContext';
 
 const FilmsPage = () => {
     const { id } = useParams()
     const { currentUser } = useCurrentUser()
+    const { currentFilmIds, setCurrentFilmIds, viewingData, setViewingData, omdbData, setOmdbData } = useCurrentFilm()
     const [allFilms, setAllFilms] = useState([])
     const [filteredFilms, setFilteredFilms] = useState([])
     const [sort, setSort] = useState('Last Updated')
@@ -18,13 +20,8 @@ const FilmsPage = () => {
         watched: 'All'
     })
     const [hasLoaded, setHasLoaded] = useState(false)
-    const [currentFilmIds, setCurrentFilmIds] = useState({
-        imdbID: '', database: ''
-    })
-    const [viewingData, setViewingData] = useState({watched: false, userRating: ''})
-    const [omdbData, setOmdbData] = useState({})
     const [username, setUsername] = useState('')
-    const [currentUsersFilmIds, setCurrentUsersFilmIds, ] = useState([])
+    const [currentUsersFilmIds, setCurrentUsersFilmIds] = useState([])
     const [updated, setUpdated] = useState(false)
     // Check if current user is owner of film list
     const isOwner = currentUser.user._id === id
@@ -73,7 +70,7 @@ const FilmsPage = () => {
             fetchUsername()
             fetchCurrentUsersFilmIds()
         }
-    },[filter, sort, viewingData, updated])
+    },[filter, sort, viewingData, updated, id])
 
     useEffect(() => {
         const findCurrentUsersVersionOfFilm = async () => {
@@ -131,14 +128,9 @@ const FilmsPage = () => {
                 </Col>
                 <Col md={6}>
                     <Film 
-                        omdbData={omdbData} 
-                        viewingData={viewingData} 
-                        setViewingData={setViewingData} 
                         isOwner={isOwner}
-                        currentFilmIds={currentFilmIds} 
-                        setCurrentFilmIds={setCurrentFilmIds}
                         username={username}
-                        saved={currentUsersFilmIds.includes(omdbData.imdbID)}
+                        savedToWatchlist={currentUsersFilmIds.includes(omdbData.imdbID)}
                         updated={updated}
                         setUpdated={setUpdated}
                     />

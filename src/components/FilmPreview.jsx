@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Col, Dropdown, Row, Image} from 'react-bootstrap'
+import {Button, Col, Dropdown, Row, Image, Tooltip, OverlayTrigger} from 'react-bootstrap'
 import appStyles from '../App.module.css'
 import styles from '../styles/Films.module.css'
 import { useCurrentUser } from '../contexts/CurrentUserContext';
@@ -24,7 +24,7 @@ const FilmPreview = ({film, showDropdown, saveFilm, handleClick, savedToWatchlis
                     <h5 className={appStyles.smallFont}>{film.Title}</h5>
                     <p className={appStyles.smallFont}>{film.Year}, {film.Type}</p>
                     {showDropdown? 
-                        <SaveDropown saveFilm={saveFilm} film={film} savedToWatchlist={savedToWatchlist} />
+                        <SaveDropown saveFilm={saveFilm} film={film} savedToWatchlist={savedToWatchlist}  />
                     :''}
                 </Col>
             </Row>

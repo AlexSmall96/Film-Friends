@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Overlay, Dropdown, Modal, Button, Image, Form, Spinner } from 'react-bootstrap';
+import { Overlay, Dropdown, Modal, Button, Image, Form, Spinner} from 'react-bootstrap';
 import appStyles from '../../App.module.css'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { CustomMenu, CustomToggle } from '../../components/CustomDropDown'
@@ -10,10 +10,10 @@ import { useCurrentFilm } from '../../contexts/CurrentFilmContext';
 Ellipsis menu - used as a subcomponent of the film component when rendered on films page
 Allows user to share film, delete film, or make public / private
 */
-const EllipsisMenu = () => {
+const EllipsisMenu = ({updateViewingData}) => {
     // Contexts
     const {currentUser} = useCurrentUser()
-    const {currentFilmIds, setCurrentFilmIds, viewingData, omdbData, updateViewingData} = useCurrentFilm()
+    const { currentFilmIds, setCurrentFilmIds, viewingData, omdbData } = useCurrentFilm()
     // Hooks
     const history = useHistory()
     // Initialise state variables
@@ -61,6 +61,7 @@ const EllipsisMenu = () => {
             setAllFriends(acceptedRequests)
             setHasLoaded(true)
         }
+
         fetchRequests()
     }, [currentUser.token, updated, omdbData])
 
@@ -120,7 +121,7 @@ const EllipsisMenu = () => {
                             }}
                         >   
                             {/* SHARE, REMOVE AND MAKE PUBLIC / PRIVATE OPTIONS */}
-                            <p onClick={handleShowModal} className={appStyles.clickable}><i className="fa-solid fa-share"></i> Share</p>
+                            <p onClick={viewingData.public? handleShowModal : null} className={viewingData.public? appStyles.clickable: appStyles.unclickable}><i className="fa-solid fa-share"></i> Share</p>
                             <p className={appStyles.clickable} onClick={() => updateViewingData(null, null, !viewingData.public)}><i className="fa-solid fa-pen"></i> {viewingData.public? 'Make Private': 'Make Public'}</p>
                             <p className={appStyles.clickable} onClick={handleDelete}><i className="fa-regular fa-trash-can"></i> Remove from Watchlist</p>
                         </div>)

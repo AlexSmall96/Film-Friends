@@ -1,24 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import {Button, Row, Col, Image, Form, Dropdown} from 'react-bootstrap'
+import React from 'react';
+import { Row, Col, Image, Form } from 'react-bootstrap'
 import IconRating from './IconRating';
 import EllipsisMenu from './EllipsisMenu';
+import SaveDropown from '../../components/SaveDropdown';
 import styles from '../../styles/Films.module.css'
-import appStyles from '../../App.module.css'
 import { axiosReq } from '../../api/axiosDefaults';
 import { useCurrentUser } from '../../contexts/CurrentUserContext';
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import { useCurrentFilm } from '../../contexts/CurrentFilmContext';
 
-const Film = ({omdbData, viewingData, setViewingData, isOwner, currentFilmIds, setCurrentFilmIds, username, saved, setUpdated, updated}) => {
+const Film = ({isOwner, username, savedToWatchlist, setUpdated, updated}) => {
 
     const ratingValues = [1, 2, 3, 4, 5]
     const { currentUser } = useCurrentUser()
-    const history = useHistory()
+    const { currentFilmIds, viewingData, setViewingData, omdbData } = useCurrentFilm()
+    
     // Saves a film to users watchlist, can be called via the buttons for each film result
-    const saveFilm = async (publicFilm) => {
+    const saveFilm = async (Title, imdbID, Poster, Year, Type, publicFilm) => {
         try {
-            await axiosReq.post('/films', {
-                Title: omdbData.Title, imdbID: omdbData.imdbID, Poster: omdbData.Poster, Year: omdbData.Year, Type: omdbData.Type, public: publicFilm
-            }, {
+            await axiosReq.post('/films', {Title, imdbID, Poster, Year, Type, public: publicFilm}, {
                 headers: {'Authorization': `Bearer ${currentUser.token}`}
             })
             setUpdated(!updated)
@@ -58,10 +57,6 @@ const Film = ({omdbData, viewingData, setViewingData, isOwner, currentFilmIds, s
                 {isOwner?
                     <EllipsisMenu 
                         updateViewingData={updateViewingData} 
-                        omdbData={omdbData} 
-                        viewingData={viewingData} 
-                        currentFilmIds={currentFilmIds} 
-                        setCurrentFilmIds={setCurrentFilmIds}
                     />:''            
                 }
 
@@ -90,25 +85,11 @@ const Film = ({omdbData, viewingData, setViewingData, isOwner, currentFilmIds, s
                         ):''}
                         {/* SAVE / GO TO WATCHLIST BUTTONS IF NOT OWNER OF FILMS LIST */}
                         {!isOwner? 
-                            !saved?
-                            <Dropdown>
-                                <Dropdown.Toggle variant="outline-secondary" id="dropdown-basic">
-                                    Save to your watchlist
-                                </Dropdown.Toggle>
-                                <Dropdown.Menu>
-                                <Dropdown.Item onClick={() => saveFilm(true) }>Save to Public Watchlist</Dropdown.Item>
-                                <Dropdown.Item onClick={() => saveFilm(false) }>Save to Private Watchlist</Dropdown.Item>
-                                </Dropdown.Menu>
-                            </Dropdown>
-                        :
-                        <>
-                                <p className={`${appStyles.smallFont}`}><i className="fa-solid fa-check"></i> Saved</p>
-                                <Button onClick={() => {
-                                    history.push(`/films/${currentUser.user._id}`)
-                                    setUpdated(!updated)
-                                    }} className={appStyles.roundButton} variant="outline-secondary" size="sm">Go to watchlist</Button>                          
-                        </> : ''}
-                    
+                            <SaveDropown 
+                                savedToWatchlist={savedToWatchlist} 
+                                saveFilm={saveFilm}
+                            />
+                        : ''}
                 </Form>
             </Col>
         </Row>
