@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { axiosReq } from '../../api/axiosDefaults';
 import { useCurrentUser } from '../../contexts/CurrentUserContext';
 import { Container, Image, Row, Col, Button, Tooltip, OverlayTrigger, DropdownButton, Dropdown, Spinner} from 'react-bootstrap';
-import Film from '../../components/Film'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import useWindowDimensions from '../../hooks/useWindowDimensions';
 import styles from '../../styles/Films.module.css'
@@ -10,12 +9,14 @@ import sortBy from 'array-sort-by'
 import DeleteModal from '../../components/DeleteModal'
 import { FriendDataProvider } from '../../contexts/FriendDataContext';
 import { useCurrentFilm } from '../../contexts/CurrentFilmContext';
+import { useSaveFilmContext } from '../../contexts/SaveFilmContext';
 import { set } from 'mongoose';
 import FilmPreview from '../../components/FilmPreview';
 
 const Reccomendations = () => {
     const {currentUser} = useCurrentUser()
     const {setCurrentFilmIds} = useCurrentFilm()
+    const { updated } = useSaveFilmContext()
     const history = useHistory()
     const [reccomendations, setReccomendations] = useState([])
     const [filter, setFilter] = useState('All')
@@ -24,6 +25,7 @@ const Reccomendations = () => {
     const [hasLoaded, setHasLoaded] = useState(false)
     const [hasUpdated, setHasUpdated] = useState(true)
     const [deleted, setDeleted] = useState(false)
+    const [filmIds, setFilmIds] = useState([])
 
     useEffect(() => {
         const fetchReccomendations = async () => {
@@ -58,8 +60,24 @@ const Reccomendations = () => {
         }
     }
 
+    useEffect(() => {
+        // Gets the imdbIds of the users saved films, to determine which buttons should appear next to film result
+        const fetchFilmIds = async () => {
+            if (!currentUser) {
+                return null
+            }
+            try {
+                const response = await axiosReq.get(`/films/${currentUser.user._id}`, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
+                setFilmIds(response.data.films.map(film => film.imdbID))
+            } catch (err) {
+                console.log(err)
+            }
+        }
+        fetchFilmIds()
+    }, [currentUser, updated])
+
     const handleClick = (owner, imdbID, database) => {
-        setCurrentFilmIds({imdbID, database})
+        // setCurrentFilmIds({imdbID, database})
         history.push(`/films/${owner}`)
     }
     const ratingValues = [1, 2, 3, 4, 5]
@@ -95,7 +113,9 @@ const Reccomendations = () => {
                                         </Col>
                                         <Col md={5}>
                                             <FilmPreview 
-                                                film={rec.film}
+                                                film={rec.film} 
+                                                showDropdown 
+                                                savedToWatchlist={filmIds.includes(rec.film.imdbID)}
                                             />
                                         </Col>
                                         <Col md={4}>

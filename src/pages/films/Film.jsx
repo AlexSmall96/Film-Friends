@@ -87,7 +87,6 @@ const Film = ({isOwner, username, savedToWatchlist, setUpdated, updated}) => {
                         {!isOwner? 
                             <SaveDropown 
                                 savedToWatchlist={savedToWatchlist} 
-                                saveFilm={saveFilm}
                             />
                         : ''}
                 </Form>

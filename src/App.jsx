@@ -4,7 +4,7 @@ import NavBar from './components/NavBar';
 import Home from './pages/home/Home.jsx';
 import Profile from './pages/profile/Profile';
 import ProfileEdit from './pages/profile/ProfileEdit';
-import Films from './pages/films/Films';
+import FilmsPage from './pages/films/FilmsPage';
 import Friends from './pages/friends/Friends';
 import Reccomendations from './pages/reccomendations/Reccomendations';
 import Signup from './pages/auth/Signup';
@@ -14,6 +14,7 @@ import {CurrentUserProvider} from './contexts/CurrentUserContext'
 import { RecoveryEmailProvider } from './contexts/RecoveryEmailContext.jsx';
 import { CurrentFilmProvider } from './contexts/CurrentFilmContext.jsx';
 import { FriendActionProvider } from './contexts/FriendActionContext.jsx';
+import { SaveFilmProvider } from './contexts/SaveFilmContext.jsx';
 import ResetPassword from './pages/auth/ResetPassword.jsx';
 import SendOTP from './pages/auth/SendOTP.jsx';
 import ProfileDelete from './pages/profile/ProfileDelete'
@@ -26,22 +27,24 @@ function App() {
 	    	<RecoveryEmailProvider>
         		<CurrentFilmProvider>
 					<FriendActionProvider>
-						<Router>
-							<NavBar />
-							<Switch>
-								<Route exact path='/' render={() => <Home />} />
-								<Route exact path='/films/:id' render={() => <Films />} />
-								<Route exact path='/friends/' render={() => <Friends />} />
-								<Route exact path='/reccomendations' render={() => <Reccomendations />} />
-								<Route exact path='/profile/:id' render={() => <Profile  />} />
-								<Route exact path='/profile/edit/:id' render={() => <ProfileEdit  />} />
-								<Route exact path='/sendOTP/' render={() => <SendOTP />} />
-								<Route exact path='/resetPassword/' render={() => <ResetPassword />} />
-								<Route exact path='/profile/delete/:id' render={() => <ProfileDelete />} />
-								<Route exact path='/signup' render={() => <Signup />} />
-								<Route exact path='/login' render={() => <Login />} />
-							</Switch>
-						</Router>
+						<SaveFilmProvider>
+							<Router>
+								<NavBar />
+								<Switch>
+									<Route exact path='/' render={() => <Home />} />
+									<Route exact path='/films/:id' render={() => <FilmsPage />} />
+									<Route exact path='/friends/' render={() => <Friends />} />
+									<Route exact path='/reccomendations' render={() => <Reccomendations />} />
+									<Route exact path='/profile/:id' render={() => <Profile  />} />
+									<Route exact path='/profile/edit/:id' render={() => <ProfileEdit  />} />
+									<Route exact path='/sendOTP/' render={() => <SendOTP />} />
+									<Route exact path='/resetPassword/' render={() => <ResetPassword />} />
+									<Route exact path='/profile/delete/:id' render={() => <ProfileDelete />} />
+									<Route exact path='/signup' render={() => <Signup />} />
+									<Route exact path='/login' render={() => <Login />} />
+								</Switch>
+							</Router>
+						</SaveFilmProvider>
 					</FriendActionProvider>
         		</CurrentFilmProvider>
 		    </RecoveryEmailProvider>

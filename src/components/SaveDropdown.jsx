@@ -4,7 +4,6 @@ import { Button, Dropdown } from 'react-bootstrap';
 import { useCurrentUser } from '../contexts/CurrentUserContext';
 import { useCurrentFilm } from '../contexts/CurrentFilmContext';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
-import useSaveFilm from '../hooks/useSaveFilm'
 import { useSaveFilmContext } from '../contexts/SaveFilmContext';
 
 const SaveDropown = ({savedToWatchlist, film, homePage}) => {
@@ -12,7 +11,7 @@ const SaveDropown = ({savedToWatchlist, film, homePage}) => {
     const { omdbData } = useCurrentFilm()
     // const [updated, setUpdated] = useSaveFilm()
     const history = useHistory()
-    
+
     const {saveFilm} = useSaveFilmContext()
 
     const handleSave = (publicFilm, homePage) => {

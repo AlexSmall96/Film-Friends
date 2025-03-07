@@ -7,11 +7,13 @@ import FilmPreview from '../../components/FilmPreview';
 import Film from './Film'
 import Filters from './Filters';
 import { useCurrentFilm } from '../../contexts/CurrentFilmContext';
+import { useSaveFilmContext } from '../../contexts/SaveFilmContext';
 
 const FilmsPage = () => {
     const { id } = useParams()
     const { currentUser } = useCurrentUser()
     const { currentFilmIds, setCurrentFilmIds, viewingData, setViewingData, omdbData, setOmdbData } = useCurrentFilm()
+    const {updated, setUpdated} = useSaveFilmContext()
     const [allFilms, setAllFilms] = useState([])
     const [filteredFilms, setFilteredFilms] = useState([])
     const [sort, setSort] = useState('Last Updated')
@@ -22,7 +24,6 @@ const FilmsPage = () => {
     const [hasLoaded, setHasLoaded] = useState(false)
     const [username, setUsername] = useState('')
     const [currentUsersFilmIds, setCurrentUsersFilmIds] = useState([])
-    const [updated, setUpdated] = useState(false)
     // Check if current user is owner of film list
     const isOwner = currentUser.user._id === id
 

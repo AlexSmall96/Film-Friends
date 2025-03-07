@@ -11,7 +11,6 @@ import SearchBar from './SearchBar';
 import appStyles from '../../App.module.css'
 import styles from '../../styles/Home.module.css'
 import useWindowDimensions from '../../hooks/useWindowDimensions';
-import useSaveFilm from '../../hooks/useSaveFilm';
 import { useSaveFilmContext } from '../../contexts/SaveFilmContext';
 const Home = () => {
     // Contexts
