@@ -45,7 +45,7 @@ const FilmsPage = () => {
             const filteredResponse = await response.data.films.filter(film => checkFilm(film))
             setAllFilms(fullResponse)
             setFilteredFilms(filteredResponse)
-            if (currentFilmIds.imdbID === '') {
+            if (currentFilmIds?.imdbID === '' && filteredResponse.length) {
                 setCurrentFilmIds({imdbID: filteredResponse[0].imdbID, database:filteredResponse[0]._id})
             }
             setHasLoaded(true)
@@ -74,6 +74,24 @@ const FilmsPage = () => {
             fetchCurrentUsersFilmIds()
         }
     },[filter, sort, viewingData, updated])
+
+    useEffect(() => {
+        const findCurrentUsersVersionOfFilm = async () => {
+            try {
+                const response = await axiosReq.get(`/films/${currentUser.user._id}`, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
+                const matchingFilm = response.data.films.filter(film => film.imdbID === currentFilmIds.imdbID)[0]
+                setCurrentFilmIds({imdbID: currentFilmIds.imdbID, database: matchingFilm._id}) 
+            } catch (err) {
+                console.log(err)
+            }
+        }
+        if (currentFilmIds.imdbID !== '' && isOwner){
+            findCurrentUsersVersionOfFilm()
+        }
+        if (!isOwner){
+            setCurrentFilmIds({imdbID:'', database:''}) 
+        }
+    },[id])
 
     useEffect(() => {   
         // Get individual film data from OMDB API for main view
