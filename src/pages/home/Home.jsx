@@ -4,14 +4,15 @@ import { useCurrentUser } from '../../contexts/CurrentUserContext';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import ResultsPagination from '../../components/ResultsPagination'
 import { Button, Container, Image, Spinner, Row, Col, Pagination, ButtonGroup} from 'react-bootstrap';
-import Film from '../../components/Film'
+import Film from '../../components/OldFilm'
 import FilmPreview from '../../components/FilmPreview'
 import { useCurrentFilm } from '../../contexts/CurrentFilmContext';
 import SearchBar from './SearchBar';
 import appStyles from '../../App.module.css'
 import styles from '../../styles/Home.module.css'
 import useWindowDimensions from '../../hooks/useWindowDimensions';
-
+import useSaveFilm from '../../hooks/useSaveFilm';
+import { useSaveFilmContext } from '../../contexts/SaveFilmContext';
 const Home = () => {
     // Contexts
     const { currentUser } = useCurrentUser()
@@ -26,20 +27,9 @@ const Home = () => {
     const [totalResults, setTotalResults] = useState(0)
     const [error, setError] = useState('')
     const [hasLoaded, setHasLoaded] = useState(false)
-    const [updated, setUpdated] = useState(false)
+    // const [updated, setUpdated] = useState(false)
     const id = currentUser?.user._id || null
-
-    // Saves a film to users watchlist, can be called via the buttons for each film result
-    const saveFilm = async (Title, imdbID, Poster, Year, Type, publicFilm) => {
-        try {
-            await axiosReq.post('/films', {Title, imdbID, Poster, Year, Type, public: publicFilm}, {
-                headers: {'Authorization': `Bearer ${currentUser.token}`}
-            })
-            setUpdated(!updated)
-        } catch(err){
-            console.log(err)
-        }
-    }
+    const {updated} = useSaveFilmContext()
 
     useEffect(() => {
         // Gets the imdbIds of the users saved films, to determine which buttons should appear next to film result
@@ -99,15 +89,13 @@ const Home = () => {
                                     {/* SEARCH RESULTS */}
                                     {searchResults.map(
                                         film =>
-                                            <FilmPreview 
-                                                key={film.imdbID} 
-                                                film={film} 
-                                                homePage={true} 
-                                                saveFilm={saveFilm} 
-                                                savedToWatchlist={filmIds.includes(film.imdbID)}
-                                                updated={updated}
-                                                setUpdated={setUpdated} 
-                                            />
+                                            <Col key={film.imdbID} md={4}>
+                                                <FilmPreview  
+                                                    film={film} 
+                                                    showDropdown
+                                                    savedToWatchlist={filmIds.includes(film.imdbID)}
+                                                />
+                                            </Col>
                                     )}  
                                 </Row>
                         </Container>

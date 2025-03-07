@@ -9,7 +9,7 @@ import useWindowDimensions from '../hooks/useWindowDimensions';
 import SaveDropown from './SaveDropdown';
 
 // Displays film poster and data either as a list of search results, saved films or reccomendations
-const FilmPreview = ({film, showDropdown, saveFilm, handleClick, savedToWatchlist}) => {
+const FilmPreview = ({film, showDropdown, handleClick, savedToWatchlist}) => {
     return (
             <Row onClick={handleClick ?? null}>
                 <Col md={6}>
@@ -24,7 +24,7 @@ const FilmPreview = ({film, showDropdown, saveFilm, handleClick, savedToWatchlis
                     <h5 className={appStyles.smallFont}>{film.Title}</h5>
                     <p className={appStyles.smallFont}>{film.Year}, {film.Type}</p>
                     {showDropdown? 
-                        <SaveDropown saveFilm={saveFilm} film={film} savedToWatchlist={savedToWatchlist}  />
+                        <SaveDropown film={film} homePage savedToWatchlist={savedToWatchlist} />
                     :''}
                 </Col>
             </Row>
