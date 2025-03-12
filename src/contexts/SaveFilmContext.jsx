@@ -1,6 +1,7 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 import { axiosReq } from '../api/axiosDefaults';
 import { useCurrentUser } from './CurrentUserContext';
+import { useCurrentFilm } from './CurrentFilmContext';
 
 const SaveFilmContext = createContext();
 
@@ -8,6 +9,9 @@ export const SaveFilmProvider = ({ children }) => {
 
     const [updated, setUpdated] = useState(false)
     const {currentUser} = useCurrentUser()
+    const {setOmdbData} = useCurrentFilm()
+    const [hasLoadedPlot, setHasLoadedPlot] = useState(false)
+    const [hoveredOverImdbID, setHoveredOverImdbID] = useState('')
 
     const saveFilm = async (Title, imdbID, Poster, Year, Type, publicFilm) => {
         try {
@@ -20,8 +24,23 @@ export const SaveFilmProvider = ({ children }) => {
         }
     }
 
+    useEffect(() => {   
+        // Get individual film data from OMDB API for main view
+        const getOMDBData = async () => {
+            try {
+                setHasLoadedPlot(false)
+                const response = await axiosReq.get(`/filmData/?imdbID=${hoveredOverImdbID}`)
+                setOmdbData(response.data)
+                setHasLoadedPlot(true)
+            } catch (err) {
+                console.log(err)
+            }
+        }
+        getOMDBData()
+    }, [hoveredOverImdbID])
+           
     return (
-        <SaveFilmContext.Provider value={{saveFilm, updated, setUpdated}}>
+        <SaveFilmContext.Provider value={{saveFilm, updated, setUpdated, hasLoadedPlot, setHoveredOverImdbID}}>
             {children}
         </SaveFilmContext.Provider>
     );
