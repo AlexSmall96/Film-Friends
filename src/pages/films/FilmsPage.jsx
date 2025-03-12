@@ -8,11 +8,12 @@ import Film from './Film'
 import Filters from './Filters';
 import { useCurrentFilm } from '../../contexts/CurrentFilmContext';
 import { useSaveFilmContext } from '../../contexts/SaveFilmContext';
+import { FilmPreviewProvider } from '../../contexts/FilmPreviewContext';
 
 const FilmsPage = () => {
     const { id } = useParams()
     const { currentUser } = useCurrentUser()
-    const { currentFilmIds, setCurrentFilmIds, viewingData, setViewingData, omdbData, setOmdbData } = useCurrentFilm()
+    const { currentFilmIds, setCurrentFilmIds, viewingData, setViewingData, omdbData, setOmdbData, isOwner, setIsOwner, setUsername } = useCurrentFilm()
     const {updated, setUpdated} = useSaveFilmContext()
     const [allFilms, setAllFilms] = useState([])
     const [filteredFilms, setFilteredFilms] = useState([])
@@ -22,10 +23,8 @@ const FilmsPage = () => {
         watched: 'All'
     })
     const [hasLoaded, setHasLoaded] = useState(false)
-    const [username, setUsername] = useState('')
     const [currentUsersFilmIds, setCurrentUsersFilmIds] = useState([])
-    // Check if current user is owner of film list
-    const isOwner = currentUser.user._id === id
+
 
     useEffect(() => {
         // Check if a film matches current criteria specified by filters
@@ -67,7 +66,10 @@ const FilmsPage = () => {
             }
         }
         fetchFilms()
-        if (!isOwner) {
+        // Check if current user is owner of film list
+        const checkOwner = currentUser.user._id === id
+        setIsOwner(currentUser.user._id === id)
+        if (!checkOwner) {
             fetchUsername()
             fetchCurrentUsersFilmIds()
         }
@@ -83,10 +85,12 @@ const FilmsPage = () => {
                 console.log(err)
             }
         }
-        if (currentFilmIds.imdbID !== '' && isOwner){
+        const checkOwner = currentUser.user._id === id
+        setIsOwner(checkOwner)
+        if (currentFilmIds.imdbID !== '' && checkOwner){
             findCurrentUsersVersionOfFilm()
         }
-        if (!isOwner){
+        if (!checkOwner){
             setCurrentFilmIds({imdbID:'', database:''}) 
         }
     },[id])
@@ -114,27 +118,28 @@ const FilmsPage = () => {
             <Row>
                 <Col md={6}>
                     <Filters
-                        isOwner={isOwner}
                         filter={filter}
                         setFilter={setFilter}
                         sort={sort}
                         setSort={setSort}
-                        username={username}
                     />
                     {filteredFilms.length?
                         filteredFilms.map(film => 
-                            <FilmPreview handleClick={() => setCurrentFilmIds({imdbID:film.imdbID, database:film._id})} key={film._id} film={film} />
+                            <FilmPreviewProvider key={film._id} film={film} filmsPage>
+                                <FilmPreview />
+                            </FilmPreviewProvider>
                         )
                     :'No films matching criteria.'}
                 </Col>
                 <Col md={6}>
-                    <Film 
-                        isOwner={isOwner}
-                        username={username}
-                        savedToWatchlist={currentUsersFilmIds.includes(omdbData.imdbID)}
-                        updated={updated}
-                        setUpdated={setUpdated}
-                    />
+                {isOwner?
+                    <Film /> 
+                :
+                    <FilmPreviewProvider savedToWatchlist={currentUsersFilmIds.includes(omdbData.imdbID)} filmsPage >
+                        <Film /> 
+                    </FilmPreviewProvider>               
+                }
+
                 </Col>
             </Row>
         </Container>

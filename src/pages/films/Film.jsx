@@ -8,24 +8,11 @@ import { axiosReq } from '../../api/axiosDefaults';
 import { useCurrentUser } from '../../contexts/CurrentUserContext';
 import { useCurrentFilm } from '../../contexts/CurrentFilmContext';
 
-const Film = ({isOwner, username, savedToWatchlist, setUpdated, updated}) => {
+const Film = () => {
 
     const ratingValues = [1, 2, 3, 4, 5]
     const { currentUser } = useCurrentUser()
-    const { currentFilmIds, viewingData, setViewingData, omdbData } = useCurrentFilm()
-    
-    // Saves a film to users watchlist, can be called via the buttons for each film result
-    const saveFilm = async (Title, imdbID, Poster, Year, Type, publicFilm) => {
-        try {
-            await axiosReq.post('/films', {Title, imdbID, Poster, Year, Type, public: publicFilm}, {
-                headers: {'Authorization': `Bearer ${currentUser.token}`}
-            })
-            setUpdated(!updated)
-        } catch(err){
-            console.log(err)
-        }
-    }
-
+    const { currentFilmIds, viewingData, setViewingData, omdbData, isOwner, username } = useCurrentFilm()
     // Updates a users rating, watched value, or public / private marking
     const updateViewingData = async (event, value, publicFilm) => {
         let reqObj, stateObj
@@ -85,9 +72,7 @@ const Film = ({isOwner, username, savedToWatchlist, setUpdated, updated}) => {
                         ):''}
                         {/* SAVE / GO TO WATCHLIST BUTTONS IF NOT OWNER OF FILMS LIST */}
                         {!isOwner? 
-                            <SaveDropown 
-                                savedToWatchlist={savedToWatchlist} 
-                            />
+                            <SaveDropown />
                         : ''}
                 </Form>
             </Col>

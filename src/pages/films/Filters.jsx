@@ -4,35 +4,10 @@ import styles from '../../styles/Films.module.css'
 import appStyles from '../../App.module.css'
 import { useCurrentFilm } from '../../contexts/CurrentFilmContext';
 
-const Filters = ({isOwner, filter, setFilter, sort, setSort, username, mobile, filteredFilms }) => {
-    const {
-        setCurrentFilmIds, 
-        setViewingData,
-        omdbData
-    } = useCurrentFilm()
+const Filters = ({ filter, setFilter, sort, setSort }) => {
+    const {isOwner, username} = useCurrentFilm()
     return (
         <Container fluid>
-        <Row style={{width: '40%', margin: 'auto'}}> 
-        {mobile? (
-                <DropdownButton size="md" variant='outline-secondary' className={styles.filter}  title={omdbData.Title}>
-                    {filteredFilms.map(
-                        film => 
-                            <Dropdown.Item 
-                                key={film._id} 
-                                onClick={
-                                    () => {
-                                        setCurrentFilmIds({imdbID: film.imdbID, database: film._id})
-                                        setViewingData({watched: film.watched, userRating: film.userRating})
-                                    }
-                                }
-                            >
-                                {film.Title}
-                            </Dropdown.Item>
-                    )}
-                </DropdownButton>
-            ) :('')}
-
-        </Row>
         <Row>
             <Col xl={6} lg={12} md={12} sm={6} xs={6}>
                 {isOwner? ( 

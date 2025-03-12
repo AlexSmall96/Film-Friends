@@ -21,6 +21,11 @@ export const CurrentFilmProvider = ({ children }) => {
     // State variables related to film data
     const [viewingData, setViewingData] = useState({watched: false, userRating: ''})
     const [omdbData, setOmdbData] = useState({})
+    
+    // isOwner boolean variable to determine if current user is owner of films list
+    const [isOwner, setIsOwner] = useState(false)
+    // Username associated with owner of film list
+    const [username, setUsername] = useState('')
 
     return (
         <CurrentFilmContext.Provider value={{
@@ -29,7 +34,11 @@ export const CurrentFilmProvider = ({ children }) => {
             viewingData,
             setViewingData,
             omdbData, 
-            setOmdbData
+            setOmdbData,
+            isOwner,
+            setIsOwner,
+            username,
+            setUsername
         }}>
             {children}
         </CurrentFilmContext.Provider>

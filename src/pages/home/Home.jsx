@@ -7,6 +7,7 @@ import { Button, Container, Image, Spinner, Row, Col, Pagination, ButtonGroup} f
 import Film from '../../components/OldFilm'
 import FilmPreview from '../../components/FilmPreview'
 import { useCurrentFilm } from '../../contexts/CurrentFilmContext';
+import { FilmPreviewProvider } from '../../contexts/FilmPreviewContext';
 import SearchBar from './SearchBar';
 import appStyles from '../../App.module.css'
 import styles from '../../styles/Home.module.css'
@@ -88,13 +89,11 @@ const Home = () => {
                                     {/* SEARCH RESULTS */}
                                     {searchResults.map(
                                         film =>
-                                            <Col key={film.imdbID} md={4}>
-                                                <FilmPreview  
-                                                    film={film} 
-                                                    showDropdown
-                                                    savedToWatchlist={filmIds.includes(film.imdbID)}
-                                                />
-                                            </Col>
+                                            <FilmPreviewProvider key={film.imdbID} film={film} showDropdown savedToWatchlist={filmIds.includes(film.imdbID)}>
+                                                <Col md={4}>
+                                                    <FilmPreview />
+                                                </Col>
+                                            </FilmPreviewProvider>
                                     )}  
                                 </Row>
                         </Container>

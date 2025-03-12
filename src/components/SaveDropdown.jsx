@@ -5,20 +5,22 @@ import { useCurrentUser } from '../contexts/CurrentUserContext';
 import { useCurrentFilm } from '../contexts/CurrentFilmContext';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { useSaveFilmContext } from '../contexts/SaveFilmContext';
+import { useFilmPreview } from '../contexts/FilmPreviewContext';
 
-const SaveDropown = ({savedToWatchlist, film, homePage}) => {
+const SaveDropown = () => {
     const { currentUser } = useCurrentUser()
     const { omdbData } = useCurrentFilm()
-    // const [updated, setUpdated] = useSaveFilm()
+    const {savedToWatchlist, film, filmsPage} = useFilmPreview()
     const history = useHistory()
 
     const {saveFilm} = useSaveFilmContext()
 
-    const handleSave = (publicFilm, homePage) => {
-        if (homePage){
-            saveFilm(film.Title, film.imdbID, film.Poster, film.Year, film.Type, publicFilm)
-        } else {
+    const handleSave = (publicFilm) => {
+        if (filmsPage){
             saveFilm(omdbData.Title, omdbData.imdbID, omdbData.Poster, omdbData.Year, omdbData.Type, publicFilm)
+            
+        } else {
+            saveFilm(film.Title, film.imdbID, film.Poster, film.Year, film.Type, publicFilm)
         }
     }
 
@@ -34,8 +36,8 @@ const SaveDropown = ({savedToWatchlist, film, homePage}) => {
                         Save
                     </Dropdown.Toggle>
                 <Dropdown.Menu>
-                    <Dropdown.Item onClick={() => handleSave(true, homePage?? null)}>Save to Public Watchlist</Dropdown.Item>
-                    <Dropdown.Item onClick={() => handleSave(false, homePage?? null)}>Save to Private Watchlist</Dropdown.Item>
+                    <Dropdown.Item onClick={() => handleSave(true)}>Save to Public Watchlist</Dropdown.Item>
+                    <Dropdown.Item onClick={() => handleSave(false)}>Save to Private Watchlist</Dropdown.Item>
                 </Dropdown.Menu>
                 </Dropdown>        
             :

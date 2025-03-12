@@ -10,6 +10,7 @@ import DeleteModal from '../../components/DeleteModal'
 import { FriendDataProvider } from '../../contexts/FriendDataContext';
 import { useCurrentFilm } from '../../contexts/CurrentFilmContext';
 import { useSaveFilmContext } from '../../contexts/SaveFilmContext';
+import { FilmPreviewProvider } from '../../contexts/FilmPreviewContext';
 import { set } from 'mongoose';
 import FilmPreview from '../../components/FilmPreview';
 
@@ -77,9 +78,10 @@ const Reccomendations = () => {
     }, [currentUser, updated])
 
     const handleClick = (owner, imdbID, database) => {
-        // setCurrentFilmIds({imdbID, database})
+        setCurrentFilmIds({imdbID, database})
         history.push(`/films/${owner}`)
     }
+
     const ratingValues = [1, 2, 3, 4, 5]
     return (
         <Container>
@@ -112,11 +114,10 @@ const Reccomendations = () => {
                                             </OverlayTrigger>
                                         </Col>
                                         <Col md={5}>
-                                            <FilmPreview 
-                                                film={rec.film} 
-                                                showDropdown 
-                                                savedToWatchlist={filmIds.includes(rec.film.imdbID)}
-                                            />
+                                        <FilmPreviewProvider key={rec.film._id} film={rec.film} showDropdown savedToWatchlist={filmIds.includes(rec.film.imdbID)}>
+                                            <FilmPreview />
+                                        </FilmPreviewProvider>
+
                                         </Col>
                                         <Col md={4}>
                                             {rec.film.public ? (
