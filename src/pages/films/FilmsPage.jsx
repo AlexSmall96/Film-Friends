@@ -47,11 +47,15 @@ const FilmsPage = () => {
             }
             setHasLoaded(true)
         }
-        // Get the username associated with the film list
-        const fetchUsername = async () => {
+        fetchFilms()
+    },[filter, sort, viewingData, updated, id])
+
+    useEffect(() => {
+        const findOwnersVersionOfFilm = async () => {
             try {
-                const response = await axiosReq.get(`/users/${id}`, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
-                setUsername(response.data.profile.username)
+                const response = await axiosReq.get(`/films/${id}`, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
+                const matchingFilm = response.data.films.filter(film => film.imdbID === currentFilmIds.imdbID)[0]
+                setCurrentFilmIds({imdbID: currentFilmIds.imdbID, database: matchingFilm._id}) 
             } catch (err) {
                 console.log(err)
             }
@@ -65,33 +69,23 @@ const FilmsPage = () => {
                 console.log(err)
             }
         }
-        fetchFilms()
-        // Check if current user is owner of film list
-        const checkOwner = currentUser.user._id === id
-        setIsOwner(currentUser.user._id === id)
-        if (!checkOwner) {
-            fetchUsername()
-            fetchCurrentUsersFilmIds()
-        }
-    },[filter, sort, viewingData, updated, id])
-
-    useEffect(() => {
-        const findCurrentUsersVersionOfFilm = async () => {
+        // Get the username associated with the film list
+        const fetchUsername = async () => {
             try {
-                const response = await axiosReq.get(`/films/${currentUser.user._id}`, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
-                const matchingFilm = response.data.films.filter(film => film.imdbID === currentFilmIds.imdbID)[0]
-                setCurrentFilmIds({imdbID: currentFilmIds.imdbID, database: matchingFilm._id}) 
+                const response = await axiosReq.get(`/users/${id}`, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
+                setUsername(response.data.profile.username)
             } catch (err) {
                 console.log(err)
             }
         }
         const checkOwner = currentUser.user._id === id
-        setIsOwner(checkOwner)
-        if (currentFilmIds.imdbID !== '' && checkOwner){
-            findCurrentUsersVersionOfFilm()
+        if (!checkOwner) {
+            fetchUsername()
+            fetchCurrentUsersFilmIds()
         }
-        if (!checkOwner){
-            setCurrentFilmIds({imdbID:'', database:''}) 
+        setIsOwner(checkOwner)
+        if (currentFilmIds.imdbID !== ''){
+            findOwnersVersionOfFilm()
         }
     },[id])
 
