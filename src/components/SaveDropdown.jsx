@@ -9,7 +9,7 @@ import { useFilmPreview } from '../contexts/FilmPreviewContext';
 
 const SaveDropown = () => {
     const { currentUser } = useCurrentUser()
-    const { omdbData } = useCurrentFilm()
+    const { omdbData, setCurrentFilmIds } = useCurrentFilm()
     const {savedToWatchlist, film, filmsPage} = useFilmPreview()
     const history = useHistory()
 
@@ -18,13 +18,16 @@ const SaveDropown = () => {
     const handleSave = (publicFilm) => {
         if (filmsPage){
             saveFilm(omdbData.Title, omdbData.imdbID, omdbData.Poster, omdbData.Year, omdbData.Type, publicFilm)
-            
         } else {
             saveFilm(film.Title, film.imdbID, film.Poster, film.Year, film.Type, publicFilm)
         }
     }
 
     const goToWatchlist = () => {
+        setCurrentFilmIds({
+            imdbID: filmsPage ? omdbData.imdbID : film.imdbID, 
+            database: filmsPage ? omdbData._id : film._id
+        })
         history.push(`/films/${currentUser.user._id}`)
     }
     
