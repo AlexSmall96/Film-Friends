@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {Container, Row, Col} from 'react-bootstrap'
+import {Button, Container, Row, Col, Spinner} from 'react-bootstrap'
 import { useParams } from 'react-router-dom/cjs/react-router-dom.min';
 import { axiosReq } from '../../api/axiosDefaults';
 import { useCurrentUser } from '../../contexts/CurrentUserContext';
@@ -9,12 +9,14 @@ import Filters from './Filters';
 import { useCurrentFilm } from '../../contexts/CurrentFilmContext';
 import { useSaveFilmContext } from '../../contexts/SaveFilmContext';
 import { FilmPreviewProvider } from '../../contexts/FilmPreviewContext';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 
 const FilmsPage = () => {
     const { id } = useParams()
+    const history = useHistory()
     const { currentUser } = useCurrentUser()
     const { currentFilmIds, setCurrentFilmIds, viewingData, setViewingData, omdbData, setOmdbData, isOwner, setIsOwner, setUsername } = useCurrentFilm()
-    const {updated, setUpdated} = useSaveFilmContext()
+    const {updated} = useSaveFilmContext()
     const [allFilms, setAllFilms] = useState([])
     const [filteredFilms, setFilteredFilms] = useState([])
     const [sort, setSort] = useState('Last Updated')
@@ -24,7 +26,6 @@ const FilmsPage = () => {
     })
     const [hasLoaded, setHasLoaded] = useState(false)
     const [currentUsersFilmIds, setCurrentUsersFilmIds] = useState([])
-
 
     useEffect(() => {
         // Check if a film matches current criteria specified by filters
@@ -108,35 +109,48 @@ const FilmsPage = () => {
     }, [currentFilmIds])
 
     return (
-        <Container>
-            <Row>
-                <Col md={6}>
-                    <Filters
-                        filter={filter}
-                        setFilter={setFilter}
-                        sort={sort}
-                        setSort={setSort}
-                    />
-                    {filteredFilms.length?
-                        filteredFilms.map(film => 
-                            <FilmPreviewProvider key={film._id} film={film} filmsPage>
-                                <FilmPreview />
-                            </FilmPreviewProvider>
-                        )
-                    :'No films matching criteria.'}
-                </Col>
-                <Col md={6}>
-                {isOwner?
-                    <Film /> 
-                :
-                    <FilmPreviewProvider savedToWatchlist={currentUsersFilmIds.includes(omdbData.imdbID)} filmsPage >
-                        <Film /> 
-                    </FilmPreviewProvider>               
-                }
+        <>
+        {hasLoaded? 
+            allFilms.length?
+                <Container>
+                    <Row>
+                        <Col md={6}>
+                            <Filters
+                                filter={filter}
+                                setFilter={setFilter}
+                                sort={sort}
+                                setSort={setSort}
+                            />
+                                {filteredFilms.length?
+                                    filteredFilms.map(film => 
+                                        <FilmPreviewProvider key={film._id} film={film} filmsPage>
+                                            <FilmPreview />
+                                        </FilmPreviewProvider>
+                                    )
+                                :'No films matching criteria.'}
+                        </Col>
+                        <Col md={6}>
+                            {isOwner?
+                                <Film /> 
+                            :
+                                <FilmPreviewProvider savedToWatchlist={currentUsersFilmIds.includes(omdbData.imdbID)} filmsPage >
+                                    <Film /> 
+                                </FilmPreviewProvider>               
+                            }
+                        </Col>
+                    </Row>
+                </Container>
+            :
+            <div>
+                You don't have any films saved yet
+                <Button onClick={() => history.push('/')} variant='link'>Click here to browse films.</Button>
+            </div>
+            
+        :
+            <Spinner />
+        }
+        </>
 
-                </Col>
-            </Row>
-        </Container>
     )
 }
 
