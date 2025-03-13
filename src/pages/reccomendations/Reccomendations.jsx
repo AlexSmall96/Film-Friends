@@ -31,6 +31,7 @@ const Reccomendations = () => {
     useEffect(() => {
         const fetchReccomendations = async () => {
             const response = await axiosReq.get(`/reccomendations/`, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
+            
             const allReccomendations = response.data.filter(rec => !rec.isSender)
             const filteredReccomendations = allReccomendations.filter(rec => filter === 'All' ? true : rec.sender.username === filter)
             const sortedReccomendations = sort === 'Film Title' ? sortBy(filteredReccomendations, (rec) => rec.film.Title) : filteredReccomendations
@@ -110,7 +111,7 @@ const Reccomendations = () => {
                                                 delay={{ show: 250, hide: 400 }}
                                                 overlay={renderTooltip(rec.sender.username, rec.message)}
                                             >
-                                                <Image onClick={() => history.push(`/profile/${rec.sender._id}`)} src={rec.sender.image} width={50}/>
+                                                <Image onClick={() => history.push(`/films/${rec.sender._id}`)} src={rec.sender.image} width={50}/>
                                             </OverlayTrigger>
                                         </Col>
                                         <Col md={5}>

@@ -14,7 +14,7 @@ const User = ({searchResult}) => {
         <Row>
             <Col md={searchResult? 3 : 3}><Image roundedCircle src={user.image} width={searchResult? 40: 60} height={searchResult? 40: 60} /></Col>
             <Col md={searchResult? 6 : 9} style={{textAlign:'left', paddingTop: searchResult? '3%':'7%'}}>
-                <Button onClick={() => history.push(`/profile/${user._id}`)} variant='link'>
+                <Button onClick={() => history.push(`/films/${user._id}`)} variant='link'>
                     {user.username}
                 </Button>
             </Col>
