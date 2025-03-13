@@ -99,7 +99,7 @@ const FilmsPage = () => {
             // Get profile data and similarity score
             const profileResponse = await axiosReq.get(`/users/${id}`, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
             setProfile(profileResponse.data.profile)
-            setSimilarity(isOwner? '' : profileResponse.data.similarity)
+            setSimilarity(isOwner? '' : parseFloat(100 * profileResponse.data.similarity).toFixed(0)+"%")
             setHasLoaded(true)
         }
         fetchProfileAndFilms()
@@ -144,7 +144,7 @@ const FilmsPage = () => {
         if (currentFilmIds.imdbID !== ''){
             findOwnersVersionOfFilm()
         }
-    },[id])
+    },[id, updated])
 
     // Functions that only depend on change of current film
     useEffect(() => {   
@@ -174,12 +174,17 @@ const FilmsPage = () => {
                     <Col md={3}>
                         <Image src={profile.image} width={100} />
                         {profile.username}
-                        {!isOwner? similarity : ''}
+                        {isOwner?
+                            <Button href={`/profile/${id}`} variant='link'>Go to your Profile</Button>    
+                        : 
+                            ''
+                        }
+                        
                     </Col> 
                     <Col md={3}>
                         <p>Films saved: {filmStats.savedCount}</p>
                         <p>Films watched: {filmStats.watchedCount}</p>
-                        
+                        <p>{!isOwner? similarity : ''}</p>
                     </Col>
                     <Col md={3}>
                         Favourite Directors:
