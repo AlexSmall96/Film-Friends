@@ -14,8 +14,12 @@ export const SaveFilmProvider = ({ children }) => {
     const [hoveredOverImdbID, setHoveredOverImdbID] = useState('')
 
     const saveFilm = async (Title, imdbID, Poster, Year, Type, publicFilm) => {
+        // Get director and genre from OMDB API
         try {
-            await axiosReq.post('/films', {Title, imdbID, Poster, Year, Type, public: publicFilm}, {
+            const response = await axiosReq.get(`filmData/?imdbID=${imdbID}`)
+            const Director = response.data.Director
+            const Genre = response.data.Genre
+            await axiosReq.post('/films', {Title, imdbID, Poster, Year, Type, Director, Genre, public: publicFilm}, {
                 headers: {'Authorization': `Bearer ${currentUser.token}`}
             })
             setUpdated(!updated)

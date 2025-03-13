@@ -24,6 +24,12 @@ const filmSchema = new mongoose.Schema({
     Type: {
         type:String
     },
+    Director: {
+        type: String
+    },
+    Genre: {
+        type: String
+    },
     watched: {
         type: Boolean,
         default: false
