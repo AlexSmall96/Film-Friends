@@ -104,7 +104,6 @@ https://medium.com/@elijahechekwu/sending-emails-in-node-express-js-with-nodemai
 router.post('/data/users/sendEmail', async (req, res) => {
     try {
         const email = req.body.email
-        console.log(req.body)
         const account = await User.findOne({email})
         if (!account) {
             if (req.body.resetPassword) {
@@ -177,7 +176,7 @@ const uploadToCloudinary = async (path, folder = "my-profile") => {
 router.patch('/data/users/me', auth, async (req, res) => {
     if (req.body.currPassword){
         try {
-            const user = await User.findOne({email: req.user.email})
+            const user = await User.findById(req.user._id)
             const isMatch = await bcrypt.compare(req.body.currPassword, req.user.password)
             if (!isMatch) {
                 return res.status(400).send({errors: {password: {message: 'Current password incorrect.'}}})
@@ -188,11 +187,9 @@ router.patch('/data/users/me', auth, async (req, res) => {
         } catch (err) {
             res.status(400).send(err)
         }        
-    } else if (req.body.username) {
+    } else {
         try {
-            const user = await User.findOne({email: req.user.email})
-            user.username = req.body.username
-            await user.save()
+            const user = await User.findByIdAndUpdate(req.user._id, {username: req.body.username, email:req.body.email})
             res.send({ user, token: req.token })
         } catch(err) {
             res.status(400).send(err)
@@ -205,7 +202,6 @@ router.patch('/data/users/resetPassword', async (req, res) => {
         const email = req.body.email
         const password = req.body.password
         const user = await User.findOne({email})
-        console.log(user)
         user.password = password    
         await user.save()
         res.status(200).send(user)
