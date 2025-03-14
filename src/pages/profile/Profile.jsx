@@ -5,7 +5,7 @@ import { useCurrentUser } from '../../contexts/CurrentUserContext';
 import { Spinner, Button, OverlayTrigger, Tooltip, Image, Card, Nav, ProgressBar, Container, Row, Col, Form, Tabs, Tab} from 'react-bootstrap';
 import appStyles from '../../App.module.css'
 import AccountSecurity from './AccountSecurity';
-
+import ProfileInfo from './ProfileInfo';
 const Profile = () => {
     // Hooks
     const { id } = useParams();
@@ -19,7 +19,7 @@ const Profile = () => {
     // Initialise a state variable to determie button text
     const [deleted, setDeleted] = useState(false)
     const [edited, setEdited] = useState(false)
-	
+
     // Handle Delete function
     const handleDelete = async () => {
         try {
@@ -69,8 +69,9 @@ const Profile = () => {
           <Col sm={7}>
           
             <Tab.Content>
-              <Tab.Pane eventKey="first">Profile Information
-              </Tab.Pane>
+              <Tab.Pane eventKey="first">
+				<ProfileInfo updated={updated} setUpdated={setUpdated} profile={profile} setProfile={setProfile} />
+			  </Tab.Pane>
               <Tab.Pane eventKey="second">
 				<AccountSecurity profile={profile} />
               </Tab.Pane>
