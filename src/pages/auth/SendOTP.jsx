@@ -39,6 +39,11 @@ const SendOTP = ({changeEmail}) => {
         }
     }
 
+    const handleResend = () => {
+        setGeneratedOTP(Math.floor(Math.random() * 900000 + 1000))
+        handleSubmit()
+    }
+
     const checkPasscode = async () => {
         if (parseInt(OTP) === generatedOTP) {
             if (changeEmail){
@@ -77,6 +82,7 @@ const SendOTP = ({changeEmail}) => {
                                 <Form.Label>{message}</Form.Label>
                                 <Form.Control onChange={handleOTPChange} value={OTP} type='text' placeholder='your passcode'/>
                                 <Button onClick={checkPasscode} type='button'>Verify</Button> 
+                                Didn't recieve your passcode? <Button onClick={handleResend}>Resend</Button>
                             </Form.Group>  : ''               
                         }
                         {verified? message :''}
