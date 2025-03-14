@@ -12,6 +12,7 @@ const Reccomendation = require('../models/reccomendation')
 const Request = require('../models/request')
 const cloudinary = require("cloudinary").v2
 const nodemailer = require("nodemailer");
+const bcrypt = require('bcryptjs')
 
 cloudinary.config({
     cloud_name: process.env.CLOUD_NAME,
@@ -63,7 +64,7 @@ router.get('/data/users/:id', auth, async (req, res) => {
     const routerId = req.params.id
     try {
         let profile = await User.findById(routerId)
-        // Check if viewer (current user) is owner of profile
+        // Check if viewer (current user) is not owner of profile
         if (req.user.id !== routerId) { 
             profile = {age:profile.age, username: profile.username, image: profile.image}
             // Calculate similarity score
@@ -78,7 +79,7 @@ router.get('/data/users/:id', auth, async (req, res) => {
                 }
             }
             // Calculate difference in ratings
-            // For each film, 20% is taken away from %100 for each point that the two users differ in thier ratings
+            // For each film, 20% is taken away from 100% for each point that the two users differ in thier ratings
             // The returned score is the average of this difference across all common films
             const initialValue = 0
             const callBack = (total, rating) => (1 - 0.2 * Math.abs(rating.viewerRating - rating.ownerRating)) + total
@@ -163,19 +164,19 @@ const uploadToCloudinary = async (path, folder = "my-profile") => {
 
 // Edit profile
 router.patch('/data/users/me', auth, async (req, res) => {
-    const _id = req.user._id
-    let body = {}
-    try {
-        if (req.body.image) {
-            const {imageURL} = uploadToCloudinary(req.body.image)
-            body = {image: imageURL, ...req.body}
-        } else {
-            body = req.body
-        }
-        const user = await User.findByIdAndUpdate(_id, body, {new: true, runValidators: true})
-        res.send(user)
-    } catch (e) {
-        res.status(400).send(e)
+    if (req.body.currPassword){
+        try {
+            const user = await User.findOne({email: req.user.email})
+            const isMatch = await bcrypt.compare(req.body.currPassword, user.password)
+            if (!isMatch) {
+                return res.status(400).send({errors: {password: {message: 'Current password incorrect.'}}})
+            }
+            user.password = req.body.newPassword
+            await user.save()
+            res.status(200).send()
+        } catch (err) {
+            res.status(400).send(err)
+        }        
     }
 })
 
@@ -184,11 +185,12 @@ router.patch('/data/users/resetPassword', async (req, res) => {
         const email = req.body.email
         const password = req.body.password
         const user = await User.findOne({email})
+        console.log(user)
         user.password = password    
         await user.save()
         res.status(200).send(user)
     } catch (err) {
-        res.status(400).send(err)
+        res.status(400).send()
     }
 })
 
