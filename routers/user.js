@@ -104,9 +104,16 @@ https://medium.com/@elijahechekwu/sending-emails-in-node-express-js-with-nodemai
 router.post('/data/users/sendEmail', async (req, res) => {
     try {
         const email = req.body.email
+        console.log(req.body)
         const account = await User.findOne({email})
         if (!account) {
-            return res.status(404).send({error: 'No account was found associated with the given email address.'})
+            if (req.body.resetPassword) {
+                return res.status(404).send({ error: 'No account was found associated with the given email address.' });
+            }
+        } else {
+            if (!req.body.resetPassword) {
+                return res.status(400).send({ error: 'Email address taken. Please choose a different email address.' });
+            }
         }
         const transporter = nodemailer.createTransport({
             service: process.env.SMTP_SERVICE,
@@ -119,19 +126,23 @@ router.post('/data/users/sendEmail', async (req, res) => {
         const mailOptions = {
             from: process.env.SMTP_MAIL,
             to: email,
-            subject: 'Your Film Friends OTP for password reset.',
+            subject: `Your Film Friends OTP for ${req.body.resetPassword? 'password reset' : 'email address verification'}.`,
             text: `Your one time passcode (OTP) is ${OTP}. This will expire in 10 minutes.`
         };
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
                 return res.status(500).send({error: "Couldn't send email due to system issues. Please try again later."})
             }
-            res.status(200).send({message: 'A one time passcode (OTP) has been sent to your email address. Please enter it below to recover your account.'})
+            res.status(200).send({
+                message: `A one time passcode (OTP) has been sent to your email address. Please enter it below to ${req.body.resetPassword? 'recover your account' : 'verify your email address.'}.`
+            })
         });
     } catch (err) {
+        console.log(err)
         res.status(500).send({error: "Couldn't send email due to system issues. Please try again later."})
     }
 })
+
 
 // Search for profiles
 router.get('/data/users/', auth, async (req, res) => {
@@ -167,7 +178,7 @@ router.patch('/data/users/me', auth, async (req, res) => {
     if (req.body.currPassword){
         try {
             const user = await User.findOne({email: req.user.email})
-            const isMatch = await bcrypt.compare(req.body.currPassword, user.password)
+            const isMatch = await bcrypt.compare(req.body.currPassword, req.user.password)
             if (!isMatch) {
                 return res.status(400).send({errors: {password: {message: 'Current password incorrect.'}}})
             }
@@ -177,6 +188,15 @@ router.patch('/data/users/me', auth, async (req, res) => {
         } catch (err) {
             res.status(400).send(err)
         }        
+    } else if (req.body.username) {
+        try {
+            const user = await User.findOne({email: req.user.email})
+            user.username = req.body.username
+            await user.save()
+            res.send({ user, token: req.token })
+        } catch(err) {
+            res.status(400).send(err)
+        }
     }
 })
 
