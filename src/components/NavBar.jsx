@@ -47,71 +47,49 @@ const NavBar = () => {
     const loggedInIcons = 
     <>  
         {mobile? 
-            <Nav.Link onClick={handleClick}>
-                <Link to='/'><i className="fa-solid fa-home"></i> Home</Link>
+            <Nav.Link href='/' onClick={handleClick}>
+                <i className="fa-solid fa-home"></i> Home
             </Nav.Link>
         :''}
-        <Nav.Link onClick={handleClick}>
-            <Link to={`/films/${currentUser?.user._id}`}>
+        <Nav.Link href={`/films/${currentUser?.user._id}`} onClick={handleClick}>
                 <i className="fa-solid fa-clapperboard"></i> My Films
-            </Link>
         </Nav.Link>
-        <Nav.Link onClick={handleClick}>
-            <Link to='/friends'>
-                <i className="fa-solid fa-users"></i> Friends
-            </Link>
+        <Nav.Link href='/friends' onClick={handleClick}>
+            <i className="fa-solid fa-users"></i> Friends
         </Nav.Link>
-        <Nav.Link onClick={handleClick} className={mobile? styles.underlineSection:''}>
-            <Link to='/reccomendations'>
-                <i className="fa-solid fa-envelope"></i> Reccomendations
-            </Link>
+        <Nav.Link href='/reccomendations' onClick={handleClick} className={mobile? styles.underlineSection:''}>
+            <i className="fa-solid fa-envelope"></i> Reccomendations
         </Nav.Link>
         {mobile?(
             <div className={styles.underlineSection}>
-                <Nav.Link onClick={handleClick}>
-                    <Link to={`/profile/${currentUser?.user._id}`}>
-                        <i className="fa-solid fa-user"></i> Profile
-                    </Link>
+                <Nav.Link href={`/profile/${currentUser?.user._id}`} onClick={handleClick}>
+                    <i className="fa-solid fa-user"></i> Profile
                 </Nav.Link>
-                <Nav.Link onClick={handleClick}>
-                    <Link to={`/profile/edit/${currentUser?.user._id}`}>
-                        <i className="fa-solid fa-pen-to-square"></i> Edit Profile
-                    </Link>
+                <Nav.Link href={`/profile/edit/${currentUser?.user._id}`} onClick={handleClick}>
+                    <i className="fa-solid fa-pen-to-square"></i> Edit Profile
                 </Nav.Link>
-                <Nav.Link>
-                    <Link onClick={handleLogout} to={'/'}>
-                            <i className="fa-solid fa-right-from-bracket"></i> Logout
-                    </Link>
+                <Nav.Link href='/' onClick={handleLogout} >
+                    <i className="fa-solid fa-right-from-bracket"></i> Logout
                 </Nav.Link>
-                <Nav.Link onClick={handleClick}>
-                    <Link to={`/profile/delete/${currentUser?.user._id}`}>
-                            <i className="fa-solid fa-trash-can"></i> Delete Account
-                    </Link>
+                <Nav.Link href={`/profile/delete/${currentUser?.user._id}`} onClick={handleClick}>
+                    <i className="fa-solid fa-trash-can"></i> Delete Account 
                 </Nav.Link>
             </div>
         ):(
             <NavDropdown title={<Image src={currentUser?.user.image} width={40} height={40} roundedCircle/>} id="basic-nav-dropdown" drop='start'>
-            <NavDropdown.Item>
-                <Link to={`/profile/${currentUser?.user._id}`}>
+                <NavDropdown.Item href={`/profile/${currentUser?.user._id}`}>
                     <i className="fa-solid fa-user"></i> Profile
-                </Link>
-            </NavDropdown.Item>
-            <NavDropdown.Item>
-                <Link to={`/profile/edit/${currentUser?.user._id}`}>
+                </NavDropdown.Item>
+                <NavDropdown.Item href={`/profile/${currentUser?.user._id}`}>
                     <i className="fa-solid fa-pen-to-square"></i> Edit Profile
-                </Link>
-            </NavDropdown.Item>
-            <NavDropdown.Item>
-                <Link onClick={handleLogout} to={'/'}>
+                </NavDropdown.Item>
+                <NavDropdown.Item href='/' onClick={handleLogout}>
                     <i className="fa-solid fa-right-from-bracket"></i> Logout
-                </Link>
-            </NavDropdown.Item>
-            <NavDropdown.Item>
-                <Link to={`/profile/delete/${currentUser?.user._id}`}>
+                </NavDropdown.Item>
+                <NavDropdown.Item href={`/profile/delete/${currentUser?.user._id}`}>
                     <i className="fa-solid fa-trash-can"></i> Delete Account
-                </Link>
-            </NavDropdown.Item>
-        </NavDropdown>
+                </NavDropdown.Item>
+            </NavDropdown>
         )}
 
     </>
@@ -119,11 +97,11 @@ const NavBar = () => {
     // Logged out icons: sign up and log in
     const loggedOutIcons = 
     <>
-        <Nav.Link onClick={handleClick}>
-            <Link to='/signup'><i className="fa-solid fa-user-plus"></i> Sign up</Link> 
+        <Nav.Link href='/signup' onClick={handleClick}>
+            <i className="fa-solid fa-user-plus"></i> Sign up
         </Nav.Link>
-        <Nav.Link onClick={handleClick}>
-            <Link to='/login'><i className="fa-solid fa-right-to-bracket"></i> Login</Link>
+        <Nav.Link href='/login' onClick={handleClick}>
+            <i className="fa-solid fa-right-to-bracket"></i> Login
         </Nav.Link>
     </>
 
