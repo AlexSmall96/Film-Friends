@@ -28,7 +28,6 @@ router.post('/data/films', auth, async (req, res) => {
 // Get a users films
 router.get('/data/films/:id', auth, async (req, res) => {
     const routerId = req.params.id
-    const filmId = req.query.filmId
     const sortObj = req.query.sort === 'A-Z' ? ({Title: 1, updatedAt: -1}):({updatedAt: -1})
     try {
         let films = await Film.find({owner: routerId})
@@ -38,10 +37,6 @@ router.get('/data/films/:id', auth, async (req, res) => {
         if (req.user.id !== routerId) {
             films = films.filter(film => film.public === true)
         }
-        if (filmId) {
-            const matchingFilm = films.filter(film => film._id === filmId)
-            return res.status(200).send(matchingFilm[0])
-        } 
         res.status(200).send({ films })
     } catch (e) {
         res.status(400).send(e)
