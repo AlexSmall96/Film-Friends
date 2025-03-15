@@ -39,6 +39,7 @@ router.post('/data/reccomendations', auth, async (req, res) => {
 const enrichReccomendation = async (rec, currentUser) => {
     const senderUser = await User.findById(rec.sender)
     const recieverUser = await User.findById(rec.reciever)
+    const film = await Film.findById(rec.film)
     const isSender = senderUser.username === currentUser.username
     const sender = {
         _id: rec.sender,
@@ -54,7 +55,8 @@ const enrichReccomendation = async (rec, currentUser) => {
         isSender, 
         _id: rec._id, 
         sender, 
-        reciever, 
+        reciever,
+        film,
         liked: rec.liked,
         message: rec.message,
         createdAt: rec.createdAt,
