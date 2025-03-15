@@ -165,7 +165,7 @@ taken from https://dev.to/njong_emy/how-to-store-images-in-mongodb-using-cloudin
 const uploadToCloudinary = async (path, folder = "my-profile") => {
     try {
       const data = await cloudinary.uploader.upload(path, { folder: folder });
-      return { url: data.secure_url, publicId: data.public_id };
+      return data.secure_url
     } catch (err) {
       console.log(err);
       throw err;
@@ -188,8 +188,15 @@ router.patch('/data/users/me', auth, async (req, res) => {
             res.status(400).send(err)
         }        
     } else {
+        let update = {}
+        if (req.body.image){
+            const url = await uploadToCloudinary(req.body.image)
+            update = {image: url, username: req.body.username, email:req.body.email}
+        } else {
+            update = {username: req.body.username, email:req.body.email}
+        }
         try {
-            const user = await User.findByIdAndUpdate(req.user._id, {username: req.body.username, email:req.body.email})
+            const user = await User.findByIdAndUpdate(req.user._id, update)
             res.send({ user, token: req.token })
         } catch(err) {
             res.status(400).send(err)
