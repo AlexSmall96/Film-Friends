@@ -3,7 +3,6 @@ import { Route, Switch } from 'react-router-dom';
 import NavBar from './components/NavBar';
 import Home from './pages/home/Home.jsx';
 import Profile from './pages/profile/Profile';
-import ProfileEdit from './pages/profile/ProfileEdit';
 import FilmsPage from './pages/films/FilmsPage';
 import Friends from './pages/friends/Friends';
 import Reccomendations from './pages/reccomendations/Reccomendations';
@@ -36,8 +35,8 @@ function App() {
 									<Route exact path='/friends/' render={() => <Friends />} />
 									<Route exact path='/reccomendations' render={() => <Reccomendations />} />
 									<Route exact path='/profile/:id' render={() => <Profile  />} />
-									<Route exact path='/profile/edit/:id' render={() => <ProfileEdit  />} />
 									<Route exact path='/sendOTP/' render={() => <SendOTP />} />
+									<Route exact path='/profile/email/edit' render={() => <SendOTP changeEmail />} />
 									<Route exact path='/resetPassword/' render={() => <ResetPassword />} />
 									<Route exact path='/profile/delete/:id' render={() => <ProfileDelete />} />
 									<Route exact path='/signup' render={() => <Signup />} />
