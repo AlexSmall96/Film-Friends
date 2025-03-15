@@ -3,16 +3,15 @@ import { axiosReq } from '../../api/axiosDefaults';
 import { useCurrentUser } from '../../contexts/CurrentUserContext';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import ResultsPagination from '../../components/ResultsPagination'
-import { Button, Container, Image, Spinner, Row, Col, Pagination, ButtonGroup} from 'react-bootstrap';
-import Film from '../../components/OldFilm'
+import { Button, Container, Image, Spinner, Row, Col } from 'react-bootstrap';
 import FilmPreview from '../../components/FilmPreview'
-import { useCurrentFilm } from '../../contexts/CurrentFilmContext';
 import { FilmPreviewProvider } from '../../contexts/FilmPreviewContext';
 import SearchBar from './SearchBar';
 import appStyles from '../../App.module.css'
 import styles from '../../styles/Home.module.css'
 import useWindowDimensions from '../../hooks/useWindowDimensions';
 import { useSaveFilmContext } from '../../contexts/SaveFilmContext';
+
 const Home = () => {
     // Contexts
     const { currentUser } = useCurrentUser()
@@ -27,9 +26,8 @@ const Home = () => {
     const [totalResults, setTotalResults] = useState(0)
     const [error, setError] = useState('')
     const [hasLoaded, setHasLoaded] = useState(false)
-    // const [updated, setUpdated] = useState(false)
     const id = currentUser?.user._id || null
-    const {updated} = useSaveFilmContext()
+    const { updated } = useSaveFilmContext()
 
     useEffect(() => {
         // Gets the imdbIds of the users saved films, to determine which buttons should appear next to film result
