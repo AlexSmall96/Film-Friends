@@ -33,19 +33,23 @@ const Profile = () => {
     }
 
     useEffect(() => {
-        // Get the users profile data and films on watchlist
+        // Get the users profile data
         const fetchProfile = async () => {
             try {
-                const response = await axiosReq.get(`/users/${id}`, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
+                const response = await axiosReq.get(`/users/${id}`, {headers: {'Authorization': `Bearer ${currentUser?.token}`}})
                 setProfile(response.data.profile)
             } catch (err) {
                 console.log(err)
             }
         }
-        fetchProfile()
-    }, [currentUser.token, updated])
+        if (!deleted){
+          fetchProfile()
+        }
+    }, [currentUser?.token, updated])
 
     return (
+    <>
+    {!deleted?
         <Tab.Container id="left-tabs-example" defaultActiveKey="first">
         <Row>
           <Col sm={3}>
@@ -77,12 +81,11 @@ const Profile = () => {
               </Tab.Pane>
               <Tab.Pane eventKey="third">            
                 {/* CONFIRM MESSAGE */}
-                          <h5>{!deleted? `Are you sure you want to delete your account for username ${currentUser.user.username}?`: 'Your account has been deleted.'}</h5>
+                          <h5>{!deleted? `Are you sure you want to delete your account for username ${currentUser?.user.username}?`: 'Your account has been deleted.'}</h5>
                           {/* YES / GO BACK BUTTONS */}
                           {!deleted?(
                              <>
                                   <Button variant='outline-secondary' onClick={handleDelete}>Yes</Button>
-                                  <Button variant='outline-secondary' onClick={() => history.goBack()}>Go back</Button> 
                              </> 
                           ):(
                               <>
@@ -94,7 +97,10 @@ const Profile = () => {
             </Tab.Content>
           </Col>
         </Row>
-      </Tab.Container>
+      </Tab.Container> :<>Your account has been deleted. Continue browsing films <Button onClick={() => history.push('/')} variant='link'>here</Button></>
+    }
+    </>
+
     )
 }
 export default Profile;
