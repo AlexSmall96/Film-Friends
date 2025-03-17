@@ -10,7 +10,7 @@ import Signup from './pages/auth/Signup';
 import Login from './pages/auth/Login';
 import { BrowserRouter as Router } from 'react-router-dom/cjs/react-router-dom.min';
 import {CurrentUserProvider} from './contexts/CurrentUserContext'
-import { RecoveryEmailProvider } from './contexts/RecoveryEmailContext.jsx';
+import { RecoveryDataProvider } from './contexts/RecoveryDataContext.jsx';
 import { CurrentFilmProvider } from './contexts/CurrentFilmContext.jsx';
 import { FriendActionProvider } from './contexts/FriendActionContext.jsx';
 import { SaveFilmProvider } from './contexts/SaveFilmContext.jsx';
@@ -23,7 +23,7 @@ function App() {
   return (
     <div className={styles.App}>
       	<CurrentUserProvider>
-	    	<RecoveryEmailProvider>
+	    	<RecoveryDataProvider>
         		<CurrentFilmProvider>
 					<FriendActionProvider>
 						<SaveFilmProvider>
@@ -35,8 +35,8 @@ function App() {
 									<Route exact path='/friends/' render={() => <Friends />} />
 									<Route exact path='/reccomendations' render={() => <Reccomendations />} />
 									<Route exact path='/profile/:id' render={() => <Profile  />} />
-									<Route exact path='/sendOTP/' render={() => <SendOTP />} />
-									<Route exact path='/profile/email/edit' render={() => <SendOTP changeEmail />} />
+									<Route exact path='/resetPassword/sendOTP/' render={() => <SendOTP resetPassword />} />
+									<Route exact path='/changeEmail/sendOTP' render={() => <SendOTP changeEmail />} />
 									<Route exact path='/resetPassword/' render={() => <ResetPassword />} />
 									<Route exact path='/profile/delete/:id' render={() => <ProfileDelete />} />
 									<Route exact path='/signup' render={() => <Signup />} />
@@ -46,7 +46,7 @@ function App() {
 						</SaveFilmProvider>
 					</FriendActionProvider>
         		</CurrentFilmProvider>
-		    </RecoveryEmailProvider>
+		    </RecoveryDataProvider>
       	</CurrentUserProvider>
     </div>
   );   

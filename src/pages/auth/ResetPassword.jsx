@@ -1,14 +1,14 @@
 import React, {useState} from 'react';
 import { Form, Button } from 'react-bootstrap';
 import { axiosReq } from '../../api/axiosDefaults';
-import { useRecoveryEmail } from '../../contexts/RecoveryEmailContext';
+import { useRecoveryData} from '../../contexts/RecoveryDataContext';
 import { useCurrentUser } from '../../contexts/CurrentUserContext';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 
 const ResetPassword = () => {
     const [password, setPassword] = useState('')
     const [error, setError] = useState('')
-    const { recoveryEmail } = useRecoveryEmail()
+    const { recoveryEmail } = useRecoveryData()
     const { currentUser } = useCurrentUser()
     const history = useHistory()
     const [success, setSuccess] = useState(false)
@@ -19,7 +19,7 @@ const ResetPassword = () => {
     const handleSubmit = async (event) => {
         event.preventDefault()
         try {
-            await axiosReq.patch('/users/resetPassword', {email: recoveryEmail || currentUser?.user.email, password})
+            await axiosReq.patch('/users/resetPassword', {email: recoveryEmail})
             localStorage.removeItem('recoveryEmail')
             setSuccess(true)
         } catch (err) {
@@ -32,7 +32,7 @@ const ResetPassword = () => {
             {!success?
                 <Form onSubmit={handleSubmit}>
                     <Form.Group>
-                        <Form.Label>Enter new password:</Form.Label>
+                        <Form.Label>OTP passcode correct. Enter new password:</Form.Label>
                         <Form.Control onChange={handleChange} value={password} type='password' placeholder='password'/>
                     </Form.Group>
                     <p>{error || ''}</p>

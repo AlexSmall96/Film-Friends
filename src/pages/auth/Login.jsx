@@ -61,7 +61,7 @@ const Login = () => {
                     Login
                 </Button>
                 <p>
-                    <Button variant='link' onClick={() => history.push('/sendOTP/')}>Forgotten password?</Button>
+                    <Button variant='link' onClick={() => history.push('/resetPassword/sendOTP/')}>Forgotten password?</Button>
                 </p>
                 <p>Don't have an account?<Button variant='link' onClick={() => history.push('/signup')}>Sign up</Button></p>
             </Form>

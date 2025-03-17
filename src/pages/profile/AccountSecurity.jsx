@@ -13,7 +13,8 @@ const AccountSecurity = ({profile}) => {
             password2: ''
     })
     const [message, setMessage] = useState({})
-
+    const [disabled, setDisabled] = useState(true)
+    
     const handleSubmitPassword = async (event) => {
         event.preventDefault()
         const {password0, password1, password2} = formData
@@ -21,6 +22,12 @@ const AccountSecurity = ({profile}) => {
           try {
               await axiosReq.patch('/users/me', {currPassword: password0, newPassword: password1}, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
               setMessage({password: 'Password updated successfully.'})
+              setFormData({
+                    password0: '',
+                    password1: '',
+                    password2: ''
+                })
+                setDisabled(true)
           } catch (err) {
               if (err.response.data.errors?.password?.message){
                   setMessage({password:err.response.data.errors.password.message})
@@ -37,6 +44,7 @@ const AccountSecurity = ({profile}) => {
 		setFormData({
 			...formData, [event.target.name]: event.target.value
 		})
+        setDisabled(false)
 	}
 
     return(
@@ -49,7 +57,7 @@ const AccountSecurity = ({profile}) => {
                     <p>
                         <label htmlFor='email'>Current Email Address: </label>
                         <input type='text' name='email' placeholder={profile.email} disabled />
-                        <button type='button' onClick={() => history.push('/profile/email/edit')}><i className="fa-solid fa-pen"></i></button>
+                        <button type='button' onClick={() => history.push('/changeEmail/sendOTP')}><i className="fa-solid fa-pen"></i></button>
                     </p>
                 </Row>
                 <p>Password:</p>
@@ -64,7 +72,7 @@ const AccountSecurity = ({profile}) => {
                     <input type='password' name='password2' value={formData.password2 || ''} placeholder='Confirm new password' onChange={handleChangePassword} />
                 </Row>
                     {message.password || ''}
-                    <button type='submit'>Change Password</button>
+                    <button disabled={disabled} type='submit'>Change Password</button>
                 
 
             </form>        
