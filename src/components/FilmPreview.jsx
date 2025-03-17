@@ -55,8 +55,9 @@ const FilmPreview = () => {
                     :
                     <>
                         <h5 className={appStyles.smallFont}>{film.Title}</h5>
-                        <p className={appStyles.smallFont}>{film.Year}, {film.Type}</p>
-                    </>}
+                        <p className={appStyles.smallFont}>{filmsPage? film.Director + ', ' : ''} {film.Year}, {film.Type}</p>
+                        <p className={appStyles.smallFont}>{filmsPage? film.Genre : '' }</p>
+                    </>}    
                     {showDropdown? 
                         <SaveDropown />
                     :''}                 
