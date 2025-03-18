@@ -13,8 +13,10 @@ import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import FriendRequestButtons from '../friends/FriendRequestButtons';
 import { FriendDataProvider } from '../../contexts/FriendDataContext';
 import { useFriendAction } from '../../contexts/FriendActionContext';
+import { useRedirect } from '../../hooks/useRedirect';
 
 const FilmsPage = () => {
+    useRedirect()
     const { id } = useParams()
     const history = useHistory()
     const { currentUser } = useCurrentUser()
@@ -82,7 +84,7 @@ const FilmsPage = () => {
         // Get users films for film list
         const fetchProfileAndFilms = async () => {
             // Get all films
-            const response = await axiosReq.get(`/films/${id}/?sort=${sort}`, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
+            const response = await axiosReq.get(`/films/${id}/?sort=${sort}`, {headers: {'Authorization': `Bearer ${currentUser?.token}`}})
             const fullResponse = response.data.films
             // Filter films based on current filter using checkFilm function
             const filteredResponse = await response.data.films.filter(film => checkFilm(film))
@@ -103,7 +105,7 @@ const FilmsPage = () => {
                 setCurrentFilmIds({imdbID: filteredResponse[0].imdbID, database:filteredResponse[0]._id})
             }
             // Get profile data and similarity score
-            const profileResponse = await axiosReq.get(`/users/${id}`, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
+            const profileResponse = await axiosReq.get(`/users/${id}`, {headers: {'Authorization': `Bearer ${currentUser?.token}`}})
             setProfile(profileResponse.data.profile)
             setUsername(profileResponse.data.profile.username)
             setSimilarity(isOwner? '' : parseFloat(100 * profileResponse.data.similarity).toFixed(0)+"%")
@@ -117,7 +119,7 @@ const FilmsPage = () => {
         // Update film ids when the same film is viewed but owner of watchlist is changed
         const findOwnersVersionOfFilm = async () => {
             try {
-                const response = await axiosReq.get(`/films/${id}`, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
+                const response = await axiosReq.get(`/films/${id}`, {headers: {'Authorization': `Bearer ${currentUser?.token}`}})
                 const matchingFilm = response.data.films.filter(film => film.imdbID === currentFilmIds.imdbID)[0]
                 setCurrentFilmIds({imdbID: currentFilmIds.imdbID, database: matchingFilm._id}) 
             } catch (err) {
@@ -127,13 +129,13 @@ const FilmsPage = () => {
         // Get current users films to determine which films have already been saved
         const fetchCurrentUsersFilmIds = async () => {
             try {
-                const response = await axiosReq.get(`/films/${currentUser.user._id}`, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
+                const response = await axiosReq.get(`/films/${currentUser?.user._id}`, {headers: {'Authorization': `Bearer ${currentUser?.token}`}})
                 setCurrentUsersFilmIds(response.data.films.map(film => film.imdbID))
             } catch (err) {
                 console.log(err)
             }
         }
-        const checkOwner = currentUser.user._id === id
+        const checkOwner = currentUser?.user._id === id
         if (!checkOwner) {
             fetchCurrentUsersFilmIds()
         }
@@ -164,7 +166,7 @@ const FilmsPage = () => {
 
     useEffect(() => {
         const getRequestData = async () => {
-            const response = await axiosReq.get(`/requests/`, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
+            const response = await axiosReq.get(`/requests/`, {headers: {'Authorization': `Bearer ${currentUser?.token}`}})
             setRequestIds(  
                 response.data.map(request => request.reciever._id).concat(response.data.map(request => request.sender._id))
             )
@@ -172,7 +174,7 @@ const FilmsPage = () => {
         }
         getRequestData()
     }, [updatedFriends ])
-    
+
     return (
         <>
             {hasLoaded?
