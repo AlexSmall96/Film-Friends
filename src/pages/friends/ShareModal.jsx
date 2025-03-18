@@ -33,7 +33,7 @@ const ShareModal = () => {
                 const publicFilms = response.data.films.filter(film => film.public)
                 // Fetch users reccomendations to determine which films have already been shared
                 const reccomendationsResponse = await axiosReq.get('/reccomendations', {headers: {'Authorization': `Bearer ${currentUser.token}`}})
-                const alreadyReccomendedFilms = reccomendationsResponse.data.fullReccomendations.filter(rec => rec.reciever.username === user.username)
+                const alreadyReccomendedFilms = reccomendationsResponse.data.filter(rec => rec.reciever.username === user.username)
                 const alreadyReccomendedIds = alreadyReccomendedFilms.map(rec => rec.film.imdbID)
                 setFilms(publicFilms.filter(film => !alreadyReccomendedIds.includes(film.imdbID)))
                 setAllFilms(publicFilms)
