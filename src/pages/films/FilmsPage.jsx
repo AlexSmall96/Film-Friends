@@ -20,7 +20,7 @@ const FilmsPage = () => {
     const { currentUser } = useCurrentUser()
     const { currentFilmIds, setCurrentFilmIds, viewingData, setViewingData, omdbData, setOmdbData, isOwner, setIsOwner, setUsername } = useCurrentFilm()
     const { updated } = useSaveFilmContext()
-    const { updatedFriends } = useFriendAction()
+    const { updatedFriends, getStatus } = useFriendAction()
     const [allFilms, setAllFilms] = useState([])
     const [filmStats, setFilmStats] = useState({savedCount: 0, watchedCount: 0})
     const [genreCounts, setGenreCounts] = useState({})
@@ -105,7 +105,7 @@ const FilmsPage = () => {
             // Get profile data and similarity score
             const profileResponse = await axiosReq.get(`/users/${id}`, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
             setProfile(profileResponse.data.profile)
-            setUsername(profile.username)
+            setUsername(profileResponse.data.profile.username)
             setSimilarity(isOwner? '' : parseFloat(100 * profileResponse.data.similarity).toFixed(0)+"%")
             setHasLoaded(true)
         }
@@ -163,31 +163,16 @@ const FilmsPage = () => {
     }, [currentFilmIds])
 
     useEffect(() => {
-        const updateRequestData = async () => {
+        const getRequestData = async () => {
             const response = await axiosReq.get(`/requests/`, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
             setRequestIds(  
                 response.data.map(request => request.reciever._id).concat(response.data.map(request => request.sender._id))
             )
             setRequests(response.data)
         }
-        updateRequestData()
+        getRequestData()
     }, [updatedFriends ])
     
-    // Takes in id and uses requests array to determine status of friend request
-    const getStatus = (id) => {
-        if (!requestIds.includes(id)) {
-            return {accepted: false, sent: false, recieved: false}
-        }
-        const sentFromId = requests.filter(request => request.sender._id === id)
-        const sentToId = requests.filter(request => request.reciever._id === id)
-        const request = sentFromId.length? sentFromId[0]: sentToId[0]
-        return {
-            accepted: request?.accepted || false,
-            sent: sentToId.length,
-            recieved: !sentToId.length
-        }
-    }
-
     return (
         <>
             {hasLoaded?
@@ -199,7 +184,7 @@ const FilmsPage = () => {
                             {isOwner?
                                 <Button href={`/profile/${id}`} variant='link'>Go to your Profile</Button>    
                             :   <FriendDataProvider requestId={null} user={{...profile, _id: id}}>
-                                    <FriendRequestButtons status={getStatus(id)} searchResult={true} />
+                                    <FriendRequestButtons status={getStatus(id, requestIds, requests)} searchResult={true} />
                                 </FriendDataProvider>
                                 
                             }

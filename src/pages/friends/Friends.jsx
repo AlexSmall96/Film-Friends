@@ -15,7 +15,7 @@ const Friends = () => {
     const {height} = useWindowDimensions()
     // Contexts
     const { currentUser } = useCurrentUser()
-    const { updatedFriends } = useFriendAction()
+    const { updatedFriends, getStatus } = useFriendAction()
     // Initialize state variables
     const [requests, setRequests] = useState([])
     const [acceptedRequests, setAcceptedRequests] = useState(false)
@@ -97,21 +97,6 @@ const Friends = () => {
         setFilter(filterName)
     }
 
-    // Takes in id and uses requests array to determine status of friend request
-    const getStatus = (id) => {
-        if (!requestIds.includes(id)) {
-            return {accepted: false, sent: false, recieved: false}
-        }
-        const sentFromId = requests.filter(request => request.sender._id === id)
-        const sentToId = requests.filter(request => request.reciever._id === id)
-        const request = sentFromId.length? sentFromId[0]: sentToId[0]
-        return {
-            accepted: request?.accepted || false,
-            sent: sentToId.length,
-            recieved: !sentToId.length
-        }
-    }
-
     return (
         <Container style={{marginTop: '10px'}}>
             {hasLoaded.page ?
@@ -140,7 +125,7 @@ const Friends = () => {
                                             </Col>
                                             <Col md={6}>
                                                 <FriendRequestButtons 
-                                                    status={getStatus(result._id)} 
+                                                    status={getStatus(result._id, requestIds, requests)} 
                                                     searchResult={true} 
                                                 />                                           
                                             </Col>
