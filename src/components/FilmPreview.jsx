@@ -17,7 +17,7 @@ const FilmPreview = () => {
     const { setHoveredOverImdbID, hasLoadedPlot } = useSaveFilmContext()
     const [showPlot, setShowPlot] = useState(false)
     const [width, setWidth] = useState(150)
-
+    const { currentUser } = useCurrentUser()
     const handleClick = () => {
         setCurrentFilmIds({imdbID:film.imdbID, database:film._id})
     }
@@ -58,7 +58,7 @@ const FilmPreview = () => {
                         <p className={appStyles.smallFont}>{filmsPage? film.Director + ', ' : ''} {film.Year}, {film.Type}</p>
                         <p className={appStyles.smallFont}>{filmsPage? film.Genre : '' }</p>
                     </>}    
-                    {showDropdown? 
+                    {showDropdown && currentUser? 
                         <SaveDropown />
                     :''}                 
                 
