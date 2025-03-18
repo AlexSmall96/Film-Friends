@@ -15,7 +15,7 @@ const Friends = () => {
     const {height} = useWindowDimensions()
     // Contexts
     const { currentUser } = useCurrentUser()
-    const { updated } = useFriendAction()
+    const { updatedFriends } = useFriendAction()
     // Initialize state variables
     const [requests, setRequests] = useState([])
     const [acceptedRequests, setAcceptedRequests] = useState(false)
@@ -63,12 +63,13 @@ const Friends = () => {
                 const filteredResponse = searchedResponse.data.filter(request => filter === 'Friends'? request.accepted : filter === 'Pending Requests' ? !request.accepted : true)
                 const sortedResponse = sortBy(filteredResponse, (req) => sortRequest(req, sort))
                 setRequests(sortedResponse) 
+                setHasLoaded({...hasLoaded, page: true, requests: true})
             } catch (err) {
                 console.log(err)
             }
         }
         fetchRequests()
-    }, [search.requests, filter, sort, currentUser.user._id, currentUser.token, updated])
+    }, [search.requests, filter, sort, currentUser.user._id, currentUser.token, updatedFriends])
     
     useEffect(() => {
         const updateRequestData = async () => {
@@ -81,7 +82,7 @@ const Friends = () => {
             setHasLoaded({...hasLoaded, page: true, requests: true})
         }
         updateRequestData()
-    }, [updated])
+    }, [updatedFriends])
 
 
     // Handle change for all users search bar

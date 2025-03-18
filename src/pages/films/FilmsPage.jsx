@@ -10,13 +10,17 @@ import { useCurrentFilm } from '../../contexts/CurrentFilmContext';
 import { useSaveFilmContext } from '../../contexts/SaveFilmContext';
 import { FilmPreviewProvider } from '../../contexts/FilmPreviewContext';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import FriendRequestButtons from '../friends/FriendRequestButtons';
+import { FriendDataProvider } from '../../contexts/FriendDataContext';
+import { useFriendAction } from '../../contexts/FriendActionContext';
 
 const FilmsPage = () => {
     const { id } = useParams()
     const history = useHistory()
     const { currentUser } = useCurrentUser()
-    const { currentFilmIds, setCurrentFilmIds, viewingData, setViewingData, omdbData, setOmdbData, isOwner, setIsOwner, setUsername, username } = useCurrentFilm()
-    const {updated} = useSaveFilmContext()
+    const { currentFilmIds, setCurrentFilmIds, viewingData, setViewingData, omdbData, setOmdbData, isOwner, setIsOwner, setUsername } = useCurrentFilm()
+    const { updated } = useSaveFilmContext()
+    const { updatedFriends } = useFriendAction()
     const [allFilms, setAllFilms] = useState([])
     const [filmStats, setFilmStats] = useState({savedCount: 0, watchedCount: 0})
     const [genreCounts, setGenreCounts] = useState({})
@@ -31,6 +35,8 @@ const FilmsPage = () => {
     })
     const [hasLoaded, setHasLoaded] = useState(false)
     const [currentUsersFilmIds, setCurrentUsersFilmIds] = useState([])
+    const [requestIds, setRequestIds] = useState([])
+    const [requests, setRequests] = useState([])
 
     // Helper functions for loading data
     // Check if a film matches current criteria specified by filters
@@ -99,6 +105,7 @@ const FilmsPage = () => {
             // Get profile data and similarity score
             const profileResponse = await axiosReq.get(`/users/${id}`, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
             setProfile(profileResponse.data.profile)
+            setUsername(profile.username)
             setSimilarity(isOwner? '' : parseFloat(100 * profileResponse.data.similarity).toFixed(0)+"%")
             setHasLoaded(true)
         }
@@ -126,22 +133,12 @@ const FilmsPage = () => {
                 console.log(err)
             }
         }
-        // Get the username associated with the film list
-        const fetchUsername = async () => {
-            try {
-                const response = await axiosReq.get(`/users/${id}`, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
-                setUsername(response.data.profile.username)
-            } catch (err) {
-                console.log(err)
-            }
-        }
         const checkOwner = currentUser.user._id === id
         if (!checkOwner) {
-            fetchUsername()
             fetchCurrentUsersFilmIds()
         }
         setIsOwner(checkOwner)
-        if (currentFilmIds.imdbID !== ''){
+        if (currentFilmIds.imdbID !== '' && allFilms.length){
             findOwnersVersionOfFilm()
         }
     },[id, updated])
@@ -165,86 +162,117 @@ const FilmsPage = () => {
         getOMDBandViewingData()
     }, [currentFilmIds])
 
+    useEffect(() => {
+        const updateRequestData = async () => {
+            const response = await axiosReq.get(`/requests/`, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
+            setRequestIds(  
+                response.data.map(request => request.reciever._id).concat(response.data.map(request => request.sender._id))
+            )
+            setRequests(response.data)
+        }
+        updateRequestData()
+    }, [updatedFriends ])
+    
+    // Takes in id and uses requests array to determine status of friend request
+    const getStatus = (id) => {
+        if (!requestIds.includes(id)) {
+            return {accepted: false, sent: false, recieved: false}
+        }
+        const sentFromId = requests.filter(request => request.sender._id === id)
+        const sentToId = requests.filter(request => request.reciever._id === id)
+        const request = sentFromId.length? sentFromId[0]: sentToId[0]
+        return {
+            accepted: request?.accepted || false,
+            sent: sentToId.length,
+            recieved: !sentToId.length
+        }
+    }
+
     return (
         <>
-        {hasLoaded? 
-            allFilms.length?
+            {hasLoaded?
                 <Container>
                     <Row>
-                    <Col md={3}>
-                        <Image src={profile.image} width={100} />
-                        {profile.username}
-                        {isOwner?
-                            <Button href={`/profile/${id}`} variant='link'>Go to your Profile</Button>    
-                        : 
-                            ''
-                        }
-                        
-                    </Col> 
-                    <Col md={3}>
-                        <p>Films saved: {filmStats.savedCount}</p>
-                        <p>Films watched: {filmStats.watchedCount}</p>
-                        <p>{!isOwner? similarity : ''}</p>
-                    </Col>
-                    <Col md={3}>
-                        Favourite Directors:
-                        {directorCounts.map(([director, count], index) => (
-                            <p key={index}>
-                                {director}, Avg Rating: {count.toFixed(1)}
-                            </p>
-                        ))}
-                    </Col>
-                    <Col md={3}>
-                    Favourite Genres:
-                        {genreCounts.map(([genre, count], index) => (
-                            <p key={index}>
-                                {genre}, Avg Rating: {count.toFixed(1)}
-                            </p>
-                        ))}
-                    </Col>
-                    </Row>
-                    <Row>
-                        <Col md={6}>
-                            <Filters
-                                filter={filter}
-                                setFilter={setFilter}
-                                sort={sort}
-                                setSort={setSort}
-                            />
-                                {filteredFilms.length?
-                                    filteredFilms.map(film => 
-                                        <FilmPreviewProvider key={film._id} film={film} filmsPage>
-                                            <FilmPreview />
-                                        </FilmPreviewProvider>
-                                    )
-                                :'No films matching criteria.'}
-                        </Col>
-                        <Col md={6}>
+                        <Col md={3}>
+                            <Image src={profile.image} width={100} />
+                            {profile.username}
                             {isOwner?
-                                <Film /> 
-                            :
-                                <FilmPreviewProvider savedToWatchlist={currentUsersFilmIds.includes(omdbData.imdbID)} filmsPage >
-                                    <Film /> 
-                                </FilmPreviewProvider>               
+                                <Button href={`/profile/${id}`} variant='link'>Go to your Profile</Button>    
+                            :   <FriendDataProvider requestId={null} user={{...profile, _id: id}}>
+                                    <FriendRequestButtons status={getStatus(id)} searchResult={true} />
+                                </FriendDataProvider>
+                                
                             }
                         </Col>
+                        {allFilms.length?
+                            <>
+                                <Col md={3}>
+                                <p>Films saved: {filmStats.savedCount}</p>
+                                <p>Films watched: {filmStats.watchedCount}</p>
+                                <p>{!isOwner? similarity : ''}</p>
+                                </Col>
+                                <Col md={3}>
+                                    Favourite Directors:
+                                    {directorCounts.map(([director, count], index) => (
+                                        <p key={index}>
+                                            {director}, Avg Rating: {count.toFixed(1)}
+                                        </p>
+                                    ))}
+                                </Col>
+                                <Col md={3}>
+                                Favourite Genres:
+                                    {genreCounts.map(([genre, count], index) => (
+                                        <p key={index}>
+                                            {genre}, Avg Rating: {count.toFixed(1)}
+                                        </p>
+                                    ))}
+                                </Col>            
+                            </>
+                        :
+                            <>
+                                {isOwner? 
+                                    <Col md={3}>
+                                        You don't have any films saved yet.<Button href={`/`} variant='link'>Click here to browse films</Button> 
+                                    </Col>
+                                : 
+                                    `${profile.username} doesn't have any films saved yet`}
+                            </>
+                        } 
                     </Row>
+                    {allFilms.length?
+                        <Row>
+                            <Col md={6}>
+                                <Filters
+                                    filter={filter}
+                                    setFilter={setFilter}
+                                    sort={sort}
+                                    setSort={setSort}
+                                />
+                                    {filteredFilms.length?
+                                        filteredFilms.map(film => 
+                                            <FilmPreviewProvider key={film._id} film={film} filmsPage>
+                                                <FilmPreview />
+                                            </FilmPreviewProvider>
+                                        )
+                                    :'No films matching criteria.'}
+                            </Col>
+                            <Col md={6}>
+                                {isOwner?
+                                    <Film /> 
+                                :
+                                    <FilmPreviewProvider savedToWatchlist={currentUsersFilmIds.includes(omdbData.imdbID)} filmsPage >
+                                        <Film /> 
+                                    </FilmPreviewProvider>               
+                                }
+                            </Col>
+                        </Row>
+                    : ''
+                    }
                 </Container>
-            :
-            <div>
-                {
-                isOwner? 
-                <>
-                    You don't have any films saved yet 
-                    <Button onClick={() => history.push('/')} variant='link'>Click here to browse films.</Button>
-                </>:`${username} doesn't have any films saved yet`}
-            </div>
-            
-        :
-            <Spinner />
-        }
+            :  
+                <Spinner />
+            }
         </>
-
     )
 }
 

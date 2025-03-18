@@ -48,7 +48,7 @@ const FriendRequestButtons = ({status, searchResult}) => {
         <>
             {searchResult?(
                 <div>
-                    {searchResultsText} {searchResultsButtons}
+                    <span>{searchResultsText}</span><span>{searchResultsButtons}</span> 
                 </div>
             ):(
                 <>
