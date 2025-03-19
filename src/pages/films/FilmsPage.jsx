@@ -18,7 +18,6 @@ import { useRedirect } from '../../hooks/useRedirect';
 const FilmsPage = () => {
     useRedirect()
     const { id } = useParams()
-    const history = useHistory()
     const { currentUser } = useCurrentUser()
     const { currentFilmIds, setCurrentFilmIds, viewingData, setViewingData, omdbData, setOmdbData, isOwner, setIsOwner, setUsername } = useCurrentFilm()
     const { updated } = useSaveFilmContext()
@@ -83,35 +82,41 @@ const FilmsPage = () => {
     useEffect(() => {
         // Get users films for film list
         const fetchProfileAndFilms = async () => {
-            // Get all films
-            const response = await axiosReq.get(`/films/${id}/?sort=${sort}`, {headers: {'Authorization': `Bearer ${currentUser?.token}`}})
-            const fullResponse = response.data.films
-            // Filter films based on current filter using checkFilm function
-            const filteredResponse = await response.data.films.filter(film => checkFilm(film))
-            setAllFilms(fullResponse)
-            setFilteredFilms(filteredResponse)
-            // Get film stats - watched count and saved count
-            setFilmStats({
-                savedCount: fullResponse.filter(film => film.public).length,
-                watchedCount: fullResponse.filter(film => film.public && film.watched).length
-            })
-            // Filter to public and watched films to calculate average ratings for directors and genres
-            const publicWatchedFilms = fullResponse.filter(film => film.watched && film.public)
-            // Call getTopThree function to calculate average ratings
-            setGenreCounts(getTopThree(publicWatchedFilms, true))
-            setDirectorCounts(getTopThree(publicWatchedFilms, false))
-            // Initialise current film ids for main film view
-            if (currentFilmIds?.imdbID === '' && filteredResponse.length) {
-                setCurrentFilmIds({imdbID: filteredResponse[0].imdbID, database:filteredResponse[0]._id})
+            try {
+                // Get all films
+                const response = await axiosReq.get(`/films/${id}/?sort=${sort}`, {headers: {'Authorization': `Bearer ${currentUser?.token}`}})
+                const fullResponse = response.data.films
+                // Filter films based on current filter using checkFilm function
+                const filteredResponse = await response.data.films.filter(film => checkFilm(film))
+                setAllFilms(fullResponse)
+                setFilteredFilms(filteredResponse)
+                // Get film stats - watched count and saved count
+                setFilmStats({
+                    savedCount: fullResponse.filter(film => film.public).length,
+                    watchedCount: fullResponse.filter(film => film.public && film.watched).length
+                })
+                // Filter to public and watched films to calculate average ratings for directors and genres
+                const publicWatchedFilms = fullResponse.filter(film => film.watched && film.public)
+                // Call getTopThree function to calculate average ratings
+                setGenreCounts(getTopThree(publicWatchedFilms, true))
+                setDirectorCounts(getTopThree(publicWatchedFilms, false))
+                // Initialise current film ids for main film view
+                if (currentFilmIds?.imdbID === '' && filteredResponse.length) {
+                    setCurrentFilmIds({imdbID: filteredResponse[0].imdbID, database:filteredResponse[0]._id})
+                }
+                // Get profile data and similarity score
+                const profileResponse = await axiosReq.get(`/users/${id}`, {headers: {'Authorization': `Bearer ${currentUser?.token}`}})
+                setProfile(profileResponse.data.profile)
+                setUsername(profileResponse.data.profile.username)
+                setSimilarity(isOwner? '' : parseFloat(100 * profileResponse.data.similarity).toFixed(0)+"%")
+                setHasLoaded(true)
+            } catch (err) {
+                // console.log(err)
             }
-            // Get profile data and similarity score
-            const profileResponse = await axiosReq.get(`/users/${id}`, {headers: {'Authorization': `Bearer ${currentUser?.token}`}})
-            setProfile(profileResponse.data.profile)
-            setUsername(profileResponse.data.profile.username)
-            setSimilarity(isOwner? '' : parseFloat(100 * profileResponse.data.similarity).toFixed(0)+"%")
-            setHasLoaded(true)
         }
-        fetchProfileAndFilms()
+        if (currentUser){
+            fetchProfileAndFilms()
+        }
     },[filter, sort, viewingData, updated, id])
 
     // Functions that update data specific to the user
@@ -123,7 +128,7 @@ const FilmsPage = () => {
                 const matchingFilm = response.data.films.filter(film => film.imdbID === currentFilmIds.imdbID)[0]
                 setCurrentFilmIds({imdbID: currentFilmIds.imdbID, database: matchingFilm._id}) 
             } catch (err) {
-                console.log(err)
+                // console.log(err)
             }
         }
         // Get current users films to determine which films have already been saved
@@ -132,11 +137,11 @@ const FilmsPage = () => {
                 const response = await axiosReq.get(`/films/${currentUser?.user._id}`, {headers: {'Authorization': `Bearer ${currentUser?.token}`}})
                 setCurrentUsersFilmIds(response.data.films.map(film => film.imdbID))
             } catch (err) {
-                console.log(err)
+                // console.log(err)
             }
         }
         const checkOwner = currentUser?.user._id === id
-        if (!checkOwner) {
+        if (!checkOwner && currentUser) {
             fetchCurrentUsersFilmIds()
         }
         setIsOwner(checkOwner)
@@ -158,7 +163,7 @@ const FilmsPage = () => {
                     public: response.data.public
                 })
             } catch (err) {
-                console.log(err)
+                // console.log(err)
             }
         }
         getOMDBandViewingData()
@@ -166,14 +171,20 @@ const FilmsPage = () => {
 
     useEffect(() => {
         const getRequestData = async () => {
-            const response = await axiosReq.get(`/requests/`, {headers: {'Authorization': `Bearer ${currentUser?.token}`}})
-            setRequestIds(  
-                response.data.map(request => request.reciever._id).concat(response.data.map(request => request.sender._id))
-            )
-            setRequests(response.data)
+            try {
+                const response = await axiosReq.get(`/requests/`, {headers: {'Authorization': `Bearer ${currentUser?.token}`}})
+                setRequestIds(  
+                    response.data.map(request => request.reciever._id).concat(response.data.map(request => request.sender._id))
+                )
+                setRequests(response.data)
+            } catch (err) {
+                // console.log(err)
+            }
         }
-        getRequestData()
-    }, [updatedFriends ])
+        if (currentUser){
+            getRequestData()
+        }
+    }, [updatedFriends])
 
     return (
         <>
