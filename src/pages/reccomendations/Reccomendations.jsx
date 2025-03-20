@@ -11,10 +11,11 @@ import { FriendDataProvider } from '../../contexts/FriendDataContext';
 import { useCurrentFilm } from '../../contexts/CurrentFilmContext';
 import { useSaveFilmContext } from '../../contexts/SaveFilmContext';
 import { FilmPreviewProvider } from '../../contexts/FilmPreviewContext';
-import { set } from 'mongoose';
 import FilmPreview from '../../components/FilmPreview';
+import { useRedirect } from '../../hooks/useRedirect';
 
 const Reccomendations = () => {
+    useRedirect()
     const {currentUser} = useCurrentUser()
     const {setCurrentFilmIds} = useCurrentFilm()
     const { updated } = useSaveFilmContext()

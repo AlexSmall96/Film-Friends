@@ -9,8 +9,10 @@ import { FriendDataProvider } from '../../contexts/FriendDataContext';
 import { useFriendAction } from '../../contexts/FriendActionContext';
 import useWindowDimensions from '../../hooks/useWindowDimensions';
 import styles from '../../styles/Friends.module.css'
+import { useRedirect } from '../../hooks/useRedirect';
 
 const Friends = () => {
+    useRedirect()
     // Hooks
     const {height} = useWindowDimensions()
     // Contexts
@@ -41,45 +43,49 @@ const Friends = () => {
         // Gets all the users that match the criteria provided by search
         const fetchUsers = async () => {
             try {
-                const response = await axiosReq.get(`/users/?username=${search.users}`, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
+                const response = await axiosReq.get(`/users/?username=${search.users}`, {headers: {'Authorization': `Bearer ${currentUser?.token}`}})
                 setSearchResults(search.users === '' ? [] : response.data)
                 setHasLoaded({...hasLoaded, search: true})
             } catch (err) {
-                console.log(err)
+                // console.log(err)
             }
         }
         if (search.users !== ''){
             setHasLoaded({...hasLoaded, search: false})
         }
         fetchUsers()
-    }, [search.users, currentUser.user._id, currentUser.token])
+    }, [search.users, currentUser?.user._id, currentUser?.token])
 
     useEffect(() => {
         // Gets all the current users sent or recieved friend requests
         // Creates a request ids array to be used to determine text in search results
         const fetchRequests = async () => {
             try {
-                const searchedResponse = await axiosReq.get(`/requests/?username=${search.requests}`, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
+                const searchedResponse = await axiosReq.get(`/requests/?username=${search.requests}`, {headers: {'Authorization': `Bearer ${currentUser?.token}`}})
                 const filteredResponse = searchedResponse.data.filter(request => filter === 'Friends'? request.accepted : filter === 'Pending Requests' ? !request.accepted : true)
                 const sortedResponse = sortBy(filteredResponse, (req) => sortRequest(req, sort))
                 setRequests(sortedResponse) 
                 setHasLoaded({...hasLoaded, page: true, requests: true})
             } catch (err) {
-                console.log(err)
+                // console.log(err)
             }
         }
         fetchRequests()
-    }, [search.requests, filter, sort, currentUser.user._id, currentUser.token, updatedFriends])
+    }, [search.requests, filter, sort, currentUser?.user._id, currentUser?.token, updatedFriends])
     
     useEffect(() => {
         const updateRequestData = async () => {
-            const response = await axiosReq.get(`/requests/`, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
-            setPendingRequests(response.data.filter(request => !request.accepted).length > 0)
-            setAcceptedRequests(response.data.filter(request => request.accepted).length > 0)
-            setRequestIds(  
-                response.data.map(request => request.reciever._id).concat(response.data.map(request => request.sender._id))
-            )
-            setHasLoaded({...hasLoaded, page: true, requests: true})
+            try {
+                const response = await axiosReq.get(`/requests/`, {headers: {'Authorization': `Bearer ${currentUser?.token}`}})
+                setPendingRequests(response.data.filter(request => !request.accepted).length > 0)
+                setAcceptedRequests(response.data.filter(request => request.accepted).length > 0)
+                setRequestIds(  
+                    response.data.map(request => request.reciever._id).concat(response.data.map(request => request.sender._id))
+                )
+                setHasLoaded({...hasLoaded, page: true, requests: true})
+            } catch (err){
+                // console.log(err)
+            }
         }
         updateRequestData()
     }, [updatedFriends])

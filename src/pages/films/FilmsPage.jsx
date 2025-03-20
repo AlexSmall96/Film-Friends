@@ -114,9 +114,7 @@ const FilmsPage = () => {
                 // console.log(err)
             }
         }
-        if (currentUser){
-            fetchProfileAndFilms()
-        }
+        fetchProfileAndFilms()
     },[filter, sort, viewingData, updated, id])
 
     // Functions that update data specific to the user
@@ -141,7 +139,7 @@ const FilmsPage = () => {
             }
         }
         const checkOwner = currentUser?.user._id === id
-        if (!checkOwner && currentUser) {
+        if (!checkOwner) {
             fetchCurrentUsersFilmIds()
         }
         setIsOwner(checkOwner)
@@ -181,9 +179,7 @@ const FilmsPage = () => {
                 // console.log(err)
             }
         }
-        if (currentUser){
-            getRequestData()
-        }
+        getRequestData()
     }, [updatedFriends])
 
     return (
