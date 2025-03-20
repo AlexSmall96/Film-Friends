@@ -6,11 +6,12 @@ import { Spinner, Button, OverlayTrigger, Tooltip, Image, Card, Nav, ProgressBar
 import appStyles from '../../App.module.css'
 import AccountSecurity from './AccountSecurity';
 import ProfileInfo from './ProfileInfo';
+import { useRedirect } from '../../hooks/useRedirect';
 const Profile = () => {
     // Hooks
-    const { id } = useParams();
-    const history = useHistory()
 
+    const history = useHistory()
+    useRedirect()
     // Contexts
     const { currentUser, setCurrentUser } = useCurrentUser()
     // Initialize state variables
@@ -23,12 +24,12 @@ const Profile = () => {
     // Handle Delete function
     const handleDelete = async () => {
         try {
-            await axiosReq.delete('/users/me', {headers: {'Authorization': `Bearer ${currentUser.token}`}})
+            await axiosReq.delete('/users/me', {headers: {'Authorization': `Bearer ${currentUser?.token}`}})
             localStorage.clear()
             setCurrentUser(null)
             setDeleted(true)
         } catch (err) {
-            console.log(err)
+            // console.log(err)
         }
     }
 
@@ -36,10 +37,10 @@ const Profile = () => {
         // Get the users profile data
         const fetchProfile = async () => {
             try {
-                const response = await axiosReq.get(`/users/${id}`, {headers: {'Authorization': `Bearer ${currentUser?.token}`}})
+                const response = await axiosReq.get(`/users/${currentUser?.user._id}`, {headers: {'Authorization': `Bearer ${currentUser?.token}`}})
                 setProfile(response.data.profile)
             } catch (err) {
-                console.log(err)
+                // console.log(err)
             }
         }
         if (!deleted){
@@ -60,7 +61,7 @@ const Profile = () => {
                 <Nav.Link eventKey="first">Profile Info</Nav.Link>
               </Nav.Item>
               <Nav.Item>
-                <Nav.Link href={`/films/${id}`}>Go to your Watchlist</Nav.Link>
+                <Nav.Link href={`/films/${currentUser?.user._id}`}>Go to your Watchlist</Nav.Link>
               </Nav.Item>
               <Nav.Item>
                 <Nav.Link eventKey="second">Account Security</Nav.Link>

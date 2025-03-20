@@ -62,31 +62,31 @@ const NavBar = () => {
         </Nav.Link>
         {mobile?(
             <div className={styles.underlineSection}>
-                <Nav.Link href={`/profile/${currentUser?.user._id}`} onClick={handleClick}>
+                <Nav.Link href={`/profile/`} onClick={handleClick}>
                     <i className="fa-solid fa-user"></i> Profile
                 </Nav.Link>
-                <Nav.Link href={`/profile/edit/${currentUser?.user._id}`} onClick={handleClick}>
+                <Nav.Link href={`/profile/`} onClick={handleClick}>
                     <i className="fa-solid fa-pen-to-square"></i> Edit Profile
                 </Nav.Link>
                 <Nav.Link href='/' onClick={handleLogout} >
                     <i className="fa-solid fa-right-from-bracket"></i> Logout
                 </Nav.Link>
-                <Nav.Link href={`/profile/delete/${currentUser?.user._id}`} onClick={handleClick}>
+                <Nav.Link href={`/profile/`} onClick={handleClick}>
                     <i className="fa-solid fa-trash-can"></i> Delete Account 
                 </Nav.Link>
             </div>
         ):(
             <NavDropdown title={<Image src={currentUser?.user.image} width={40} height={40} roundedCircle/>} id="basic-nav-dropdown" drop='start'>
-                <NavDropdown.Item href={`/profile/${currentUser?.user._id}`}>
+                <NavDropdown.Item href={`/profile/`}>
                     <i className="fa-solid fa-user"></i> Profile
                 </NavDropdown.Item>
-                <NavDropdown.Item href={`/profile/${currentUser?.user._id}`}>
+                <NavDropdown.Item href={`/profile/`}>
                     <i className="fa-solid fa-pen-to-square"></i> Edit Profile
                 </NavDropdown.Item>
                 <NavDropdown.Item href='/' onClick={handleLogout}>
                     <i className="fa-solid fa-right-from-bracket"></i> Logout
                 </NavDropdown.Item>
-                <NavDropdown.Item href={`/profile/delete/${currentUser?.user._id}`}>
+                <NavDropdown.Item href={`/profile/`}>
                     <i className="fa-solid fa-trash-can"></i> Delete Account
                 </NavDropdown.Item>
             </NavDropdown>
@@ -129,7 +129,7 @@ const NavBar = () => {
                         <Col sm={10} xs={10}>
                         <Card border='light' className={appStyles.noBorder}>
                             <Card.Title>
-                            <Link to={`/profile/${currentUser?.user._id}`}>
+                            <Link to={`/profile/`}>
                                  {currentUser?.user.username}
                             </Link>
                             </Card.Title>

@@ -34,11 +34,10 @@ function App() {
 									<Route exact path='/films/:id' render={() => <FilmsPage />} />
 									<Route exact path='/friends/' render={() => <Friends />} />
 									<Route exact path='/reccomendations' render={() => <Reccomendations />} />
-									<Route exact path='/profile/:id' render={() => <Profile  />} />
+									<Route exact path='/profile' render={() => <Profile />} />
 									<Route exact path='/resetPassword/sendOTP/' render={() => <SendOTP resetPassword />} />
 									<Route exact path='/changeEmail/sendOTP' render={() => <SendOTP changeEmail />} />
 									<Route exact path='/resetPassword/' render={() => <ResetPassword />} />
-									<Route exact path='/profile/delete/:id' render={() => <ProfileDelete />} />
 									<Route exact path='/signup' render={() => <Signup />} />
 									<Route exact path='/login' render={() => <Login />} />
 								</Switch>
