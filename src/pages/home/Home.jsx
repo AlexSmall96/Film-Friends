@@ -88,7 +88,7 @@ const Home = () => {
                                     {searchResults.map(
                                         film =>
                                             <FilmPreviewProvider key={film.imdbID} film={film} showDropdown savedToWatchlist={filmIds.includes(film.imdbID)}>
-                                                <Col md={4}>
+                                                <Col lg={4} md={6} sm={12}>
                                                     <FilmPreview />
                                                 </Col>
                                             </FilmPreviewProvider>

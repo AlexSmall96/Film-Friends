@@ -33,7 +33,7 @@ const FilmPreview = () => {
 
     return (
             <Row onClick={filmsPage? handleClick : null}>
-                <Col md={6}>
+                <Col md={6} sm={4} xs={4}>
                     <Image
                         onMouseEnter={! filmsPage ? handleMouseEnter : null}
                         onMouseLeave={! filmsPage ? handleMouseLeave : null}
@@ -41,9 +41,9 @@ const FilmPreview = () => {
                         width={width}
                         thumbnail
                         fluid
-                        />
+                    />
                 </Col>
-                <Col md={6} className={appStyles.leftAlign}>
+                <Col md={6} className={appStyles.leftAlign} sm={8} xs={8}>
 
                     {showPlot? 
                         hasLoadedPlot?
