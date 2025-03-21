@@ -114,7 +114,7 @@ const FilmsPage = () => {
             }
         }
         fetchProfileAndFilms()
-    },[filter, sort, viewingData, updated, id])
+    },[filter, sort, updated, id])
 
     // Functions that update data specific to the user
     useEffect(() => {
