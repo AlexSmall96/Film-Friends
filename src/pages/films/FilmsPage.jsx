@@ -121,8 +121,7 @@ const FilmsPage = () => {
         // Update film ids when the same film is viewed but owner of watchlist is changed
         const findOwnersVersionOfFilm = async () => {
             try {
-                const response = await axiosReq.get(`/films/${id}`, {headers: {'Authorization': `Bearer ${currentUser?.token}`}})
-                const matchingFilm = response.data.films.filter(film => film.imdbID === currentFilmIds.imdbID)[0]
+                const matchingFilm = allFilms.filter(film => film.imdbID === currentFilmIds.imdbID)[0]
                 setCurrentFilmIds({imdbID: currentFilmIds.imdbID, database: matchingFilm._id}) 
             } catch (err) {
                 // console.log(err)
@@ -145,7 +144,7 @@ const FilmsPage = () => {
         if (currentFilmIds.imdbID !== '' && allFilms.length){
             findOwnersVersionOfFilm()
         }
-    },[id, updated])
+    },[id, updated, allFilms])
 
     // Functions that only depend on change of current film
     useEffect(() => {   
