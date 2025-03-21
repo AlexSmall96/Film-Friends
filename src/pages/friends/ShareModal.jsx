@@ -10,7 +10,6 @@ import { useFriendData } from '../../contexts/FriendDataContext';
 const ShareModal = () => {
     // Contexts
     const { currentUser } = useCurrentUser()
-    const { updated, setUpdated } = useFriendAction()
     const { user } = useFriendData()
     // Hooks
     const history = useHistory()
@@ -22,12 +21,14 @@ const ShareModal = () => {
     const [selectedFilm, setSelectedFilm] = useState(null)
     const [sent, setSent] = useState(false)
     const [hasLoaded, setHasLoaded] = useState(false)
+    const [updated, setUpdated] = useState(false)
     const [show, setShow] = useState(false);
     
     // Get current users films and reccomendations
     useEffect(() => {
         const fetchFilms = async () => {
             try {
+                setHasLoaded(false)
                 // Fetch users films to determine list of films to share
                 const response = await axiosReq.get(`/films/${currentUser.user._id}/?sort=${sort}`, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
                 const publicFilms = response.data.films.filter(film => film.public)
@@ -66,6 +67,7 @@ const ShareModal = () => {
     // Handle Send - share selected film with user
     const handleSend = async () => {
         try {
+            setSent(false)
             await axiosReq.post('/reccomendations', {
                 film: selectedFilm._id,
                 sender: currentUser.user._id,
@@ -75,7 +77,6 @@ const ShareModal = () => {
             setUpdated(!updated)
             setSelectedFilm(null)
             setSent(true)
-            setHasLoaded(false)
         } catch (err) {
             console.log(err)
         }
@@ -100,7 +101,18 @@ const ShareModal = () => {
                                 {selectedFilm  ? (
                                     <span>Film Selected: <Image src={selectedFilm?.Poster} width={50}/></span>
                                 ):(
-                                    <p>{sent? films.length? 'Film shared. Select another film to share.':`You've shared all your public films with ${user.username}`:''}</p>
+                                    <p>
+                                        {films.length? 
+                                            'Film shared. Select another film to share.'
+                                        :
+                                        <>
+                                            You've shared all your public films with {user.username}.
+                                            <Button variant='link' href={`/films/${currentUser.user._id}`} >Update your films list</Button>
+                                                or
+                                            <Button variant='link' href='/'>Browse more films.</Button>
+                                        </>
+                                        }
+                                    </p>
                                 )}
                                 {films.length? (
                                     <DropdownButton variant='outline-secondary' title={sort}>
@@ -111,9 +123,9 @@ const ShareModal = () => {
                                 <div style={{height: '200px', overflowY: 'scroll'}}>
                                 {films.map(
                                     film => 
-                                    <p key={film._id} onClick={() => handleFilmChange(film._id)}>
-                                        {film.Title}
-                                    </p>
+                                        <p key={film._id} onClick={() => handleFilmChange(film._id)}>
+                                            {film.Title}
+                                        </p>
                                 )}
                                 </div> 
                             </>
