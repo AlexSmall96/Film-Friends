@@ -9,7 +9,6 @@ import Filters from './Filters';
 import { useCurrentFilm } from '../../contexts/CurrentFilmContext';
 import { useSaveFilmContext } from '../../contexts/SaveFilmContext';
 import { FilmPreviewProvider } from '../../contexts/FilmPreviewContext';
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import FriendRequestButtons from '../friends/FriendRequestButtons';
 import { FriendDataProvider } from '../../contexts/FriendDataContext';
 import { useFriendAction } from '../../contexts/FriendActionContext';
@@ -191,7 +190,7 @@ const FilmsPage = () => {
                             <Image src={profile.image} width={100} />
                             {profile.username}
                             {isOwner?
-                                <Button href={`/profile/${id}`} variant='link'>Go to your Profile</Button>    
+                                <Button href='/profile' variant='link'>Go to your Profile</Button>    
                             :   <FriendDataProvider requestId={null} user={{...profile, _id: id}}>
                                     <FriendRequestButtons status={getStatus(id, requestIds, requests)} searchResult={true} />
                                 </FriendDataProvider>
