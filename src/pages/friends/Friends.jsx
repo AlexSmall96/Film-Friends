@@ -143,7 +143,19 @@ const Friends = () => {
                     }
                     <Offcanvas autoFocus={false} show={showOffCanvas} onHide={() => setShowOffCanvas(false)}>
                         <Offcanvas.Header closeButton>
-                            <h4>{filter}</h4>
+                            <h4>                    
+                        {acceptedRequests?
+                            <Button variant="link" disabled={filter === 'Friends'} onClick={() => setFilter('Friends')}>
+                                My Friends
+                            </Button>
+                        :''} 
+                        {pendingRequests?
+                            <>/
+                                <Button variant="link" disabled={filter === 'Pending Requests'} onClick={() => setFilter('Pending Requests')}>
+                                    Pending Requests
+                                </Button>                           
+                            </>
+                        :''}</h4>
                         </Offcanvas.Header>
                         <Offcanvas.Body>
                             <Container>
