@@ -7,7 +7,7 @@
 }
 
 .searchComponents {
-    padding-top: 100px; 
+    padding-top: 110px; 
     z-index: 999;
     position: fixed;
     top: 0;
@@ -17,7 +17,7 @@
 }
 
 .searchResults {
-    margin-top:190px;
+    margin-top:200px;
 }
 
 .searchResultsLoggedOut {

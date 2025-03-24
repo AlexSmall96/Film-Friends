@@ -13,6 +13,10 @@
   font-size: small;
 }
 
+.verySmallFont {
+  font-size: x-small
+}
+
 .noUnderline {
   text-decoration: none;
 }
@@ -31,6 +35,14 @@
 
 .bold {
   font-weight: 600;
+}
+
+.green {
+  color: green
+}
+
+.grey {
+  color: grey
 }
 
 /* Margins, Paddings and Borders */
@@ -54,9 +66,19 @@
   margin-right: 10px;
 }
 
+.rightHorizMargin {
+  margin-right: 10px;
+}
+
 .negHorizMargin {
   margin-left: -13px; 
   margin-right: -13px
+}
+
+.smallPadding {
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 2px;
 }
 
 .noPadding {
@@ -65,7 +87,7 @@
 
 .leftAlign {
   text-align: left;
-  float: left
+  float: left;
 }
 
 .rightAlign {

@@ -19,7 +19,7 @@ const Home = () => {
     const { currentUser } = useCurrentUser()
     // Hooks
     const history = useHistory()
-    const { width, height, mobile } = useWindowDimensions()
+    const { mobile } = useWindowDimensions()
     // Initialize state variables
     const [searchResults, setSearchResults] = useState([])
     const [usersFilmIds, setUsersFilmIds] = useState([])
@@ -32,7 +32,7 @@ const Home = () => {
     const [hasLoadedMainFilm, setHasLoadedMainFilm] = useState(false)
     const id = currentUser?.user._id || null
     const { updated } = useSaveFilmContext()
-    const { currentFilmIds, setCurrentFilmIds, viewingData, setViewingData, omdbData, setOmdbData, isOwner, setIsOwner, setUsername } = useCurrentFilm()
+    const { currentFilmIds, omdbData, setOmdbData } = useCurrentFilm()
     useEffect(() => {
         // Gets the imdbIds of the users saved films, to determine which buttons should appear next to film result
         const fetchUsersFilmIds = async () => {
@@ -52,7 +52,7 @@ const Home = () => {
     // Functions that only depend on change of current film
     useEffect(() => {   
         // Get individual film data from OMDB API for main view
-        const getOMDBandViewingData = async () => {
+        const getOMDBData = async () => {
             try {
                 setHasLoadedMainFilm(false)
                 const response = await axiosReq.get(`/filmData/?imdbID=${currentFilmIds.imdbID}`)
@@ -62,7 +62,7 @@ const Home = () => {
                 // console.log(err)
             }
         }
-        getOMDBandViewingData()
+        getOMDBData()
     }, [currentFilmIds])
 
     return (
@@ -88,12 +88,8 @@ const Home = () => {
                                     <ResultsPagination currentPage={currentPage} finalPage={finalPage} setCurrentPage={setCurrentPage}/>                       
                                 : '' }                            
                                 </>
-                            :   <>
-                                    <Button variant='link' onClick={() => setShowMainFilm(false)}>Back to search results.</Button>
-                                    <Button size='sm' variant='outline-secondary' onClick={() => setShowMainFilm(false)}><i class="fa-solid fa-xmark"></i></Button>                            
-                                </>
-
-                                
+                            :   
+                                <Button variant='link' onClick={() => setShowMainFilm(false)} className={appStyles.bigVerticalMargin}>Back to search results</Button>
                             }
                            
                         {/* LOGIN AND SIGNUP BUTTONS IF NOT ALREADY LOGGED IN */}
@@ -112,7 +108,7 @@ const Home = () => {
             <div className={currentUser? styles.searchResults: styles.searchResultsLoggedOut}>
                 {/* SEARCH RESULTS */}
                 {searchResults.length? (hasLoaded? (
-                    <> {
+                    <Container> {
                         mobile && showMainFilm? 
                             hasLoadedMainFilm?
                                 <FilmPreviewProvider savedToWatchlist={usersFilmIds.includes(omdbData.imdbID)} filmsPage >
@@ -121,7 +117,7 @@ const Home = () => {
                             :
                             <Spinner/>
                         :
-                            <Container>
+                            
                                     <Row>
                                         {/* SEARCH RESULTS */}
                                         {searchResults.map(
@@ -140,8 +136,8 @@ const Home = () => {
                                                 </FilmPreviewProvider>
                                         )}  
                                     </Row>
-                            </Container>}
-                    </>
+                            }
+                    </Container>
                     ):(<Spinner />)):(
                         error !== '' ? 
                         (

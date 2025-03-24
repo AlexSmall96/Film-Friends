@@ -4,15 +4,18 @@ import IconRating from './IconRating';
 import EllipsisMenu from './EllipsisMenu';
 import SaveDropown from '../../components/SaveDropdown';
 import styles from '../../styles/Films.module.css'
+import appStyles from '../../App.module.css'
 import { axiosReq } from '../../api/axiosDefaults';
 import { useCurrentUser } from '../../contexts/CurrentUserContext';
 import { useCurrentFilm } from '../../contexts/CurrentFilmContext';
+import useWindowDimensions from '../../hooks/useWindowDimensions';
 
 const Film = () => {
-
+    const extraBPWidth = 550
     const ratingValues = [1, 2, 3, 4, 5]
     const { currentUser } = useCurrentUser()
     const { currentFilmIds, viewingData, setViewingData, omdbData, isOwner, username } = useCurrentFilm()
+    const { width } = useWindowDimensions()
     // Updates a users rating, watched value, or public / private marking
     const updateViewingData = async (event, value, publicFilm) => {
         let reqObj, stateObj
@@ -34,22 +37,21 @@ const Film = () => {
         }
     }
     
-
     return (
+        <>
         <Row>
-            <Col md={6} xs={6}>
-                <Image src={omdbData.Poster} width={200} />
+            <Col md={6} xs={5}>
+                <Image src={omdbData.Poster} width={200} thumbnail fluid />
             </Col>
-            <Col md={6} xs={6}>
+            <Col md={6} xs={7} className={appStyles.leftAlign}>
                 {isOwner?
                     <EllipsisMenu 
                         updateViewingData={updateViewingData} 
                     />:''            
                 }
-
-                <p>{omdbData.Title}</p>
-                <p>{omdbData.Plot}</p>
-                <p>{omdbData.Director}, {omdbData.Runtime}</p>
+                <h5>{omdbData.Title}</h5>
+                {width > extraBPWidth? <p>{omdbData.Plot}</p>:''}
+                <p className={`${appStyles.grey} ${appStyles.smallFont}`}>{omdbData.Director}, {omdbData.Runtime}, {omdbData.Type}</p>
                 <p>
                     {omdbData.imdb? <IconRating index={0} value={omdbData.imdb} />: ''}
                     {omdbData.rt? <IconRating index={1} value={omdbData.rt} /> : ''}
@@ -65,7 +67,6 @@ const Film = () => {
                             onChange={updateViewingData}
                         />                            
                     :''}
-                    
                         {isOwner? ('Your Rating: '): viewingData.watched ? (`${username}'s Rating:`):''}
                         {isOwner || viewingData.watched ? ratingValues.map(
                             value => <span onClick={isOwner? () => updateViewingData(null, value):null} key={value} className={`fa fa-star ${viewingData.userRating >= value ? styles.checked : ''}`}></span>
@@ -77,6 +78,12 @@ const Film = () => {
                 </Form>
             </Col>
         </Row>
+            {width <= extraBPWidth?
+                <Row>
+                    <em><p className={`${appStyles.verticalMargin} ${appStyles.leftAlign}`}>{omdbData.Plot}</p></em>
+                </Row>:''
+            }
+        </>
     )
 }
 

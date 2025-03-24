@@ -44,10 +44,10 @@ const SaveDropown = () => {
                 </Dropdown.Menu>
                 </Dropdown>        
             :
-                <>
-                    <p className={`${appStyles.smallFont}`}><i className="fa-solid fa-check"></i> Saved</p>
-                    <Button onClick={goToWatchlist} className={appStyles.roundButton} variant="outline-secondary" size="sm">Go to your watchlist</Button>        
-                </> 
+                <div className={appStyles.smallFont}>
+                    <i className={`${appStyles.green} fa-solid fa-check`}></i> Saved
+                    <Button className={`${appStyles.smallFont}`} onClick={goToWatchlist} variant="link" size="sm">Go to your watchlist</Button>        
+                </div> 
             }
         </>
         

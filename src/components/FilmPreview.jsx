@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {Button, Col, Dropdown, Row, Image, Tooltip, OverlayTrigger, Spinner} from 'react-bootstrap'
 import appStyles from '../App.module.css'
 import styles from '../styles/Films.module.css'
@@ -16,9 +16,14 @@ const FilmPreview = () => {
     const { setCurrentFilmIds, omdbData } = useCurrentFilm()
     const { setHoveredOverImdbID, hasLoadedPlot } = useSaveFilmContext()
     const [showPlot, setShowPlot] = useState(false)
-    const [width, setWidth] = useState(1000)
     const { currentUser } = useCurrentUser()
     
+    useEffect(() => {
+        if (mobile){
+            setShowPlot(false)
+        }
+    }, [mobile])
+
     const handleClick = () => {
         if (mobile) {
             setShowMainFilm(true) 
@@ -42,13 +47,11 @@ const FilmPreview = () => {
                         onMouseEnter={!filmsPage && !mobile ? handleMouseEnter : null}
                         onMouseLeave={!filmsPage && !mobile ? handleMouseLeave : null}
                         src={film.Poster} 
-                        width={width}
                         thumbnail
                         fluid
                     />
                 </Col>
                 <Col md={6} className={appStyles.leftAlign} sm={8} xs={12}>
-
                     {showPlot? 
                         hasLoadedPlot?
                             <p className={appStyles.smallFont}>
@@ -58,7 +61,7 @@ const FilmPreview = () => {
                             <Spinner />
                     :
                     <>
-                        <h5 className={appStyles.smallFont}>{film.Title}</h5>
+                        <h5 className={`${mobile? appStyles.verySmallFont: appStyles.smallFont} ${mobile? appStyles.smallPadding: ''}`}>{film.Title}</h5>
                         {!mobile?
                             <>
                                 <p className={appStyles.smallFont}>{filmsPage? film.Director + ', ' : ''} {film.Year}, {film.Type}</p>
@@ -69,9 +72,6 @@ const FilmPreview = () => {
                     {showDropdown && currentUser && !mobile? 
                         <SaveDropown />
                     :''}                 
-                
-                
-
                 </Col>
             </Row>
     )

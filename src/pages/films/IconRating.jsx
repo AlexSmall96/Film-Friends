@@ -1,6 +1,6 @@
 import React from 'react';
 import {Image, OverlayTrigger, Tooltip, } from 'react-bootstrap'
-
+import appStyles from '../../App.module.css'
 const IconRating = ({index, value}) => {
 
     const data = [
@@ -24,7 +24,7 @@ const IconRating = ({index, value}) => {
         >
             <Image width={25} src={data[index].src} />
         </OverlayTrigger>
-        {` ${value} `}        
+        <span className={appStyles.smallFont}>{` ${value} `} </span>       
         </>
     )
 }
