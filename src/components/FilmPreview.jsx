@@ -12,13 +12,17 @@ import { useSaveFilmContext } from '../contexts/SaveFilmContext';
 
 // Displays film poster and data either as a list of search results, saved films or reccomendations
 const FilmPreview = () => {
-    const {film, showDropdown, filmsPage} = useFilmPreview()
+    const {film, showDropdown, filmsPage, mobile, setShowMainFilm} = useFilmPreview()
     const { setCurrentFilmIds, omdbData } = useCurrentFilm()
     const { setHoveredOverImdbID, hasLoadedPlot } = useSaveFilmContext()
     const [showPlot, setShowPlot] = useState(false)
-    const [width, setWidth] = useState(150)
+    const [width, setWidth] = useState(1000)
     const { currentUser } = useCurrentUser()
+    
     const handleClick = () => {
+        if (mobile) {
+            setShowMainFilm(true) 
+        }
         setCurrentFilmIds({imdbID:film.imdbID, database:film._id})
     }
 
@@ -32,18 +36,18 @@ const FilmPreview = () => {
     }
 
     return (
-            <Row onClick={filmsPage? handleClick : null}>
-                <Col md={6} sm={4} xs={4}>
-                    <Image
-                        onMouseEnter={! filmsPage ? handleMouseEnter : null}
-                        onMouseLeave={! filmsPage ? handleMouseLeave : null}
+            <Row onClick={filmsPage || mobile? handleClick : null}>
+                <Col md={6} sm={4} xs={12}>
+                    <Image  
+                        onMouseEnter={!filmsPage && !mobile ? handleMouseEnter : null}
+                        onMouseLeave={!filmsPage && !mobile ? handleMouseLeave : null}
                         src={film.Poster} 
                         width={width}
                         thumbnail
                         fluid
                     />
                 </Col>
-                <Col md={6} className={appStyles.leftAlign} sm={8} xs={8}>
+                <Col md={6} className={appStyles.leftAlign} sm={8} xs={12}>
 
                     {showPlot? 
                         hasLoadedPlot?
@@ -55,10 +59,14 @@ const FilmPreview = () => {
                     :
                     <>
                         <h5 className={appStyles.smallFont}>{film.Title}</h5>
-                        <p className={appStyles.smallFont}>{filmsPage? film.Director + ', ' : ''} {film.Year}, {film.Type}</p>
-                        <p className={appStyles.smallFont}>{filmsPage? film.Genre : '' }</p>
+                        {!mobile?
+                            <>
+                                <p className={appStyles.smallFont}>{filmsPage? film.Director + ', ' : ''} {film.Year}, {film.Type}</p>
+                                <p className={appStyles.smallFont}>{filmsPage? film.Genre : '' }</p>                        
+                            </>:''
+                        }
                     </>}    
-                    {showDropdown && currentUser? 
+                    {showDropdown && currentUser && !mobile? 
                         <SaveDropown />
                     :''}                 
                 

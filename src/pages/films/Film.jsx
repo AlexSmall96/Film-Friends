@@ -37,10 +37,10 @@ const Film = () => {
 
     return (
         <Row>
-            <Col md={6}>
+            <Col md={6} xs={6}>
                 <Image src={omdbData.Poster} width={200} />
             </Col>
-            <Col md={6}>
+            <Col md={6} xs={6}>
                 {isOwner?
                     <EllipsisMenu 
                         updateViewingData={updateViewingData} 
