@@ -14,13 +14,16 @@ const OMDB_API_KEY = process.env.OMDB_API_KEY
 router.post('/data/films', auth, async (req, res) => {
     const owner = req.user._id
     let Poster
-    if (req.body.Poster === 'N/A') {
-        Poster = 'https://res.cloudinary.com/dojzptdbc/image/upload/v1726945998/default-movie_uajvdm.png'
-    } else {
-        Poster = req.body.Poster
-    }
+    let cleansedData = req.body
+    Object.keys(cleansedData).forEach((key, value) => {
+        if (key === Poster && value === 'N/A'){
+            cleansedData[key] = 'https://res.cloudinary.com/dojzptdbc/image/upload/v1726945998/default-movie_uajvdm.png'
+        } else if (value === 'N/A'){
+            cleansedData[key] = null
+        }
+    })
     try {
-        const film = new Film({owner, Poster, ...req.body})
+        const film = new Film({owner, ...cleansedData})
         await film.save()
         res.status(201).send({ film })
     } catch (e) {
@@ -77,18 +80,14 @@ router.get('/data/filmData', async (req, res) => {
         const imdb = ratings.filter(rating => rating.Source === 'Internet Movie Database')[0]?.Value || null
         const rt = ratings.filter(rating => rating.Source === 'Rotten Tomatoes')[0]?.Value || null
         const mc = ratings.filter(rating => rating.Source === 'Metacritic')[0]?.Value || null
-        const Poster = filmData.Poster === 'N/A' ? 'https://res.cloudinary.com/dojzptdbc/image/upload/v1726945998/default-movie_uajvdm.png': filmData.Poster
-        const Plot = filmData.Plot === 'N/A' ? null : filmData.Plot
-        const Director = filmData.Director === 'N/A' ? null : filmData.Director
-        const Runtime = filmData.Runtime === 'N/A' ? null  : filmData.Runtime
         if (_id) {
             const savedFilm = await Film.findOne({imdbID, _id})
             const userRating = savedFilm.userRating
             const watched = savedFilm.watched
             const public = savedFilm.public
-            return res.send({userRating, watched, public, imdb, rt, mc, ...filmData, Poster, Plot, Director, Runtime})
+            return res.send({userRating, watched, public, imdb, rt, mc, ...filmData})
         }
-    return res.send({imdb, rt, mc, ...filmData, Poster, Plot, Director, Runtime})
+    return res.send({imdb, rt, mc, ...filmData})
     } catch (e) {
         res.send(e)
     }
