@@ -17,7 +17,8 @@ const Film = () => {
     const { currentFilmIds, viewingData, setViewingData, omdbData, isOwner, username } = useCurrentFilm()
     const { width } = useWindowDimensions()
     const omdbStringArray = [omdbData.Director, omdbData.Year, omdbData.Runtime]
-    const omdbString = omdbStringArray.filter(value => value).join(', ')
+    const omdbString = omdbStringArray.filter(value => value && value !== 'N/A').join(', ')
+    const Poster = omdbData.Poster !== 'N/A'? omdbData.Poster: 'https://res.cloudinary.com/dojzptdbc/image/upload/v1726945998/default-movie_uajvdm.png'
     // Updates a users rating, watched value, or public / private marking
     const updateViewingData = async (event, value, publicFilm) => {
         let reqObj, stateObj
@@ -43,7 +44,7 @@ const Film = () => {
         <>
         <Row>
             <Col md={6} xs={5}>
-                <Image src={omdbData.Poster} width={200} thumbnail fluid />
+                <Image src={Poster} width={200} thumbnail fluid />
             </Col>
             <Col md={6} xs={7} className={appStyles.leftAlign}>
                 {isOwner?
