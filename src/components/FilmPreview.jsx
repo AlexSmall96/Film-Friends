@@ -56,8 +56,8 @@ const FilmPreview = () => {
                 <Col md={6} className={appStyles.leftAlign} sm={8} xs={12}>
                     {showPlot? 
                         hasLoadedPlot?
-                            <p className={appStyles.smallFont}>
-                                <em>{omdbData.Plot}</em>
+                            <p className={`${appStyles.smallFont} ${appStyles.paragraphFont}`}>
+                                {omdbData.Plot}
                             </p>
                         : 
                             <Spinner />

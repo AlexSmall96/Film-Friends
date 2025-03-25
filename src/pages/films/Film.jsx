@@ -53,7 +53,7 @@ const Film = () => {
                     />:''            
                 }
                 <h5>{omdbData.Title}</h5>
-                {width > extraBPWidth? <p>{omdbData.Plot}</p>:''}
+                {width > extraBPWidth && omdbData.Plot !== 'N/A'? <p className={appStyles.paragraphFont}>{omdbData.Plot}</p>:''}
                 <p className={`${appStyles.grey} ${appStyles.smallFont}`}>
                     {omdbString}
                 </p>
@@ -88,7 +88,7 @@ const Film = () => {
         </Row>
             {width <= extraBPWidth?
                 <Row>
-                    <em><p className={`${appStyles.verticalMargin} ${appStyles.leftAlign}`}>{omdbData.Plot || ''}</p></em>
+                    <p className={`${appStyles.verticalMargin} ${appStyles.leftAlign} ${appStyles.paragraphFont}`}>{omdbData.Plot || ''}</p>
                 </Row>:''
             }
         </>
