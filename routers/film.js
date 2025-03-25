@@ -13,11 +13,14 @@ const OMDB_API_KEY = process.env.OMDB_API_KEY
 // Create a film (save film to watchlist)
 router.post('/data/films', auth, async (req, res) => {
     const owner = req.user._id
-    if (req.body.Poster == 'N/A') {
-        req.body.Poster = 'https://res.cloudinary.com/dojzptdbc/image/upload/v1726945998/default-movie_uajvdm.png'
+    let Poster
+    if (req.body.Poster === 'N/A') {
+        Poster = 'https://res.cloudinary.com/dojzptdbc/image/upload/v1726945998/default-movie_uajvdm.png'
+    } else {
+        Poster = req.body.Poster
     }
     try {
-        const film = new Film({owner, ...req.body})
+        const film = new Film({owner, Poster, ...req.body})
         await film.save()
         res.status(201).send({ film })
     } catch (e) {
@@ -50,7 +53,14 @@ router.get('/data/filmSearch', async (req, res) => {
     try {
         const response = await fetch(`https://www.omdbapi.com/?apikey=${OMDB_API_KEY}&s=${search}&page=${page}`)
         const filmResults = await response.json()
-        res.send(filmResults)
+        const cleansedSearchList = filmResults.Search.map((film) => {
+            if (film.Poster === 'N/A'){
+                const Poster = 'https://res.cloudinary.com/dojzptdbc/image/upload/v1726945998/default-movie_uajvdm.png'
+                return {...film, Poster}
+            }
+            return {...film} 
+        })
+        res.send({...filmResults, Search:cleansedSearchList})
     } catch (e) {
         res.send(e)
     }
@@ -67,14 +77,18 @@ router.get('/data/filmData', async (req, res) => {
         const imdb = ratings.filter(rating => rating.Source === 'Internet Movie Database')[0]?.Value || null
         const rt = ratings.filter(rating => rating.Source === 'Rotten Tomatoes')[0]?.Value || null
         const mc = ratings.filter(rating => rating.Source === 'Metacritic')[0]?.Value || null
+        const Poster = filmData.Poster === 'N/A' ? 'https://res.cloudinary.com/dojzptdbc/image/upload/v1726945998/default-movie_uajvdm.png': filmData.Poster
+        const Plot = filmData.Plot === 'N/A' ? null : filmData.Plot
+        const Director = filmData.Director === 'N/A' ? null : filmData.Director
+        const Runtime = filmData.Runtime === 'N/A' ? null  : filmData.Runtime
         if (_id) {
             const savedFilm = await Film.findOne({imdbID, _id})
             const userRating = savedFilm.userRating
             const watched = savedFilm.watched
             const public = savedFilm.public
-            return res.send({userRating, watched, public, imdb, rt, mc, ...filmData})
+            return res.send({userRating, watched, public, imdb, rt, mc, ...filmData, Poster, Plot, Director, Runtime})
         }
-    return res.send({imdb, rt, mc, ...filmData})
+    return res.send({imdb, rt, mc, ...filmData, Poster, Plot, Director, Runtime})
     } catch (e) {
         res.send(e)
     }

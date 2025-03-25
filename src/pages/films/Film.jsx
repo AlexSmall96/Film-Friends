@@ -16,6 +16,8 @@ const Film = () => {
     const { currentUser } = useCurrentUser()
     const { currentFilmIds, viewingData, setViewingData, omdbData, isOwner, username } = useCurrentFilm()
     const { width } = useWindowDimensions()
+    const omdbStringArray = [omdbData.Director, omdbData.Year, omdbData.Runtime]
+    const omdbString = omdbStringArray.filter(value => value).join(', ')
     // Updates a users rating, watched value, or public / private marking
     const updateViewingData = async (event, value, publicFilm) => {
         let reqObj, stateObj
@@ -51,9 +53,14 @@ const Film = () => {
                 }
                 <h5>{omdbData.Title}</h5>
                 {width > extraBPWidth? <p>{omdbData.Plot}</p>:''}
-                <p className={`${appStyles.grey} ${appStyles.smallFont}`}>{omdbData.Director}, {omdbData.Runtime}, {omdbData.Type}</p>
+                <p className={`${appStyles.grey} ${appStyles.smallFont}`}>
+                    {omdbString}
+                </p>
+                <p className={`${appStyles.grey} ${appStyles.smallFont}`}>
+                    {omdbData.Genre}
+                </p>
                 <p>
-                    {omdbData.imdb? <IconRating index={0} value={omdbData.imdb} />: ''}
+                    {omdbData.imdb? <IconRating index={0} value={omdbData.imdb} /> : ''}
                     {omdbData.rt? <IconRating index={1} value={omdbData.rt} /> : ''}
                     {omdbData.mc? <IconRating index={2} value={omdbData.mc} /> : ''}
                 </p>
@@ -80,7 +87,7 @@ const Film = () => {
         </Row>
             {width <= extraBPWidth?
                 <Row>
-                    <em><p className={`${appStyles.verticalMargin} ${appStyles.leftAlign}`}>{omdbData.Plot}</p></em>
+                    <em><p className={`${appStyles.verticalMargin} ${appStyles.leftAlign}`}>{omdbData.Plot || ''}</p></em>
                 </Row>:''
             }
         </>

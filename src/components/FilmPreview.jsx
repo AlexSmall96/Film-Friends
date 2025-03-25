@@ -14,6 +14,8 @@ import { useSaveFilmContext } from '../contexts/SaveFilmContext';
 const FilmPreview = () => {
     const {film, showDropdown, filmsPage, mobile, setShowMainFilm} = useFilmPreview()
     const { setCurrentFilmIds, omdbData } = useCurrentFilm()
+    const omdbStringArray = [film.Director, film.Year, film.Type]
+    const omdbString = omdbStringArray.filter(value => value).join(', ')
     const { setHoveredOverImdbID, hasLoadedPlot } = useSaveFilmContext()
     const [showPlot, setShowPlot] = useState(false)
     const { currentUser } = useCurrentUser()
@@ -42,7 +44,7 @@ const FilmPreview = () => {
 
     return (
             <Row onClick={filmsPage || mobile? handleClick : null}>
-                <Col md={6} sm={4} xs={12}>
+                <Col md={6} sm={4} xs={12} className={appStyles.noPadding}>
                     <Image  
                         onMouseEnter={!filmsPage && !mobile ? handleMouseEnter : null}
                         onMouseLeave={!filmsPage && !mobile ? handleMouseLeave : null}
@@ -61,11 +63,11 @@ const FilmPreview = () => {
                             <Spinner />
                     :
                     <>
-                        <h5 className={`${mobile? appStyles.verySmallFont: appStyles.smallFont} ${mobile? appStyles.smallPadding: ''}`}>{film.Title}</h5>
+                        <h5 className={`${mobile? `${appStyles.verySmallFont} ${appStyles.center} ${appStyles.smallPadding}`: appStyles.smallFont}`}>{film.Title}</h5>
                         {!mobile?
                             <>
-                                <p className={appStyles.smallFont}>{filmsPage? film.Director + ', ' : ''} {film.Year}, {film.Type}</p>
-                                <p className={appStyles.smallFont}>{filmsPage? film.Genre : '' }</p>                        
+                                <p className={`${appStyles.smallFont} ${appStyles.grey}`}>{omdbString}</p>
+                                <p className={`${appStyles.smallFont} ${appStyles.grey}`}>{filmsPage? film.Genre : '' }</p>                        
                             </>:''
                         }
                     </>}    
