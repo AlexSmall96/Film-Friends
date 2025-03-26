@@ -89,3 +89,19 @@
 .horizMargin {
     margin-top: 10px
 }
+
+.filmStats {
+    border-width: 0.5px;
+    border-style: solid; 
+    border-radius: 0.5rem;
+    border-color: lightgrey;
+    padding-top: 15px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.progressBarParent {
+    height: 100px;
+    width: 100px;
+    margin: auto;
+}

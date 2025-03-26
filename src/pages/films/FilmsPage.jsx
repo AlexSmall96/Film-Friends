@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {Button, Container, Row, Col, Spinner, Image} from 'react-bootstrap'
+import { Container, Row, Col, Spinner } from 'react-bootstrap'
 import { useParams } from 'react-router-dom/cjs/react-router-dom.min';
 import { axiosReq } from '../../api/axiosDefaults';
 import { useCurrentUser } from '../../contexts/CurrentUserContext';
@@ -9,18 +9,19 @@ import Filters from './Filters';
 import { useCurrentFilm } from '../../contexts/CurrentFilmContext';
 import { useSaveFilmContext } from '../../contexts/SaveFilmContext';
 import { FilmPreviewProvider } from '../../contexts/FilmPreviewContext';
-import FriendRequestButtons from '../friends/FriendRequestButtons';
-import { FriendDataProvider } from '../../contexts/FriendDataContext';
 import { useFriendAction } from '../../contexts/FriendActionContext';
 import { useRedirect } from '../../hooks/useRedirect';
+import appStyles from '../../App.module.css'
+import styles from '../../styles/Films.module.css'
+import PublicProfie from './PublicProfile';
 
 const FilmsPage = () => {
     useRedirect()
     const { id } = useParams()
     const { currentUser } = useCurrentUser()
-    const { currentFilmIds, setCurrentFilmIds, viewingData, setViewingData, omdbData, setOmdbData, isOwner, setIsOwner, setUsername } = useCurrentFilm()
+    const { currentFilmIds, setCurrentFilmIds, setViewingData, omdbData, setOmdbData, isOwner, setIsOwner, setUsername } = useCurrentFilm()
     const { updated } = useSaveFilmContext()
-    const { updatedFriends, getStatus } = useFriendAction()
+    const { updatedFriends } = useFriendAction()
     const [allFilms, setAllFilms] = useState([])
     const [filmStats, setFilmStats] = useState({savedCount: 0, watchedCount: 0})
     const [genreCounts, setGenreCounts] = useState({})
@@ -63,7 +64,8 @@ const FilmsPage = () => {
     const getTopThree = (publicWatchedFilms, bool) => {
         // If bool is true, top genres are found, otherwise directors.
         const data = publicWatchedFilms.map(film => bool? film.Genre : film.Director)
-        let processedData = data
+        const filteredData = data.filter(value => !bool? value !== 'N/A': true)
+        let processedData = filteredData
         if (bool){
             const splitData = data.map(name => name.split(',').map(word => word.trim()))
             processedData = splitData.reduce((acc, curr) => {
@@ -184,56 +186,20 @@ const FilmsPage = () => {
         <>
             {hasLoaded?
                 <Container>
-                    <Row>
-                        <Col md={3}>
-                            <Image src={profile.image} width={100} />
-                            {profile.username}
-                            {isOwner?
-                                <Button href='/profile' variant='link'>Go to your Profile</Button>    
-                            :   <FriendDataProvider requestId={null} user={{...profile, _id: id}}>
-                                    <FriendRequestButtons status={getStatus(id, requestIds, requests)} searchResult={true} />
-                                </FriendDataProvider>
-                                
-                            }
-                        </Col>
-                        {allFilms.length?
-                            <>
-                                <Col md={3}>
-                                <p>Films saved: {filmStats.savedCount}</p>
-                                <p>Films watched: {filmStats.watchedCount}</p>
-                                <p>{!isOwner? similarity : ''}</p>
-                                </Col>
-                                <Col md={3}>
-                                    Favourite Directors:
-                                    {directorCounts.map(([director, count], index) => (
-                                        <p key={index}>
-                                            {director}, Avg Rating: {count.toFixed(1)}
-                                        </p>
-                                    ))}
-                                </Col>
-                                <Col md={3}>
-                                Favourite Genres:
-                                    {genreCounts.map(([genre, count], index) => (
-                                        <p key={index}>
-                                            {genre}, Avg Rating: {count.toFixed(1)}
-                                        </p>
-                                    ))}
-                                </Col>            
-                            </>
-                        :
-                            <>
-                                {isOwner? 
-                                    <Col md={3}>
-                                        You don't have any films saved yet.<Button href={`/`} variant='link'>Click here to browse films</Button> 
-                                    </Col>
-                                : 
-                                    `${profile.username} doesn't have any films saved yet`}
-                            </>
-                        } 
-                    </Row>
+                    <PublicProfie 
+                        profile={profile} 
+                        requestIds={requestIds} 
+                        requests={requests} 
+                        filmStats={filmStats}
+                        showStats={allFilms.length !== 0}
+                        similarity={similarity}
+                        directorCounts={directorCounts} 
+                        genreCounts={genreCounts}
+                        id={id}
+                    />
                     {allFilms.length?
                         <Row>
-                            <Col md={6}>
+                            <Col md={5}>
                                 <Filters
                                     filter={filter}
                                     setFilter={setFilter}
@@ -248,7 +214,7 @@ const FilmsPage = () => {
                                         )
                                     :'No films matching criteria.'}
                             </Col>
-                            <Col md={6}>
+                            <Col md={7}>
                                 {isOwner?
                                     <Film /> 
                                 :
