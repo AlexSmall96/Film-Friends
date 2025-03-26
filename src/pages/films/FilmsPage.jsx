@@ -97,7 +97,7 @@ const FilmsPage = () => {
                     watchedCount: fullResponse.filter(film => film.public && film.watched).length
                 })
                 // Filter to public and watched films to calculate average ratings for directors and genres
-                const publicWatchedFilms = fullResponse.filter(film => film.watched && film.public)
+                const publicWatchedFilms = fullResponse.filter(film => film.watched && film.public && film.userRating !== 0)
                 // Call getTopThree function to calculate average ratings
                 setGenreCounts(getTopThree(publicWatchedFilms, true))
                 setDirectorCounts(getTopThree(publicWatchedFilms, false))

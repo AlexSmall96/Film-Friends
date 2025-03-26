@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Row, Col, Image, OverlayTrigger, Tooltip} from 'react-bootstrap'
+import {Button, Row, Col, Image, OverlayTrigger, Tooltip, ProgressBar} from 'react-bootstrap'
 import styles from '../../styles/Films.module.css'
 import appStyles from '../../App.module.css'
 import { useCurrentFilm } from '../../contexts/CurrentFilmContext';
@@ -26,7 +26,7 @@ const PublicProfile = ({profile, filmStats, requestIds, requests, showStats, sim
 
     return (
         <Row className={styles.filmStats}>
-            <Col md={3}>
+            <Col md={3} sm={6}>
                 <Image src={profile.image} width={100} height={100} roundedCircle />
                 <h4 className={appStyles.smallFont}>{profile.username}</h4>
                 {isOwner?
@@ -39,29 +39,27 @@ const PublicProfile = ({profile, filmStats, requestIds, requests, showStats, sim
             </Col>
             {showStats?
                 <>
-                    <Col md={3}>
+                    <Col md={3} sm={6}>
                     <h4 className={appStyles.smallFont}>Films Watched</h4>
                     <div className={styles.progressBarParent}>
                         <CircularProgressbar value={100 * filmStats.watchedCount / filmStats.savedCount} text={filmStats.watchedCount} />
                     </div>
                     <p>{!isOwner? similarity : ''}</p>
                     </Col>
-                    <Col md={3}>
+                    <Col md={3} sm={6}>
                         <h4 className={appStyles.smallFont}>Favourite Directors</h4>
                         {directorCounts.map(([director, count], index) => (
                             <OverlayTrigger
-                                placement="top"
+                                placement="left"
                                 delay={{ show: 250, hide: 400 }}
-                                overlay={renderTooltip(director, count, true )}
+                                overlay={renderTooltip(director, count, true)}
                                 key={index}
                             >
-                                <p className={`${appStyles.grey} ${appStyles.smallFont}`}>
-                                {director}
-                                </p>
+                                <ProgressBar variant={index === 0? 'success': index === 1? 'info': 'warning'} now={100 * count / 5} label={director} key={index} />
                             </OverlayTrigger>
                         ))}
                     </Col>
-                    <Col md={3}>
+                    <Col md={3} sm={6}>
                     <h4 className={appStyles.smallFont}>Favourite Genres</h4>
                         {genreCounts.map(([genre, count], index) => (
                         <OverlayTrigger
@@ -70,9 +68,7 @@ const PublicProfile = ({profile, filmStats, requestIds, requests, showStats, sim
                             overlay={renderTooltip(genre, count, false)}
                             key={index}
                         >
-                            <p className={`${appStyles.grey} ${appStyles.smallFont}`}>
-                                {genre}
-                            </p>
+                            <ProgressBar variant={index === 0? 'success': index === 1? 'info': 'warning'} now={100 * count / 5} label={genre} key={index} />
                         </OverlayTrigger>
                         ))}
                     </Col>            
