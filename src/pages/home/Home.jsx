@@ -71,7 +71,7 @@ const Home = () => {
             <div className={styles.searchComponents}>
                 {/* SEARCH BAR*/}
                 <SearchBar setSearchResults={setSearchResults} setTotalResults={setTotalResults} currentPage={currentPage} setCurrentPage={setCurrentPage} setFinalPage={setFinalPage} setError={setError} setHasLoaded={setHasLoaded} />
-                    {searchResults.length && hasLoaded?(
+                    {searchResults?.length && hasLoaded?(
                         <>
                             {!(showMainFilm && mobile)?
                                 <>
@@ -107,7 +107,7 @@ const Home = () => {
             </div>
             <div className={currentUser? styles.searchResults: styles.searchResultsLoggedOut}>
                 {/* SEARCH RESULTS */}
-                {searchResults.length? (hasLoaded? (
+                {searchResults?.length? (hasLoaded? (
                     <Container> {
                         mobile && showMainFilm? 
                             hasLoadedMainFilm?
