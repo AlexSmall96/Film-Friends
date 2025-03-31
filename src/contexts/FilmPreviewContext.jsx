@@ -5,10 +5,10 @@ Provides film data for film preview component
 */ 
 export const FilmPreviewContext = createContext()
 
-export const FilmPreviewProvider = ({ film, savedToWatchlist, showDropdown, filmsPage, mobile, setShowMainFilm, children }) => {
+export const FilmPreviewProvider = ({ film, savedToWatchlist, showDropdown, filmsPage, mobile, setShowMainFilm, children, smallScreen }) => {
 
     return (
-        <FilmPreviewContext.Provider value={{film, savedToWatchlist, showDropdown, filmsPage, mobile, setShowMainFilm}}>
+        <FilmPreviewContext.Provider value={{film, savedToWatchlist, showDropdown, filmsPage, mobile, setShowMainFilm, smallScreen}}>
             {children}
         </FilmPreviewContext.Provider>
     )
