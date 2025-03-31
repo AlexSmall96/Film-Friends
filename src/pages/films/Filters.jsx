@@ -3,29 +3,29 @@ import { Button, Col, Container, Row, Dropdown, DropdownButton, Spinner, ButtonG
 import styles from '../../styles/Films.module.css'
 import appStyles from '../../App.module.css'
 import { useCurrentFilm } from '../../contexts/CurrentFilmContext';
+import useWindowDimensions from '../../hooks/useWindowDimensions';
 
 const Filters = ({ filter, setFilter, sort, setSort }) => {
     const {isOwner, username} = useCurrentFilm()
+    const { width } = useWindowDimensions()
     return (
         <Container fluid>
         <Row>
-            <Col xl={6} lg={12} md={12} sm={6} xs={6}>
+            <Col xl={6} lg={12} md={12} sm={6} xs={12}>
                 {isOwner? ( 
-                        <DropdownButton size="md" className={appStyles.verticalMargin} style={{width: '100%'}} variant='outline-secondary' title={`Your ${filter.public? 'Public': 'Private'} Watchlist`}>
+                        <DropdownButton size="sm" variant='outline-secondary' title={`Your ${filter.public? 'Public': 'Private'} Watchlist`}>
                             <Dropdown.Item onClick={!filter.public ? () => setFilter({public: true, watched: filter.watched}): null}>Public</Dropdown.Item>
                             <Dropdown.Item onClick={filter.public ? () => setFilter({public: false, watched: filter.watched}): null}>Private</Dropdown.Item>
                         </DropdownButton>
-                    
                 ):(
                     `${username}'s Watchlist`
                 )}            
             </Col>
-            <Col xl={6} lg={12} md={12} sm={6} xs={6}>
-                <ButtonGroup>
+            <Col xl={6} lg={12} md={12} sm={6} xs={12}>
+                <ButtonGroup className={width <= 575 || width >= 768 && width < 1200? appStyles.verticalMargin : ''}>
                     <DropdownButton 
                         as={ButtonGroup} 
-                        size="md" 
-                        className={`${appStyles.verticalMargin}`} 
+                        size="sm" 
                         variant='outline-secondary' 
                         title={
                             <>
@@ -38,8 +38,7 @@ const Filters = ({ filter, setFilter, sort, setSort }) => {
                     </DropdownButton>
                     <DropdownButton 
                         as={ButtonGroup} 
-                        size="md"
-                        className={`${appStyles.verticalMargin}`} 
+                        size="sm" 
                         variant='outline-secondary' 
                         title={
                             <>
