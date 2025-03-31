@@ -12,7 +12,7 @@ import { useSaveFilmContext } from '../contexts/SaveFilmContext';
 
 // Displays film poster and data either as a list of search results, saved films or reccomendations
 const FilmPreview = () => {
-    const {film, showDropdown, filmsPage, mobile, setShowMainFilm} = useFilmPreview()
+    const {film, showDropdown, filmsPage, mobile, smallScreen, setShowMainFilm} = useFilmPreview()
     const { setCurrentFilmIds, omdbData } = useCurrentFilm()
     const omdbStringArray = [film.Director, film.Year, film.Type]
     const omdbString = omdbStringArray.filter(value => value).join(', ')
@@ -26,11 +26,11 @@ const FilmPreview = () => {
         }
     }, [mobile])
 
-    const handleClick = () => {
-        if (mobile) {
+    const handleClick = async () => {
+        await setCurrentFilmIds({imdbID:film.imdbID, database:film._id})
+        if (mobile || smallScreen) {
             setShowMainFilm(true) 
         }
-        setCurrentFilmIds({imdbID:film.imdbID, database:film._id})
     }
 
     const handleMouseEnter = () => {
@@ -44,16 +44,16 @@ const FilmPreview = () => {
 
     return (
             <Row onClick={filmsPage || mobile? handleClick : null}>
-                <Col md={6} sm={4} xs={12} className={appStyles.noPadding}>
+                <Col md={filmsPage? 12 : 6} sm={filmsPage? 12: 4} xs={12} className={`${appStyles.noPadding}`}>
                     <Image  
                         onMouseEnter={!filmsPage && !mobile ? handleMouseEnter : null}
                         onMouseLeave={!filmsPage && !mobile ? handleMouseLeave : null}
                         src={film.Poster} 
                         thumbnail
-                        fluid
+                        fluid   
                     />
                 </Col>
-                <Col md={6} className={appStyles.leftAlign} sm={8} xs={12}>
+                <Col md={filmsPage? 8 : 6} className={appStyles.leftAlign} sm={8} xs={12}>
                     {showPlot? 
                         hasLoadedPlot?
                             <p className={`${appStyles.smallFont} ${appStyles.paragraphFont}`}>
@@ -63,8 +63,8 @@ const FilmPreview = () => {
                             <Spinner />
                     :
                     <>
-                        <h5 className={`${mobile? `${appStyles.verySmallFont} ${appStyles.center} ${appStyles.smallPadding}`: appStyles.smallFont}`}>{film.Title}</h5>
-                        {!mobile?
+                        {!filmsPage? <h5 className={`${mobile? `${appStyles.verySmallFont} ${appStyles.center} ${appStyles.smallPadding}`: appStyles.smallFont}`}>{film.Title}</h5>:''}
+                        {!mobile && !filmsPage?
                             <>
                                 <p className={`${appStyles.smallFont} ${appStyles.grey}`}>{omdbString}</p>
                                 <p className={`${appStyles.smallFont} ${appStyles.grey}`}>{filmsPage? film.Genre : '' }</p>                        
