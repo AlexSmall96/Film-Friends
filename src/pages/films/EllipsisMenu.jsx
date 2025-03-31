@@ -6,6 +6,7 @@ import { CustomMenu, CustomToggle } from '../../components/CustomDropDown'
 import { useCurrentUser } from '../../contexts/CurrentUserContext';
 import { axiosReq } from '../../api/axiosDefaults';
 import { useCurrentFilm } from '../../contexts/CurrentFilmContext';
+import { useSaveFilmContext } from '../../contexts/SaveFilmContext';
 /* 
 Ellipsis menu - used as a subcomponent of the film component when rendered on films page
 Allows user to share film, delete film, or make public / private
@@ -14,6 +15,7 @@ const EllipsisMenu = ({updateViewingData}) => {
     // Contexts
     const {currentUser} = useCurrentUser()
     const { currentFilmIds, setCurrentFilmIds, viewingData, omdbData } = useCurrentFilm()
+    const { updated, setUpdated } = useSaveFilmContext()
     // Hooks
     const history = useHistory()
     // Initialise state variables
@@ -24,7 +26,6 @@ const EllipsisMenu = ({updateViewingData}) => {
     const [recipient, setRecipient] = useState(null)
     const [friends, setFriends] = useState([])
     const [allFriends, setAllFriends] = useState([])
-    const [updated, setUpdated] = useState(false)
     const [sent, setSent] = useState(false)
     const [hasLoaded, setHasLoaded] = useState(false)
 
@@ -79,7 +80,7 @@ const EllipsisMenu = ({updateViewingData}) => {
             setRecipient(null)
             setSent(true)
             setHasLoaded(false)
-            setUpdated(!updated)
+            setUpdated(current => !current)
         } catch (err) {
             console.log(err)
         }
@@ -89,6 +90,7 @@ const EllipsisMenu = ({updateViewingData}) => {
         try {
             await axiosReq.delete(`/films/${currentFilmIds.database}`, {headers: {'Authorization': `Bearer ${currentUser.token}`}} )
             setCurrentFilmIds({imdbID: '', database: ''})
+            setUpdated(current => !current)
         } catch (err) {
             console.log(err)
         }
