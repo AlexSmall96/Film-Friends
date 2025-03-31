@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Row, Col, Spinner } from 'react-bootstrap'
+import { Button, Container, Row, Col, Spinner } from 'react-bootstrap'
 import { useParams } from 'react-router-dom/cjs/react-router-dom.min';
 import { axiosReq } from '../../api/axiosDefaults';
 import { useCurrentUser } from '../../contexts/CurrentUserContext';
@@ -8,17 +8,20 @@ import Film from './Film'
 import Filters from './Filters';
 import { useCurrentFilm } from '../../contexts/CurrentFilmContext';
 import { useSaveFilmContext } from '../../contexts/SaveFilmContext';
-import { FilmPreviewProvider } from '../../contexts/FilmPreviewContext';
+import { FilmPreviewProvider, useFilmPreview } from '../../contexts/FilmPreviewContext';
 import { useFriendAction } from '../../contexts/FriendActionContext';
 import { useRedirect } from '../../hooks/useRedirect';
 import appStyles from '../../App.module.css'
 import styles from '../../styles/Films.module.css'
 import PublicProfie from './PublicProfile';
+import useWindowDimensions from '../../hooks/useWindowDimensions';
 
 const FilmsPage = () => {
     useRedirect()
     const { id } = useParams()
     const { currentUser } = useCurrentUser()
+    const { width } = useWindowDimensions()
+    const  smallScreen = width <= 767
     const { currentFilmIds, setCurrentFilmIds, setViewingData, omdbData, setOmdbData, isOwner, setIsOwner, setUsername } = useCurrentFilm()
     const { updated } = useSaveFilmContext()
     const { updatedFriends } = useFriendAction()
@@ -38,7 +41,7 @@ const FilmsPage = () => {
     const [currentUsersFilmIds, setCurrentUsersFilmIds] = useState([])
     const [requestIds, setRequestIds] = useState([])
     const [requests, setRequests] = useState([])
-
+    const [showMainFilm, setShowMainFilm] = useState(false)
     // Helper functions for loading data
     // Check if a film matches current criteria specified by filters
     const checkFilm = (film) => {
@@ -109,7 +112,7 @@ const FilmsPage = () => {
                 const profileResponse = await axiosReq.get(`/users/${id}`, {headers: {'Authorization': `Bearer ${currentUser?.token}`}})
                 setProfile(profileResponse.data.profile)
                 setUsername(profileResponse.data.profile.username)
-                setSimilarity(isOwner? '' : parseFloat(100 * profileResponse.data.similarity).toFixed(0)+"%")
+                setSimilarity(isOwner? '' : profileResponse.data.similarity)
                 setHasLoaded(true)
             } catch (err) {
                 // console.log(err)
@@ -199,36 +202,47 @@ const FilmsPage = () => {
                     />
                     {allFilms.length?
                         <Row>
-                            <Col md={5}>
-                                <Filters
-                                    filter={filter}
-                                    setFilter={setFilter}
-                                    sort={sort}
-                                    setSort={setSort}
-                                />
+                            {smallScreen && !showMainFilm || !smallScreen? 
+                            <Col lg={{span:5, order: 1}} md={{span:4, order:1}} sm={{span: 12, order: 2}} className={`${styles.filmList} ${styles.section}`}>
+                                    <Filters
+                                        filter={filter}
+                                        setFilter={setFilter}
+                                        sort={sort}
+                                        setSort={setSort}
+                                    />
+                                <div className={`${styles.filmListParent}`}>
                                     {filteredFilms.length?
-                                        filteredFilms.map(film => 
-                                            <FilmPreviewProvider key={film._id} film={film} filmsPage>
-                                                <FilmPreview />
-                                            </FilmPreviewProvider>
-                                        )
+                                    <Row>
+                                        {filteredFilms.map(film => 
+                                            <FilmPreviewProvider key={film._id} film={film} setShowMainFilm={setShowMainFilm} smallScreen={smallScreen} filmsPage>
+                                                <Col lg={4} md={6} sm={4} xs={4}>
+                                                    <FilmPreview />
+                                                </Col>
+                                            </FilmPreviewProvider>                                            
+                                        )}
+                                    </Row>
                                     :'No films matching criteria.'}
-                            </Col>
-                            <Col md={7}>
-                                {isOwner?
-                                    <Film /> 
-                                :
-                                    <FilmPreviewProvider savedToWatchlist={currentUsersFilmIds.includes(omdbData.imdbID)} filmsPage >
+                                </div>
+                            </Col>:''}
+                            <Col lg={7} md={8} sm={{span:12, order:1}}>
+                                {smallScreen && showMainFilm?
+                                    <Button variant='link' onClick={() => setShowMainFilm(false)} className={appStyles.bigVerticalMargin}>Back to all films</Button>
+                                :''}
+                                {smallScreen && showMainFilm || !smallScreen?
+                                    isOwner?
                                         <Film /> 
-                                    </FilmPreviewProvider>               
-                                }
+                                    :
+                                        <FilmPreviewProvider savedToWatchlist={currentUsersFilmIds.includes(omdbData.imdbID)} filmsPage >
+                                            <Film /> 
+                                        </FilmPreviewProvider>               
+                                :''}
                             </Col>
                         </Row>
                     : ''
                     }
                 </Container>
             :  
-                <Spinner />
+                <Spinner className={appStyles.bigVerticalMargin} />
             }
         </>
     )
