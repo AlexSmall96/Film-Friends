@@ -8,13 +8,15 @@ import appStyles from '../../App.module.css'
 import { axiosReq } from '../../api/axiosDefaults';
 import { useCurrentUser } from '../../contexts/CurrentUserContext';
 import { useCurrentFilm } from '../../contexts/CurrentFilmContext';
+import { useSaveFilmContext } from '../../contexts/SaveFilmContext';
 import useWindowDimensions from '../../hooks/useWindowDimensions';
 
 const Film = () => {
-    const extraBPWidth = 550
+    const extraBP = 550
     const ratingValues = [1, 2, 3, 4, 5]
     const { currentUser } = useCurrentUser()
     const { currentFilmIds, viewingData, setViewingData, omdbData, isOwner, username } = useCurrentFilm()
+    const { setUpdated } = useSaveFilmContext()
     const { width } = useWindowDimensions()
     const omdbStringArray = [omdbData.Director, omdbData.Year, omdbData.Runtime]
     const omdbString = omdbStringArray.filter(value => value && value !== 'N/A').join(', ')
@@ -35,6 +37,7 @@ const Film = () => {
         try {
             await axiosReq.patch(`/films/${currentFilmIds.database}`, reqObj, {headers: {'Authorization': `Bearer ${currentUser.token}`}} )
             setViewingData(stateObj)
+            setUpdated(current => !current)
         } catch(err) {
             console.log(err)
         }
@@ -44,7 +47,7 @@ const Film = () => {
         <>
         <Row>
             <Col md={6} xs={5}>
-                <Image src={Poster} width={200} thumbnail fluid />
+                <Image src={Poster} thumbnail fluid />
             </Col>
             <Col md={6} xs={7} className={appStyles.leftAlign}>
                 {isOwner?
@@ -53,11 +56,11 @@ const Film = () => {
                     />:''            
                 }
                 <h5>{omdbData.Title}</h5>
-                {width > extraBPWidth && omdbData.Plot !== 'N/A'? <p className={appStyles.paragraphFont}>{omdbData.Plot}</p>:''}
+                {width > extraBP && omdbData.Plot !== 'N/A'? <p className={appStyles.paragraphFont}>{omdbData.Plot}</p>:''}
                 <p className={`${appStyles.grey} ${appStyles.smallFont}`}>
                     {omdbString}
-                </p>
-                <p className={`${appStyles.grey} ${appStyles.smallFont}`}>
+                <br />
+                
                     {omdbData.Genre}
                 </p>
                 <p>
@@ -86,7 +89,7 @@ const Film = () => {
                 </Form>
             </Col>
         </Row>
-            {width <= extraBPWidth?
+            {width <= extraBP?
                 <Row>
                     <p className={`${appStyles.verticalMargin} ${appStyles.leftAlign} ${appStyles.paragraphFont}`}>{omdbData.Plot || ''}</p>
                 </Row>:''
