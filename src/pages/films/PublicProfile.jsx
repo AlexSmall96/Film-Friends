@@ -1,20 +1,17 @@
 import React from 'react';
-import {Button, Row, Col, Image, OverlayTrigger, Tooltip, ProgressBar} from 'react-bootstrap'
+import {Button, Row, Col, Image, OverlayTrigger, Tooltip, ProgressBar, Badge, Stack} from 'react-bootstrap'
 import styles from '../../styles/Films.module.css'
 import appStyles from '../../App.module.css'
 import { useCurrentFilm } from '../../contexts/CurrentFilmContext';
-import { FriendDataProvider } from '../../contexts/FriendDataContext';
 import { useFriendAction } from '../../contexts/FriendActionContext';
 import { useParams } from 'react-router-dom/cjs/react-router-dom.min';
-import FriendRequestButtons from '../friends/FriendRequestButtons';
 import { CircularProgressbar } from 'react-circular-progressbar';
+import useWindowDimensions from '../../hooks/useWindowDimensions';
 import 'react-circular-progressbar/dist/styles.css';
 
-const PublicProfile = ({profile, filmStats, requestIds, requests, showStats, similarity, directorCounts, genreCounts}) => {
+const PublicProfile = ({profile, filmStats, showStats, similarity, directorCounts, genreCounts}) => {
     const { isOwner } = useCurrentFilm()
-    const { id } = useParams()
-    const { getStatus } = useFriendAction()
-
+    const { width } = useWindowDimensions()
     const renderTooltip = (name, value, bool) => (
         <Tooltip id="button-tooltip">
             {bool?
@@ -25,58 +22,75 @@ const PublicProfile = ({profile, filmStats, requestIds, requests, showStats, sim
     )
 
     return (
-        <Row className={styles.filmStats}>
-            <Col md={3} sm={6}>
-                <Image src={profile.image} width={100} height={100} roundedCircle />
-                <h4 className={appStyles.smallFont}>{profile.username}</h4>
-                {isOwner?
-                    <Button href='/profile' variant='link'>Go to your Profile</Button>    
-                :   <FriendDataProvider requestId={null} user={{...profile, _id: id}}>
-                        <FriendRequestButtons status={getStatus(id, requestIds, requests)} searchResult={true} />
-                    </FriendDataProvider>
-                    
+        <Row className={`${width >= 576? styles.section: ''} ${appStyles.bigVerticalMargin}`}>
+            <Col md={3} sm={1} xs={2}>
+                {isOwner? 
+                    <a href='/profile'><h4 className={appStyles.smallFont}>{profile.username}</h4></a>
+                :
+                    <h4 className={appStyles.smallFont}>{profile.username}</h4>
                 }
+                <Image src={profile.image} width={width >= 768? 100: 50 } height={width >= 768? 100: 50 } roundedCircle />
             </Col>
             {showStats?
                 <>
-                    <Col md={3} sm={6}>
-                    <h4 className={appStyles.smallFont}>Films Watched</h4>
-                    <div className={styles.progressBarParent}>
-                        <CircularProgressbar value={100 * filmStats.watchedCount / filmStats.savedCount} text={filmStats.watchedCount} />
-                    </div>
-                    <p>{!isOwner? similarity : ''}</p>
+                    <Col md={3} sm={3} xs={3}>
+                        <h4 className={appStyles.smallFont}>{isOwner? 'Watched' : 'Similarity'}</h4>
+                        {isOwner?
+                            <div className={styles.progressBarParent}>
+                                <CircularProgressbar value={100 * filmStats.watchedCount / filmStats.savedCount} text={`${filmStats.watchedCount} / ${filmStats.savedCount}`} />
+                            </div>
+                        :
+                            <div className={styles.progressBarParent}>
+                                <CircularProgressbar value={100 * similarity} text={`${100 * similarity}%`} />
+                            </div>}
                     </Col>
-                    <Col md={3} sm={6}>
-                        <h4 className={appStyles.smallFont}>Favourite Directors</h4>
-                        {directorCounts.map(([director, count], index) => (
-                            <OverlayTrigger
-                                placement="left"
-                                delay={{ show: 250, hide: 400 }}
-                                overlay={renderTooltip(director, count, true)}
-                                key={index}
-                            >
-                                <ProgressBar variant={index === 0? 'success': index === 1? 'info': 'warning'} now={100 * count / 5} label={director} key={index} />
-                            </OverlayTrigger>
-                        ))}
+                    <Col md={3} sm={4} xs={12}>
+                        <h4 className={`${appStyles.smallFont}`}>{width >= 576 ? 'Favourite Genres':''}</h4>
+                            {width >= 576?
+                                genreCounts.map(([genre, count], index) => (
+                                    <OverlayTrigger
+                                        placement="top"
+                                        delay={{ show: 250, hide: 400 }}
+                                        overlay={renderTooltip(genre, count, false)}
+                                        key={index}
+                                    >
+                                        <ProgressBar variant={index === 0? 'success': index === 1? 'info': 'warning'} now={100 * count / 5} label={genre} key={index} />
+                                    </OverlayTrigger>
+                            ))
+                        :
+                            <Stack direction="horizontal" gap={1}>
+                                {genreCounts.map(([genre, count], index) => (
+                                    <Badge pill bg="primary">{genre}</Badge>
+                                ))}
+                            </Stack>
+                        }
                     </Col>
-                    <Col md={3} sm={6}>
-                    <h4 className={appStyles.smallFont}>Favourite Genres</h4>
-                        {genreCounts.map(([genre, count], index) => (
-                        <OverlayTrigger
-                            placement="top"
-                            delay={{ show: 250, hide: 400 }}
-                            overlay={renderTooltip(genre, count, false)}
-                            key={index}
-                        >
-                            <ProgressBar variant={index === 0? 'success': index === 1? 'info': 'warning'} now={100 * count / 5} label={genre} key={index} />
-                        </OverlayTrigger>
-                        ))}
+                    <Col md={3} sm={4} xs={12}>
+                    <h4 className={appStyles.smallFont}>{width >= 576 ? 'Favourite Directors':''}</h4>
+                        {width >= 576 ? 
+                            directorCounts.map(([director, count], index) => (
+                                <OverlayTrigger
+                                    placement="left"
+                                    delay={{ show: 250, hide: 400 }}
+                                    overlay={renderTooltip(director, count, true)}
+                                    key={index}
+                                >
+                                    <ProgressBar variant={index === 0? 'success': index === 1? 'info': 'warning'} now={100 * count / 5} label={director} key={index} />
+                                </OverlayTrigger>
+                            ))
+                        :
+                        <Stack direction="horizontal" gap={1} className={appStyles.verticalMargin}>
+                            {directorCounts.map(([director, count], index) => (
+                                <Badge pill bg="secondary">{director}</Badge>
+                            ))}
+                        </Stack>
+                        }
                     </Col>            
                 </>
             :
                 <>
                     {isOwner? 
-                        <Col md={3}>
+                        <Col md={3} xs={3}>
                             You don't have any films saved yet.<Button href={`/`} variant='link'>Click here to browse films</Button> 
                         </Col>
                     : 

@@ -90,18 +90,38 @@
     margin-top: 10px
 }
 
-.filmStats {
+.section {
     border-width: 0.5px;
     border-style: solid; 
     border-radius: 0.5rem;
     border-color: lightgrey;
     padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+.filmListParent{
+    width: 90%;
+    margin: auto;
     margin-top: 10px;
-    margin-bottom: 10px;
+}
+
+.filmList {
+    max-height: 500px;
+    min-height: 150px;
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 .progressBarParent {
-    height: 100px;
-    width: 100px;
+    height: auto;
+    width: 60%;
+    max-width: 100px;
+    min-width: 50px;
     margin: auto;
 }
+
+@media screen and (max-width: 767px) {
+    .progressBarParent {
+        width: 50px
+    }
+  }
