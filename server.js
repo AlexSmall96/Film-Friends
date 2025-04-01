@@ -8,6 +8,7 @@ const path = require('path')
 const dotenv = require('dotenv')
 const cors = require('cors');
 const express = require('express')
+const bodyParser = require('body-parser'); 
 
 dotenv.config()
 // Import app after that has been setup in setupApp.js
@@ -17,7 +18,7 @@ const app = require('./setupApp')
 const port = process.env.PORT
 const buildPath = path.join(__dirname, 'build')
 app.use(express.static(buildPath))
-
+app.use(bodyParser.json({ limit: '20mb' })); 
 app.use(cors({
   origin: 'https://film-friends.onrender.com/',
 }));
