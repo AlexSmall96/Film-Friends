@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { axiosReq } from '../../api/axiosDefaults';
 import { useCurrentUser } from '../../contexts/CurrentUserContext';
-import { Container, Image, Row, Col, Button, Tooltip, OverlayTrigger, DropdownButton, Dropdown, Spinner} from 'react-bootstrap';
+import { Container, Image, Row, Col, Button, Tooltip, OverlayTrigger, ButtonGroup, DropdownButton, Dropdown, Spinner, Toast, Card} from 'react-bootstrap';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import useWindowDimensions from '../../hooks/useWindowDimensions';
-import styles from '../../styles/Films.module.css'
 import sortBy from 'array-sort-by'
 import DeleteModal from '../../components/DeleteModal'
+import ResultsPagination from '../../components/ResultsPagination';
 import { FriendDataProvider } from '../../contexts/FriendDataContext';
 import { useCurrentFilm } from '../../contexts/CurrentFilmContext';
 import { useSaveFilmContext } from '../../contexts/SaveFilmContext';
 import { FilmPreviewProvider } from '../../contexts/FilmPreviewContext';
 import FilmPreview from '../../components/FilmPreview';
 import { useRedirect } from '../../hooks/useRedirect';
+import styles from '../../styles/Reccomendations.module.css'
+import appStyles from '../../App.module.css'
 
 const Reccomendations = () => {
     useRedirect()
@@ -28,32 +30,32 @@ const Reccomendations = () => {
     const [hasUpdated, setHasUpdated] = useState(true)
     const [deleted, setDeleted] = useState(false)
     const [filmIds, setFilmIds] = useState([])
+    const [showMainFilm, setShowMainFilm] = useState(false)
+    const [currentPage, setCurrentPage] = useState(1)
+    const [finalPage, setFinalPage] = useState(1)
 
     useEffect(() => {
         const fetchReccomendations = async () => {
             const response = await axiosReq.get(`/reccomendations/`, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
-            
             const allReccomendations = response.data.filter(rec => !rec.isSender)
             const filteredReccomendations = allReccomendations.filter(rec => filter === 'All' ? true : rec.sender.username === filter)
             const sortedReccomendations = sort === 'Film Title' ? sortBy(filteredReccomendations, (rec) => rec.film.Title) : filteredReccomendations
-            setReccomendations(sortedReccomendations)
+            setReccomendations(sortedReccomendations.slice(9 * (currentPage - 1), 9 * currentPage))
+            setFinalPage(
+                Math.ceil(0.1 * sortedReccomendations.length)
+            )   
             const allUsernames = allReccomendations.map(rec => rec.sender.username)
             setUsernames([...new Set(allUsernames)])
             setHasLoaded(true)
             setHasUpdated(true)
         }
         fetchReccomendations()
-    }, [filter, sort, currentUser.token, deleted])
+    }, [filter, sort, currentUser.token, deleted, currentPage])
 
     useEffect(() => {
         setHasUpdated(false) 
     }, [filter, sort])
 
-    const renderTooltip = (username, message) => (
-        <Tooltip id="button-tooltip">
-          {`${username}: ${message}`}
-        </Tooltip>
-    )
     const deleteReccomendation = async (id) => {
         try {
             await axiosReq.delete(`/reccomendations/${id}`, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
@@ -79,88 +81,78 @@ const Reccomendations = () => {
         fetchFilmIds()
     }, [currentUser, updated])
 
-    const handleClick = (owner, imdbID, database) => {
-        setCurrentFilmIds({imdbID, database})
-        history.push(`/films/${owner}`)
-    }
-
-    const ratingValues = [1, 2, 3, 4, 5]
     return (
-        <Container>
+        <>
             {hasLoaded? 
-                reccomendations.length? ( 
-                    <> 
-                        From:
-                        <DropdownButton variant='outline-secondary' title={filter}>
-                            <Dropdown.Item onClick={() => setFilter('All')}>All</Dropdown.Item>
-                                {usernames.map(username => 
-                                    <Dropdown.Item key={username} onClick={() => setFilter(username)}>{username}</Dropdown.Item>
+                reccomendations.length? 
+                <>  
+                    <div className={styles.wrapper}>   
+                        <div className={styles.filterComponents}>                    
+                            <ButtonGroup className={appStyles.bigVerticalMargin}>
+                                <DropdownButton as={ButtonGroup} variant='outline-secondary' title={<><i className="fa-solid fa-filter"></i> {filter}</>}>
+                                    <Dropdown.Item onClick={() => setFilter('All')}>All</Dropdown.Item>
+                                        {usernames.map(username => 
+                                            <Dropdown.Item key={username} onClick={() => setFilter(username)}>{username}</Dropdown.Item>
+                                        )}
+                                    </DropdownButton> 
+                                <DropdownButton as={ButtonGroup} variant='outline-secondary' title={<><i className="fa-solid fa-sort"></i> {sort}</>}>
+                                    <Dropdown.Item onClick={() => setSort('Film Title')}>Film Title</Dropdown.Item>
+                                    <Dropdown.Item onClick={() => setSort('Last Sent')}>Last Sent</Dropdown.Item>
+                                </DropdownButton>
+                            </ButtonGroup>
+                            {/* PAGINATION MESSAGE */}
+                            <p>
+                                {currentPage !== finalPage ? (
+                                    `Showing results ${9 * (currentPage - 1) + 1} to ${9 * (currentPage - 1) + 9} of ${9 * finalPage}`
+                                ):(
+                                    `Showing results ${9 * (currentPage - 1) + 1} to ${9 * finalPage} of ${9 * finalPage}`
                                 )}
-                            </DropdownButton>
-                        Sort by: 
-                        <DropdownButton variant='outline-secondary' title={sort}>
-                            <Dropdown.Item onClick={() => setSort('Film Title')}>Film Title</Dropdown.Item>
-                            <Dropdown.Item onClick={() => setSort('Last Sent')}>Last Sent</Dropdown.Item>
-                        </DropdownButton>
-                        {hasUpdated? (
-                            <div style={{maxHeight: '600px', overflowY:'scroll', overflowX: 'hidden'}}>
-                                {reccomendations.map(rec =>
-                                    <Row key={rec._id} style={{borderWidth: '0.1px', borderColor: 'lightgrey', borderStyle: 'solid'}}>
-                                        <Col md={1}>
-                                            <OverlayTrigger
-                                                placement="bottom"
-                                                delay={{ show: 250, hide: 400 }}
-                                                overlay={renderTooltip(rec.sender.username, rec.message)}
-                                            >
-                                                <Image onClick={() => history.push(`/films/${rec.sender._id}`)} src={rec.sender.image} width={50}/>
-                                            </OverlayTrigger>
-                                        </Col>
-                                        <Col md={5}>
-                                        <FilmPreviewProvider key={rec.film._id} film={rec.film} showDropdown savedToWatchlist={filmIds.includes(rec.film.imdbID)}>
-                                            <FilmPreview />
-                                        </FilmPreviewProvider>
+                            </p>
+                            {/* PAGINATION BUTTONS */}
+                            {finalPage > 1 ? 
+                                <ResultsPagination currentPage={currentPage} finalPage={finalPage} setCurrentPage={setCurrentPage}/>                       
+                            : '' } 
+                        </div> 
+                    </div> 
+                    <div className={styles.recResults}>
+                        <Row>
+                        {reccomendations.map(rec =>
+                            <Col md={4} key={rec.film.imdbID}>
+                                <FilmPreviewProvider 
+                                    film={rec.film} 
+                                    showDropdown
+                                    savedToWatchlist={filmIds.includes(rec.film.imdbID)} 
+                                >  
+                                <Row>
+                                    <Col md={1}>
+                                        <Image src={rec.sender.image} width={30}/>
+                                    </Col>
+                                    <Col md={10}>
+                                        <p className={appStyles.verySmallFont}>{rec.message}</p> 
+                                    </Col>
+                                    <Col md={1}>
+                                        <i className="fa-solid fa-trash-can"></i>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col>
+                                        <FilmPreview />
+                                    </Col>
+                                </Row>
 
-                                        </Col>
-                                        <Col md={4}>
-                                            {rec.film.public ? (
-                                                <>
-                                                    {`${rec.sender.username}'s rating: `}
-                                                    {ratingValues.map(
-                                                                value => <span key={value} className={`fa fa-star ${rec.film.userRating >= value ? styles.checked : ''}`}></span>
-                                                    )}  
-                                                    <p>
-                                                        <Button 
-                                                            onClick={() => handleClick(rec.film.owner, rec.film.imdbID, rec.film._id)} 
-                                                            variant='link'
-                                                        >{`${rec.sender.username}'s watchlist`}
-                                                        </Button>
-                                                    </p>
-                                                </>
-                                            ):(`${rec.sender.username} has made this film private.`)}
-
-                                        </Col>
-                                        <Col md={2}>
-                                            <p>
-                                                <FriendDataProvider requestId={null} user={null}>
-                                                    <DeleteModal deleteReccomendation={() => deleteReccomendation(rec._id)} message={`Are you sure you want to remove ${rec.film.Title} from your reccomendations?`} />
-                                                </FriendDataProvider>
-                                            </p>
-                                        </Col>
-                                    </Row>
-                                )}  
-                            </div>
-                        ):<Spinner />}
-                    </>
-                ):(
-                    <p>You don't have any reccomendations yet.</p>
-            ):(
+                                </FilmPreviewProvider>                            
+                            </Col>
+     
+                        )}
+                        </Row>
+                        </div>
+                </>
+                :'No reccomendations'
+            :
                 <Spinner />
-            )}
-            
-          
-          
-        </Container>
-        
+            }
+            </>
     )
 }
+
 export default Reccomendations;
