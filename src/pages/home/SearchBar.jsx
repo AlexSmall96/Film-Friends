@@ -9,7 +9,7 @@ The search suggestions functionality was inspired by the following article
 https://www.dhiwise.com/post/how-to-build-react-search-bar-with-suggestions#customizing-the-autocomplete-behavior
 */
 
-const SearchBar = ({setSearchResults, setTotalResults, currentPage, setCurrentPage, setFinalPage, setError, setHasLoaded}) =>{
+const SearchBar = ({setResults, setTotalResults, currentPage, setCurrentPage, setFinalPage, setError, setHasLoaded}) =>{
 	
 	// Initialize state variables
 	const [search, setSearch] = useState(localStorage.getItem('search') || '')
@@ -53,7 +53,7 @@ const SearchBar = ({setSearchResults, setTotalResults, currentPage, setCurrentPa
 				const response = await axiosReq.get(`filmSearch/?search=${search.trim()}&page=${currentPage}`)
 					if (!response.data.Error){
 						// Set search results
-						setSearchResults(response.data.Search)
+						setResults(response.data.Search)
 						// Set final page and total results for pagination
 						setFinalPage(
 							Math.ceil(0.1 * response.data.totalResults)
@@ -64,12 +64,12 @@ const SearchBar = ({setSearchResults, setTotalResults, currentPage, setCurrentPa
 						if (imdbID !== '') {
 							const response = await axiosReq.get(`filmData/?imdbID=${imdbID}`)
 							if (response.data.Title.trim() === search.trim()){
-								setSearchResults([response.data])
+								setResults([response.data])
 								setFinalPage(1)
 								setTotalResults(1)
 							} else {
 								// If both searches fail but an error message has been sent, set a custom error message to display
-								setSearchResults([])
+								setResults([])
 								setError(
 									'There are no results matching your search.'
 								)
@@ -78,7 +78,7 @@ const SearchBar = ({setSearchResults, setTotalResults, currentPage, setCurrentPa
 					}
 			} catch(err){
 				setError('There are no results matching your search.')
-				setSearchResults([])
+				setResults([])
 			}
 			setHasLoaded(true)
 		}
