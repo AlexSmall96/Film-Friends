@@ -1,0 +1,43 @@
+.reccomendation {
+    border-style: solid;
+    border-width: 0.5px;
+    border-radius: 0.5rem;
+    border-color: lightgrey;
+    height: 40px;
+}
+
+.message{
+    padding-top: 2px;
+    padding-bottom: 2px;
+    max-height: 40px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: no-wrap;
+}
+
+.wrapper {
+    background-color: white;
+    width: 100%; 
+    height: 180px;
+    position: fixed;
+    z-index: 998;
+}
+
+.filterComponents {
+    padding-top: 110px; 
+    z-index: 999;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 23px;
+}
+
+.recResults {
+    margin-top:190px;
+}
+
+.filmCard {
+    padding-top: 15px;
+    padding-bottom: 0;
+}

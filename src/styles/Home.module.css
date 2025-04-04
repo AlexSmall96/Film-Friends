@@ -16,11 +16,11 @@
     height: 23px;
 }
 
-.searchResults {
+.results {
     margin-top:200px;
 }
 
-.searchResultsLoggedOut {
+.resultsLoggedOut {
     margin-top:230px;
 }
 

@@ -107,6 +107,15 @@
   border-style: none;
 }
 
+.greyBorder {
+  border-width: 0.5px;
+  border-style: solid; 
+  border-radius: 0.5rem;
+  border-color: lightgrey;
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
 /* Colours and shapes */
 .roundButton {
   border-radius: 1rem;

@@ -1,11 +1,10 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import NavBar from './components/NavBar';
-import Home from './pages/home/Home.jsx';
+import Results from './pages/home/Results.jsx';
 import Profile from './pages/profile/Profile';
 import FilmsPage from './pages/films/FilmsPage';
 import Friends from './pages/friends/Friends';
-import Reccomendations from './pages/reccomendations/Reccomendations';
 import Signup from './pages/auth/Signup';
 import Login from './pages/auth/Login';
 import { BrowserRouter as Router } from 'react-router-dom/cjs/react-router-dom.min';
@@ -16,7 +15,6 @@ import { FriendActionProvider } from './contexts/FriendActionContext.jsx';
 import { SaveFilmProvider } from './contexts/SaveFilmContext.jsx';
 import ResetPassword from './pages/auth/ResetPassword.jsx';
 import SendOTP from './pages/auth/SendOTP.jsx';
-import ProfileDelete from './pages/profile/ProfileDelete'
 import styles from './App.module.css'
 
 function App() {
@@ -30,10 +28,10 @@ function App() {
 							<Router>
 								<NavBar />
 								<Switch>
-									<Route exact path='/' render={() => <Home />} />
+									<Route exact path='/' render={() => <Results />} />
 									<Route exact path='/films/:id' render={() => <FilmsPage />} />
 									<Route exact path='/friends/' render={() => <Friends />} />
-									<Route exact path='/reccomendations' render={() => <Reccomendations />} />
+									<Route exact path='/reccomendations' render={() => <Results reccomendationsPage/>} />
 									<Route exact path='/profile' render={() => <Profile />} />
 									<Route exact path='/resetPassword/sendOTP/' render={() => <SendOTP resetPassword />} />
 									<Route exact path='/changeEmail/sendOTP' render={() => <SendOTP changeEmail />} />
