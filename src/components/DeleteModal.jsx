@@ -13,9 +13,12 @@ const DeleteModal = ({message, deleteReccomendation}) => {
     return (
         <>  
             {/* BUTTONS TO SHOW MODAL */}
-            <Button variant="outline-secondary" onClick={() => setShow(true)}>
-                <i className="fa-regular fa-trash-can"></i> Remove
-            </Button>
+            {deleteReccomendation?
+                <p onClick={() => setShow(true)} className="fa-regular fa-trash-can"></p>
+            :
+                <Button variant="outline-secondary" onClick={() => setShow(true)}>
+                    <i className="fa-regular fa-trash-can"></i> Remove
+                </Button>}
             {/* MODAL CONTENT */}
             <Modal show={show} onHide={() => setShow(false)}>
                 <Modal.Body>

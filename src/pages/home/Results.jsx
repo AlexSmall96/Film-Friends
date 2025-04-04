@@ -3,7 +3,7 @@ import { axiosReq } from '../../api/axiosDefaults';
 import { useCurrentUser } from '../../contexts/CurrentUserContext';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import ResultsPagination from '../../components/ResultsPagination'
-import { Button, Container, Image, Spinner, Row, Col, ButtonGroup, DropdownButton, Dropdown } from 'react-bootstrap';
+import { Alert, Button, Container, Image, Spinner, Row, Col, ButtonGroup, DropdownButton, Dropdown } from 'react-bootstrap';
 import FilmPreview from '../../components/FilmPreview'
 import Film from '../films/Film'
 import { FilmPreviewProvider } from '../../contexts/FilmPreviewContext';
@@ -38,7 +38,8 @@ const Results = ({reccomendationsPage}) => {
     const [hasUpdated, setHasUpdated] = useState(true)
     const id = currentUser?.user._id || null
     const { updated } = useSaveFilmContext()
-    const { currentFilmIds, omdbData, setOmdbData } = useCurrentFilm()
+    const { currentFilmIds, omdbData, setOmdbData, currentReccomendation } = useCurrentFilm()
+    const [deleted, setDeleted] = useState(false)
 
     useEffect(() => {
         // Gets the imdbIds of the users saved films, to determine which buttons should appear next to film result
@@ -91,8 +92,16 @@ const Results = ({reccomendationsPage}) => {
         if (reccomendationsPage){
             fetchReccomendations()
         }
-    }, [filter, sort, currentUser.token, currentPage])
+    }, [filter, sort, currentUser.token, deleted, currentPage])
 
+    const deleteReccomendation = async (id) => {
+        try {
+            await axiosReq.delete(`/reccomendations/${id}`, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
+            setDeleted(!deleted)
+        } catch (err) {
+            console.log(err)
+        }
+    }
 
     return (
         <>  
@@ -142,7 +151,9 @@ const Results = ({reccomendationsPage}) => {
                             :   
                                 <>
                                     {reccomendationsPage? <br />:''}
-                                    <Button variant='link' onClick={() => setShowMainFilm(false)} className={appStyles.bigVerticalMargin}>Back to search results</Button>                            
+                                    <Button variant='link' onClick={() => setShowMainFilm(false)} className={appStyles.bigVerticalMargin}>
+                                        {reccomendationsPage? 'Back to reccomendations': 'Back to search results'}
+                                    </Button>                            
                                 </>
                                 
                             }
@@ -167,6 +178,11 @@ const Results = ({reccomendationsPage}) => {
                         mobile && showMainFilm? 
                             hasLoadedMainFilm?
                                 <FilmPreviewProvider savedToWatchlist={usersFilmIds.includes(omdbData.imdbID)} filmsPage >
+                                    {reccomendationsPage? 
+                                        <Alert variant='light' className={appStyles.smallFont}>
+                                            <strong>{currentReccomendation.sender.username}: </strong>
+                                            {currentReccomendation.message}
+                                        </Alert>:''}
                                     <Film />
                                 </FilmPreviewProvider>
                             :
@@ -183,6 +199,9 @@ const Results = ({reccomendationsPage}) => {
                                             savedToWatchlist={usersFilmIds.includes(result.imdbID || result.film.imdbID)} 
                                             mobile={mobile}
                                             setShowMainFilm={setShowMainFilm}
+                                            message={result.message || null}
+                                            sender={result.sender || null}
+                                            deleteReccomendation={reccomendationsPage ? () => deleteReccomendation(result._id) : null}
                                         >
                                             <Col lg={4} md={6} sm={12} xs={4}>
                                                 <FilmPreview />

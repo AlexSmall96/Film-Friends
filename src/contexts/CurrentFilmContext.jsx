@@ -18,6 +18,8 @@ export const CurrentFilmProvider = ({ children }) => {
         imdbID: '', database: ''
     })
 
+    const [currentReccomendation, setCurrentReccomendation] = useState({message: '', sender: ''})
+
     // State variables related to film data
     const [viewingData, setViewingData] = useState({watched: false, userRating: ''})
     const [omdbData, setOmdbData] = useState({})
@@ -38,7 +40,9 @@ export const CurrentFilmProvider = ({ children }) => {
             isOwner,
             setIsOwner,
             username,
-            setUsername
+            setUsername,
+            currentReccomendation, 
+            setCurrentReccomendation
         }}>
             {children}
         </CurrentFilmContext.Provider>
