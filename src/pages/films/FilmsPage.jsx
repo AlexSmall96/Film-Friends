@@ -203,13 +203,13 @@ const FilmsPage = () => {
                     {allFilms.length?
                         <Row>
                             {smallScreen && !showMainFilm || !smallScreen? 
-                            <Col lg={{span:5, order: 1}} md={{span:4, order:1}} sm={{span: 12, order: 2}} className={`${styles.filmList} ${styles.section}`}>
-                                    <Filters
-                                        filter={filter}
-                                        setFilter={setFilter}
-                                        sort={sort}
-                                        setSort={setSort}
-                                    />
+                            <Col lg={{span:5, order: 1}} md={{span:4, order:1}} sm={{span: 12, order: 2}} className={`${styles.filmList} ${appStyles.greyBorder}`}>
+                                <Filters
+                                    filter={filter}
+                                    setFilter={setFilter}
+                                    sort={sort}
+                                    setSort={setSort}
+                                />
                                 <div className={`${styles.filmListParent}`}>
                                     {filteredFilms.length?
                                     <Row>
