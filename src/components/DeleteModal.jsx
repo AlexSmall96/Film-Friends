@@ -1,20 +1,32 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Modal } from 'react-bootstrap';
 import { useFriendAction } from '../contexts/FriendActionContext';
 import { useFriendData } from '../contexts/FriendDataContext';
+import appStyles from '../App.module.css'
+import { useFilmPreview } from '../contexts/FilmPreviewContext';
+import useWindowDimensions from '../hooks/useWindowDimensions';
+import { useSaveFilmContext } from '../contexts/SaveFilmContext';
+import { useCurrentFilm } from '../contexts/CurrentFilmContext';
 
-const DeleteModal = ({message, deleteReccomendation}) => {
+const DeleteModal = ({message}) => {
     // Contexts
     const { deleteRequest } = useFriendAction()
     const { requestId  } = useFriendData()
+    const { sender, resultId, mainFilm } = useFilmPreview()
+    const { deleteReccomendation } = useSaveFilmContext()
+    const { currentReccomendation } = useCurrentFilm()
+
     // Initialize state variables
     const [show, setShow] = useState(false);
     const [text, setText] = useState('Yes')
+
     return (
         <>  
             {/* BUTTONS TO SHOW MODAL */}
-            {deleteReccomendation?
-                <p onClick={() => setShow(true)} className="fa-regular fa-trash-can"></p>
+            {!requestId?
+            <Button variant="outline-secondary" size="sm" className={`${appStyles.roundButton} ${appStyles.smallVerticalMargin}`} onClick={() => setShow(true)}>
+                Remove <i className="fa-regular fa-trash-can"></i>
+            </Button>
             :
                 <Button variant="outline-secondary" onClick={() => setShow(true)}>
                     <i className="fa-regular fa-trash-can"></i> Remove
@@ -34,7 +46,7 @@ const DeleteModal = ({message, deleteReccomendation}) => {
                     <Button variant="primary" 
                         onClick={() => {
                             setText('Deleting...')
-                            deleteReccomendation? deleteReccomendation() : deleteRequest(requestId)
+                            !requestId? deleteReccomendation(mainFilm? currentReccomendation._id :resultId) : deleteRequest(requestId)
                         }}
                     >
                         {text}

@@ -14,7 +14,8 @@ import { FriendDataProvider } from '../contexts/FriendDataContext';
 
 // Displays film poster and data either as a list of search results, saved films or reccomendations
 const FilmPreview = () => {
-    const {film, showDropdown, filmsPage, mobile, smallScreen, setShowMainFilm, message, sender, deleteReccomendation} = useFilmPreview()
+    const {film, showDropdown, filmsPage, mobile, smallScreen, setShowMainFilm, message, sender, resultId } = useFilmPreview()
+    const { width } = useWindowDimensions()
     const { setCurrentFilmIds, omdbData, setCurrentReccomendation } = useCurrentFilm()
     const omdbStringArray = [film.Director, film.Year, film.Type]
     const omdbString = omdbStringArray.filter(value => value).join(', ')
@@ -30,8 +31,8 @@ const FilmPreview = () => {
 
     const handleClick = async () => {
         await setCurrentFilmIds({imdbID:film.imdbID, database:film._id})
-        if (message) {
-            setCurrentReccomendation({message, sender})
+        if (resultId) {
+            setCurrentReccomendation({_id: resultId, message, sender})
         }
         if (mobile || smallScreen) {
             setShowMainFilm(true) 
@@ -59,9 +60,9 @@ const FilmPreview = () => {
                     />
                 </Col>
                 <Col md={filmsPage? 8 : 6} className={appStyles.leftAlign} sm={8} xs={12}>
-                    {showPlot && !message? 
+                    {showPlot? 
                         hasLoadedPlot?
-                            <p className={`${appStyles.smallFont} ${appStyles.paragraphFont}`}>
+                            <p className={`${appStyles.smallFont} ${appStyles.paragraphFont} ${width < 1200 ? styles.plotPreview: ''}`}>
                                 {omdbData.Plot}
                             </p>
                         : 
@@ -76,7 +77,7 @@ const FilmPreview = () => {
                             </>:''
                         }
                     </>}
-                    {sender && message && !mobile? 
+                    {sender && message && !mobile && !showPlot? 
                     <>
                     
                     <Alert variant='light' className={appStyles.verySmallFont}>
@@ -85,14 +86,8 @@ const FilmPreview = () => {
 
                     </> :''}     
                     {showDropdown && currentUser && !mobile? 
-                    <SaveDropown />:''} 
-                    {!mobile && message ?
-                        <FriendDataProvider>
-                            <DeleteModal 
-                                deleteReccomendation={deleteReccomendation} 
-                                message={`Are you sure you want to remove ${film.Title} from your reccomendations?`}
-                            />
-                        </FriendDataProvider>:''}
+                        <SaveDropown />
+                    :''} 
                 </Col>
             </Row>
     )

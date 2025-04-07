@@ -112,6 +112,17 @@
     overflow-x: hidden;
 }
 
+/* 
+The plotPreview class was inspired by https://stackoverflow.com/questions/7993067/text-overflow-ellipsis-not-working
+*/
+
+.plotPreview {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 6;
+    -webkit-box-orient: vertical;
+}
+
 .progressBarParent {
     height: auto;
     width: 60%;

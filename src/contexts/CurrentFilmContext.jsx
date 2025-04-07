@@ -18,7 +18,7 @@ export const CurrentFilmProvider = ({ children }) => {
         imdbID: '', database: ''
     })
 
-    const [currentReccomendation, setCurrentReccomendation] = useState({message: '', sender: ''})
+    const [currentReccomendation, setCurrentReccomendation] = useState({_id: '', message: '', sender: ''})
 
     // State variables related to film data
     const [viewingData, setViewingData] = useState({watched: false, userRating: ''})

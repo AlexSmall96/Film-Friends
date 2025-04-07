@@ -12,6 +12,8 @@ export const SaveFilmProvider = ({ children }) => {
     const {setOmdbData} = useCurrentFilm()
     const [hasLoadedPlot, setHasLoadedPlot] = useState(false)
     const [hoveredOverImdbID, setHoveredOverImdbID] = useState('')
+    const [deleted, setDeleted] = useState(false)
+    const [showMainFilm, setShowMainFilm] = useState(false)
 
     const saveFilm = async (Title, imdbID, Poster, Year, Type, publicFilm) => {
         // Get director and genre from OMDB API
@@ -24,6 +26,16 @@ export const SaveFilmProvider = ({ children }) => {
             })
             setUpdated(!updated)
         } catch(err){
+            console.log(err)
+        }
+    }
+
+    const deleteReccomendation = async (id) => {
+        try {
+            await axiosReq.delete(`/reccomendations/${id}`, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
+            setShowMainFilm(false)
+            setDeleted(!deleted)
+        } catch (err) {
             console.log(err)
         }
     }
@@ -44,7 +56,7 @@ export const SaveFilmProvider = ({ children }) => {
     }, [hoveredOverImdbID])
            
     return (
-        <SaveFilmContext.Provider value={{saveFilm, updated, setUpdated, hasLoadedPlot, setHoveredOverImdbID}}>
+        <SaveFilmContext.Provider value={{saveFilm, updated, setUpdated, hasLoadedPlot, setHoveredOverImdbID, deleteReccomendation, deleted, showMainFilm, setShowMainFilm}}>
             {children}
         </SaveFilmContext.Provider>
     );

@@ -6,6 +6,14 @@
     z-index: 998;
 }
 
+.wrapperNoPagination {
+    background-color: white;
+    width: 100%; 
+    height: 100px;
+    position: fixed;
+    z-index: 998;
+}
+
 .searchComponents {
     padding-top: 110px; 
     z-index: 999;
@@ -18,6 +26,10 @@
 
 .results {
     margin-top:200px;
+}
+
+.resultsNoPagination {
+    margin-top:150px;
 }
 
 .resultsLoggedOut {

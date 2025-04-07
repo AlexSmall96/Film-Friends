@@ -32,14 +32,13 @@ const Results = ({reccomendationsPage}) => {
     const [totalResults, setTotalResults] = useState(0)
     const [error, setError] = useState('')
     const [hasLoaded, setHasLoaded] = useState(false)
-    const [showMainFilm, setShowMainFilm] = useState(false)
     const [hasLoadedMainFilm, setHasLoadedMainFilm] = useState(false)
     const [usernames, setUsernames] = useState([])
     const [hasUpdated, setHasUpdated] = useState(true)
     const id = currentUser?.user._id || null
     const { updated } = useSaveFilmContext()
     const { currentFilmIds, omdbData, setOmdbData, currentReccomendation } = useCurrentFilm()
-    const [deleted, setDeleted] = useState(false)
+    const { deleted, showMainFilm, setShowMainFilm } = useSaveFilmContext()
 
     useEffect(() => {
         // Gets the imdbIds of the users saved films, to determine which buttons should appear next to film result
@@ -94,18 +93,15 @@ const Results = ({reccomendationsPage}) => {
         }
     }, [filter, sort, currentUser.token, deleted, currentPage])
 
-    const deleteReccomendation = async (id) => {
-        try {
-            await axiosReq.delete(`/reccomendations/${id}`, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
-            setDeleted(!deleted)
-        } catch (err) {
-            console.log(err)
-        }
-    }
-
     return (
         <>  
-            <div className={reccomendationsPage? reccStyles.wrapper : homeStyles.wrapper}>
+            <div className={
+                reccomendationsPage? 
+                    finalPage > 1? reccStyles.wrapper : reccStyles.wrapperNoPagination  
+                : 
+                    finalPage > 1? homeStyles.wrapper: homeStyles.wrapperNoPagination 
+                }
+            >
             <div className={reccomendationsPage? reccStyles.filterComponents : homeStyles.searchComponents}>
                 {/* SEARCH BAR*/}
                 {!reccomendationsPage? 
@@ -171,13 +167,18 @@ const Results = ({reccomendationsPage}) => {
                     ):''}
             </div>
             </div>
-            <div className={currentUser? homeStyles.results: homeStyles.resultsLoggedOut}>
+            <div className={currentUser? finalPage > 1 ? homeStyles.results: homeStyles.resultsNoPagination : homeStyles.resultsLoggedOut}>
                 {/* SEARCH RESULTS */}
                 {results?.length? (hasLoaded? (
                     <Container> {
                         mobile && showMainFilm? 
                             hasLoadedMainFilm?
-                                <FilmPreviewProvider savedToWatchlist={usersFilmIds.includes(omdbData.imdbID)} filmsPage >
+                                <FilmPreviewProvider 
+                                    savedToWatchlist={usersFilmIds.includes(omdbData.imdbID)} 
+                                    filmsPage 
+                                    mainFilm
+                                    resultId={currentReccomendation._id}  
+                                >
                                     {reccomendationsPage? 
                                         <Alert variant='light' className={appStyles.smallFont}>
                                             <strong>{currentReccomendation.sender.username}: </strong>
@@ -195,13 +196,13 @@ const Results = ({reccomendationsPage}) => {
                                         <FilmPreviewProvider 
                                             key={result.imdbID || result.film.imdbID} 
                                             film={result.film || result} 
-                                            showDropdown 
+                                            showDropdown
+                                            resultId={result._id} 
                                             savedToWatchlist={usersFilmIds.includes(result.imdbID || result.film.imdbID)} 
                                             mobile={mobile}
                                             setShowMainFilm={setShowMainFilm}
                                             message={result.message || null}
                                             sender={result.sender || null}
-                                            deleteReccomendation={reccomendationsPage ? () => deleteReccomendation(result._id) : null}
                                         >
                                             <Col lg={4} md={6} sm={12} xs={4}>
                                                 <FilmPreview />

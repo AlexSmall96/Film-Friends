@@ -80,7 +80,7 @@ const Film = () => {
                     :''}
                         {isOwner? ('Your Rating: '): viewingData.watched ? (`${username}'s Rating:`):''}
                         {isOwner || viewingData.watched ? ratingValues.map(
-                            value => <span onClick={isOwner? () => updateViewingData(null, value):null} key={value} className={`fa fa-star ${viewingData.userRating >= value ? styles.checked : ''}`}></span>
+                            value => <span onClick={isOwner? () => updateViewingData(null, value):null} key={value} className={`fa fa-star ${viewingData.userRating >= value ? styles.checked : styles.unchecked}`}></span>
                         ):''}
                         {/* SAVE / GO TO WATCHLIST BUTTONS IF NOT OWNER OF FILMS LIST */}
                         {!isOwner? 
