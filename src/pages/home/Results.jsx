@@ -91,7 +91,7 @@ const Results = ({reccomendationsPage}) => {
         if (reccomendationsPage){
             fetchReccomendations()
         }
-    }, [filter, sort, currentUser.token, deleted, currentPage])
+    }, [filter, sort, currentUser?.token, deleted, currentPage])
 
     return (
         <>  

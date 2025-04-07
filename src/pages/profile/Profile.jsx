@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useHistory  } from 'react-router-dom/cjs/react-router-dom.min';
+import { useHistory  } from 'react-router-dom/cjs/react-router-dom.min';
 import { axiosReq } from '../../api/axiosDefaults';
 import { useCurrentUser } from '../../contexts/CurrentUserContext';
-import { Spinner, Button, OverlayTrigger, Tooltip, Image, Card, Nav, ProgressBar, Container, Row, Col, Form, Tabs, Tab} from 'react-bootstrap';
+import { Button, Image, Nav, Tab, Row, Col} from 'react-bootstrap';
 import appStyles from '../../App.module.css'
 import AccountSecurity from './AccountSecurity';
 import ProfileInfo from './ProfileInfo';
 import { useRedirect } from '../../hooks/useRedirect';
-const Profile = () => {
-    // Hooks
 
+const Profile = ({activeKey}) => {
+    // Hooks
     const history = useHistory()
     useRedirect()
     // Contexts
@@ -19,7 +19,6 @@ const Profile = () => {
     const [updated, setUpdated] = useState(false)
     // Initialise a state variable to determie button text
     const [deleted, setDeleted] = useState(false)
-    const [edited, setEdited] = useState(false)
 
     // Handle Delete function
     const handleDelete = async () => {
@@ -51,7 +50,7 @@ const Profile = () => {
     return (
     <>
     {!deleted?
-        <Tab.Container id="left-tabs-example" defaultActiveKey="first">
+        <Tab.Container id="left-tabs-example" defaultActiveKey={activeKey}>
         <Row>
           <Col sm={3}>
           <Image src={profile.image} width={150}/>

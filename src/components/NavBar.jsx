@@ -11,7 +11,7 @@ const NavBar = () => {
     // Contexts
     const { currentUser, setCurrentUser  } = useCurrentUser()
     // Hooks
-    const { mobile, width } = useWindowDimensions();
+    const { width } = useWindowDimensions();
     // Initialize state variables
     const [expanded, setExpanded] = useState(false)
     // Handle logout
@@ -46,7 +46,7 @@ const NavBar = () => {
     // Logged in icons: films, friends, reccomendations, user dropdown
     const loggedInIcons = 
     <>  
-        {mobile? 
+        {width <= 767? 
             <Nav.Link href='/' onClick={handleClick}>
                 <i className="fa-solid fa-home"></i> Home
             </Nav.Link>
@@ -57,21 +57,21 @@ const NavBar = () => {
         <Nav.Link href='/friends' onClick={handleClick}>
             <i className="fa-solid fa-users"></i> Friends
         </Nav.Link>
-        <Nav.Link href='/reccomendations' onClick={handleClick} className={mobile? styles.underlineSection:''}>
+        <Nav.Link href='/reccomendations' onClick={handleClick} className={width <= 767? styles.underlineSection:''}>
             <i className="fa-solid fa-envelope"></i> Reccomendations
         </Nav.Link>
-        {mobile?(
+        {width <= 767?(
             <div className={styles.underlineSection}>
-                <Nav.Link href={`/profile/`} onClick={handleClick}>
+                <Nav.Link href={`/profile/info`} onClick={handleClick}>
                     <i className="fa-solid fa-user"></i> Profile
                 </Nav.Link>
-                <Nav.Link href={`/profile/`} onClick={handleClick}>
-                    <i className="fa-solid fa-pen-to-square"></i> Edit Profile
+                <Nav.Link href={`/profile/accountSecurity`} onClick={handleClick}>
+                    <i className="fa-solid fa-shield-halved"></i> Acount Security
                 </Nav.Link>
                 <Nav.Link href='/' onClick={handleLogout} >
                     <i className="fa-solid fa-right-from-bracket"></i> Logout
                 </Nav.Link>
-                <Nav.Link href={`/profile/`} onClick={handleClick}>
+                <Nav.Link href={`/profile/deleteAccount`} onClick={handleClick}>
                     <i className="fa-solid fa-trash-can"></i> Delete Account 
                 </Nav.Link>
             </div>
@@ -81,7 +81,7 @@ const NavBar = () => {
                     <i className="fa-solid fa-user"></i> Profile
                 </NavDropdown.Item>
                 <NavDropdown.Item href={`/profile/`}>
-                    <i className="fa-solid fa-pen-to-square"></i> Edit Profile
+                    <i className="fa-solid fa-shield-halved"></i> Acount Security
                 </NavDropdown.Item>
                 <NavDropdown.Item href='/' onClick={handleLogout}>
                     <i className="fa-solid fa-right-from-bracket"></i> Logout
@@ -97,12 +97,12 @@ const NavBar = () => {
     // Logged out icons: sign up and log in
     const loggedOutIcons = 
     <>
-        <Link to='/signup'>
+        <Nav.Link href='/signup' onClick={handleClick}>
             <i className="fa-solid fa-user-plus"></i> Sign up
-        </Link> 
-        <Link to='/login'>
+            </Nav.Link> 
+        <Nav.Link href='/login' onClick={handleClick}>
             <i className="fa-solid fa-right-to-bracket"></i> Login
-        </Link>   
+        </Nav.Link>   
     </>
 
     return (

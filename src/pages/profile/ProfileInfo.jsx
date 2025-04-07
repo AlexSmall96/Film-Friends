@@ -5,14 +5,14 @@ import { useCurrentUser } from '../../contexts/CurrentUserContext';
 import {Container, Row, Col, Image} from 'react-bootstrap'
 
 const ProfileInfo = ({setUpdated, updated}) => {
-    const { currentUser, setCurrentUser, updateStoredUser } = useCurrentUser()
+    const { currentUser, setCurrentUser } = useCurrentUser()
     const [message, setMessage] = useState({})
     const [username, setUsername] = useState('')
     const [imageBase64, setImageBase64] = useState("");
     const [file, setFile] = useState('https://res.cloudinary.com/dojzptdbc/image/upload/v1687104476/default_profile_k3tfhd.jpg')
 
     useEffect(() => {
-        setUsername(currentUser.user.username)
+        setUsername(currentUser?.user.username)
     }, [])
 
     const handleUsernameChange = (event) => {
