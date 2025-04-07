@@ -22,7 +22,7 @@ const PublicProfile = ({profile, filmStats, showStats, similarity, directorCount
     )
 
     return (
-        <Row className={`${width >= 576? styles.section: ''} ${appStyles.bigVerticalMargin}`}>
+        <Row className={`${width >= 576? appStyles.greyBorder: ''} ${appStyles.bigVerticalMargin}`}>
             <Col md={3} sm={1} xs={2}>
                 {isOwner? 
                     <a href='/profile'><h4 className={appStyles.smallFont}>{profile.username}</h4></a>
@@ -60,7 +60,7 @@ const PublicProfile = ({profile, filmStats, showStats, similarity, directorCount
                         :
                             <Stack direction="horizontal" gap={1}>
                                 {genreCounts.map(([genre, count], index) => (
-                                    <Badge pill bg="primary">{genre}</Badge>
+                                    <Badge pill bg="primary" key={index}>{genre}</Badge>
                                 ))}
                             </Stack>
                         }
@@ -81,7 +81,7 @@ const PublicProfile = ({profile, filmStats, showStats, similarity, directorCount
                         :
                         <Stack direction="horizontal" gap={1} className={appStyles.verticalMargin}>
                             {directorCounts.map(([director, count], index) => (
-                                <Badge pill bg="secondary">{director}</Badge>
+                                <Badge pill bg="secondary" key={index}>{director}</Badge>
                             ))}
                         </Stack>
                         }
