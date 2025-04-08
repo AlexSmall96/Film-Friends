@@ -123,7 +123,7 @@ const EllipsisMenu = ({updateViewingData}) => {
                             }}
                         >   
                             {/* SHARE, REMOVE AND MAKE PUBLIC / PRIVATE OPTIONS */}
-                            <p onClick={viewingData.public? handleShowModal : null} className={viewingData.public? appStyles.clickable: appStyles.unclickable}><i className="fa-solid fa-share"></i> Share</p>
+                            <p onClick={viewingData.public && friends.length? handleShowModal : null} className={viewingData.public && friends.length? appStyles.clickable: appStyles.unclickable}><i className="fa-solid fa-share"></i> Share</p>
                             <p className={appStyles.clickable} onClick={() => updateViewingData(null, null, !viewingData.public)}><i className="fa-solid fa-pen"></i> {viewingData.public? 'Make Private': 'Make Public'}</p>
                             <p className={appStyles.clickable} onClick={handleDelete}><i className="fa-regular fa-trash-can"></i> Remove from Watchlist</p>
                         </div>)
@@ -138,10 +138,10 @@ const EllipsisMenu = ({updateViewingData}) => {
                         allFriends.length? 
                             friends.length? (
                                 <>
-                                    <p>{recipient? 'Sending to' : sent? 'Film Shared. Select another user to share.': ''}</p>
+                                    <i className="fa-regular fa-user"></i>
                                     <Dropdown>
                                         <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
-                                            {recipient?.username || 'Select recipient'}
+                                        <strong> {recipient?.username || 'Select recipient'}</strong>
                                         </Dropdown.Toggle>
                                         <Dropdown.Menu as={CustomMenu}>
                                             <div style={{maxHeight: '400px', overflowY: 'scroll'}}>
@@ -173,20 +173,19 @@ const EllipsisMenu = ({updateViewingData}) => {
                 <Modal.Body>
                 {hasLoaded? (
                     <>
-                        <Image src={omdbData.Poster} width={50}/>
-                        {omdbData.Title}
+                        <i className="fa-solid fa-film"></i> <strong>{omdbData.Title}</strong> 
                     </>
                     ):(
                         <Spinner />
                     )}
+                    <Form>
+                        <Form.Control className={`${appStyles.modalText} ${appStyles.verticalMargin}`} as='textarea' style={!recipient? {color: 'grey'}:{color: 'black'}} readOnly={recipient === null} value={message} onChange={handleMessageChange}>
+                        </Form.Control>
+                    </Form>
                 </Modal.Body>
                 {/* SEND AND CLOSE BUTTONS */}
                 <Modal.Footer>
-                    <Form>
-                        <Form.Label>Message</Form.Label>
-                        <Form.Control style={!recipient? {color: 'grey'}:{color: 'black'}} readOnly={recipient === null} value={message} onChange={handleMessageChange}>
-                        </Form.Control>
-                    </Form>
+
                     <ButtonGroup>
                         <Button variant="outline-secondary" className={appStyles.roundButton} onClick={handleCloseModal}>
                         <i className="fa-solid fa-xmark"></i> Close
