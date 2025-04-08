@@ -13,7 +13,7 @@ export const FriendActionProvider = ({ children }) => {
     const [updatedFriends, setUpdatedFriends] = useState(false)
     // Get current user for token in below functions
     const {currentUser} = useCurrentUser()
-
+    
     // Current user can delete a friend request 
     const deleteRequest = async (id) => {
         try {
@@ -35,23 +35,8 @@ export const FriendActionProvider = ({ children }) => {
         }
     }
 
-    // Takes in id and uses requests array to determine status of friend request
-    const getStatus = (id, requestIds, requests) => {
-        if (!requestIds.includes(id)) {
-            return {accepted: false, sent: false, recieved: false}
-        }
-        const sentFromId = requests.filter(request => request.sender._id === id)
-        const sentToId = requests.filter(request => request.reciever._id === id)
-        const request = sentFromId.length? sentFromId[0]: sentToId[0]
-        return {
-            accepted: request?.accepted || false,
-            sent: sentToId.length,
-            recieved: !sentToId.length
-        }
-    }
-
     return (
-        <FriendActionContext.Provider value={{updatedFriends, setUpdatedFriends, updateRequest, getStatus, deleteRequest}}>
+        <FriendActionContext.Provider value={{updatedFriends, setUpdatedFriends, updateRequest, deleteRequest}}>
             {children}
         </FriendActionContext.Provider>
     )

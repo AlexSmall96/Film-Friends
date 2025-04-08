@@ -1,18 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Button, ButtonGroup, Modal } from 'react-bootstrap';
 import { useFriendAction } from '../contexts/FriendActionContext';
 import { useFriendData } from '../contexts/FriendDataContext';
 import appStyles from '../App.module.css'
 import { useFilmPreview } from '../contexts/FilmPreviewContext';
-import useWindowDimensions from '../hooks/useWindowDimensions';
 import { useSaveFilmContext } from '../contexts/SaveFilmContext';
 import { useCurrentFilm } from '../contexts/CurrentFilmContext';
 
 const DeleteModal = ({message}) => {
     // Contexts
     const { deleteRequest } = useFriendAction()
-    const { requestId  } = useFriendData()
-    const { sender, resultId, mainFilm } = useFilmPreview()
+    const { request  } = useFriendData()
+    const { resultId, mainFilm } = useFilmPreview()
     const { deleteReccomendation } = useSaveFilmContext()
     const { currentReccomendation } = useCurrentFilm()
 
@@ -34,8 +33,6 @@ const DeleteModal = ({message}) => {
                 {/* MODAL BUTTONS */}
                 <Modal.Footer>
                     <ButtonGroup>
-
-                    
                     {text === 'Yes'?
                         <Button variant="outline-secondary" className={appStyles.roundButton} onClick={() => setShow(false)}>
                             No
@@ -44,7 +41,7 @@ const DeleteModal = ({message}) => {
                     <Button variant="outline-secondary" className={appStyles.roundButton} 
                         onClick={() => {
                             setText('Deleting...')
-                            !requestId? deleteReccomendation(mainFilm? currentReccomendation._id :resultId) : deleteRequest(requestId)
+                            resultId? deleteReccomendation(mainFilm? currentReccomendation._id :resultId) : deleteRequest(request._id)
                         }}
                     >
                         {text}
