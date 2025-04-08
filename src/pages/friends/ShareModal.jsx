@@ -6,7 +6,7 @@ import { useCurrentUser } from '../../contexts/CurrentUserContext';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { useFriendAction } from '../../contexts/FriendActionContext';
 import { useFriendData } from '../../contexts/FriendDataContext';
-
+import appStyles from '../../App.module.css'
 const ShareModal = () => {
     // Contexts
     const { currentUser } = useCurrentUser()
@@ -85,7 +85,7 @@ const ShareModal = () => {
     return (
         <> 
             {/* BUTTON TO SHOW MODAL */}
-            <Button style={{marginRight: '5px'}} variant="outline-secondary" onClick={handleShowModal}>
+            <Button className={appStyles.roundButton} size='sm' variant="outline-secondary" onClick={handleShowModal}>
                 <i className="fa-solid fa-clapperboard"></i> Share 
             </Button>   
             <Modal show={show} onHide={() => setShow(false)}>

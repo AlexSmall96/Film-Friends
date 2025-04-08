@@ -23,14 +23,9 @@ const DeleteModal = ({message}) => {
     return (
         <>  
             {/* BUTTONS TO SHOW MODAL */}
-            {!requestId?
-            <Button variant="outline-secondary" size="sm" className={`${appStyles.roundButton} ${appStyles.smallVerticalMargin}`} onClick={() => setShow(true)}>
-                Remove <i className="fa-regular fa-trash-can"></i>
+            <Button variant="outline-secondary" size="sm" className={`${appStyles.roundButton}`} onClick={() => setShow(true)}>
+                <i className="fa-regular fa-trash-can"></i> Remove 
             </Button>
-            :
-                <Button variant="outline-secondary" onClick={() => setShow(true)}>
-                    <i className="fa-regular fa-trash-can"></i> Remove
-                </Button>}
             {/* MODAL CONTENT */}
             <Modal show={show} onHide={() => setShow(false)}>
                 <Modal.Body>

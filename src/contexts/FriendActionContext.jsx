@@ -13,16 +13,6 @@ export const FriendActionProvider = ({ children }) => {
     const [updatedFriends, setUpdatedFriends] = useState(false)
     // Get current user for token in below functions
     const {currentUser} = useCurrentUser()
-    
-    // Sends a friend request to reciever
-    const sendRequest = async (reciever) => {
-        try {
-            await axiosReq.post('/requests', {reciever}, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
-            setUpdatedFriends(!updatedFriends)
-        } catch (err) {
-            console.log(err)
-        }
-    }
 
     // Current user can delete a friend request 
     const deleteRequest = async (id) => {
@@ -36,9 +26,9 @@ export const FriendActionProvider = ({ children }) => {
 
     // Updates the status of the friend request to accepted or declined
     const updateRequest = async (accepted, id) => {
-        const body = accepted? {accepted: true} : {declined: true}
+        const update = accepted? {accepted: true} : {declined: true}
         try {
-            await axiosReq.patch(`/requests/${id}`, body, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
+            await axiosReq.patch(`/requests/${id}`, update, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
             setUpdatedFriends(!updatedFriends)
         } catch (err) {
             console.log(err)
@@ -61,7 +51,7 @@ export const FriendActionProvider = ({ children }) => {
     }
 
     return (
-        <FriendActionContext.Provider value={{updatedFriends, setUpdatedFriends, sendRequest, updateRequest, getStatus, deleteRequest}}>
+        <FriendActionContext.Provider value={{updatedFriends, setUpdatedFriends, updateRequest, getStatus, deleteRequest}}>
             {children}
         </FriendActionContext.Provider>
     )

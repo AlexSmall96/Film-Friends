@@ -3,7 +3,7 @@
     border-style: solid;
     border-width: 0.1rem;
     padding: 10px 12px 12px 40px;
-    margin-left: 1px;
+    margin-left:20px;
     width: 100%;
     background-image: url('https://res.cloudinary.com/dojzptdbc/image/upload/v1733406769/mg_glass_p9yfjb.png');
     background-size: 15;
@@ -11,8 +11,55 @@
     background-repeat: no-repeat;
 }
 
+.searchBar{
+    height: 50px;
+    width: 100%;
+    border-color: lightgray;
+}
+
 .searchBar:focus{
     outline: none;
     border-color: rgb(28, 87, 212);
     box-shadow: 0 0 5px rgba(5, 53, 126, 0.5);
+}
+
+.userCard{
+    border-style: solid;
+    border-color: grey;
+    border-width: 1px;
+    box-shadow: 0 0 5px rgba(5, 53, 126, 0.5);
+    border-radius: 0.5rem;
+    margin-bottom: 20px;
+    width: 80%;
+    padding-bottom: 10px;
+}
+
+.results {
+    position: absolute;
+    z-index: 1000;
+    background-color: white;
+    width:80%;
+    max-width: 400px;
+    border: 1px solid #ccc;
+    border-radius: 1rem;
+    overflow-x: hidden;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.results div {
+    margin: 0;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-align: left;
+}
+
+.results div:hover {
+    cursor: pointer;
+    background-color: #f1f1f1;
+}
+
+.imageWrapper {
+    height: 170px;
 }
