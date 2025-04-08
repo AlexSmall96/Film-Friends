@@ -75,7 +75,7 @@ const Friends = () => {
                 const response = await axiosReq.get(`/requests/`, {headers: {'Authorization': `Bearer ${currentUser?.token}`}})
                 const filteredResponse = response.data.filter(request => filter === 'Friends'? request.accepted : filter === 'Pending Requests' ? !request.accepted : true)
                 const sortedResponse = sortBy(filteredResponse, (req) => sortRequest(req, sort))
-                setRequests(sortedResponse)
+                setRequests(sortedResponse.slice(9 * (currentPage - 1), 9 * currentPage))
                 const acceptedRequests = response.data.filter(request => request.accepted)
                 const pendingRequests = response.data.filter(request => !request.accepted )
                 setRequestIds({
@@ -83,13 +83,14 @@ const Friends = () => {
                     pending: pendingRequests.map(request => request.isSender? request.reciever._id : request.sender._id),
                 })
                 setTotalResults(sortedResponse.length)
+                setFinalPage(Math.ceil(0.1 * sortedResponse.length))
                 setHasLoaded({...hasLoaded, page: true, requests: true})
             } catch (err) {
                 // console.log(err)
             }
         }
         fetchRequests()
-    }, [filter, sort, currentUser?.user._id, currentUser?.token, updatedFriends])
+    }, [filter, sort, currentUser?.user._id, currentUser?.token, updatedFriends, currentPage])
 
     // Sends a friend request to reciever
     const sendRequest = async (reciever) => {
@@ -184,9 +185,7 @@ const Friends = () => {
                     requests.map(request =>
                         <Col md={3} sm={4} xs={6} key={request._id} className={`${appStyles.smallFont}`}>
                             <div className={styles.userCard}>
-                                
                                     <Image src={request.isSender? request.reciever.image : request.sender.image} fluid rounded/>
-                                
                                 <br />
                                 <a href={`/films/${request.isSender? request.reciever._id: request.sender._id}`} className={appStyles.smallFont}>{request.isSender? request.reciever.username : request.sender.username}</a>
                                 <FriendDataProvider requestId={request._id}>
