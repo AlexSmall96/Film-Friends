@@ -33,8 +33,8 @@ function App() {
 									<Route exact path='/friends/' render={() => <Friends />} />
 									<Route exact path='/reccomendations' render={() => <Results reccomendationsPage/>} />
 									<Route exact path='/profile/info' render={() => <Profile activeKey='first' />} />
-									<Route exact path='/profile/accountSecurity' render={() => <Profile activeKey='second' />} />
-									<Route exact path='/profile/deleteAccount' render={() => <Profile activeKey='third' />} />
+									<Route exact path='/account/security' render={() => <Profile activeKey='second' />} />
+									<Route exact path='/account/delete' render={() => <Profile activeKey='third' />} />
 									<Route exact path='/resetPassword/sendOTP/' render={() => <SendOTP resetPassword />} />
 									<Route exact path='/changeEmail/sendOTP' render={() => <SendOTP changeEmail />} />
 									<Route exact path='/resetPassword/' render={() => <ResetPassword />} />

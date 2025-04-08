@@ -65,28 +65,28 @@ const NavBar = () => {
                 <Nav.Link href={`/profile/info`} onClick={handleClick}>
                     <i className="fa-solid fa-user"></i> Profile
                 </Nav.Link>
-                <Nav.Link href={`/profile/accountSecurity`} onClick={handleClick}>
+                <Nav.Link href={`/account/security`} onClick={handleClick}>
                     <i className="fa-solid fa-shield-halved"></i> Acount Security
                 </Nav.Link>
                 <Nav.Link href='/' onClick={handleLogout} >
                     <i className="fa-solid fa-right-from-bracket"></i> Logout
                 </Nav.Link>
-                <Nav.Link href={`/profile/deleteAccount`} onClick={handleClick}>
+                <Nav.Link href={`/account/delete`} onClick={handleClick}>
                     <i className="fa-solid fa-trash-can"></i> Delete Account 
                 </Nav.Link>
             </div>
         ):(
             <NavDropdown title={<Image src={currentUser?.user.image} width={40} height={40} roundedCircle/>} id="basic-nav-dropdown" drop='start'>
-                <NavDropdown.Item href={`/profile/`}>
+                <NavDropdown.Item href={`/profile/info`}>
                     <i className="fa-solid fa-user"></i> Profile
                 </NavDropdown.Item>
-                <NavDropdown.Item href={`/profile/`}>
+                <NavDropdown.Item href={`/account/security`}>
                     <i className="fa-solid fa-shield-halved"></i> Acount Security
                 </NavDropdown.Item>
                 <NavDropdown.Item href='/' onClick={handleLogout}>
                     <i className="fa-solid fa-right-from-bracket"></i> Logout
                 </NavDropdown.Item>
-                <NavDropdown.Item href={`/profile/`}>
+                <NavDropdown.Item href={`/account/delete`}>
                     <i className="fa-solid fa-trash-can"></i> Delete Account
                 </NavDropdown.Item>
             </NavDropdown>
