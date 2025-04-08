@@ -114,7 +114,7 @@ const ShareModal = () => {
                                 <Row>
                                     <p>
                                         {films.length? 
-                                            sent? 'Film shared. Select another film to share.':'Select a film to share.'
+                                            sent? <><i className={`fa-solid fa-check ${appStyles.green}`}></i> Sent </> : ''
                                         :
                                         <>
                                             You've shared all your public films with {user.username}.
@@ -134,8 +134,8 @@ const ShareModal = () => {
                                             <Row>
                                             {films.map(
                                                 film => 
-                                                    <Col md={3} sm={4} xs={4} key={film._id} onClick={() => handleFilmChange(film._id)}>
-                                                        <Image src={film.Poster} width={100} thumbnail/>
+                                                    <Col md={3} sm={3} xs={4} key={film._id}className={appStyles.noPadding} onClick={() => handleFilmChange(film._id)}>
+                                                        <Image src={film.Poster} width={150} thumbnail/>
                                                     </Col>
                                             )}
                                             </Row>
