@@ -1,12 +1,11 @@
 import React, {useState, useEffect} from 'react';
-import { Button, Dropdown, DropdownButton, Modal, Form, Image, Spinner, ButtonGroup } from 'react-bootstrap';
-import User from '../../components/User';
+import { Button, Container, Row, Col, Dropdown, DropdownButton, Modal, Form, Image, Spinner, ButtonGroup } from 'react-bootstrap';
 import { axiosReq } from '../../api/axiosDefaults';
 import { useCurrentUser } from '../../contexts/CurrentUserContext';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
-import { useFriendAction } from '../../contexts/FriendActionContext';
 import { useFriendData } from '../../contexts/FriendDataContext';
 import appStyles from '../../App.module.css'
+
 const ShareModal = () => {
     // Contexts
     const { currentUser } = useCurrentUser()
@@ -88,22 +87,33 @@ const ShareModal = () => {
             <Button className={appStyles.roundButton} size='sm' variant="outline-secondary" onClick={handleShowModal}>
                 <i className="fa-solid fa-clapperboard"></i> Share 
             </Button>   
-            <Modal show={show} onHide={() => setShow(false)}>
+            <Modal show={show} onHide={() => setShow(false)} className={appStyles.modal}>
                 {/* MODAL HEADER */}
                 <Modal.Header>
-                    Sending to: <User data={user} searchResult={true}/>
+                    <Container>
+                        <Row>
+                            <Col>
+                                <i className="fa-regular fa-user"></i> <strong>{user.username}</strong>
+                            </Col>
+                        </Row>
+                        {selectedFilm? 
+                        <Row>
+                            <Col>
+                                <i className="fa-solid fa-film"></i> <strong>{selectedFilm?.Title}</strong>
+                            </Col>
+                        </Row>:''}
+                    </Container>
                 </Modal.Header>
                 {/* MODAL BODY */}  
                 <Modal.Body>
                     {hasLoaded? 
                         allFilms.length?
                             <>
-                                {selectedFilm  ? (
-                                    <span>Film Selected: <Image src={selectedFilm?.Poster} width={50}/></span>
-                                ):(
+                            <Container>
+                                <Row>
                                     <p>
                                         {films.length? 
-                                            sent? 'Film shared. Select another film to share.':'Select a film to share'
+                                            sent? 'Film shared. Select another film to share.':'Select a film to share.'
                                         :
                                         <>
                                             You've shared all your public films with {user.username}.
@@ -113,21 +123,28 @@ const ShareModal = () => {
                                         </>
                                         }
                                     </p>
-                                )}
-                                {films.length? (
-                                    <DropdownButton variant='outline-secondary' title={sort}>
-                                        <Dropdown.Item onClick={() => setSort('Last Updated')}>Last Updated</Dropdown.Item>
-                                        <Dropdown.Item onClick={() => setSort('A-Z')}>A-Z</Dropdown.Item>
-                                    </DropdownButton>
-                                ):('')}
-                                <div style={{height: '200px', overflowY: 'scroll'}}>
-                                {films.map(
-                                    film => 
-                                        <p key={film._id} onClick={() => handleFilmChange(film._id)}>
-                                            {film.Title}
-                                        </p>
-                                )}
-                                </div> 
+                                        {films.length? (
+                                            <DropdownButton variant='outline-secondary' size='sm' title={<><i className="fa-solid fa-sort"></i> {sort}</>}>
+                                                <Dropdown.Item onClick={() => setSort('Last Updated')}>Last Updated</Dropdown.Item>
+                                                <Dropdown.Item onClick={() => setSort('A-Z')}>A-Z</Dropdown.Item>
+                                            </DropdownButton>
+                                        ):('')}
+                                        <div className={`${appStyles.modalFilmList} ${appStyles.list} ${appStyles.verticalMargin}`}>
+                                            <Row>
+                                            {films.map(
+                                                film => 
+                                                    <Col md={3} sm={4} xs={4} key={film._id} onClick={() => handleFilmChange(film._id)}>
+                                                        <Image src={film.Poster} width={100} thumbnail/>
+                                                    </Col>
+                                            )}
+                                            </Row>
+                                        </div>                                     
+                                    <Form className={appStyles.verticalMargin}>
+                                         <Form.Label>Message:</Form.Label>
+                                        <Form.Control as="textarea" className={appStyles.modalText} style={!selectedFilm? {color: 'grey'}:{color: 'black',} } readOnly={selectedFilm === null} value={message} onChange={handleMessageChange} />
+                                    </Form>
+                                </Row>
+                                </Container>
                             </>
                         :   
                             <>
@@ -136,16 +153,13 @@ const ShareModal = () => {
                                     <Button onClick={() => history.push('/films')} variant='link'>Go to your watchlist</Button> to mark a film as public.
                                 </p>
                             </>
+                            
                     :
                         <Spinner />
                     }
                 </Modal.Body>
                 <Modal.Footer>
                     {/* MODAL BUTTONS */}
-                    <Form>
-                        <Form.Label>Message</Form.Label>
-                        <Form.Control style={!selectedFilm? {color: 'grey'}:{color: 'black'}} readOnly={selectedFilm === null} value={message} onChange={handleMessageChange} />
-                    </Form>
                     <ButtonGroup>
                         <Button variant="outline-secondary" className={appStyles.roundButton} onClick={() => setShow(false)}>
                             <i className="fa-solid fa-xmark"></i> Close
