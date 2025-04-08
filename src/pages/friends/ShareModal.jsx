@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { Button, Dropdown, DropdownButton, Modal, Form, Image, Spinner } from 'react-bootstrap';
+import { Button, Dropdown, DropdownButton, Modal, Form, Image, Spinner, ButtonGroup } from 'react-bootstrap';
 import User from '../../components/User';
 import { axiosReq } from '../../api/axiosDefaults';
 import { useCurrentUser } from '../../contexts/CurrentUserContext';
@@ -103,7 +103,7 @@ const ShareModal = () => {
                                 ):(
                                     <p>
                                         {films.length? 
-                                            'Film shared. Select another film to share.'
+                                            sent? 'Film shared. Select another film to share.':'Select a film to share'
                                         :
                                         <>
                                             You've shared all your public films with {user.username}.
@@ -146,12 +146,14 @@ const ShareModal = () => {
                         <Form.Label>Message</Form.Label>
                         <Form.Control style={!selectedFilm? {color: 'grey'}:{color: 'black'}} readOnly={selectedFilm === null} value={message} onChange={handleMessageChange} />
                     </Form>
-                    <Button variant="secondary" onClick={() => setShow(false)}>
-                        Close
-                    </Button>
-                    <Button disabled={selectedFilm === null} variant="primary" onClick={handleSend}>
-                        {sent && !hasLoaded ? 'Sending...' : 'Send'}
-                    </Button>
+                    <ButtonGroup>
+                        <Button variant="outline-secondary" className={appStyles.roundButton} onClick={() => setShow(false)}>
+                            <i className="fa-solid fa-xmark"></i> Close
+                        </Button>
+                        <Button disabled={selectedFilm === null} className={appStyles.roundButton} variant="outline-secondary" onClick={handleSend}>
+                            <i className="fa-solid fa-paper-plane"></i> {sent && !hasLoaded ? 'Sending...' : 'Send'}
+                        </Button>
+                    </ButtonGroup>
                 </Modal.Footer>
             </Modal>       
         </> 

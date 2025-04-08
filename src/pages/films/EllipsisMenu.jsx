@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Overlay, Dropdown, Modal, Button, Image, Form, Spinner} from 'react-bootstrap';
+import { Overlay, Dropdown, Modal, Button, Image, Form, Spinner, ButtonGroup} from 'react-bootstrap';
 import appStyles from '../../App.module.css'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { CustomMenu, CustomToggle } from '../../components/CustomDropDown'
@@ -187,12 +187,14 @@ const EllipsisMenu = ({updateViewingData}) => {
                         <Form.Control style={!recipient? {color: 'grey'}:{color: 'black'}} readOnly={recipient === null} value={message} onChange={handleMessageChange}>
                         </Form.Control>
                     </Form>
-                    <Button variant="secondary" onClick={handleCloseModal}>
-                        Close
-                    </Button>
-                    <Button disabled={recipient === null} variant="primary" onClick={handleSend}>
-                        {sent && !hasLoaded ? 'Sending...' : 'Send'}
-                    </Button>
+                    <ButtonGroup>
+                        <Button variant="outline-secondary" className={appStyles.roundButton} onClick={handleCloseModal}>
+                        <i className="fa-solid fa-xmark"></i> Close
+                        </Button>
+                        <Button disabled={recipient === null} variant="outline-secondary" className={appStyles.roundButton} onClick={handleSend}>
+                        <i className="fa-solid fa-paper-plane"></i> {sent && !hasLoaded ? 'Sending...' : 'Send'}
+                        </Button>
+                    </ButtonGroup>
                 </Modal.Footer>
             </Modal>
         </>

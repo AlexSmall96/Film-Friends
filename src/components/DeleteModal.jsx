@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Modal } from 'react-bootstrap';
+import { Button, ButtonGroup, Modal } from 'react-bootstrap';
 import { useFriendAction } from '../contexts/FriendActionContext';
 import { useFriendData } from '../contexts/FriendDataContext';
 import appStyles from '../App.module.css'
@@ -33,12 +33,15 @@ const DeleteModal = ({message}) => {
                 </Modal.Body>
                 {/* MODAL BUTTONS */}
                 <Modal.Footer>
+                    <ButtonGroup>
+
+                    
                     {text === 'Yes'?
-                        <Button variant="secondary" onClick={() => setShow(false)}>
+                        <Button variant="outline-secondary" className={appStyles.roundButton} onClick={() => setShow(false)}>
                             No
                         </Button>
                     :'' }
-                    <Button variant="primary" 
+                    <Button variant="outline-secondary" className={appStyles.roundButton} 
                         onClick={() => {
                             setText('Deleting...')
                             !requestId? deleteReccomendation(mainFilm? currentReccomendation._id :resultId) : deleteRequest(requestId)
@@ -46,6 +49,7 @@ const DeleteModal = ({message}) => {
                     >
                         {text}
                     </Button>
+                    </ButtonGroup>
                 </Modal.Footer>
             </Modal>       
         </> 
