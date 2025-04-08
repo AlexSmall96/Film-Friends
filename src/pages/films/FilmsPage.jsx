@@ -203,13 +203,15 @@ const FilmsPage = () => {
                     {allFilms.length?
                         <Row>
                             {smallScreen && !showMainFilm || !smallScreen? 
-                            <Col lg={{span:5, order: 1}} md={{span:4, order:1}} sm={{span: 12, order: 2}} className={`${styles.filmList} ${appStyles.greyBorder}`}>
+                            <Col lg={{span:5, order: 1}} md={{span:4, order:1}} sm={{span: 12, order: 2}} className={`${appStyles.greyBorder}`}>
                                 <Filters
                                     filter={filter}
                                     setFilter={setFilter}
                                     sort={sort}
                                     setSort={setSort}
                                 />
+                            
+                            <div className={`${appStyles.list} ${styles.filmList} ${appStyles.verticalMargin}`}>
                                 <div className={`${styles.filmListParent}`}>
                                     {filteredFilms.length?
                                     <Row>
@@ -223,6 +225,7 @@ const FilmsPage = () => {
                                     </Row>
                                     :'No films matching criteria.'}
                                 </div>
+                            </div>
                             </Col>:''}
                             <Col lg={7} md={8} sm={{span:12, order:1}}>
                                 {smallScreen && showMainFilm?
