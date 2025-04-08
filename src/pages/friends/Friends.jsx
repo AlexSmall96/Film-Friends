@@ -188,8 +188,8 @@ const Friends = () => {
                                     <Image src={request.isSender? request.reciever.image : request.sender.image} fluid rounded/>
                                 <br />
                                 <a href={`/films/${request.isSender? request.reciever._id: request.sender._id}`} className={appStyles.smallFont}>{request.isSender? request.reciever.username : request.sender.username}</a>
-                                <FriendDataProvider requestId={request._id}>
-                                    <FriendRequestButtons request={request} />
+                                <FriendDataProvider request={request}>
+                                    <FriendRequestButtons />
                                 </FriendDataProvider>
                             </div>
                         </Col>

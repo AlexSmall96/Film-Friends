@@ -9,7 +9,8 @@ import appStyles from '../../App.module.css'
 const ShareModal = () => {
     // Contexts
     const { currentUser } = useCurrentUser()
-    const { user } = useFriendData()
+    const { request } = useFriendData()
+    const user = request.isSender? request.reciever : request.sender
     // Hooks
     const history = useHistory()
     // Initialize state variables

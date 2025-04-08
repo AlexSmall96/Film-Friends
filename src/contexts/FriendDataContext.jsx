@@ -6,10 +6,10 @@ Wraps around the search results list and friends list in Friends.jsx
 */ 
 export const FriendDataContext = createContext()
 
-export const FriendDataProvider = ({ user, requestId, children }) => {
+export const FriendDataProvider = ({ request, children }) => {
 
     return (
-        <FriendDataContext.Provider value={{user, requestId}}>
+        <FriendDataContext.Provider value={{request}}>
             {children}
         </FriendDataContext.Provider>
     )

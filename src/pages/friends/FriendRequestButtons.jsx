@@ -3,7 +3,7 @@ import { Button, ButtonGroup } from 'react-bootstrap';
 import DeleteModal from '../../components/DeleteModal';
 import ShareModal from './ShareModal';
 import { useFriendAction } from '../../contexts/FriendActionContext';
-import { FriendDataProvider, useFriendData } from '../../contexts/FriendDataContext';
+import { useFriendData } from '../../contexts/FriendDataContext';
 import { FilmPreviewProvider } from '../../contexts/FilmPreviewContext';
 import appStyles from '../../App.module.css'
 /* 
@@ -11,9 +11,10 @@ Component used in friends page
 Displays appropriate text and buttons, dependent on status of friend request
 Changes what is displayed depending on wether the component is being used in search results or friends list
 */
-const FriendRequestButtons = ({request}) => {
+const FriendRequestButtons = () => {
 
-    const {accepted, isSender, reciever} = request
+    const { request } = useFriendData()
+    const { accepted, isSender, reciever } = request
     const { updateRequest } = useFriendAction()
 
     return (
@@ -33,9 +34,9 @@ const FriendRequestButtons = ({request}) => {
                             }
                         </p>
                         <ButtonGroup>
-                            <FriendDataProvider user={isSender? request.reciever : request.sender}>
-                                <ShareModal />
-                            </FriendDataProvider>
+                            {accepted? 
+                                <ShareModal /> 
+                            : ''}
                             <FilmPreviewProvider>
                                 <DeleteModal message={`Are you sure you want to remove ${reciever.username} as a friend?`} />
                             </FilmPreviewProvider>
