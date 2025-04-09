@@ -1,27 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { axiosReq } from '../../api/axiosDefaults';
 import { useCurrentUser } from '../../contexts/CurrentUserContext';
-import { Button, ButtonGroup, Container, Dropdown, DropdownButton, Row, Col, Form, Spinner, Offcanvas, Image, Card} from 'react-bootstrap';
-import User from '../../components/User';
+import { Button, ButtonGroup, Container, Dropdown, DropdownButton, Row, Col, Spinner, Image} from 'react-bootstrap';
 import FriendRequestButtons from './FriendRequestButtons'
 import sortBy from 'array-sort-by'
 import { FriendDataProvider } from '../../contexts/FriendDataContext';
 import { useFriendAction } from '../../contexts/FriendActionContext';
-import useWindowDimensions from '../../hooks/useWindowDimensions';
 import appStyles from '../../App.module.css'
 import styles from '../../styles/Friends.module.css'
-import homeStyles from '../../styles/Home.module.css'
 import { useRedirect } from '../../hooks/useRedirect';
 import ResultsPagination from '../../components/ResultsPagination';
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+
 const Friends = () => {
     useRedirect()
     // Hooks
-    const {height} = useWindowDimensions()
-    const history = useHistory()
     // Contexts
     const { currentUser } = useCurrentUser()
-    const { updatedFriends, setUpdatedFriends, getStatus } = useFriendAction()
+    const { updatedFriends, setUpdatedFriends } = useFriendAction()
     // Initialize state variables
     const [requests, setRequests] = useState([])
     const [requestIds, setRequestIds] = useState({accepted: [], pending: []})
@@ -46,7 +41,7 @@ const Friends = () => {
         if (filter === 'All'){
             return true
         }
-        return filter === 'Accepted Requests' ? req.accepted : !req.accepted
+        return filter === 'Friends' ? req.accepted : !req.accepted
     }
 
     useEffect(() => {
@@ -73,7 +68,7 @@ const Friends = () => {
         const fetchRequests = async () => {
             try {
                 const response = await axiosReq.get(`/requests/`, {headers: {'Authorization': `Bearer ${currentUser?.token}`}})
-                const filteredResponse = response.data.filter(request => filter === 'Friends'? request.accepted : filter === 'Pending Requests' ? !request.accepted : true)
+                const filteredResponse = response.data.filter(request => checkRequest(request))
                 const sortedResponse = sortBy(filteredResponse, (req) => sortRequest(req, sort))
                 setRequests(sortedResponse.slice(9 * (currentPage - 1), 9 * currentPage))
                 const acceptedRequests = response.data.filter(request => request.accepted)
@@ -183,7 +178,7 @@ const Friends = () => {
             <Row className={appStyles.verticalMargin}>
                 {requests.length? 
                     requests.map(request =>
-                        <Col xl={2} lg={2} md={3} sm={4} xs={4} key={request._id} className={`${appStyles.smallFont} ${styles.userCardWrapper}`}>
+                        <Col xl={2} lg={2} md={3} sm={4} xs={6} key={request._id} className={`${appStyles.smallFont} ${styles.userCardWrapper}`}>
                             <div className={styles.userCard}>
                                 <div className={styles.userImageWrapper}>
                                     <Image src={request.isSender? request.reciever.image : request.sender.image} fluid rounded  />

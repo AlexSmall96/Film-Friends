@@ -44,6 +44,13 @@
     overflow-y: hidden;
 }
 
+@media only screen and (max-width: 1199px) and (min-width: 992px) {
+    .userImageWrapper {
+        height: 160px;
+        overflow-y: hidden;
+    }
+}
+
 .results {
     position: absolute;
     z-index: 1000;
