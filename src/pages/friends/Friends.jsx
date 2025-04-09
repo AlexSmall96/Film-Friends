@@ -112,89 +112,88 @@ const Friends = () => {
     document.addEventListener('mouseup', handleClick)
 
     return (
-        <Container className={`${appStyles.bigVerticalMargin}`}>
-            <form>
-                <Row >
-                    <Col xs={10} sm={10} md={11} className={`${appStyles.noPadding}`}>
-                    {/* SEARCH BAR  */}
-                        <input 
-                            type='search' 
-                            placeholder='Search for users' 
-                            className={styles.searchBar}
-                            value={search}
-                            onChange={handleChange}
-                        />
-                    </Col>
-                </Row>
-                <Row>
-                    <Col xs={10} sm={10} md={11} className={`${appStyles.noPadding} ${styles.results} ${appStyles.noBorder}`}>
-                        {results.length && showResults? 
-                            results.map(result =>
-                                <Row key={result._id} className={appStyles.smallFont}>
-                                    <Col md={2} className='result'>
-                                        <Image src={result.image} width={40} className='result' roundedCircle />
-                                    </Col>
-                                    <Col md={3} className='result'>
-                                        <a href={`/films/${result._id}`} className='result'>{result.username}</a>
-                                    </Col>
-                                    <Col md={7} className='result'>
-                                        {requestIds.accepted.includes(result._id)? 
-                                            <><i className="fa-solid fa-user-group"></i> Friends</>
-                                        :
-                                            requestIds.pending.includes(result._id)?
-                                               <><i className="fa-solid fa-envelope-circle-check"></i> Friend request pending</>
-                                            :
-                                        <Button onClick={() => sendRequest(result._id)} variant='outline-secondary' size='sm' className={`${appStyles.roundButton} result`}>Send Friend Request</Button>}
-                                    </Col>
-                                </Row>
-                            )
-                        :''}
-                    </Col>
-                </Row>
-            </form>
-            <ButtonGroup className={appStyles.bigVerticalMargin}>
-                <DropdownButton as={ButtonGroup} variant='outline-secondary' title={<><i className="fa-solid fa-filter"></i> {filter}</>}>
-                    <Dropdown.Item onClick={() => setFilter('All')}>All</Dropdown.Item>
-                    <Dropdown.Item onClick={() => setFilter('Friends')}>Friends</Dropdown.Item>
-                    <Dropdown.Item onClick={() => setFilter('Pending Requests')}>Pending Requests</Dropdown.Item>
-                </DropdownButton> 
-                <DropdownButton as={ButtonGroup} variant='outline-secondary' title={<><i className="fa-solid fa-sort"></i> {sort}</>}>
-                    <Dropdown.Item onClick={() => setSort('A-Z')}>A-Z</Dropdown.Item>
-                    <Dropdown.Item onClick={() => setSort('Last Updated')}>Last Updated</Dropdown.Item>
-                </DropdownButton>
-            </ButtonGroup>
-            {/* PAGINATION MESSAGE */}
-            <p>
-                {currentPage !== finalPage ? (
-                    `Showing results ${10 * (currentPage - 1) + 1} to ${10 * (currentPage - 1) + 10} of ${totalResults}`
-                ):(
-                    `Showing results ${10 * (currentPage - 1) + 1} to ${totalResults} of ${totalResults}`
-                )}
-            </p>
-            {/* PAGINATION BUTTONS */}
-            {finalPage > 1 ? 
-                <ResultsPagination currentPage={currentPage} finalPage={finalPage} setCurrentPage={setCurrentPage}/>                       
-            : '' }
-            <Row className={appStyles.verticalMargin}>
-                {requests.length? 
-                    requests.map(request =>
-                        <Col xl={2} lg={2} md={3} sm={4} xs={6} key={request._id} className={`${appStyles.smallFont} ${styles.userCardWrapper}`}>
-                            <div className={styles.userCard}>
-                                <div className={styles.userImageWrapper}>
-                                    <Image src={request.isSender? request.reciever.image : request.sender.image} fluid rounded  />
-                                </div>
-                                <br />
-                                <a href={`/films/${request.isSender? request.reciever._id: request.sender._id}`} className={appStyles.smallFont}>{request.isSender? request.reciever.username : request.sender.username}</a>
-                                <FriendDataProvider request={request}>
-                                    <FriendRequestButtons />
-                                </FriendDataProvider>
-                            </div>
+            <Container className={appStyles.bigVerticalMargin}>
+                <form>
+                    <Row>
+                        <Col xs={10} sm={10} md={11} className={`${appStyles.noPadding}`}>
+                        {/* SEARCH BAR  */}
+                            <input 
+                                type='search' 
+                                placeholder='Search for users' 
+                                className={styles.searchBar}
+                                value={search}
+                                onChange={handleChange}
+                            />
                         </Col>
-                    )
-                :''}
-            </Row>
-
-        </Container>
+                    </Row>
+                    <Row>
+                        <Col xs={10} sm={10} md={11} className={`${appStyles.noPadding} ${styles.results} ${!showResults? styles.noBorder:' '} ${appStyles.list}`}>
+                            {results.length && showResults? 
+                                results.map(result =>
+                                    <Row key={result._id} className={appStyles.smallFont}>
+                                        <Col md={2} xs={2} className='result'>
+                                            <Image src={result.image} width={40} className='result' roundedCircle />
+                                        </Col>
+                                        <Col md={3} xs={3} className='result'>
+                                            <a href={`/films/${result._id}`} className='result'>{result.username}</a>
+                                        </Col>
+                                        <Col md={7} xs={7} className='result'>
+                                            {requestIds.accepted.includes(result._id)? 
+                                                <><i className="fa-solid fa-user-group"></i> Friends</>
+                                            :
+                                                requestIds.pending.includes(result._id)?
+                                                <><i className="fa-solid fa-envelope-circle-check"></i> Friend request pending</>
+                                                :
+                                            <Button onClick={() => sendRequest(result._id)} variant='outline-secondary' size='sm' className={`${appStyles.roundButton} result`}>Send Friend Request</Button>}
+                                        </Col>
+                                    </Row>
+                                )
+                            :''}
+                        </Col>
+                    </Row>
+                </form>
+                <ButtonGroup className={appStyles.bigVerticalMargin}>
+                    <DropdownButton as={ButtonGroup} variant='outline-secondary' title={<><i className="fa-solid fa-filter"></i> {filter}</>}>
+                        <Dropdown.Item onClick={() => setFilter('All')}>All</Dropdown.Item>
+                        <Dropdown.Item onClick={() => setFilter('Friends')}>Friends</Dropdown.Item>
+                        <Dropdown.Item onClick={() => setFilter('Pending Requests')}>Pending Requests</Dropdown.Item>
+                    </DropdownButton> 
+                    <DropdownButton as={ButtonGroup} variant='outline-secondary' title={<><i className="fa-solid fa-sort"></i> {sort}</>}>
+                        <Dropdown.Item onClick={() => setSort('A-Z')}>A-Z</Dropdown.Item>
+                        <Dropdown.Item onClick={() => setSort('Last Updated')}>Last Updated</Dropdown.Item>
+                    </DropdownButton>
+                </ButtonGroup>
+                {/* PAGINATION MESSAGE */}
+                <p>
+                    {currentPage !== finalPage ? (
+                        `Friends: Showing results ${10 * (currentPage - 1) + 1} to ${10 * (currentPage - 1) + 10} of ${totalResults}`
+                    ):(
+                        `Friends: Showing results ${10 * (currentPage - 1) + 1} to ${totalResults} of ${totalResults}`
+                    )}
+                </p>
+                {/* PAGINATION BUTTONS */}
+                {finalPage > 1 ? 
+                    <ResultsPagination currentPage={currentPage} finalPage={finalPage} setCurrentPage={setCurrentPage}/>                       
+                : '' }
+                <Row className={`${appStyles.verticalMargin} ${appStyles.list} ${styles.friendsList}`}>
+                    {requests.length? 
+                        requests.map(request =>
+                            <Col xl={2} lg={2} md={3} sm={4} xs={6} key={request._id} className={`${appStyles.smallFont} ${styles.userCardWrapper}`}>
+                                <div className={styles.userCard}>
+                                    <div className={styles.userImageWrapper}>
+                                        <Image src={request.isSender? request.reciever.image : request.sender.image} fluid rounded  />
+                                    </div>
+                                    <br />
+                                    <a href={`/films/${request.isSender? request.reciever._id: request.sender._id}`} className={appStyles.smallFont}>{request.isSender? request.reciever.username : request.sender.username}</a>
+                                    <FriendDataProvider request={request}>
+                                        <FriendRequestButtons />
+                                    </FriendDataProvider>
+                                </div>
+                            </Col>
+                        )
+                    :''}
+                </Row>
+            </Container>
     )
 }
 export default Friends;
