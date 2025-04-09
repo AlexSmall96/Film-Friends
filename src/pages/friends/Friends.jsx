@@ -10,10 +10,12 @@ import appStyles from '../../App.module.css'
 import styles from '../../styles/Friends.module.css'
 import { useRedirect } from '../../hooks/useRedirect';
 import ResultsPagination from '../../components/ResultsPagination';
+import useWindowDimensions from '../../hooks/useWindowDimensions';
 
 const Friends = () => {
     useRedirect()
     // Hooks
+    const { width } = useWindowDimensions()
     // Contexts
     const { currentUser } = useCurrentUser()
     const { updatedFriends, setUpdatedFriends } = useFriendAction()
@@ -27,10 +29,10 @@ const Friends = () => {
     const [currentPage, setCurrentPage] = useState(1)
     const [finalPage, setFinalPage] = useState(1)
     const [totalResults, setTotalResults] = useState(0)
-    const [hasLoaded, setHasLoaded] = useState({
-        page: false, search: true, requests: false
-    })
+    const [hasLoaded, setHasLoaded] = useState(false)
+    const [hasFriends, setHasFriends] = useState(false)
     const [search, setSearch] = useState('')
+    const [scroll, setScroll] = useState(false)
     
     // Callback function to sort requests based on sort variable
     const sortRequest = (req, sort) => {
@@ -51,13 +53,9 @@ const Friends = () => {
                 const response = await axiosReq.get(`/users/?username=${search}`, {headers: {'Authorization': `Bearer ${currentUser?.token}`}})
                 setResults(search === '' ? [] : response.data)
                 setShowResults(true)
-                setHasLoaded({...hasLoaded, search: true})
             } catch (err) {
                 // console.log(err)
             }
-        }
-        if (search !== ''){
-            setHasLoaded({...hasLoaded, search: false})
         }
         fetchUsers()
     }, [search, currentUser?.user._id, currentUser?.token])
@@ -68,6 +66,7 @@ const Friends = () => {
         const fetchRequests = async () => {
             try {
                 const response = await axiosReq.get(`/requests/`, {headers: {'Authorization': `Bearer ${currentUser?.token}`}})
+                setHasFriends(response.data.length)
                 const filteredResponse = response.data.filter(request => checkRequest(request))
                 const sortedResponse = sortBy(filteredResponse, (req) => sortRequest(req, sort))
                 setRequests(sortedResponse.slice(9 * (currentPage - 1), 9 * currentPage))
@@ -79,13 +78,30 @@ const Friends = () => {
                 })
                 setTotalResults(sortedResponse.length)
                 setFinalPage(Math.ceil(0.1 * sortedResponse.length))
-                setHasLoaded({...hasLoaded, page: true, requests: true})
+                setHasLoaded(true)
+
             } catch (err) {
                 // console.log(err)
             }
         }
         fetchRequests()
     }, [filter, sort, currentUser?.user._id, currentUser?.token, updatedFriends, currentPage])
+
+    useEffect(() => {
+        const adjustScroll = () => {
+            if (width >= 992){
+                setScroll(requests.length > 6)
+            }
+            else if (width >= 768){
+                setScroll(requests.length > 4)
+            } else  if (width >= 576){
+                setScroll(requests.length > 3)
+            } else {
+                setScroll(requests.length > 2)
+            }
+    }
+    adjustScroll()
+    }, [requests, width])
 
     // Sends a friend request to reciever
     const sendRequest = async (reciever) => {
@@ -113,9 +129,10 @@ const Friends = () => {
 
     return (
             <Container className={appStyles.bigVerticalMargin}>
+                {hasLoaded?
+                <>
                 <form>
                     <Row>
-                        <Col xs={10} sm={10} md={11} className={`${appStyles.noPadding}`}>
                         {/* SEARCH BAR  */}
                             <input 
                                 type='search' 
@@ -124,7 +141,6 @@ const Friends = () => {
                                 value={search}
                                 onChange={handleChange}
                             />
-                        </Col>
                     </Row>
                     <Row>
                         <Col xs={10} sm={10} md={11} className={`${appStyles.noPadding} ${styles.results} ${!showResults? styles.noBorder:' '} ${appStyles.list}`}>
@@ -139,7 +155,7 @@ const Friends = () => {
                                         </Col>
                                         <Col md={7} xs={7} className='result'>
                                             {requestIds.accepted.includes(result._id)? 
-                                                <><i className="fa-solid fa-user-group"></i> Friends</>
+                                                <><i className="fa-solid fa-user-group"></i> Friends </>  
                                             :
                                                 requestIds.pending.includes(result._id)?
                                                 <><i className="fa-solid fa-envelope-circle-check"></i> Friend request pending</>
@@ -152,6 +168,8 @@ const Friends = () => {
                         </Col>
                     </Row>
                 </form>
+                {hasFriends?
+                <>
                 <ButtonGroup className={appStyles.bigVerticalMargin}>
                     <DropdownButton as={ButtonGroup} variant='outline-secondary' title={<><i className="fa-solid fa-filter"></i> {filter}</>}>
                         <Dropdown.Item onClick={() => setFilter('All')}>All</Dropdown.Item>
@@ -164,18 +182,20 @@ const Friends = () => {
                     </DropdownButton>
                 </ButtonGroup>
                 {/* PAGINATION MESSAGE */}
-                <p>
-                    {currentPage !== finalPage ? (
-                        `Friends: Showing results ${10 * (currentPage - 1) + 1} to ${10 * (currentPage - 1) + 10} of ${totalResults}`
-                    ):(
-                        `Friends: Showing results ${10 * (currentPage - 1) + 1} to ${totalResults} of ${totalResults}`
-                    )}
-                </p>
+                {requests.length?
+                    <p>
+                        {currentPage !== finalPage ? (
+                            `Showing ${filter === 'All'? 'all requests': filter.toLocaleLowerCase()} ${10 * (currentPage - 1) + 1} to ${10 * (currentPage - 1) + 10} of ${totalResults}`
+                        ):(
+                            `Showing ${filter === 'All'? 'all requests': filter.toLocaleLowerCase()} ${10 * (currentPage - 1) + 1} to ${totalResults} of ${totalResults}`
+                        )}
+                    </p>
+                :<p>No requests matching current criteria</p>}
                 {/* PAGINATION BUTTONS */}
                 {finalPage > 1 ? 
                     <ResultsPagination currentPage={currentPage} finalPage={finalPage} setCurrentPage={setCurrentPage}/>                       
                 : '' }
-                <Row className={`${appStyles.verticalMargin} ${appStyles.list} ${styles.friendsList}`}>
+                <Row className={`${appStyles.verticalMargin} ${scroll? appStyles.list: ''} ${styles.friendsList}`}>
                     {requests.length? 
                         requests.map(request =>
                             <Col xl={2} lg={2} md={3} sm={4} xs={6} key={request._id} className={`${appStyles.smallFont} ${styles.userCardWrapper}`}>
@@ -193,7 +213,14 @@ const Friends = () => {
                         )
                     :''}
                 </Row>
-            </Container>
+                </>:
+                <div className={styles.friendsImage}>
+                    <Image src='https://res.cloudinary.com/dojzptdbc/image/upload/v1744199262/FriendsPlus_jbxswo.png' fluid />
+                    <p>It looks like you don't have any friends yet. Search to connect with other users!</p>
+                </div>}
+                </>
+            :<Spinner />}
+        </Container>
     )
 }
 export default Friends;
