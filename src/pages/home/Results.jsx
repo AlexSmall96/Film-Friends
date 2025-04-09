@@ -31,7 +31,7 @@ const Results = ({reccomendationsPage}) => {
     const [sort, setSort] = useState('Last Sent')
     const [totalResults, setTotalResults] = useState(0)
     const [error, setError] = useState('')
-    const [hasLoaded, setHasLoaded] = useState(false)
+    const [hasLoaded, setHasLoaded] = useState(!reccomendationsPage)
     const [hasLoadedMainFilm, setHasLoadedMainFilm] = useState(false)
     const [usernames, setUsernames] = useState([])
     const [hasUpdated, setHasUpdated] = useState(true)
@@ -39,6 +39,7 @@ const Results = ({reccomendationsPage}) => {
     const { updated } = useSaveFilmContext()
     const { currentFilmIds, omdbData, setOmdbData, currentReccomendation } = useCurrentFilm()
     const { deleted, showMainFilm, setShowMainFilm } = useSaveFilmContext()
+    const [hasRecs, setHasRecs] = useState(false)
 
     useEffect(() => {
         // Gets the imdbIds of the users saved films, to determine which buttons should appear next to film result
@@ -76,6 +77,7 @@ const Results = ({reccomendationsPage}) => {
         const fetchReccomendations = async () => {
             const response = await axiosReq.get(`/reccomendations/`, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
             const allReccomendations = response.data.filter(rec => !rec.isSender)
+            setHasRecs(allReccomendations.length)
             const filteredReccomendations = allReccomendations.filter(rec => filter === 'All' ? true : rec.sender.username === filter)
             const sortedReccomendations = sort === 'Film Title' ? sortBy(filteredReccomendations, (rec) => rec.film.Title) : filteredReccomendations
             setResults(sortedReccomendations.slice(9 * (currentPage - 1), 9 * currentPage))
@@ -94,7 +96,9 @@ const Results = ({reccomendationsPage}) => {
     }, [filter, sort, currentUser?.token, deleted, currentPage])
 
     return (
-        <>  
+        hasLoaded?  
+            hasRecs || !reccomendationsPage?
+            <> 
             <div className={
                 reccomendationsPage? 
                     finalPage > 1? reccStyles.wrapper : reccStyles.wrapperNoPagination  
@@ -220,11 +224,17 @@ const Results = ({reccomendationsPage}) => {
                             !reccomendationsPage? 
                                 <Image alt='A close up of film tape' width={400} src='https://res.cloudinary.com/dojzptdbc/image/upload/v1729270408/movie2_h1bnwo.png'/>
                             :''
+
                         )
                     )}
             </div>
-               
-        </>
+            </>:             
+            <div className={reccStyles.noRecsImage}>
+                <Image src='https://res.cloudinary.com/dojzptdbc/image/upload/v1744202296/norecs_ci4bj0.png' fluid />
+                <p>{`It looks like you don't have any reccomendations yet.`}</p>
+                <a href='/friends'>Find more friends here!</a>
+            </div>     
+        :(<Spinner className={appStyles.bigVerticalMargin} />)
     )
 }
 
