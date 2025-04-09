@@ -1,9 +1,11 @@
 import React, {useState} from 'react';
-import { Form, Button } from 'react-bootstrap';
+import { Form, Button, Image } from 'react-bootstrap';
 import { axiosReq } from '../../api/axiosDefaults';
 import { useRecoveryData} from '../../contexts/RecoveryDataContext';
 import { useCurrentUser } from '../../contexts/CurrentUserContext';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import styles from '../../styles/Profile.module.css'
+import appStyles from '../../App.module.css'
 
 const ResetPassword = () => {
     const [password, setPassword] = useState('')
@@ -19,24 +21,27 @@ const ResetPassword = () => {
     const handleSubmit = async (event) => {
         event.preventDefault()
         try {
-            await axiosReq.patch('/users/resetPassword', {email: recoveryEmail})
+            await axiosReq.patch('/users/resetPassword', {password, email: recoveryEmail.email})
             localStorage.removeItem('recoveryEmail')
             setSuccess(true)
         } catch (err) {
-            setError(err.response.data.errors.password.message)
+            setError(err?.response?.data?.errors?.password?.message)
         }
     }
 
     return (
-        <>
+        <>            
+            <div className={styles.otpImage}>
+                <Image src='https://res.cloudinary.com/dojzptdbc/image/upload/v1744208978/shield2_la4qcz.png' fluid/>
+            </div>
             {!success?
                 <Form onSubmit={handleSubmit}>
                     <Form.Group>
                         <Form.Label>OTP passcode correct. Enter new password:</Form.Label>
-                        <Form.Control onChange={handleChange} value={password} type='password' placeholder='password'/>
+                        <Form.Control className={styles.form} onChange={handleChange} value={password} type='password' placeholder='password'/>
                     </Form.Group>
                     <p>{error || ''}</p>
-                    <Button type='submit'>Update Password</Button> 
+                    <Button variant='outline-secondary' className={appStyles.roundButton} type='submit'>Update Password</Button> 
                 </Form>
             :
                 <>

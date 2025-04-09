@@ -1,10 +1,11 @@
 import React, {useState} from 'react';
-import { Form, Button, Spinner } from 'react-bootstrap';
+import { Form, Button, Spinner, Image, ButtonGroup, InputGroup } from 'react-bootstrap';
 import { axiosReq } from '../../api/axiosDefaults';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { useRecoveryData } from '../../contexts/RecoveryDataContext';
 import { useCurrentUser } from '../../contexts/CurrentUserContext';
-
+import styles from '../../styles/Profile.module.css'
+import appStyles from '../../App.module.css'
 /* 
 Sends a OTP passcode to the email address provide by the user and verifies OTP. 
 Is used to reset password, or update email address. 
@@ -101,6 +102,10 @@ const SendOTP = ({resetPassword}) => {
     }
 
     return (
+        <>
+            <div className={styles.otpImage}>
+                <Image src='https://res.cloudinary.com/dojzptdbc/image/upload/v1744206272/shield1_zsajlz.png' fluid/>
+            </div>
         <Form onSubmit={handleSubmit}>
             {hasLoaded?
                 responseMessage?(
@@ -108,35 +113,45 @@ const SendOTP = ({resetPassword}) => {
                         {!verified?
                             <Form.Group>
                                 <Form.Label>{responseMessage}</Form.Label>
-                                <Form.Control onChange={handleChange} value={formData.OTP} name='OTP' type='text' placeholder='your passcode'/>
+                                <Form.Control onChange={handleChange} value={formData.OTP} className={styles.passcodeInput} name='OTP' type='text' placeholder='* * * * * *' maxLength='6'/>
                                 {!expired?
                                     <>
-                                        <Button onClick={checkPasscode} type='button'>Verify</Button>
-                                        Didn't recieve your passcode?                                
+                                        <Button onClick={checkPasscode} variant='outline-secondary' className={`${appStyles.roundButton} ${appStyles.verticalMargin}`} type='button'>Verify</Button>
+                                        <br />                             
                                     </> 
                                 :''}
-                                    <Button type='submit'>Resend</Button>
+                                <br />
+                                <ButtonGroup>
+                                {!resetPassword?<Button variant='outline-secondary' className={appStyles.roundButton} onClick={() => history.goBack()}  type='button'><i className="fa-solid fa-user"></i> Back to Profile</Button> : ''}
+                                    <Button type='submit' variant='outline-secondary' className={`${appStyles.roundButton}`}><i className="fa-solid fa-paper-plane"></i> Resend</Button>
+                                </ButtonGroup>
                             </Form.Group>  
                         :''}
                         {verified? responseMessage : ''}
-                        {!resetPassword? 
-                            <Button onClick={() => history.goBack()} type='button'>Back to Profile</Button> 
-                        : ''}
+                        {!resetPassword && verified?
+                        <>
+                            <br />
+                            <Button variant='outline-secondary' className={`${appStyles.roundButton} ${appStyles.verticalMargin}`} onClick={() => history.goBack()}  type='button'><i className="fa-solid fa-user"></i> Back to Profile</Button>
+                        </>:''}
                     </>
                 ):(
                     <>
                         <Form.Group>
                             <Form.Label>{prompt}</Form.Label>
-                            <Form.Control onChange={handleChange} value={formData.email} name='email' type='email' placeholder='youremail'/>
+                            <Form.Control onChange={handleChange} value={formData.email} className={styles.form} name='email' type='email' placeholder='youremail'/>
                         </Form.Group>
-                        <p>{error || ''}</p>
-                        {!resetPassword? <Button onClick={() => history.goBack()}  type='button'>Back to Profile</Button> : ''}
-                        <Button type='submit'>Send</Button>
+                        <p className={`${appStyles.verticalMargin} ${appStyles.smallFont}`}>{error || ''}</p>
+                         
+                        <ButtonGroup>
+                        {!resetPassword && !verified?<Button variant='outline-secondary' className={appStyles.roundButton} onClick={() => history.goBack()}  type='button'><i className="fa-solid fa-user"></i> Back to Profile</Button> : ''}
+                            <Button variant='outline-secondary' className={appStyles.roundButton} type='submit'><i className="fa-solid fa-paper-plane"></i> Send</Button>
+                        </ButtonGroup>
                     </>
                 )
             : (<Spinner />)
             }
         </Form>
+        </>
     )
 }
 
