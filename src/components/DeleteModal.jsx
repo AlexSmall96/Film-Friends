@@ -22,7 +22,7 @@ const DeleteModal = ({message}) => {
     return (
         <>  
             {/* BUTTONS TO SHOW MODAL */}
-            <Button variant="outline-secondary" size="sm" className={`${appStyles.roundButton}`} onClick={() => setShow(true)}>
+            <Button variant="outline-secondary" size="sm" className={`${appStyles.roundButton} ${resultId? appStyles.smallVerticalMargin: ''}`} onClick={() => setShow(true)}>
                 <i className="fa-regular fa-trash-can"></i> Remove 
             </Button>
             {/* MODAL CONTENT */}
