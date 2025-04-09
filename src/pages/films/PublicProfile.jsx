@@ -87,15 +87,7 @@ const PublicProfile = ({profile, filmStats, showStats, similarity, directorCount
                         }
                     </Col>            
                 </>
-            :
-                <>
-                    {isOwner? 
-                        <Col md={3} xs={3}>
-                            You don't have any films saved yet.<Button href={`/`} variant='link'>Click here to browse films</Button> 
-                        </Col>
-                    : 
-                        `${profile.username} doesn't have any films saved yet`}
-                </>
+            :''
             } 
         </Row>
     )

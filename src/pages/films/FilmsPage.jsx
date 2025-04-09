@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Container, Row, Col, Spinner } from 'react-bootstrap'
+import { Button, Container, Row, Col, Spinner, Image } from 'react-bootstrap'
 import { useParams } from 'react-router-dom/cjs/react-router-dom.min';
 import { axiosReq } from '../../api/axiosDefaults';
 import { useCurrentUser } from '../../contexts/CurrentUserContext';
@@ -22,7 +22,7 @@ const FilmsPage = () => {
     const { currentUser } = useCurrentUser()
     const { width } = useWindowDimensions()
     const  smallScreen = width <= 767
-    const { currentFilmIds, setCurrentFilmIds, setViewingData, omdbData, setOmdbData, isOwner, setIsOwner, setUsername } = useCurrentFilm()
+    const { currentFilmIds, setCurrentFilmIds, setViewingData, omdbData, setOmdbData, isOwner, setIsOwner, username, setUsername } = useCurrentFilm()
     const { updated } = useSaveFilmContext()
     const { updatedFriends } = useFriendAction()
     const [allFilms, setAllFilms] = useState([])
@@ -189,17 +189,19 @@ const FilmsPage = () => {
         <>
             {hasLoaded?
                 <Container>
-                    <PublicProfie 
-                        profile={profile} 
-                        requestIds={requestIds} 
-                        requests={requests} 
-                        filmStats={filmStats}
-                        showStats={allFilms.length !== 0}
-                        similarity={similarity}
-                        directorCounts={directorCounts} 
-                        genreCounts={genreCounts}
-                        id={id}
-                    />
+                    {allFilms.length? 
+                        <PublicProfie 
+                            profile={profile} 
+                            requestIds={requestIds} 
+                            requests={requests} 
+                            filmStats={filmStats}
+                            showStats={allFilms.length !== 0}
+                            similarity={similarity}
+                            directorCounts={directorCounts} 
+                            genreCounts={genreCounts}
+                            id={id}
+                        />
+                    :''}
                     {allFilms.length?
                         <Row>
                             {smallScreen && !showMainFilm || !smallScreen? 
@@ -241,7 +243,12 @@ const FilmsPage = () => {
                                 :''}
                             </Col>
                         </Row>
-                    : ''
+                    :
+                    <div className={styles.filmsImage}>
+                        <Image src='https://res.cloudinary.com/dojzptdbc/image/upload/v1744201012/nofilms_fmw6yd.png' fluid />
+                        <p>{`It looks like ${isOwner? "you dont't": username + " doesn't"} have any saved films.`}</p>
+                        {isOwner? <a href='/'>Browse films here!</a>:''}
+                    </div>
                     }
                 </Container>
             :  

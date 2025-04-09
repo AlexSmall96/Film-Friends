@@ -112,6 +112,11 @@
     overflow-x: hidden;
 }
 
+.filmsImage{
+    max-width: 500px;
+    margin:auto;
+}
+
 /* 
 The plotPreview class was inspired by https://stackoverflow.com/questions/7993067/text-overflow-ellipsis-not-working
 */
