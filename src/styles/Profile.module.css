@@ -14,3 +14,17 @@
     margin: auto;
     max-width: 600px;
 }
+
+.profileBox {
+    border-style: solid;
+    border-width: 1px;
+    border-color: lightgrey;
+    box-shadow: 0 0 3px rgba(5, 53, 126, 0.5);
+    margin-top: 20px;
+}
+
+.mainSection {
+    border-style: solid;
+    border-width: 0 0 0 1px;
+    border-color: lightgrey;
+}

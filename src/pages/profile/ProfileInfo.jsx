@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { axiosReq } from '../../api/axiosDefaults';
 import { useHistory  } from 'react-router-dom/cjs/react-router-dom.min';
 import { useCurrentUser } from '../../contexts/CurrentUserContext';
-import {Container, Row, Col, Image} from 'react-bootstrap'
+import {Button, Container, Row, Col, Image, Form} from 'react-bootstrap'
+import appStyles from '../../App.module.css'
 
 const ProfileInfo = ({setUpdated, updated}) => {
     const { currentUser, setCurrentUser } = useCurrentUser()
@@ -68,27 +69,32 @@ const ProfileInfo = ({setUpdated, updated}) => {
 
     return(
         <Container>
-            <form onSubmit={handleSubmit}>
-                <Row>
-                    <p>Username</p>
-                    <p>
-                        <input type='text' name='username' value={username || ''} onChange={handleUsernameChange} />
-                        {message.username || ''}
-                    </p>
+            <h4 className={appStyles.verticalMargin}>Profile Info:</h4>
+            <Form onSubmit={handleSubmit}>
+                <Row>    
+                    <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                        <Form.Label htmlFor="username">Username:</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name='username' value={username || ''}
+                            onChange={handleUsernameChange}
+                        />
+                    </Form.Group>
                 </Row>
                 <Row>
-                    <p>Picture</p>
-                    <Col md={6}>
+                    <p>Profile Picture:</p>
                     Image Preview
-                        <Image roundedCircle src={file || 'https://res.cloudinary.com/dojzptdbc/image/upload/v1687104476/default_profile_k3tfhd.jpg'} fluid width={150} />                    
-                    </Col>
-                    <Col md={6}>
-                        <input type='file' name='picture' onChange={handleImage}/>
-                        {message.image || ''}
-                        <button type='submit'>Save</button>
-                    </Col>
+                    <Image rounded src={file || 'https://res.cloudinary.com/dojzptdbc/image/upload/v1687104476/default_profile_k3tfhd.jpg'} fluid />                    
                 </Row>
-            </form>
+                <Row>
+                    <Form.Group controlId="formFile" className="mb-3">
+                        <Form.Control type='file' name='picture' onChange={handleImage} />
+                    </Form.Group>
+                        {message.image || ''}
+                        <Button variant='outline-secondary' className={appStyles.roundButton} type='submit'>Save</Button> 
+                </Row>
+                
+            </Form>
 
             
         </Container>
