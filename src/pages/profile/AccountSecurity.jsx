@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { axiosReq } from '../../api/axiosDefaults';
 import { useHistory  } from 'react-router-dom/cjs/react-router-dom.min';
 import { useCurrentUser } from '../../contexts/CurrentUserContext';
-import {Container, Row, Col} from 'react-bootstrap'
+import {Container, Row, Col, Form, Button, InputGroup} from 'react-bootstrap'
+import appStyles from '../../App.module.css'
 
 const AccountSecurity = ({profile}) => {
     const { currentUser } = useCurrentUser()
@@ -49,33 +50,44 @@ const AccountSecurity = ({profile}) => {
 
     return(
         <Container>
-        <h4>Account Security</h4>
-        <p>Update your email and password here:</p>
-            <form onSubmit={handleSubmitPassword}>
-                <Row>
-                    <p>Email:</p>
-                    <p>
-                        <label htmlFor='email'>Current Email Address: </label>
-                        <input type='text' name='email' placeholder={profile.email} disabled />
-                        <button type='button' onClick={() => history.push('/changeEmail/sendOTP')}><i className="fa-solid fa-pen"></i></button>
-                    </p>
-                </Row>
-                <p>Password:</p>
-                
-                <Row>
-                    <input type='password' name='password0' value={formData.password0 || ''} placeholder='Enter current password' onChange={handleChangePassword} />
-                </Row>
-                <Row>
-                    <input type='password' name='password1' value={formData.password1 || ''} placeholder='Enter new password' onChange={handleChangePassword} />
-                </Row>
-                <Row>
-                    <input type='password' name='password2' value={formData.password2 || ''} placeholder='Confirm new password' onChange={handleChangePassword} />
-                </Row>
-                    {message.password || ''}
-                    <button disabled={disabled} type='submit'>Change Password</button>
-                
-
-            </form>        
+        <h5 className={`${appStyles.verticalMargin} ${appStyles.headingFont}`}>Account Security</h5>
+            <span className={`${appStyles.leftAlign} ${appStyles.smallFont}`}>Email:</span>
+            <InputGroup className="mb-3">
+                <Form.Control
+                        type="text"
+                        name='email' value={profile.email || ''}
+                        disabled
+                />
+                <Button type='button' variant='outline-secondary' onClick={() => history.push('/changeEmail/sendOTP')}><i className="fa-solid fa-pen"></i></Button>
+            </InputGroup>
+        <Form onSubmit={handleSubmitPassword}>
+            <span className={`${appStyles.leftAlign} ${appStyles.smallFont}`}>Password:</span>
+            <Form.Group>
+                <Form.Control
+                    name='password0'
+                    type="password"
+                    value={formData.password0 || ''}
+                    placeholder='Enter current password'
+                    onChange={handleChangePassword}
+                />
+                <Form.Control
+                    name='password1'
+                    type="password"
+                    value={formData.password1 || ''}
+                    placeholder='Enter new password'
+                    onChange={handleChangePassword}
+                />
+                <Form.Control
+                    name='password2'
+                    type="password"
+                    value={formData.password2 || ''}
+                    placeholder='Confirm new password'
+                    onChange={handleChangePassword}
+                />
+                <Form.Text muted>{message.password || ''}</Form.Text>
+            </Form.Group>
+            <Button disabled={disabled} variant='outline-secondary' className={`${appStyles.roundButton} ${appStyles.verticalMargin}`} type='submit'>Change Password</Button>
+         </Form>
         </Container>
 
     ) 
