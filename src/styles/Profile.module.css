@@ -15,16 +15,57 @@
     max-width: 600px;
 }
 
+.wrapper {
+    width: 80%;
+    margin: auto;
+}
+
 .profileBox {
     border-style: solid;
     border-width: 1px;
     border-color: lightgrey;
     box-shadow: 0 0 3px rgba(5, 53, 126, 0.5);
     margin-top: 20px;
+    background-color: rgba(208, 209, 209, 0.233);
+}
+
+.profileNav{
+    --bs-nav-link-color: black;
+    --bs-nav-pills-link-active-bg: rgb(156, 153, 153);
+    --bs-nav-pills-border-radius:0px;
 }
 
 .mainSection {
     border-style: solid;
     border-width: 0 0 0 1px;
     border-color: lightgrey;
+    padding-bottom: 10px;
 }
+
+.imageBox{
+    border-style: solid;
+    border-color: lightgrey;
+    border-width: 1px;
+    background-color: white;
+    padding: 30px;
+}
+
+.imageWrapper {
+    width: 50%;
+    margin: auto;
+}
+
+@media only screen and (max-width: 575px) {
+    .navMobile {
+        padding-left: 0px;
+    }
+    .imageMobile {
+        padding-right: 0px;
+    }
+    .underline{
+        border-style: solid;
+        border-color: lightgrey;
+        border-width: 0 0 1px 0;
+    }
+}
+

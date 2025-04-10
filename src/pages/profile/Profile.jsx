@@ -8,10 +8,12 @@ import styles from '../../styles/Profile.module.css'
 import AccountSecurity from './AccountSecurity';
 import ProfileInfo from './ProfileInfo';
 import { useRedirect } from '../../hooks/useRedirect';
+import useWindowDimensions from '../../hooks/useWindowDimensions';
 
 const Profile = ({activeKey}) => {
     // Hooks
     const history = useHistory()
+	const { width } = useWindowDimensions()
     useRedirect()
     // Contexts
     const { currentUser, setCurrentUser } = useCurrentUser()
@@ -51,34 +53,35 @@ const Profile = ({activeKey}) => {
     return (
 		<>
 			{!deleted?
+			<>	{ width < 360 ? <h5 className={`${appStyles.verticalMargin} ${appStyles.headingFont}`}>{profile.username}</h5>: ''}
 				<Container className={styles.profileBox}>
-					<Tab.Container id="left-tabs-example" defaultActiveKey={activeKey}>
+					<Tab.Container defaultActiveKey={activeKey}>
 						<Row>
-							<Col sm={3} xs={12} className={appStyles.noPadding}>
+							<Col md={3} sm={4} xs={12} className={`${appStyles.noPadding} ${styles.underline}`}>
 								<Row>
-									<Col sm={12} xs={6}>
+									<Col sm={12} xs={5} className={styles.imageMobile} >
 										<Image src={profile.image} fluid />
-										<h5 className={appStyles.verticalMargin}>{profile.username}</h5>
 									</Col>
-									<Col sm={12} xs={6}>
-										<Nav className="flex-column">
-										<Nav.Item>
-											<Nav.Link eventKey="first">Profile Info</Nav.Link>
-										</Nav.Item>
-										<Nav.Item>
-											<Nav.Link href={`/films/${currentUser?.user._id}`}>Go to your Watchlist</Nav.Link>
-										</Nav.Item>
-										<Nav.Item>
-											<Nav.Link eventKey="second">Account Security</Nav.Link>
-										</Nav.Item>
-										<Nav.Item>
-											<Nav.Link eventKey="third">Delete Account</Nav.Link>
-										</Nav.Item>
-									</Nav>
+									<Col sm={12} xs={7} className={styles.navMobile}>
+									{ width >= 360 ? <h5 className={`${appStyles.verticalMargin} ${appStyles.headingFont}`}>{profile.username}</h5>: ''}
+										<Nav variant="pills" className={`flex-column ${styles.profileNav} ${appStyles.smallFont}`}>
+											<Nav.Item className={styles.navItem}>
+												<Nav.Link eventKey="first"><i className="fa-solid fa-user"></i> Profile Info</Nav.Link>
+											</Nav.Item>
+											<Nav.Item>
+												<Nav.Link href={`/films/${currentUser?.user._id}`}><i className="fa-solid fa-clapperboard"></i> Your Watchlist</Nav.Link>
+											</Nav.Item>
+											<Nav.Item>
+												<Nav.Link eventKey="second"><i className="fa-solid fa-shield-halved"></i> Account Security</Nav.Link>
+											</Nav.Item>
+											<Nav.Item>
+												<Nav.Link eventKey="third"><i className="fa-solid fa-trash-can"></i> Delete Account</Nav.Link>
+											</Nav.Item>
+										</Nav>
 									</Col>
 								</Row>
 							</Col>
-							<Col sm={7} xs={12}  className={styles.mainSection}>
+							<Col md={9} sm={8} xs={12} className={styles.mainSection}>
 								<Tab.Content>
 									<Tab.Pane eventKey="first">
 										<ProfileInfo updated={updated} setUpdated={setUpdated} profile={profile} setProfile={setProfile} />
@@ -106,11 +109,13 @@ const Profile = ({activeKey}) => {
 						</Row>
 					</Tab.Container>
 				</Container>
+			</>
 			:
 				<>
 					Your account has been deleted. Continue browsing films 
 					<Button onClick={() => history.push('/')} variant='link'>here</Button>
 				</>
+
 			}
 		</>
     )

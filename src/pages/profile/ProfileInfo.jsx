@@ -4,8 +4,9 @@ import { useHistory  } from 'react-router-dom/cjs/react-router-dom.min';
 import { useCurrentUser } from '../../contexts/CurrentUserContext';
 import {Button, Container, Row, Col, Image, Form} from 'react-bootstrap'
 import appStyles from '../../App.module.css'
+import styles from '../../styles/Profile.module.css'
 
-const ProfileInfo = ({setUpdated, updated}) => {
+const ProfileInfo = ({setUpdated, updated, profile}) => {
     const { currentUser, setCurrentUser } = useCurrentUser()
     const [message, setMessage] = useState({})
     const [username, setUsername] = useState('')
@@ -13,7 +14,7 @@ const ProfileInfo = ({setUpdated, updated}) => {
     const [file, setFile] = useState('https://res.cloudinary.com/dojzptdbc/image/upload/v1687104476/default_profile_k3tfhd.jpg')
 
     useEffect(() => {
-        setUsername(currentUser?.user.username)
+        setUsername(profile.username)
     }, [])
 
     const handleUsernameChange = (event) => {
@@ -69,34 +70,39 @@ const ProfileInfo = ({setUpdated, updated}) => {
 
     return(
         <Container>
-            <h4 className={appStyles.verticalMargin}>Profile Info:</h4>
-            <Form onSubmit={handleSubmit}>
-                <Row>    
-                    <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                        <Form.Label htmlFor="username">Username:</Form.Label>
-                        <Form.Control
-                            type="text"
-                            name='username' value={username || ''}
-                            onChange={handleUsernameChange}
-                        />
-                    </Form.Group>
-                </Row>
-                <Row>
-                    <p>Profile Picture:</p>
-                    Image Preview
-                    <Image rounded src={file || 'https://res.cloudinary.com/dojzptdbc/image/upload/v1687104476/default_profile_k3tfhd.jpg'} fluid />                    
-                </Row>
-                <Row>
-                    <Form.Group controlId="formFile" className="mb-3">
-                        <Form.Control type='file' name='picture' onChange={handleImage} />
-                    </Form.Group>
-                        {message.image || ''}
-                        <Button variant='outline-secondary' className={appStyles.roundButton} type='submit'>Save</Button> 
-                </Row>
-                
-            </Form>
-
-            
+            <div className={styles.wrapper}>
+                <h5 className={`${appStyles.verticalMargin} ${appStyles.headingFont}`}>Profile Info</h5>
+                <Form onSubmit={handleSubmit}>
+                    <Row >    
+                        <Form.Group className={appStyles.noPadding}>
+                            <span className={`${appStyles.leftAlign} ${appStyles.smallFont}`}>Username:</span>
+                                <Form.Control
+                                    type="text"
+                                    name='username' value={username || ''}
+                                    onChange={handleUsernameChange}
+                                />
+                            <Form.Text  muted>{message.username || ''}</Form.Text>
+                        </Form.Group>
+                    </Row>
+                    <Row>
+                    <span className={`${appStyles.leftAlign} ${appStyles.smallFont} ${appStyles.verticalMargin} ${appStyles.noPadding}`}>Profile Picture:</span>
+                        <div className={styles.imageBox}>
+                            <div className={styles.imageWrapper}> 
+                                <Image rounded src={file || 'https://res.cloudinary.com/dojzptdbc/image/upload/v1687104476/default_profile_k3tfhd.jpg'} roundedCircle fluid /> 
+                            </div>
+                        </div>
+                    </Row>
+                    <Row>
+                        <Form.Group className={`${appStyles.noPadding}`}>
+                            <Form.Label className={appStyles.smallFont}>Image Preview</Form.Label>
+                            <Form.Control className={appStyles.smallFont} type='file' name='picture' onChange={handleImage} />
+                            <Form.Text muted>{message.image || ''}</Form.Text>
+                        </Form.Group>
+                            
+                            <Button variant='outline-secondary' className={`${appStyles.roundButton} ${appStyles.verticalMargin}`} type='submit'>Save</Button> 
+                    </Row>
+                </Form>
+            </div>
         </Container>
     )
 }
