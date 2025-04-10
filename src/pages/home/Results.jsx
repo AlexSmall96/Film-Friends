@@ -3,7 +3,7 @@ import { axiosReq } from '../../api/axiosDefaults';
 import { useCurrentUser } from '../../contexts/CurrentUserContext';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import ResultsPagination from '../../components/ResultsPagination'
-import { Alert, Button, Container, Image, Spinner, Row, Col, ButtonGroup, DropdownButton, Dropdown } from 'react-bootstrap';
+import { Alert, Button, Container, Image, Spinner, Row, Col, ButtonGroup, DropdownButton, Dropdown, Toast, ToastContainer } from 'react-bootstrap';
 import FilmPreview from '../../components/FilmPreview'
 import Film from '../films/Film'
 import { FilmPreviewProvider } from '../../contexts/FilmPreviewContext';
@@ -16,9 +16,9 @@ import { useSaveFilmContext } from '../../contexts/SaveFilmContext';
 import { useCurrentFilm } from '../../contexts/CurrentFilmContext';
 import sortBy from 'array-sort-by'
 
-const Results = ({reccomendationsPage}) => {
+const Results = ({reccomendationsPage }) => {
     // Contexts
-    const { currentUser } = useCurrentUser()
+    const { currentUser, accountDeleted } = useCurrentUser()
     // Hooks
     const history = useHistory()
     const { mobile } = useWindowDimensions()
@@ -40,6 +40,7 @@ const Results = ({reccomendationsPage}) => {
     const { currentFilmIds, omdbData, setOmdbData, currentReccomendation } = useCurrentFilm()
     const { deleted, showMainFilm, setShowMainFilm } = useSaveFilmContext()
     const [hasRecs, setHasRecs] = useState(false)
+    const [showToast, setShowToast] = useState(accountDeleted)
 
     useEffect(() => {
         // Gets the imdbIds of the users saved films, to determine which buttons should appear next to film result
@@ -222,7 +223,24 @@ const Results = ({reccomendationsPage}) => {
                             <p>{error}</p>
                         ):(
                             !reccomendationsPage? 
-                                <Image alt='A close up of film tape' width={400} src='https://res.cloudinary.com/dojzptdbc/image/upload/v1729270408/movie2_h1bnwo.png'/>
+                                <>
+                                    <Image alt='A close up of film tape' width={400} src='https://res.cloudinary.com/dojzptdbc/image/upload/v1729270408/movie2_h1bnwo.png'/>
+                                    {accountDeleted? 
+                                        <ToastContainer
+                                            className="p-3"
+                                            position="middle-center"
+                                            style={{ zIndex: 1 }}
+                                        >
+                                            <Toast show={showToast} onClose={() => setShowToast(false)}>
+                                                <Toast.Header>
+                                                    <img src="holder.js/20x20?text=%20" className="rounded me-2" alt="" />
+                                                    <strong className="me-auto">Film Friends</strong>
+                                                </Toast.Header>
+                                                <Toast.Body>Your account was deleted successfully.</Toast.Body>
+                                            </Toast>
+                                        </ToastContainer>
+                                    :''}
+                                </>
                             :''
 
                         )

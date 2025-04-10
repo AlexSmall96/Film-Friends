@@ -34,8 +34,9 @@ export const CurrentUserProvider = ({ children }) => {
         storedUser && tokenIsValid ? (storedUser):(null)
     )
 
+    const [accountDeleted, setAccountDeleted] = useState(false)
     return (
-        <CurrentUserContext.Provider value={{currentUser, setCurrentUser}}>
+        <CurrentUserContext.Provider value={{currentUser, setCurrentUser, accountDeleted, setAccountDeleted}}>
             {children}
         </CurrentUserContext.Provider>
     )

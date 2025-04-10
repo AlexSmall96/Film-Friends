@@ -16,20 +16,18 @@ const Profile = ({activeKey}) => {
 	const { width } = useWindowDimensions()
     useRedirect()
     // Contexts
-    const { currentUser, setCurrentUser } = useCurrentUser()
+    const { currentUser, setCurrentUser, setAccountDeleted } = useCurrentUser()
     // Initialize state variables
     const [profile, setProfile] = useState({})
     const [updated, setUpdated] = useState(false)
-    // Initialise a state variable to determie button text
-    const [deleted, setDeleted] = useState(false)
 
     // Handle Delete function
     const handleDelete = async () => {
         try {
             await axiosReq.delete('/users/me', {headers: {'Authorization': `Bearer ${currentUser?.token}`}})
             localStorage.clear()
+			setAccountDeleted(true)
             setCurrentUser(null)
-            setDeleted(true)
         } catch (err) {
             // console.log(err)
         }
@@ -45,15 +43,12 @@ const Profile = ({activeKey}) => {
                 // console.log(err)
             }
         }
-        if (!deleted){
-          fetchProfile()
-        }
+        fetchProfile()
     }, [currentUser?.token, updated])
 
     return (
 		<>
-			{!deleted?
-			<>	{ width < 360 ? <h5 className={`${appStyles.verticalMargin} ${appStyles.headingFont}`}>{profile.username}</h5>: ''}
+			{ width < 360 ? <h5 className={`${appStyles.verticalMargin} ${appStyles.headingFont}`}>{profile.username}</h5>: ''}
 				<Container className={styles.profileBox}>
 					<Tab.Container defaultActiveKey={activeKey}>
 						<Row>
@@ -97,16 +92,7 @@ const Profile = ({activeKey}) => {
 										</div>
 										<p><span className={appStyles.warning}>Warning:</span> If you delete your account, your data will be deleted and cannot be recovered.</p>
 										{/* YES / GO BACK BUTTONS */}
-										{!deleted?(
-											<>
-												<Button variant='warning' onClick={handleDelete}>Delete Account</Button>
-											</> 
-										):(
-											<>
-												{/* LINK TO HOME PAGE ONCE ACCOUNT IS DELETED */}
-												<Button onClick={() => history.push('/')}>Continue browsing films</Button> 
-											</>
-										)}
+											<Button variant='warning' onClick={handleDelete}>Delete Account</Button>
 									</Tab.Pane>
 								</Tab.Content>
 							</Col>
@@ -114,14 +100,6 @@ const Profile = ({activeKey}) => {
 					</Tab.Container>
 				</Container>
 			</>
-			:
-				<>
-					Your account has been deleted. Continue browsing films 
-					<Button onClick={() => history.push('/')} variant='link'>here</Button>
-				</>
-
-			}
-		</>
     )
 }
 export default Profile;
