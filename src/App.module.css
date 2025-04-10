@@ -160,6 +160,11 @@
   color:green;
 }
 
+.warning{
+  color: orange;
+  font-weight: bold;
+}
+
 a {
   color: black;
   text-decoration: none;

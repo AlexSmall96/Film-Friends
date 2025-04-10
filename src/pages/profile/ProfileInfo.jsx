@@ -98,7 +98,6 @@ const ProfileInfo = ({setUpdated, updated, profile}) => {
                             <Form.Control className={appStyles.smallFont} type='file' name='picture' onChange={handleImage} />
                             <Form.Text muted>{message.image || ''}</Form.Text>
                         </Form.Group>
-                            
                             <Button variant='outline-secondary' className={`${appStyles.roundButton} ${appStyles.verticalMargin}`} type='submit'>Save</Button> 
                     </Row>
                 </Form>

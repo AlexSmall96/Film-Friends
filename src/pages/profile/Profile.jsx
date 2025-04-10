@@ -91,11 +91,15 @@ const Profile = ({activeKey}) => {
 									</Tab.Pane>
 									<Tab.Pane eventKey="third">            
 										{/* CONFIRM MESSAGE */}
-										<h5>{!deleted? `Are you sure you want to delete your account for username ${currentUser?.user.username}?`: 'Your account has been deleted.'}</h5>
+										<h5 className={`${appStyles.verticalMargin} ${appStyles.headingFont}`}>Delete Account</h5>
+										<div className={styles.deleteImage}>
+											<Image src='https://res.cloudinary.com/dojzptdbc/image/upload/v1744292137/delete_xxsq7c.png' fluid />
+										</div>
+										<p><span className={appStyles.warning}>Warning:</span> If you delete your account, your data will be deleted and cannot be recovered.</p>
 										{/* YES / GO BACK BUTTONS */}
 										{!deleted?(
 											<>
-												<Button variant='outline-secondary' onClick={handleDelete}>Yes</Button>
+												<Button variant='warning' onClick={handleDelete}>Delete Account</Button>
 											</> 
 										):(
 											<>
