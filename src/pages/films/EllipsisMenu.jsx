@@ -98,7 +98,7 @@ const EllipsisMenu = ({updateViewingData}) => {
 
     return (
         <>
-            <div className={`${appStyles.rightAlign} ${appStyles.bigLeftHorizMargin}`}>
+            <div className={`${appStyles.rightAlign} ${appStyles.bigLeftHorizMargin} ${appStyles.verticalMargin}`}>
                 {/* ELLIPSIS ICON TO SHOW MENU */}
                 <i onClick={() => setShowMenu(!showMenu)} ref={target} className={`fa-xl fa-solid fa-ellipsis-vertical`}></i>
                 {/* OVERLAY TO SHOW OPTIONS */}

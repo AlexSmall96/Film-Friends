@@ -156,6 +156,15 @@
   color: #61dafb; 
 }
 
+.greyBackground {
+  background-color: rgba(208, 209, 209, 0.233);
+  box-shadow: 0 0 3px rgba(5, 53, 126, 0.5);
+}
+
+.whiteBackground {
+  background-color: white;
+}
+
 .greenIcon {
   color:green;
 }

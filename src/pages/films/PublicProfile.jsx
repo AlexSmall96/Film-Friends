@@ -22,19 +22,19 @@ const PublicProfile = ({profile, filmStats, showStats, similarity, directorCount
     )
 
     return (
-        <Row className={`${width >= 576? appStyles.greyBorder: ''} ${appStyles.bigVerticalMargin}`}>
+        <Row className={`${width >= 576? `${appStyles.greyBorder} ${appStyles.greyBackground}` : ''} ${appStyles.bigVerticalMargin}`}>
             <Col md={3} sm={1} xs={2}>
                 {isOwner? 
-                    <a href='/profile'><h4 className={appStyles.smallFont}>{profile.username}</h4></a>
+                    <a href='/profile'><h4 className={`${appStyles.smallFont} ${appStyles.headingFont}`}>{profile.username}</h4></a>
                 :
-                    <h4 className={appStyles.smallFont}>{profile.username}</h4>
+                    <h4 className={`${appStyles.smallFont} ${appStyles.headingFont}`}>{profile.username}</h4>
                 }
                 <Image src={profile.image} width={width >= 768? 100: 50 } height={width >= 768? 100: 50 } roundedCircle />
             </Col>
             {showStats?
                 <>
                     <Col md={3} sm={3} xs={3}>
-                        <h4 className={appStyles.smallFont}>{isOwner? 'Watched' : 'Similarity'}</h4>
+                        <h4 className={`${appStyles.smallFont} ${appStyles.headingFont}`}>{isOwner? 'Watched' : 'Similarity'}</h4>
                         {isOwner?
                             <div className={styles.progressBarParent}>
                                 <CircularProgressbar value={100 * filmStats.watchedCount / filmStats.savedCount} text={`${filmStats.watchedCount} / ${filmStats.savedCount}`} />
@@ -45,7 +45,7 @@ const PublicProfile = ({profile, filmStats, showStats, similarity, directorCount
                             </div>}
                     </Col>
                     <Col md={3} sm={4} xs={12}>
-                        <h4 className={`${appStyles.smallFont}`}>{width >= 576 ? 'Favourite Genres':''}</h4>
+                        <h4 className={`${appStyles.smallFont} ${appStyles.headingFont}`}>{width >= 576 ? 'Favourite Genres':''}</h4>
                             {width >= 576?
                                 genreCounts.map(([genre, count], index) => (
                                     <OverlayTrigger
@@ -66,7 +66,7 @@ const PublicProfile = ({profile, filmStats, showStats, similarity, directorCount
                         }
                     </Col>
                     <Col md={3} sm={4} xs={12}>
-                    <h4 className={appStyles.smallFont}>{width >= 576 ? 'Favourite Directors':''}</h4>
+                    <h4 className={`${appStyles.smallFont} ${appStyles.headingFont}`}>{width >= 576 ? 'Favourite Directors':''}</h4>
                         {width >= 576 ? 
                             directorCounts.map(([director, count], index) => (
                                 <OverlayTrigger

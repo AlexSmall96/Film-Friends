@@ -200,20 +200,22 @@ const FilmsPage = () => {
                             directorCounts={directorCounts} 
                             genreCounts={genreCounts}
                             id={id}
+                            className={appStyles.greyBackground}
                         />
                     :''}
                     {allFilms.length?
                         <Row>
                             {smallScreen && !showMainFilm || !smallScreen? 
-                            <Col lg={{span:5, order: 1}} md={{span:4, order:1}} sm={{span: 12, order: 2}} className={`${appStyles.greyBorder}`}>
+                            <Col lg={{span:5, order: 1}} md={{span:4, order:1}} sm={{span: 12, order: 2}} className={`${appStyles.greyBorder} ${appStyles.greyBackground}`}>
                                 <Filters
                                     filter={filter}
                                     setFilter={setFilter}
                                     sort={sort}
                                     setSort={setSort}
+                                    className={appStyles.whiteBackground}
                                 />
                             
-                            <div className={`${appStyles.list} ${styles.filmList} ${appStyles.verticalMargin}`}>
+                            <div className={`${appStyles.list} ${styles.filmList} ${appStyles.verticalMargin} ${appStyles.greyBackground}`}>
                                 <div className={`${styles.filmListParent}`}>
                                     {filteredFilms.length?
                                     <Row>

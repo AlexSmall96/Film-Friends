@@ -13,16 +13,18 @@ const Filters = ({ filter, setFilter, sort, setSort }) => {
         <Row>
             <Col xl={6} lg={12} md={12} sm={6} xs={12}>
                 {isOwner? ( 
+                    <ButtonGroup className={appStyles.whiteBackground}>
                         <DropdownButton size="sm" variant='outline-secondary' title={`Your ${filter.public? 'Public': 'Private'} Watchlist`}>
                             <Dropdown.Item onClick={!filter.public ? () => setFilter({public: true, watched: filter.watched}): null}>Public</Dropdown.Item>
                             <Dropdown.Item onClick={filter.public ? () => setFilter({public: false, watched: filter.watched}): null}>Private</Dropdown.Item>
                         </DropdownButton>
+                        </ButtonGroup>
                 ):(
                     `${username}'s Watchlist`
                 )}            
             </Col>
             <Col xl={6} lg={12} md={12} sm={6} xs={12}>
-                <ButtonGroup className={width <= 575 || width >= 768 && width < 1200? appStyles.verticalMargin : ''}>
+                <ButtonGroup className={`${width <= 575 || width >= 768 && width < 1200? appStyles.verticalMargin : ''} ${appStyles.whiteBackground}`}>
                     <DropdownButton 
                         as={ButtonGroup} 
                         size="sm" 
