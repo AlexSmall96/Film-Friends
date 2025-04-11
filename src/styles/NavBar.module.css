@@ -3,3 +3,7 @@
    border-color: lightgrey;
    border-width: 1px;
 }
+
+.navBar * {
+   --bs-nav-link-hover-color: blue;
+}

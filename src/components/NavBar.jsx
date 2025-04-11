@@ -47,7 +47,7 @@ const NavBar = () => {
     const loggedInIcons = 
     <>  
         {width <= 767? 
-            <Nav.Link href='/' onClick={handleClick}>
+            <Nav.Link href='/' onClick={handleClick}> 
                 <i className="fa-solid fa-home"></i> Home
             </Nav.Link>
         :''}
@@ -68,7 +68,7 @@ const NavBar = () => {
                 <Nav.Link href={`/account/security`} onClick={handleClick}>
                     <i className="fa-solid fa-shield-halved"></i> Acount Security
                 </Nav.Link>
-                <Nav.Link href='/' onClick={handleLogout} >
+                <Nav.Link href='/' onClick={handleLogout}  >
                     <i className="fa-solid fa-right-from-bracket"></i> Logout
                 </Nav.Link>
                 <Nav.Link href={`/account/delete`} onClick={handleClick}>
@@ -139,7 +139,7 @@ const NavBar = () => {
                     </Row>
                 </Container>
                 </Offcanvas.Header>
-                <Offcanvas.Body>
+                <Offcanvas.Body className={styles.navBar}>
                     <Nav className={`${appStyles.headingFont} justify-content-end flex-grow-1 pe-3`}>
                         {currentUser? loggedInIcons: loggedOutIcons}
                     </Nav>
