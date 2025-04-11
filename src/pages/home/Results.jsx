@@ -139,9 +139,9 @@ const Results = ({reccomendationsPage }) => {
                                     {/* PAGINATION MESSAGE */}
                                     <p>
                                         {currentPage !== finalPage ? (
-                                            `Showing results ${10 * (currentPage - 1) + 1} to ${10 * (currentPage - 1) + 10} of ${totalResults}`
+                                            `Showing ${reccomendationsPage? 'reccomendations' : 'results'} ${10 * (currentPage - 1) + 1} to ${10 * (currentPage - 1) + 10} of ${totalResults}`
                                         ):(
-                                            `Showing results ${10 * (currentPage - 1) + 1} to ${totalResults} of ${totalResults}`
+                                            `Showing ${reccomendationsPage? 'reccomendations' : 'results'} ${10 * (currentPage - 1) + 1} to ${totalResults} of ${totalResults}`
                                         )}
                                     </p>
                                     {/* PAGINATION BUTTONS */}
