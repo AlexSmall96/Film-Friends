@@ -36,13 +36,20 @@
 }
 
 .userImageWrapper {
-    height: 200px;
+    height: 170px;
     overflow-y: hidden;
 }
 
 @media only screen and (max-width: 1199px) and (min-width: 992px) {
     .userImageWrapper {
-        height: 160px;
+        height: 130px;
+        overflow-y: hidden;
+    }
+}
+
+@media only screen and (max-width: 575px){
+    .userImageWrapper {
+        height: 200px;
         overflow-y: hidden;
     }
 }

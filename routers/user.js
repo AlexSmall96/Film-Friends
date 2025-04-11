@@ -133,7 +133,7 @@ router.post('/data/users/sendEmail', async (req, res) => {
                 return res.status(500).send({error: "Couldn't send email due to system issues. Please try again later."})
             }
             res.status(200).send({
-                message: `A one time passcode (OTP) has been sent to your email address. Please enter it below to ${req.body.resetPassword? 'recover your account' : 'verify your email address.'}.`
+                message: `A one time passcode (OTP) has been sent to your email address. Please enter it below to ${req.body.resetPassword? 'recover your account' : 'verify your email address.'}`
             })
         });
     } catch (err) {
@@ -206,6 +206,7 @@ router.patch('/data/users/me', auth, async (req, res) => {
 
 router.patch('/data/users/resetPassword', async (req, res) => {
     try {
+        console.log(req.body)
         const email = req.body.email
         const password = req.body.password
         const user = await User.findOne({email})

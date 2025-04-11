@@ -199,7 +199,7 @@ const Friends = () => {
                     {requests.length? 
                         requests.map(request =>
                             <Col xl={2} lg={2} md={3} sm={4} xs={6} key={request._id} className={`${appStyles.smallFont} ${styles.userCardWrapper}`}>
-                                <div className={styles.userCard}>
+                                <div className={`${styles.userCard} ${appStyles.greyBackground}`}>
                                     <div className={styles.userImageWrapper}>
                                         <Image src={request.isSender? request.reciever.image : request.sender.image} fluid rounded  />
                                     </div>
