@@ -215,7 +215,7 @@ const FilmsPage = () => {
                                     className={appStyles.whiteBackground}
                                 />
                             
-                            <div className={`${appStyles.list} ${styles.filmList} ${appStyles.verticalMargin} ${appStyles.greyBackground}`}>
+                            <div className={`${appStyles.list} ${styles.filmList} ${appStyles.verticalMargin}`}>
                                 <div className={`${styles.filmListParent}`}>
                                     {filteredFilms.length?
                                     <Row>
