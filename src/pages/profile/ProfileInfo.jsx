@@ -11,7 +11,7 @@ const ProfileInfo = ({setUpdated, updated, profile}) => {
     const [message, setMessage] = useState({})
     const [username, setUsername] = useState('')
     const [imageBase64, setImageBase64] = useState("");
-    const [file, setFile] = useState('https://res.cloudinary.com/dojzptdbc/image/upload/v1687104476/default_profile_k3tfhd.jpg')
+    const [file, setFile] = useState('https://res.cloudinary.com/dojzptdbc/image/upload/v1744367162/defaultProfile_wpgqrx.png')
 
     useEffect(() => {
         setUsername(profile.username)
@@ -88,7 +88,7 @@ const ProfileInfo = ({setUpdated, updated, profile}) => {
                     <span className={`${appStyles.leftAlign} ${appStyles.smallFont} ${appStyles.verticalMargin} ${appStyles.noPadding}`}>Profile Picture:</span>
                         <div className={styles.imageBox}>
                             <div className={styles.imageWrapper}> 
-                                <Image rounded src={file || 'https://res.cloudinary.com/dojzptdbc/image/upload/v1687104476/default_profile_k3tfhd.jpg'} roundedCircle fluid /> 
+                                <Image rounded src={file || 'https://res.cloudinary.com/dojzptdbc/image/upload/v1744367162/defaultProfile_wpgqrx.png'} roundedCircle fluid /> 
                             </div>
                         </div>
                     </Row>

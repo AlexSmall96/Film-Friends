@@ -76,7 +76,7 @@ const NavBar = () => {
                 </Nav.Link>
             </div>
         ):(
-            <NavDropdown title={<Image src={currentUser?.user.image} width={40} height={40} roundedCircle/>} id="basic-nav-dropdown" drop='start'>
+            <NavDropdown title={<Image src={currentUser?.user.image} width={40} roundedCircle/>} id="basic-nav-dropdown" drop='start'>
                 <NavDropdown.Item href={`/profile/info`}>
                     <i className="fa-solid fa-user"></i> Profile
                 </NavDropdown.Item>
