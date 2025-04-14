@@ -53,7 +53,7 @@ const SendOTP = ({resetPassword}) => {
             setResponseMessage(response.data.message)
             setError('')
             setRecoveryEmail(email)
-            localStorage.setItem('recoveryEmail', JSON.stringify({ email }))
+            localStorage.setItem('recoveryEmail', JSON.stringify( email ))
             setHasLoaded(true)
         } catch (err) {
             // console.log(err)

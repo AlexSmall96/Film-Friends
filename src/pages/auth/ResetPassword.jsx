@@ -20,8 +20,9 @@ const ResetPassword = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault()
+        console.log(recoveryEmail)
         try {
-            await axiosReq.patch('/users/resetPassword', {password, email: recoveryEmail.email})
+            await axiosReq.patch('/users/resetPassword', {password, email: recoveryEmail})
             localStorage.removeItem('recoveryEmail')
             setSuccess(true)
         } catch (err) {
