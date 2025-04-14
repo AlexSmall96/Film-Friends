@@ -19,7 +19,7 @@ router.post('/data/requests', auth, async (req, res) => {
         if (reciever === sender) {
             return res.status(400).send({error: "You can't send a friend request to yourself."})
         }
-        const existingRequests = await Request.find({$or:[{sender, reciever}, {sender:reciever, reciever: sender}]})
+        const existingRequests = await Request.find({$or:[{sender, reciever, declined: false}, {sender:reciever, reciever: sender, declined: false}]})
         if (existingRequests.length) {
             return res.status(400).send({error: "Friend request already sent."})
         }

@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom/cjs/react-router-dom';
 import appStyles from '../App.module.css'
 import styles from '../styles/NavBar.module.css'
 import useWindowDimensions from '../hooks/useWindowDimensions';
+import Avatar from './Avatar';
 
 const NavBar = () => {
     // Contexts
@@ -76,7 +77,7 @@ const NavBar = () => {
                 </Nav.Link>
             </div>
         ):(
-            <NavDropdown title={<Image src={currentUser?.user.image} width={40} roundedCircle/>} id="basic-nav-dropdown" drop='start'>
+            <NavDropdown title={<Avatar src={currentUser?.user.image} />} id="basic-nav-dropdown" drop='start'>
                 <NavDropdown.Item href={`/profile/info`}>
                     <i className="fa-solid fa-user"></i> Profile
                 </NavDropdown.Item>
@@ -122,21 +123,23 @@ const NavBar = () => {
             >
                 <Offcanvas.Header closeButton className={currentUser? styles.underlineSection: ''}>
                 <Container>
-                    <Row>
-                        <Col sm={2} xs={2}>
-                            <Image src={currentUser?.user.image} width={50} roundedCircle/>
-                        </Col>
-                        <Col sm={10} xs={10}>
-                        <Card border='light' className={appStyles.noBorder}>
-                            <Card.Title>
-                            <Link to={`/profile/`}>
-                                 {currentUser?.user.username}
-                            </Link>
-                            </Card.Title>
-                            <Card.Subtitle className="mb-2 text-muted">{currentUser?.user.email}</Card.Subtitle>
-                        </Card>
-                        </Col>
-                    </Row>
+                    {currentUser? 
+                        <Row>
+                            <Col sm={2} xs={2}>
+                                <Avatar src={currentUser?.user.image} />
+                            </Col>
+                            <Col sm={10} xs={10}>
+                            <Card border='light' className={appStyles.noBorder}>
+                                <Card.Title>
+                                <Link to={`/profile/`}>
+                                    {currentUser?.user.username}
+                                </Link>
+                                </Card.Title>
+                                <Card.Subtitle className="mb-2 text-muted">{currentUser?.user.email}</Card.Subtitle>
+                            </Card>
+                            </Col>
+                        </Row>
+                    :''}
                 </Container>
                 </Offcanvas.Header>
                 <Offcanvas.Body className={styles.navBar}>

@@ -1,17 +1,18 @@
-import React from 'react';
-import {Button, Row, Col, Image, OverlayTrigger, Tooltip, ProgressBar, Badge, Stack} from 'react-bootstrap'
+import React, { useEffect, useState} from 'react';
+import { Row, Col, OverlayTrigger, Tooltip, ProgressBar, Badge, Stack} from 'react-bootstrap'
 import styles from '../../styles/Films.module.css'
 import appStyles from '../../App.module.css'
 import { useCurrentFilm } from '../../contexts/CurrentFilmContext';
-import { useFriendAction } from '../../contexts/FriendActionContext';
-import { useParams } from 'react-router-dom/cjs/react-router-dom.min';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import useWindowDimensions from '../../hooks/useWindowDimensions';
 import 'react-circular-progressbar/dist/styles.css';
+import Avatar from '../../components/Avatar';
 
 const PublicProfile = ({profile, filmStats, showStats, similarity, directorCounts, genreCounts}) => {
     const { isOwner } = useCurrentFilm()
     const { width } = useWindowDimensions()
+    const [avatarHeight, setAvatarHeight] = useState(0)
+
     const renderTooltip = (name, value, bool) => (
         <Tooltip id="button-tooltip">
             {bool?
@@ -21,6 +22,15 @@ const PublicProfile = ({profile, filmStats, showStats, similarity, directorCount
         </Tooltip>
     )
 
+    useEffect(() => {
+        if (width <= 767){
+            setAvatarHeight(50)
+        }
+        else if (width <= 991){
+            setAvatarHeight(90)
+        }
+    }, [width])
+
     return (
         <Row className={`${width >= 576? `${appStyles.greyBorder} ${appStyles.greyBackground}` : ''} ${appStyles.bigVerticalMargin}`}>
             <Col md={3} sm={1} xs={2}>
@@ -29,7 +39,7 @@ const PublicProfile = ({profile, filmStats, showStats, similarity, directorCount
                 :
                     <h4 className={`${appStyles.smallFont} ${appStyles.headingFont}`}>{profile.username}</h4>
                 }
-                <Image src={profile.image} width={width >= 768? 100: 50 } height={width >= 768? 100: 50 } roundedCircle />
+                <Avatar src={profile.image} height={avatarHeight} />
             </Col>
             {showStats?
                 <>

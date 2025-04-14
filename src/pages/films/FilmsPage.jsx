@@ -8,7 +8,7 @@ import Film from './Film'
 import Filters from './Filters';
 import { useCurrentFilm } from '../../contexts/CurrentFilmContext';
 import { useSaveFilmContext } from '../../contexts/SaveFilmContext';
-import { FilmPreviewProvider, useFilmPreview } from '../../contexts/FilmPreviewContext';
+import { FilmPreviewProvider } from '../../contexts/FilmPreviewContext';
 import { useFriendAction } from '../../contexts/FriendActionContext';
 import { useRedirect } from '../../hooks/useRedirect';
 import appStyles from '../../App.module.css'

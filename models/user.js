@@ -40,7 +40,7 @@ const userSchema = new mongoose.Schema({
     },
     image:{
         type: String,
-        default: 'https://res.cloudinary.com/dojzptdbc/image/upload/v1744367162/defaultProfile_wpgqrx.png'
+        default: 'https://res.cloudinary.com/dojzptdbc/image/upload/v1744633674/defaultProfile_fjp9f4.png'
     },
     password: {
         type: String,

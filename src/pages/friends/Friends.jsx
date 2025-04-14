@@ -10,6 +10,7 @@ import appStyles from '../../App.module.css'
 import styles from '../../styles/Friends.module.css'
 import { useRedirect } from '../../hooks/useRedirect';
 import ResultsPagination from '../../components/ResultsPagination';
+import Avatar from '../../components/Avatar';
 import useWindowDimensions from '../../hooks/useWindowDimensions';
 
 const Friends = () => {
@@ -147,13 +148,13 @@ const Friends = () => {
                             {results.length && showResults? 
                                 results.map(result =>
                                     <Row key={result._id} className={appStyles.smallFont}>
-                                        <Col md={2} xs={2} className='result'>
-                                            <Image src={result.image} width={40} className='result' roundedCircle />
+                                        <Col md={2} xs={3} className='result'>
+                                            <Avatar src={result.image} height={45} className='result'/>
                                         </Col>
                                         <Col md={3} xs={3} className='result'>
                                             <a href={`/films/${result._id}`} className='result'>{result.username}</a>
                                         </Col>
-                                        <Col md={7} xs={7} className='result'>
+                                        <Col md={7} xs={6} className='result'>
                                             {requestIds.accepted.includes(result._id)? 
                                                 <><i className="fa-solid fa-user-group"></i> Friends </>  
                                             :
@@ -200,9 +201,7 @@ const Friends = () => {
                         requests.map(request =>
                             <Col xl={2} lg={2} md={3} sm={4} xs={6} key={request._id} className={`${appStyles.smallFont} ${styles.userCardWrapper}`}>
                                 <div className={`${styles.userCard} ${appStyles.greyBackground}`}>
-                                    <div className={styles.userImageWrapper}>
-                                        <Image src={request.isSender? request.reciever.image : request.sender.image} fluid rounded  />
-                                    </div>
+                                    <Avatar src={request.isSender? request.reciever.image : request.sender.image} height={160} square/>
                                     <br />
                                     <a href={`/films/${request.isSender? request.reciever._id: request.sender._id}`} className={appStyles.smallFont}>{request.isSender? request.reciever.username : request.sender.username}</a>
                                     <FriendDataProvider request={request}>

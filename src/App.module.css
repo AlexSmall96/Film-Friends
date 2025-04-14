@@ -187,6 +187,7 @@ a:hover {
   background-color: rgba(224, 220, 220, 1);
 }
 
+/* Components used across site */
 .modalText {
   height: 120px;
 }
@@ -219,4 +220,17 @@ https://css-tricks.com/classy-and-cool-custom-css-scrollbars-a-showcase/
 .list::-webkit-scrollbar-thumb {
   background: darkgray;
   border-radius: 0.5rem;
+}
+
+.avatar {
+  border-radius: 50%;
+  margin: 0px 8px 0px 8px;
+  object-fit: cover;
+}
+
+.squareAvatar {
+  border-radius: 0.5rem;
+  margin: 0px 8px 0px 8px;
+  object-fit: cover;
+  width: 90%;
 }
