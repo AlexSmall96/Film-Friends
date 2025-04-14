@@ -15,8 +15,6 @@ import useWindowDimensions from '../../hooks/useWindowDimensions';
 
 const Friends = () => {
     useRedirect()
-    // Hooks
-    const { width } = useWindowDimensions()
     // Contexts
     const { currentUser } = useCurrentUser()
     const { updatedFriends, setUpdatedFriends } = useFriendAction()
@@ -33,7 +31,6 @@ const Friends = () => {
     const [hasLoaded, setHasLoaded] = useState(false)
     const [hasFriends, setHasFriends] = useState(false)
     const [search, setSearch] = useState('')
-    const [scroll, setScroll] = useState(false)
     
     // Callback function to sort requests based on sort variable
     const sortRequest = (req, sort) => {
@@ -53,12 +50,16 @@ const Friends = () => {
             try {
                 const response = await axiosReq.get(`/users/?username=${search}`, {headers: {'Authorization': `Bearer ${currentUser?.token}`}})
                 setResults(search === '' ? [] : response.data)
-                setShowResults(true)
+                if (response.data.length){
+                    setShowResults(true)
+                }
             } catch (err) {
                 // console.log(err)
             }
         }
-        fetchUsers()
+        if (search !== ''){
+            fetchUsers()
+        }
     }, [search, currentUser?.user._id, currentUser?.token])
 
     useEffect(() => {
@@ -80,29 +81,12 @@ const Friends = () => {
                 setTotalResults(sortedResponse.length)
                 setFinalPage(Math.ceil(0.1 * sortedResponse.length))
                 setHasLoaded(true)
-
             } catch (err) {
                 // console.log(err)
             }
         }
         fetchRequests()
     }, [filter, sort, currentUser?.user._id, currentUser?.token, updatedFriends, currentPage])
-
-    useEffect(() => {
-        const adjustScroll = () => {
-            if (width >= 992){
-                setScroll(requests.length > 6)
-            }
-            else if (width >= 768){
-                setScroll(requests.length > 4)
-            } else  if (width >= 576){
-                setScroll(requests.length > 3)
-            } else {
-                setScroll(requests.length > 2)
-            }
-    }
-    adjustScroll()
-    }, [requests, width])
 
     // Sends a friend request to reciever
     const sendRequest = async (reciever) => {
@@ -129,97 +113,111 @@ const Friends = () => {
     document.addEventListener('mouseup', handleClick)
 
     return (
-            <Container className={appStyles.bigVerticalMargin}>
-                {hasLoaded?
+        <>
+            {hasLoaded?
                 <>
-                <form>
-                    <Row>
-                        {/* SEARCH BAR  */}
-                            <input 
-                                type='search' 
-                                placeholder='Search for users' 
-                                className={styles.searchBar}
-                                value={search}
-                                onChange={handleChange}
-                            />
-                    </Row>
-                    <Row>
-                        <Col xs={10} sm={10} md={11} className={`${appStyles.noPadding} ${styles.results} ${!showResults? styles.noBorder:' '} ${appStyles.list}`}>
-                            {results.length && showResults? 
-                                results.map(result =>
-                                    <Row key={result._id} className={appStyles.smallFont}>
-                                        <Col md={2} xs={3} className='result'>
-                                            <Avatar src={result.image} height={45} className='result'/>
-                                        </Col>
-                                        <Col md={3} xs={3} className='result'>
-                                            <a href={`/films/${result._id}`} className='result'>{result.username}</a>
-                                        </Col>
-                                        <Col md={7} xs={6} className='result'>
-                                            {requestIds.accepted.includes(result._id)? 
-                                                <><i className="fa-solid fa-user-group"></i> Friends </>  
-                                            :
-                                                requestIds.pending.includes(result._id)?
-                                                <><i className="fa-solid fa-envelope-circle-check"></i> Friend request pending</>
-                                                :
-                                            <Button onClick={() => sendRequest(result._id)} variant='outline-secondary' size='sm' className={`${appStyles.roundButton} result`}>Send Friend Request</Button>}
-                                        </Col>
-                                    </Row>
-                                )
-                            :''}
-                        </Col>
-                    </Row>
-                </form>
-                {hasFriends?
-                <>
-                <ButtonGroup className={appStyles.bigVerticalMargin}>
-                    <DropdownButton as={ButtonGroup} variant='outline-secondary' title={<><i className="fa-solid fa-filter"></i> {filter}</>}>
-                        <Dropdown.Item onClick={() => setFilter('All')}>All</Dropdown.Item>
-                        <Dropdown.Item onClick={() => setFilter('Friends')}>Friends</Dropdown.Item>
-                        <Dropdown.Item onClick={() => setFilter('Pending Requests')}>Pending Requests</Dropdown.Item>
-                    </DropdownButton> 
-                    <DropdownButton as={ButtonGroup} variant='outline-secondary' title={<><i className="fa-solid fa-sort"></i> {sort}</>}>
-                        <Dropdown.Item onClick={() => setSort('A-Z')}>A-Z</Dropdown.Item>
-                        <Dropdown.Item onClick={() => setSort('Last Updated')}>Last Updated</Dropdown.Item>
-                    </DropdownButton>
-                </ButtonGroup>
-                {/* PAGINATION MESSAGE */}
-                {requests.length?
-                    <p>
-                        {currentPage !== finalPage ? (
-                            `Showing ${filter === 'All'? 'all requests': filter.toLocaleLowerCase()} ${10 * (currentPage - 1) + 1} to ${10 * (currentPage - 1) + 10} of ${totalResults}`
-                        ):(
-                            `Showing ${filter === 'All'? 'all requests': filter.toLocaleLowerCase()} ${10 * (currentPage - 1) + 1} to ${totalResults} of ${totalResults}`
-                        )}
-                    </p>
-                :<p>No requests matching current criteria</p>}
-                {/* PAGINATION BUTTONS */}
-                {finalPage > 1 ? 
-                    <ResultsPagination currentPage={currentPage} finalPage={finalPage} setCurrentPage={setCurrentPage}/>                       
-                : '' }
-                <Row className={`${appStyles.verticalMargin} ${scroll? appStyles.list: ''} ${styles.friendsList}`}>
-                    {requests.length? 
-                        requests.map(request =>
-                            <Col xl={2} lg={2} md={3} sm={4} xs={6} key={request._id} className={`${appStyles.smallFont} ${styles.userCardWrapper}`}>
-                                <div className={`${styles.userCard} ${appStyles.greyBackground}`}>
-                                    <Avatar src={request.isSender? request.reciever.image : request.sender.image} height={160} square/>
-                                    <br />
-                                    <a href={`/films/${request.isSender? request.reciever._id: request.sender._id}`} className={appStyles.smallFont}>{request.isSender? request.reciever.username : request.sender.username}</a>
-                                    <FriendDataProvider request={request}>
-                                        <FriendRequestButtons />
-                                    </FriendDataProvider>
-                                </div>
-                            </Col>
-                        )
-                    :''}
-                </Row>
-                </>:
-                <div className={styles.friendsImage}>
-                    <Image src='https://res.cloudinary.com/dojzptdbc/image/upload/v1744199262/FriendsPlus_jbxswo.png' fluid />
-                    <p>It looks like you don't have any friends yet. Search to connect with other users!</p>
-                </div>}
+                    <div className={finalPage > 1? styles.wrapper: styles.wrapperNoPagination}>
+                        <div className={styles.searchComponents}>
+                            <Container>
+                            <form>
+                                <Row>
+                                    {/* SEARCH BAR  */}
+                                        <input 
+                                            type='search' 
+                                            placeholder='Search for users' 
+                                            className={styles.searchBar}
+                                            value={search}
+                                            onChange={handleChange}
+                                        />
+                                </Row>
+                                <Row>
+                                    <Col xs={10} sm={10} md={11} className={`${appStyles.noPadding} ${styles.results} ${!showResults? styles.noBorder:' '} ${appStyles.list}`}>
+                                        {results.length && showResults? 
+                                            results.map(result =>
+                                                <Row key={result._id} className={appStyles.smallFont}>
+                                                    <Col md={2} xs={3} className='result'>
+                                                        <Avatar src={result.image} height={45} className='result'/>
+                                                    </Col>
+                                                    <Col md={3} xs={3} className='result'>
+                                                        <a href={`/films/${result._id}`} className='result'>{result.username}</a>
+                                                    </Col>
+                                                    <Col md={7} xs={6} className='result'>
+                                                        {requestIds.accepted.includes(result._id)? 
+                                                            <><i className="fa-solid fa-user-group"></i> Friends </>  
+                                                        :
+                                                            requestIds.pending.includes(result._id)?
+                                                            <><i className="fa-solid fa-envelope-circle-check"></i> Friend request pending</>
+                                                            :
+                                                        <Button onClick={() => sendRequest(result._id)} variant='outline-secondary' size='sm' className={`${appStyles.roundButton} result`}>Send Friend Request</Button>}
+                                                    </Col>
+                                                </Row>
+                                            )
+                                        :''}
+                                    </Col>
+                                </Row>
+                            </form>
+                                {hasFriends?
+                                    <>
+                                        <ButtonGroup className={appStyles.bigVerticalMargin}>
+                                            <DropdownButton as={ButtonGroup} variant='outline-secondary' title={<><i className="fa-solid fa-filter"></i> {filter}</>}>
+                                                <Dropdown.Item onClick={() => setFilter('All')}>All</Dropdown.Item>
+                                                <Dropdown.Item onClick={() => setFilter('Friends')}>Friends</Dropdown.Item>
+                                                <Dropdown.Item onClick={() => setFilter('Pending Requests')}>Pending Requests</Dropdown.Item>
+                                            </DropdownButton> 
+                                            <DropdownButton as={ButtonGroup} variant='outline-secondary' title={<><i className="fa-solid fa-sort"></i> {sort}</>}>
+                                                <Dropdown.Item onClick={() => setSort('A-Z')}>A-Z</Dropdown.Item>
+                                                <Dropdown.Item onClick={() => setSort('Last Updated')}>Last Updated</Dropdown.Item>
+                                            </DropdownButton>
+                                        </ButtonGroup>
+                                        {/* PAGINATION MESSAGE */}
+                                        {requests.length?
+                                            <p>
+                                                {currentPage !== finalPage ? (
+                                                    `Showing ${filter === 'All'? 'all requests': filter.toLocaleLowerCase()} ${10 * (currentPage - 1) + 1} to ${10 * (currentPage - 1) + 10} of ${totalResults}`
+                                                ):(
+                                                    `Showing ${filter === 'All'? 'all requests': filter.toLocaleLowerCase()} ${10 * (currentPage - 1) + 1} to ${totalResults} of ${totalResults}`
+                                                )}
+                                            </p>
+                                        :<p>No requests matching current criteria</p>}
+                                        {/* PAGINATION BUTTONS */}
+                                        {finalPage > 1 ? 
+                                            <ResultsPagination currentPage={currentPage} finalPage={finalPage} setCurrentPage={setCurrentPage}/>                       
+                                        : '' }
+                                    </>
+                                :''}
+                            </Container>
+                        </div>
+                    </div>
+                    {hasFriends?
+                        <div className={finalPage > 1?styles.friendsList: styles.friendsListNoPagination}>
+                            <Container>
+                                <Row className={`${appStyles.verticalMargin}`}>
+                                    {requests.length? 
+                                        requests.map(request =>
+                                            <Col xl={2} lg={2} md={3} sm={4} xs={6} key={request._id} className={`${appStyles.smallFont} ${styles.userCardWrapper}`}>
+                                                <div className={`${styles.userCard} ${appStyles.greyBackground}`}>
+                                                    <Avatar src={request.isSender? request.reciever.image : request.sender.image} height={160} square/>
+                                                    <br />
+                                                    <a href={`/films/${request.isSender? request.reciever._id: request.sender._id}`} className={appStyles.smallFont}>{request.isSender? request.reciever.username : request.sender.username}</a>
+                                                    <FriendDataProvider request={request}>
+                                                        <FriendRequestButtons />
+                                                    </FriendDataProvider>
+                                                </div>
+                                            </Col>
+                                        )
+                                    :''}
+                                </Row>
+                            </Container>
+                        </div>
+                    :
+                        <div className={styles.friendsImage}>
+                            <Image src='https://res.cloudinary.com/dojzptdbc/image/upload/v1744199262/FriendsPlus_jbxswo.png' fluid />
+                            <p>It looks like you don't have any friends yet. Search to connect with other users!</p>
+                        </div>}
+                      
                 </>
             :<Spinner />}
-        </Container>
+        </>
     )
 }
 export default Friends;
