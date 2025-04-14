@@ -11,8 +11,7 @@ import Avatar from '../../components/Avatar';
 const PublicProfile = ({profile, filmStats, showStats, similarity, directorCounts, genreCounts}) => {
     const { isOwner } = useCurrentFilm()
     const { width } = useWindowDimensions()
-    const [avatarHeight, setAvatarHeight] = useState(0)
-
+    const [avatarHeight, setAvatarHeight] = useState(100)
     const renderTooltip = (name, value, bool) => (
         <Tooltip id="button-tooltip">
             {bool?
@@ -29,6 +28,9 @@ const PublicProfile = ({profile, filmStats, showStats, similarity, directorCount
         else if (width <= 991){
             setAvatarHeight(90)
         }
+        else {
+            setAvatarHeight(100)
+        }
     }, [width])
 
     return (
@@ -43,7 +45,7 @@ const PublicProfile = ({profile, filmStats, showStats, similarity, directorCount
             </Col>
             {showStats?
                 <>
-                    <Col md={3} sm={3} xs={3}>
+                    <Col md={3} sm={{span:3, offset:0}} xs={{span:3, offset: 1}}>
                         <h4 className={`${appStyles.smallFont} ${appStyles.headingFont}`}>{isOwner? 'Watched' : 'Similarity'}</h4>
                         {isOwner?
                             <div className={styles.progressBarParent}>
@@ -56,45 +58,49 @@ const PublicProfile = ({profile, filmStats, showStats, similarity, directorCount
                     </Col>
                     <Col md={3} sm={4} xs={12}>
                         <h4 className={`${appStyles.smallFont} ${appStyles.headingFont}`}>{width >= 576 ? 'Favourite Genres':''}</h4>
-                            {width >= 576?
-                                genreCounts.map(([genre, count], index) => (
-                                    <OverlayTrigger
-                                        placement="top"
-                                        delay={{ show: 250, hide: 400 }}
-                                        overlay={renderTooltip(genre, count, false)}
-                                        key={index}
-                                    >
-                                        <ProgressBar variant={index === 0? 'success': index === 1? 'info': 'warning'} now={100 * count / 5} label={genre} key={index} />
-                                    </OverlayTrigger>
-                            ))
-                        :
-                            <Stack direction="horizontal" gap={1}>
-                                {genreCounts.map(([genre, count], index) => (
-                                    <Badge pill bg="primary" key={index}>{genre}</Badge>
-                                ))}
-                            </Stack>
-                        }
+                            {genreCounts.length?
+                                width >= 576?
+                                    genreCounts.map(([genre, count], index) => (
+                                        <OverlayTrigger
+                                            placement="top"
+                                            delay={{ show: 250, hide: 400 }}
+                                            overlay={renderTooltip(genre, count, false)}
+                                            key={index}
+                                        >
+                                            <ProgressBar variant={index === 0? 'success': index === 1? 'info': 'warning'} now={100 * count / 5} label={genre} key={index} />
+                                        </OverlayTrigger>
+                                    ))
+                                :
+                                    <Stack direction="horizontal" gap={1}>
+                                        {genreCounts.map(([genre, count], index) => (
+                                            <Badge pill bg="primary" key={index}>{genre}</Badge>
+                                        ))}
+                                    </Stack>
+                            :
+                                width >= 576? <Avatar src='https://res.cloudinary.com/dojzptdbc/image/upload/v1744639090/question_ydkaop.png' height={avatarHeight} />:''}
                     </Col>
                     <Col md={3} sm={4} xs={12}>
-                    <h4 className={`${appStyles.smallFont} ${appStyles.headingFont}`}>{width >= 576 ? 'Favourite Directors':''}</h4>
-                        {width >= 576 ? 
-                            directorCounts.map(([director, count], index) => (
-                                <OverlayTrigger
-                                    placement="left"
-                                    delay={{ show: 250, hide: 400 }}
-                                    overlay={renderTooltip(director, count, true)}
-                                    key={index}
-                                >
-                                    <ProgressBar variant={index === 0? 'success': index === 1? 'info': 'warning'} now={100 * count / 5} label={director} key={index} />
-                                </OverlayTrigger>
-                            ))
-                        :
-                        <Stack direction="horizontal" gap={1} className={appStyles.verticalMargin}>
-                            {directorCounts.map(([director, count], index) => (
-                                <Badge pill bg="secondary" key={index}>{director}</Badge>
-                            ))}
-                        </Stack>
-                        }
+                        <h4 className={`${appStyles.smallFont} ${appStyles.headingFont}`}>{width >= 576 ? 'Favourite Directors':''}</h4>
+                            {directorCounts.length?
+                                width >= 576 ? 
+                                    directorCounts.map(([director, count], index) => (
+                                        <OverlayTrigger
+                                            placement="left"
+                                            delay={{ show: 250, hide: 400 }}
+                                            overlay={renderTooltip(director, count, true)}
+                                            key={index}
+                                        >
+                                            <ProgressBar variant={index === 0? 'success': index === 1? 'info': 'warning'} now={100 * count / 5} label={director} key={index} />
+                                        </OverlayTrigger>
+                                    ))
+                                :
+                                <Stack direction="horizontal" gap={1} className={appStyles.verticalMargin}>
+                                    {directorCounts.map(([director, count], index) => (
+                                        <Badge pill bg="secondary" key={index}>{director}</Badge>
+                                    ))}
+                                </Stack>
+                            :
+                                width >= 576?<Avatar src='https://res.cloudinary.com/dojzptdbc/image/upload/v1744639090/question_ydkaop.png' height={avatarHeight} />:''}
                     </Col>            
                 </>
             :''
