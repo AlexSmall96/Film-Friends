@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { Form, Button, Spinner, Image, ButtonGroup, InputGroup } from 'react-bootstrap';
+import { Form, Button, Spinner, Image, ButtonGroup, Container } from 'react-bootstrap';
 import { axiosReq } from '../../api/axiosDefaults';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { useRecoveryData } from '../../contexts/RecoveryDataContext';
@@ -102,7 +102,7 @@ const SendOTP = ({resetPassword}) => {
     }
 
     return (
-        <>
+        <Container>
             <div className={styles.otpImage}>
                 <Image src='https://res.cloudinary.com/dojzptdbc/image/upload/v1744206272/shield1_zsajlz.png' fluid/>
             </div>
@@ -112,7 +112,7 @@ const SendOTP = ({resetPassword}) => {
                     <>
                         {!verified?
                             <Form.Group>
-                                <Form.Label>{responseMessage}</Form.Label>
+                                <Form.Label className={appStyles.horizMargin}>{responseMessage}</Form.Label>
                                 <Form.Control onChange={handleChange} value={formData.OTP} className={styles.passcodeInput} name='OTP' type='text' placeholder='* * * * * *' maxLength='6'/>
                                 {!expired?
                                     <>
@@ -141,7 +141,6 @@ const SendOTP = ({resetPassword}) => {
                             <Form.Control onChange={handleChange} value={formData.email} className={styles.form} name='email' type='email' placeholder='youremail'/>
                         </Form.Group>
                         <p className={`${appStyles.verticalMargin} ${appStyles.smallFont}`}>{error || ''}</p>
-                         
                         <ButtonGroup>
                         {!resetPassword && !verified?<Button variant='outline-secondary' className={appStyles.roundButton} onClick={() => history.goBack()}  type='button'><i className="fa-solid fa-user"></i> Back to Profile</Button> : ''}
                             <Button variant='outline-secondary' className={appStyles.roundButton} type='submit'><i className="fa-solid fa-paper-plane"></i> Send</Button>
@@ -151,7 +150,7 @@ const SendOTP = ({resetPassword}) => {
             : (<Spinner />)
             }
         </Form>
-        </>
+        </Container>
     )
 }
 
