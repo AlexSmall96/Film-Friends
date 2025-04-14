@@ -126,10 +126,10 @@ const NavBar = () => {
                     {currentUser? 
                         <Row>
                             <Col sm={2} xs={2}>
-                                <Avatar src={currentUser?.user.image} />
+                                <Avatar />
                             </Col>
                             <Col sm={10} xs={10}>
-                            <Card border='light' className={appStyles.noBorder}>
+                            <Card border='light' className={`${appStyles.noBorder} ${appStyles.horizMargin}`}>
                                 <Card.Title>
                                 <Link to={`/profile/`}>
                                     {currentUser?.user.username}

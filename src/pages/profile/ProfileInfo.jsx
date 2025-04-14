@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { axiosReq } from '../../api/axiosDefaults';
-import { useHistory  } from 'react-router-dom/cjs/react-router-dom.min';
 import { useCurrentUser } from '../../contexts/CurrentUserContext';
-import {Button, Container, Row, Col, Image, Form} from 'react-bootstrap'
+import {Button, Container, Row, Image, Form} from 'react-bootstrap'
 import appStyles from '../../App.module.css'
 import styles from '../../styles/Profile.module.css'
 
