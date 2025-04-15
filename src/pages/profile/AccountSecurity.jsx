@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { axiosReq } from '../../api/axiosDefaults';
 import { useHistory  } from 'react-router-dom/cjs/react-router-dom.min';
 import { useCurrentUser } from '../../contexts/CurrentUserContext';
-import {Container, Row, Col, Form, Button, InputGroup} from 'react-bootstrap'
+import {Container, Form, Button, InputGroup} from 'react-bootstrap'
 import appStyles from '../../App.module.css'
 
 const AccountSecurity = ({profile}) => {

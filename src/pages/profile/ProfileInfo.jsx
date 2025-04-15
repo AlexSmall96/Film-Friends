@@ -3,7 +3,7 @@ import { axiosReq } from '../../api/axiosDefaults';
 import { useCurrentUser } from '../../contexts/CurrentUserContext';
 import {Button, Container, Row, Image, Form} from 'react-bootstrap'
 import appStyles from '../../App.module.css'
-import styles from '../../styles/Profile.module.css'
+import styles from '../../styles/ProfileInfo.module.css'
 
 const ProfileInfo = ({setUpdated, updated, profile}) => {
     const { currentUser, setCurrentUser } = useCurrentUser()

@@ -7,3 +7,7 @@
 .navBar * {
    --bs-nav-link-hover-color: blue;
 }
+
+.darkBackground {
+   background-color: rgba(224, 220, 220, 1);
+ }

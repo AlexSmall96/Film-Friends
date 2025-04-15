@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { axiosReq } from '../../api/axiosDefaults';
-import { Link, useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { Button, Form, Image } from 'react-bootstrap';
-import { NavLink } from 'react-router-dom/cjs/react-router-dom';
+import styles from '../../styles/Signup.module.css';
 
 const Signup = () => {
     // Declare hooks
@@ -58,7 +58,7 @@ const Signup = () => {
     return (
         <>
             <Image width={300} src='https://res.cloudinary.com/dojzptdbc/image/upload/v1730293188/signupImage_ohgj8z.png' alt='A roll of film tape'></Image>
-            <Form onSubmit={handleSubmit} style={{maxWidth: '500px', margin: 'auto'}}>
+            <Form onSubmit={handleSubmit} className={styles.form}>
                 {/* EMAIL */}
                 <Form.Group className="mb-3">
                     <Form.Label id='email-lbl'>Email address</Form.Label>

@@ -12,7 +12,7 @@ import { FilmPreviewProvider } from '../../contexts/FilmPreviewContext';
 import { useFriendAction } from '../../contexts/FriendActionContext';
 import { useRedirect } from '../../hooks/useRedirect';
 import appStyles from '../../App.module.css'
-import styles from '../../styles/Films.module.css'
+import styles from '../../styles/FilmsPage.module.css'
 import PublicProfie from './PublicProfile';
 import useWindowDimensions from '../../hooks/useWindowDimensions';
 

@@ -107,7 +107,7 @@ const NavBar = () => {
     </>
 
     return (
-        <Navbar expand={'md'} expanded={expanded} sticky='top' className={`${appStyles.darkBackground}`}>
+        <Navbar expand={'md'} expanded={expanded} sticky='top' className={`${styles.darkBackground}`}>
             <Navbar.Brand href="/">
                 <h3 className={`${appStyles.bold} ${appStyles.headingFont} ${appStyles.horizMargin}`}>
                     FILM

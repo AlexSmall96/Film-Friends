@@ -81,7 +81,7 @@
 }
 
 .friendsList{
-    margin-top: 240px;
+    margin-top: 245px;
     height:700px;
 }
 
@@ -130,4 +130,5 @@
 .friendsImage{
     max-width: 500px;
     margin:auto;
+    margin-top: 130px;
 }

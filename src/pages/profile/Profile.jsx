@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory  } from 'react-router-dom/cjs/react-router-dom.min';
 import { axiosReq } from '../../api/axiosDefaults';
 import { useCurrentUser } from '../../contexts/CurrentUserContext';
 import { Button, Container,   Image, Nav, Tab, Row, Col} from 'react-bootstrap';
@@ -12,7 +11,6 @@ import useWindowDimensions from '../../hooks/useWindowDimensions';
 
 const Profile = ({activeKey}) => {
     // Hooks
-    const history = useHistory()
 	const { width } = useWindowDimensions()
     useRedirect()
     // Contexts

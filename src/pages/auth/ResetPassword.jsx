@@ -2,16 +2,14 @@ import React, {useState} from 'react';
 import { Form, Button, Image } from 'react-bootstrap';
 import { axiosReq } from '../../api/axiosDefaults';
 import { useRecoveryData} from '../../contexts/RecoveryDataContext';
-import { useCurrentUser } from '../../contexts/CurrentUserContext';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
-import styles from '../../styles/Profile.module.css'
+import styles from '../../styles/ResetPassword.module.css'
 import appStyles from '../../App.module.css'
 
 const ResetPassword = () => {
     const [password, setPassword] = useState('')
     const [error, setError] = useState('')
     const { recoveryEmail } = useRecoveryData()
-    const { currentUser } = useCurrentUser()
     const history = useHistory()
     const [success, setSuccess] = useState(false)
     const handleChange = async (event) => {

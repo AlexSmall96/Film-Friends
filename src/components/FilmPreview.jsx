@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {Alert, Col, Row, Spinner} from 'react-bootstrap'
 import appStyles from '../App.module.css'
-import styles from '../styles/Films.module.css'
+import styles from '../styles/FilmPreview.module.css'
 import { useCurrentUser } from '../contexts/CurrentUserContext';
 import { useCurrentFilm } from '../contexts/CurrentFilmContext';
 import { useFilmPreview } from '../contexts/FilmPreviewContext';
@@ -71,7 +71,7 @@ const FilmPreview = () => {
     return (
             <Row onClick={filmsPage || mobile? handleClick : null}>
                 <Col md={filmsPage? 12 : 6} sm={filmsPage? 12: 4} xs={12} className={`${appStyles.noPadding}`}>
-                    <img className={appStyles.filmPoster} src={film.Poster}
+                    <img className={styles.filmPoster} src={film.Poster}
                         height={posterWidth}
                         width={posterWidth}                         
                         onMouseEnter={!filmsPage && !mobile ? handleMouseEnter : null}

@@ -1,6 +1,6 @@
 import React, { useEffect, useState} from 'react';
 import { Row, Col, OverlayTrigger, Tooltip, ProgressBar, Badge, Stack} from 'react-bootstrap'
-import styles from '../../styles/Films.module.css'
+import styles from '../../styles/PublicProfile.module.css'
 import appStyles from '../../App.module.css'
 import { useCurrentFilm } from '../../contexts/CurrentFilmContext';
 import { CircularProgressbar } from 'react-circular-progressbar';

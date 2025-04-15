@@ -4,8 +4,9 @@ import { axiosReq } from '../../api/axiosDefaults';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { useRecoveryData } from '../../contexts/RecoveryDataContext';
 import { useCurrentUser } from '../../contexts/CurrentUserContext';
-import styles from '../../styles/Profile.module.css'
+import styles from '../../styles/SendOTP.module.css'
 import appStyles from '../../App.module.css'
+
 /* 
 Sends a OTP passcode to the email address provide by the user and verifies OTP. 
 Is used to reset password, or update email address. 

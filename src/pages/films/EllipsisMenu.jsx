@@ -1,12 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Overlay, Dropdown, Modal, Button, Image, Form, Spinner, ButtonGroup} from 'react-bootstrap';
+import { Overlay, Dropdown, Modal, Button, Form, Spinner, ButtonGroup} from 'react-bootstrap';
 import appStyles from '../../App.module.css'
+import styles from '../../styles/EllipsisMenu.module.css'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { CustomMenu, CustomToggle } from '../../components/CustomDropDown'
 import { useCurrentUser } from '../../contexts/CurrentUserContext';
 import { axiosReq } from '../../api/axiosDefaults';
 import { useCurrentFilm } from '../../contexts/CurrentFilmContext';
 import { useSaveFilmContext } from '../../contexts/SaveFilmContext';
+
 /* 
 Ellipsis menu - used as a subcomponent of the film component when rendered on films page
 Allows user to share film, delete film, or make public / private
@@ -110,22 +112,11 @@ const EllipsisMenu = ({updateViewingData}) => {
                     onHide={() => {setShowMenu(false)}} 
                 >
                     {({placement: _placement, arrowProps: _arrowProps, show: _show, popper: _popper, hasDoneInitialMeasure: _hasDoneInitialMeasure, ...props}) => 
-                        (<div 
-                            {...props}
-                            style={{
-                                position: 'absolute',
-                                zIndex: 9999,
-                                backgroundColor: 'lightgrey',
-                                padding: '2px 10px',
-                                color: 'black',
-                                borderRadius: 3,
-                                ...props.style,
-                            }}
-                        >   
+                        (<div className={styles.menu} {...props}>   
                             {/* SHARE, REMOVE AND MAKE PUBLIC / PRIVATE OPTIONS */}
-                            <p onClick={viewingData.public && friends.length? handleShowModal : null} className={viewingData.public && friends.length? appStyles.clickable: appStyles.unclickable}><i className="fa-solid fa-share"></i> Share</p>
-                            <p className={appStyles.clickable} onClick={() => updateViewingData(null, null, !viewingData.public)}><i className="fa-solid fa-pen"></i> {viewingData.public? 'Make Private': 'Make Public'}</p>
-                            <p className={appStyles.clickable} onClick={handleDelete}><i className="fa-regular fa-trash-can"></i> Remove from Watchlist</p>
+                            <p onClick={viewingData.public && friends.length? handleShowModal : null} className={viewingData.public && friends.length? styles.clickable: appStyles.grey}><i className="fa-solid fa-share"></i> Share</p>
+                            <p className={styles.clickable} onClick={() => updateViewingData(null, null, !viewingData.public)}><i className="fa-solid fa-pen"></i> {viewingData.public? 'Make Private': 'Make Public'}</p>
+                            <p className={styles.clickable} onClick={handleDelete}><i className="fa-regular fa-trash-can"></i> Remove from Watchlist</p>
                         </div>)
                     }
                 </Overlay>
@@ -144,7 +135,7 @@ const EllipsisMenu = ({updateViewingData}) => {
                                         <strong> {recipient?.username || 'Select recipient'}</strong>
                                         </Dropdown.Toggle>
                                         <Dropdown.Menu as={CustomMenu}>
-                                            <div style={{maxHeight: '400px', overflowY: 'scroll'}}>
+                                            <div className={styles.recipientList}>
                                                 {friends.map(friend => 
                                                     <Dropdown.Item key={friend._id} 
                                                         onClick={() => setRecipient(friend.isSender? friend.reciever : friend.sender)}
@@ -179,7 +170,7 @@ const EllipsisMenu = ({updateViewingData}) => {
                         <Spinner />
                     )}
                     <Form>
-                        <Form.Control className={`${appStyles.modalText} ${appStyles.verticalMargin}`} as='textarea' style={!recipient? {color: 'grey'}:{color: 'black'}} readOnly={recipient === null} value={message} onChange={handleMessageChange}>
+                        <Form.Control className={`${appStyles.modalText} ${appStyles.verticalMargin} ${!recipient? appStyles.grey : ''}`} as='textarea' readOnly={recipient === null} value={message} onChange={handleMessageChange}>
                         </Form.Control>
                     </Form>
                 </Modal.Body>

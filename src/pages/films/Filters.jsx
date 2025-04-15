@@ -1,6 +1,5 @@
-import React, {useState, useRef} from 'react';
-import { Button, Col, Container, Row, Dropdown, DropdownButton, Spinner, ButtonGroup } from 'react-bootstrap';
-import styles from '../../styles/Films.module.css'
+import React from 'react';
+import { Col, Container, Row, Dropdown, DropdownButton, ButtonGroup } from 'react-bootstrap';
 import appStyles from '../../App.module.css'
 import { useCurrentFilm } from '../../contexts/CurrentFilmContext';
 import useWindowDimensions from '../../hooks/useWindowDimensions';

@@ -142,7 +142,7 @@ const ShareModal = () => {
                                         </div>                                     
                                     <Form className={appStyles.verticalMargin}>
                                          <Form.Label>Message:</Form.Label>
-                                        <Form.Control as="textarea" className={appStyles.modalText} style={!selectedFilm? {color: 'grey'}:{color: 'black',} } readOnly={selectedFilm === null} value={message} onChange={handleMessageChange} />
+                                        <Form.Control as="textarea" className={`${appStyles.modalText} ${!selectedFilm? appStyles.grey : ''}`} readOnly={selectedFilm === null} value={message} onChange={handleMessageChange} />
                                     </Form>
                                 </Row>
                                 </Container>

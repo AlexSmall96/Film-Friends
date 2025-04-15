@@ -1,0 +1,13 @@
+.progressBarParent {
+    height: auto;
+    width: 60%;
+    max-width: 100px;
+    min-width: 50px;
+    margin: auto;
+}
+
+@media screen and (max-width: 767px) {
+    .progressBarParent {
+        width: 50px
+    }
+  }

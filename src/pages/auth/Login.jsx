@@ -3,6 +3,7 @@ import { axiosReq } from '../../api/axiosDefaults';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { useCurrentUser } from '../../contexts/CurrentUserContext'
 import { Button, Form, Image } from 'react-bootstrap';
+import styles from '../../styles/Login.module.css'
 
 const Login = () => {
     // Declare hooks
@@ -43,7 +44,7 @@ const Login = () => {
     return (
         <>
             <Image width={300} src='https://res.cloudinary.com/dojzptdbc/image/upload/v1730298790/loginImage_tpvqcy.png' alt='A film take board'></Image>
-            <Form onSubmit={handleSubmit} style={{maxWidth: '500px', margin: 'auto'}}>
+            <Form onSubmit={handleSubmit} className={styles.form}>
                 {/* EMAIL */}   
                 <Form.Group className="mb-3">
                     <Form.Label id='email-lbl'>Email address</Form.Label>

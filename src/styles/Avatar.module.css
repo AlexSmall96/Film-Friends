@@ -1,0 +1,13 @@
+.avatar {
+    border-radius: 50%;
+    margin: 0px 8px 0px 8px;
+    object-fit: cover;
+}
+  
+.squareAvatar {
+    border-radius: 0.5rem;
+    margin: 0px 8px 0px 8px;
+    object-fit: cover;
+    width: 90%;
+}
+  

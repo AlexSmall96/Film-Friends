@@ -9,8 +9,7 @@ import Film from '../films/Film'
 import { FilmPreviewProvider } from '../../contexts/FilmPreviewContext';
 import SearchBar from './SearchBar';
 import appStyles from '../../App.module.css'
-import homeStyles from '../../styles/Home.module.css'
-import reccStyles from '../../styles/Reccomendations.module.css'
+import styles from '../../styles/Results.module.css'
 import useWindowDimensions from '../../hooks/useWindowDimensions';
 import { useSaveFilmContext } from '../../contexts/SaveFilmContext';
 import { useCurrentFilm } from '../../contexts/CurrentFilmContext';
@@ -34,7 +33,6 @@ const Results = ({reccomendationsPage }) => {
     const [hasLoaded, setHasLoaded] = useState(!reccomendationsPage)
     const [hasLoadedMainFilm, setHasLoadedMainFilm] = useState(false)
     const [usernames, setUsernames] = useState([])
-    const [hasUpdated, setHasUpdated] = useState(true)
     const id = currentUser?.user._id || null
     const { updated } = useSaveFilmContext()
     const { currentFilmIds, omdbData, setOmdbData, currentReccomendation } = useCurrentFilm()
@@ -52,15 +50,14 @@ const Results = ({reccomendationsPage }) => {
                 const response = await axiosReq.get(`/films/${id}`, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
                 setUsersFilmIds(response.data.films.map(film => film.imdbID))
             } catch (err) {
-                console.log(err)
+                // console.log(err)
             }
         }
         fetchUsersFilmIds()
     }, [currentUser, id, updated])
 
-    // Functions that only depend on change of current film
     useEffect(() => {   
-        // Get individual film data from OMDB API for main view
+        // Get individual film data from OMDB API for main view (only used on mobile)
         const getOMDBData = async () => {
             try {
                 setHasLoadedMainFilm(false)
@@ -75,6 +72,7 @@ const Results = ({reccomendationsPage }) => {
     }, [currentFilmIds])
 
     useEffect(() => {
+        // Get users reccomendations if component is being used as reccomendations page
         const fetchReccomendations = async () => {
             const response = await axiosReq.get(`/reccomendations/`, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
             const allReccomendations = response.data.filter(rec => !rec.isSender)
@@ -89,7 +87,6 @@ const Results = ({reccomendationsPage }) => {
             const allUsernames = allReccomendations.map(rec => rec.sender.username)
             setUsernames([...new Set(allUsernames)])
             setHasLoaded(true)
-            setHasUpdated(true)
         }
         if (reccomendationsPage){
             fetchReccomendations()
@@ -99,160 +96,167 @@ const Results = ({reccomendationsPage }) => {
     return (
         hasLoaded?  
             hasRecs || !reccomendationsPage?
-            <> 
-            <div className={
-                reccomendationsPage? 
-                    finalPage > 1? reccStyles.wrapper : reccStyles.wrapperNoPagination  
-                : 
-                    finalPage > 1? homeStyles.wrapper: homeStyles.wrapperNoPagination 
-                }
-            >
-            <div className={reccomendationsPage? reccStyles.filterComponents : homeStyles.searchComponents}>
-                {/* SEARCH BAR*/}
-                {!reccomendationsPage? 
-                    <SearchBar 
-                        setResults={setResults} 
-                        setTotalResults={setTotalResults} 
-                        currentPage={currentPage} 
-                        setCurrentPage={setCurrentPage} 
-                        setFinalPage={setFinalPage} 
-                        setError={setError} 
-                        setHasLoaded={setHasLoaded} 
-                    />
-                :
-                    <ButtonGroup className={appStyles.bigVerticalMargin}>
-                        <DropdownButton as={ButtonGroup} variant='outline-secondary' title={<><i className="fa-solid fa-filter"></i> {filter}</>}>
-                            <Dropdown.Item onClick={() => setFilter('All')}>All</Dropdown.Item>
-                            {usernames.map(username => 
-                                <Dropdown.Item key={username} onClick={() => setFilter(username)}>{username}</Dropdown.Item>
-                            )}
-                        </DropdownButton> 
-                        <DropdownButton as={ButtonGroup} variant='outline-secondary' title={<><i className="fa-solid fa-sort"></i> {sort}</>}>
-                            <Dropdown.Item onClick={() => setSort('Film Title')}>Film Title</Dropdown.Item>
-                            <Dropdown.Item onClick={() => setSort('Last Sent')}>Last Sent</Dropdown.Item>
-                        </DropdownButton>
-                    </ButtonGroup>}
-                    {results?.length && hasLoaded?(
-                        <>
-                            {!(showMainFilm && mobile)?
-                                <>
-                                    {/* PAGINATION MESSAGE */}
-                                    <p>
-                                        {currentPage !== finalPage ? (
-                                            `Showing ${reccomendationsPage? 'reccomendations' : 'results'} ${10 * (currentPage - 1) + 1} to ${10 * (currentPage - 1) + 10} of ${totalResults}`
-                                        ):(
-                                            `Showing ${reccomendationsPage? 'reccomendations' : 'results'} ${10 * (currentPage - 1) + 1} to ${totalResults} of ${totalResults}`
-                                        )}
-                                    </p>
-                                    {/* PAGINATION BUTTONS */}
-                                    {finalPage > 1 ? 
-                                        <ResultsPagination currentPage={currentPage} finalPage={finalPage} setCurrentPage={setCurrentPage}/>                       
-                                    : '' }                            
-                                </>
+                <> 
+                    <div className={
+                        reccomendationsPage? 
+                            finalPage > 1? styles.wrapperRecc : styles.wrapperReccNoPagination  
+                        : 
+                            !currentUser? styles.wrapperHomeLoggedOut : finalPage > 1? styles.wrapperHome: styles.wrapperHomeNoPagination
+                        }
+                    >
+                        <div className={reccomendationsPage? styles.filterComponents : styles.searchComponentsHome}>
+                            {/* SEARCH BAR*/}
+                            {!reccomendationsPage? 
+                                <SearchBar 
+                                    setResults={setResults} 
+                                    setTotalResults={setTotalResults} 
+                                    currentPage={currentPage} 
+                                    setCurrentPage={setCurrentPage} 
+                                    setFinalPage={setFinalPage} 
+                                    setError={setError} 
+                                    setHasLoaded={setHasLoaded} 
+                                />
                             :   
+                                <ButtonGroup className={appStyles.bigVerticalMargin}>
+                                    <DropdownButton as={ButtonGroup} variant='outline-secondary' title={<><i className="fa-solid fa-filter"></i> {filter}</>}>
+                                        <Dropdown.Item onClick={() => setFilter('All')}>All</Dropdown.Item>
+                                        {usernames.map(username => 
+                                            <Dropdown.Item key={username} onClick={() => setFilter(username)}>{username}</Dropdown.Item>
+                                        )}
+                                    </DropdownButton> 
+                                    <DropdownButton as={ButtonGroup} variant='outline-secondary' title={<><i className="fa-solid fa-sort"></i> {sort}</>}>
+                                        <Dropdown.Item onClick={() => setSort('Film Title')}>Film Title</Dropdown.Item>
+                                        <Dropdown.Item onClick={() => setSort('Last Sent')}>Last Sent</Dropdown.Item>
+                                    </DropdownButton>
+                                </ButtonGroup>}
+                            {results?.length && hasLoaded?(
                                 <>
-                                    {reccomendationsPage? <br />:''}
-                                    <Button variant='link' onClick={() => setShowMainFilm(false)} className={appStyles.bigVerticalMargin}>
-                                        {reccomendationsPage? 'Back to reccomendations': 'Back to search results'}
-                                    </Button>                            
+                                    {!(showMainFilm && mobile)?
+                                        <>
+                                            {/* PAGINATION MESSAGE */}
+                                            <p>
+                                                {currentPage !== finalPage ? (
+                                                    `Showing ${reccomendationsPage? 'reccomendations' : 'results'} ${10 * (currentPage - 1) + 1} to ${10 * (currentPage - 1) + 10} of ${totalResults}`
+                                                ):(
+                                                    `Showing ${reccomendationsPage? 'reccomendations' : 'results'} ${10 * (currentPage - 1) + 1} to ${totalResults} of ${totalResults}`
+                                                )}
+                                            </p>
+                                            {/* PAGINATION BUTTONS */}
+                                            {finalPage > 1 ? 
+                                                <ResultsPagination currentPage={currentPage} finalPage={finalPage} setCurrentPage={setCurrentPage}/>                       
+                                            : '' }    
+                                            {/* LOGIN AND SIGNUP BUTTONS IF NOT ALREADY LOGGED IN */}
+                                            {!currentUser && !reccomendationsPage? (
+                                                <div className={appStyles.bigVerticalMargin}>
+                                                    <Button variant='link' onClick={() => history.push('/signup')}>Sign up</Button>
+                                                    or 
+                                                    <Button variant='link' onClick={() => history.push('/login')}>Login</Button> 
+                                                        to save and share films
+                                                </div>):('')
+                                            }                        
+                                        </> 
+                                    :   
+                                        <>
+                                            {reccomendationsPage? <br />:''}
+                                            <Button variant='link' onClick={() => setShowMainFilm(false)} className={appStyles.bigVerticalMargin}>
+                                                {reccomendationsPage? 'Back to reccomendations': 'Back to search results'}
+                                            </Button>                            
+                                        </>
+                                        
+                                    }
+ 
                                 </>
-                                
-                            }
-                           
-                        {/* LOGIN AND SIGNUP BUTTONS IF NOT ALREADY LOGGED IN */}
-                        {!currentUser && !reccomendationsPage? (
-                            <div className={appStyles.bigVerticalMargin}>
-                                <Button variant='link' onClick={() => history.push('/signup')}>Sign up</Button>
-                                or 
-                                <Button variant='link' onClick={() => history.push('/login')}>Login</Button> 
-                                    to save and share films
-                            </div>):('')
-                        } 
-                        </>
-                    ):''}
-            </div>
-            </div>
-            <div className={currentUser? finalPage > 1 ? homeStyles.results: homeStyles.resultsNoPagination : homeStyles.resultsLoggedOut}>
-                {/* SEARCH RESULTS */}
-                {results?.length? (hasLoaded? (
-                    <Container> {
-                        mobile && showMainFilm? 
-                            hasLoadedMainFilm?
-                                <FilmPreviewProvider 
-                                    savedToWatchlist={usersFilmIds.includes(omdbData.imdbID)} 
-                                    filmsPage 
-                                    mainFilm
-                                    resultId={currentReccomendation._id}  
-                                >
-                                    {reccomendationsPage? 
-                                        <Alert variant='light' className={appStyles.smallFont}>
-                                            <strong>{currentReccomendation.sender.username}: </strong>
-                                            {currentReccomendation.message}
-                                        </Alert>:''}
-                                    <Film />
-                                </FilmPreviewProvider>
-                            :
-                            <Spinner/>
-                        :
-                            <Row>
-                                {/* SEARCH RESULTS */}
-                                {results.map(
-                                    result =>
-                                        <FilmPreviewProvider 
-                                            key={result.imdbID || result.film.imdbID} 
-                                            film={result.film || result} 
-                                            showDropdown
-                                            resultId={result._id} 
-                                            savedToWatchlist={usersFilmIds.includes(result.imdbID || result.film.imdbID)} 
-                                            mobile={mobile}
-                                            setShowMainFilm={setShowMainFilm}
-                                            message={result.message || null}
-                                            sender={result.sender || null}
-                                        >
-                                            <Col lg={4} md={6} sm={12} xs={4}>
-                                                <FilmPreview />
-                                            </Col>
-                                        </FilmPreviewProvider>
-                                )}  
-                            </Row>
-                            }
-                    </Container>
-                    ):(<Spinner />)):(
-                        error !== '' ? 
-                        (
-                            <p>{error}</p>
+                            ):''}
+                        </div>
+                    </div>
+                    <div className={currentUser? finalPage > 1 ? styles.resultsHome: styles.resultsHomeNoPagination : styles.resultsHomeLoggedOut}>
+                        {/* MAIN FILM  */}
+                        {results?.length? (
+                            hasLoaded? (
+                                <Container> 
+                                    {mobile && showMainFilm? 
+                                        hasLoadedMainFilm?
+                                            <FilmPreviewProvider 
+                                                savedToWatchlist={usersFilmIds.includes(omdbData.imdbID)} 
+                                                filmsPage 
+                                                mainFilm
+                                                resultId={currentReccomendation._id}  
+                                            >
+                                                {reccomendationsPage? 
+                                                    <Alert variant='light' className={appStyles.smallFont}>
+                                                        <strong>{currentReccomendation.sender.username}: </strong>
+                                                        {currentReccomendation.message}
+                                                    </Alert>:''}
+                                                <Film />
+                                            </FilmPreviewProvider>
+                                        :
+                                            <Spinner/>
+                                    :
+                                        <Row>
+                                            {/* SEARCH / RECCOMENDATION RESULTS */}
+                                            {results.map(result =>
+                                                <FilmPreviewProvider 
+                                                    key={result.imdbID || result.film.imdbID} 
+                                                    film={result.film || result} 
+                                                    showDropdown
+                                                    resultId={result._id} 
+                                                    savedToWatchlist={usersFilmIds.includes(result.imdbID || result.film.imdbID)} 
+                                                    mobile={mobile}
+                                                    setShowMainFilm={setShowMainFilm}
+                                                    message={result.message || null}
+                                                    sender={result.sender || null}
+                                                >
+                                                    <Col lg={4} md={6} sm={12} xs={4}>
+                                                        <FilmPreview />
+                                                    </Col>
+                                                </FilmPreviewProvider>
+                                            )}  
+                                        </Row>
+                                    }
+                                </Container>
+                            ):(<Spinner />)
                         ):(
-                            !reccomendationsPage? 
-                                <>
-                                    <Image alt='A close up of film tape' width={400} src='https://res.cloudinary.com/dojzptdbc/image/upload/v1729270408/movie2_h1bnwo.png'/>
-                                    {accountDeleted? 
-                                        <ToastContainer
-                                            className="p-3"
-                                            position="middle-center"
-                                            style={{ zIndex: 1 }}
-                                        >
-                                            <Toast show={showToast} onClose={() => setShowToast(false)}>
-                                                <Toast.Header>
-                                                    <img src="holder.js/20x20?text=%20" className="rounded me-2" alt="" />
-                                                    <strong className="me-auto">Film Friends</strong>
-                                                </Toast.Header>
-                                                <Toast.Body>Your account was deleted successfully.</Toast.Body>
-                                            </Toast>
-                                        </ToastContainer>
-                                    :''}
-                                </>
-                            :''
-
-                        )
-                    )}
-            </div>
-            </>:             
-            <div className={reccStyles.noRecsImage}>
-                <Image src='https://res.cloudinary.com/dojzptdbc/image/upload/v1744202296/norecs_ci4bj0.png' fluid />
-                <p>{`It looks like you don't have any reccomendations yet.`}</p>
-                <a href='/friends'>Find more friends here!</a>
-            </div>     
-        :(<Spinner className={appStyles.bigVerticalMargin} />)
+                            error !== '' ? 
+                                (
+                                    <p>{error}</p>
+                                ):(
+                                    !reccomendationsPage? 
+                                        <>
+                                            {/* DEFAULT HOME SCREEN IMAGE */}
+                                            <div className={styles.resultsHome}>
+                                                <Image alt='A close up of film tape' width={400} src='https://res.cloudinary.com/dojzptdbc/image/upload/v1729270408/movie2_h1bnwo.png'/>
+                                            </div>
+                                            {accountDeleted? 
+                                                /* TOAST MESSAGE IF ACCOUNT HAS JUST BEEN DELETED */
+                                                <ToastContainer
+                                                    className={`p-3 ${styles.toastContainer}`}
+                                                    position="middle-center"
+                                                >
+                                                    <Toast show={showToast} onClose={() => setShowToast(false)}>
+                                                        <Toast.Header>
+                                                            <img src="holder.js/20x20?text=%20" className="rounded me-2" alt="" />
+                                                            <strong className="me-auto">Film Friends</strong>
+                                                        </Toast.Header>
+                                                        <Toast.Body>Your account was deleted successfully.</Toast.Body>
+                                                    </Toast>
+                                                </ToastContainer>
+                                            :''}
+                                        </>
+                                    :''
+                                )
+                        )}
+                    </div>
+                </>
+            :    
+                /* IMAGE FOR WHEN NO RECCOMENDATIONS ARE FOUND */
+                <div className={styles.noRecsImage}>
+                    <Image src='https://res.cloudinary.com/dojzptdbc/image/upload/v1744202296/norecs_ci4bj0.png' fluid />
+                    <p>{`It looks like you don't have any reccomendations yet.`}</p>
+                    <a href='/friends'>Find more friends here!</a>
+                </div>     
+        :(
+            <Spinner className={appStyles.bigVerticalMargin} />
+        )
     )
 }
 

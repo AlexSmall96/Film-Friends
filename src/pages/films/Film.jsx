@@ -3,7 +3,7 @@ import { Row, Col, Image, Form } from 'react-bootstrap'
 import IconRating from './IconRating';
 import EllipsisMenu from './EllipsisMenu';
 import SaveDropown from '../../components/SaveDropdown';
-import styles from '../../styles/Films.module.css'
+import styles from '../../styles/Film.module.css'
 import appStyles from '../../App.module.css'
 import { axiosReq } from '../../api/axiosDefaults';
 import { useCurrentUser } from '../../contexts/CurrentUserContext';

@@ -1,0 +1,17 @@
+.wrapper {
+    width: 80%;
+    margin: auto;
+}
+
+.imageBox{
+    border-style: solid;
+    border-color: lightgrey;
+    border-width: 1px;
+    background-color: white;
+    padding: 30px;
+}
+
+.imageWrapper {
+    width: 50%;
+    margin: auto;
+}

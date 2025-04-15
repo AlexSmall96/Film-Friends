@@ -11,7 +11,6 @@ import styles from '../../styles/Friends.module.css'
 import { useRedirect } from '../../hooks/useRedirect';
 import ResultsPagination from '../../components/ResultsPagination';
 import Avatar from '../../components/Avatar';
-import useWindowDimensions from '../../hooks/useWindowDimensions';
 
 const Friends = () => {
     useRedirect()
@@ -216,7 +215,7 @@ const Friends = () => {
                         </div>}
                       
                 </>
-            :<Spinner />}
+            :<Spinner className={appStyles.bigVerticalMargin} />}
         </>
     )
 }

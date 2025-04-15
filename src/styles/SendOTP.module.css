@@ -1,0 +1,16 @@
+.otpImage {
+    width: 50%;
+    margin: auto;
+    max-width:300px;
+}
+
+.passcodeInput {
+    margin: auto;
+    max-width: 100px;
+    text-align: center;
+}
+
+.form{
+    margin: auto;
+    max-width: 600px;
+}
