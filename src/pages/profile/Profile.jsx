@@ -36,9 +36,13 @@ const Profile = ({activeKey}) => {
         const fetchProfile = async () => {
             try {
                 const response = await axiosReq.get(`/users/${currentUser?.user._id}`, {headers: {'Authorization': `Bearer ${currentUser?.token}`}})
-                setProfile(response.data.profile)
+				const profileReponse = response.data.profile
+				setProfile(profileReponse)
+				const username = profileReponse.username
+				const image = profileReponse.image
+				setCurrentUser({ ...currentUser, user: {...currentUser.user, username, image}})
             } catch (err) {
-                // console.log(err)
+                console.log(err)
             }
         }
         fetchProfile()
@@ -56,10 +60,10 @@ const Profile = ({activeKey}) => {
 										<Image src={profile.image} fluid />
 									</Col>
 									<Col sm={12} xs={7} className={styles.navMobile}>
-									{ width >= 360 ? <h5 className={`${appStyles.verticalMargin} ${appStyles.headingFont}`}>{profile.username}</h5>: ''}
+									{ width >= 380 ? <h5 className={`${appStyles.verticalMargin} ${appStyles.headingFont}`}>{profile.username}</h5>: ''}
 										<Nav variant="pills" className={`flex-column ${styles.profileNav} ${appStyles.smallFont}`}>
 											<Nav.Item className={styles.navItem}>
-												<Nav.Link eventKey="first"><i className="fa-solid fa-user"></i> Profile Info</Nav.Link>
+												<Nav.Link eventKey="first"><i className="fa-solid fa-user"></i> Edit Profile</Nav.Link>
 											</Nav.Item>
 											<Nav.Item>
 												<Nav.Link href={`/films/${currentUser?.user._id}`}><i className="fa-solid fa-clapperboard"></i> Your Watchlist</Nav.Link>
