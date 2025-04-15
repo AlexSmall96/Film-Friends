@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext } from "react";
+import React, { createContext, useState, useContext, useEffect } from "react";
 import axios from "axios";
 /* 
 The code to get user from local storage was taken from the below article
@@ -34,7 +34,16 @@ export const CurrentUserProvider = ({ children }) => {
         storedUser && tokenIsValid ? (storedUser):(null)
     )
 
+    useEffect(() => {
+        if (currentUser){
+            localStorage.setItem('storedUser', JSON.stringify(currentUser));
+        } else {
+            localStorage.removeItem('storedUser')
+        }
+    }, [currentUser])
+
     const [accountDeleted, setAccountDeleted] = useState(false)
+
     return (
         <CurrentUserContext.Provider value={{currentUser, setCurrentUser, accountDeleted, setAccountDeleted}}>
             {children}

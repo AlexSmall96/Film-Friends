@@ -30,7 +30,6 @@ const Login = () => {
         try {
           const response = await axiosReq.post('/users/login', loginData);
           setCurrentUser({user:response.data.user, token: response.data.token})
-          localStorage.setItem('storedUser', JSON.stringify({user:response.data.user, token: response.data.token}));
           history.push('/')
         } catch (err) {
             if (err.status === 400) {
