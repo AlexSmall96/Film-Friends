@@ -234,3 +234,13 @@ https://css-tricks.com/classy-and-cool-custom-css-scrollbars-a-showcase/
   object-fit: cover;
   width: 90%;
 }
+
+.filmPoster {
+  border-radius: 0.3rem;
+  padding: 3px;
+  object-fit: cover;
+  border-style: solid;
+  width: 100%;
+  border-width: 1px;
+  border-color: lightgrey;
+}

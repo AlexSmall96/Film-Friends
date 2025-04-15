@@ -1,16 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import {Alert, Button, Col, Dropdown, Row, Image, Tooltip, OverlayTrigger, Spinner} from 'react-bootstrap'
+import {Alert, Col, Row, Spinner} from 'react-bootstrap'
 import appStyles from '../App.module.css'
 import styles from '../styles/Films.module.css'
 import { useCurrentUser } from '../contexts/CurrentUserContext';
 import { useCurrentFilm } from '../contexts/CurrentFilmContext';
 import { useFilmPreview } from '../contexts/FilmPreviewContext';
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import useWindowDimensions from '../hooks/useWindowDimensions';
 import SaveDropown from './SaveDropdown';
 import { useSaveFilmContext } from '../contexts/SaveFilmContext';
-import DeleteModal from './DeleteModal';
-import { FriendDataProvider } from '../contexts/FriendDataContext';
 
 // Displays film poster and data either as a list of search results, saved films or reccomendations
 const FilmPreview = () => {
@@ -22,12 +19,35 @@ const FilmPreview = () => {
     const { setHoveredOverImdbID, hasLoadedPlot } = useSaveFilmContext()
     const [showPlot, setShowPlot] = useState(false)
     const { currentUser } = useCurrentUser()
+    const [posterWidth, setPosterWidth] = useState(250)
 
     useEffect(() => {
         if (mobile){
             setShowPlot(false)
         }
     }, [mobile])
+
+    useEffect(() => {
+        if (width >= 1400){
+            setPosterWidth(filmsPage ? 250 : 350)
+        }
+        if (width < 1400){
+            setPosterWidth(filmsPage ? 200 : 300)
+        }
+        if (width < 1200){
+            setPosterWidth(filmsPage ? 170 : 250)
+        }
+        if (width < 992){
+            setPosterWidth(filmsPage ? 150 : 280)
+        }
+        if (width < 768){
+            setPosterWidth(filmsPage ? 250 : 300)
+        }
+        if (width < 576){
+            setPosterWidth(filmsPage ? 0.45 * width : 0.5 * width)
+        }
+    }, [width])
+
 
     const handleClick = async () => {
         await setCurrentFilmIds({imdbID:film.imdbID, database:film._id})
@@ -51,12 +71,11 @@ const FilmPreview = () => {
     return (
             <Row onClick={filmsPage || mobile? handleClick : null}>
                 <Col md={filmsPage? 12 : 6} sm={filmsPage? 12: 4} xs={12} className={`${appStyles.noPadding}`}>
-                    <Image  
+                    <img className={appStyles.filmPoster} src={film.Poster}
+                        height={posterWidth}
+                        width={posterWidth}                         
                         onMouseEnter={!filmsPage && !mobile ? handleMouseEnter : null}
                         onMouseLeave={!filmsPage && !mobile ? handleMouseLeave : null}
-                        src={film.Poster} 
-                        thumbnail
-                        fluid
                     />
                 </Col>
                 <Col md={filmsPage? 8 : 6} className={appStyles.leftAlign} sm={8} xs={12}>
