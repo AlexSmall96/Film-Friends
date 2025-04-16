@@ -63,7 +63,7 @@ const NavBar = () => {
         </Nav.Link>
         {width <= 767?(
             <div className={styles.underlineSection}>
-                <Nav.Link href={`/profile/info`} onClick={handleClick}>
+                <Nav.Link href={`/profile/`} onClick={handleClick}>
                     <i className="fa-solid fa-user"></i> Profile
                 </Nav.Link>
                 <Nav.Link href={`/account/security`} onClick={handleClick}>
@@ -78,7 +78,7 @@ const NavBar = () => {
             </div>
         ):(
             <NavDropdown title={<Avatar src={currentUser?.user.image} />} id="basic-nav-dropdown" drop='start'>
-                <NavDropdown.Item href={`/profile/info`}>
+                <NavDropdown.Item href={`/profile/`}>
                     <i className="fa-solid fa-user"></i> Profile
                 </NavDropdown.Item>
                 <NavDropdown.Item href={`/account/security`}>
@@ -107,7 +107,7 @@ const NavBar = () => {
     </>
 
     return (
-        <Navbar expand={'md'} expanded={expanded} sticky='top' className={`${styles.darkBackground}`}>
+        <Navbar expand={'md'} expanded={expanded} sticky='top' className={`${styles.darkBackground} ${styles.navBar}`}>
             <Navbar.Brand href="/">
                 <h3 className={`${appStyles.bold} ${appStyles.headingFont} ${appStyles.horizMargin}`}>
                     FILM

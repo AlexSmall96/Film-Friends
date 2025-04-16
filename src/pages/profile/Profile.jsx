@@ -5,7 +5,7 @@ import { Button, Container,   Image, Nav, Tab, Row, Col} from 'react-bootstrap';
 import appStyles from '../../App.module.css'
 import styles from '../../styles/Profile.module.css'
 import AccountSecurity from './AccountSecurity';
-import ProfileInfo from './ProfileInfo';
+import ProfileEdit from './ProfileEdit';
 import { useRedirect } from '../../hooks/useRedirect';
 import useWindowDimensions from '../../hooks/useWindowDimensions';
 
@@ -17,8 +17,9 @@ const Profile = ({activeKey}) => {
     const { currentUser, setCurrentUser, setAccountDeleted } = useCurrentUser()
     // Initialize state variables
     const [profile, setProfile] = useState({})
+	const [username, setUsername] = useState('')
     const [updated, setUpdated] = useState(false)
-
+	const [hasLoaded, setHasLoaded] = useState(false)
     // Handle Delete function
     const handleDelete = async () => {
         try {
@@ -38,9 +39,11 @@ const Profile = ({activeKey}) => {
                 const response = await axiosReq.get(`/users/${currentUser?.user._id}`, {headers: {'Authorization': `Bearer ${currentUser?.token}`}})
 				const profileReponse = response.data.profile
 				setProfile(profileReponse)
-				const username = profileReponse.username
+				const usernameResponse = profileReponse.username
 				const image = profileReponse.image
-				setCurrentUser({ ...currentUser, user: {...currentUser.user, username, image}})
+				setCurrentUser({ ...currentUser, user: {...currentUser.user, usernameResponse, image}})
+				setUsername(usernameResponse)
+				setHasLoaded(true)
             } catch (err) {
                 console.log(err)
             }
@@ -81,7 +84,12 @@ const Profile = ({activeKey}) => {
 							<Col md={9} sm={8} xs={12} className={styles.mainSection}>
 								<Tab.Content>
 									<Tab.Pane eventKey="first">
-										<ProfileInfo updated={updated} setUpdated={setUpdated} profile={profile} setProfile={setProfile} />
+										<ProfileEdit 
+											setUpdated={setUpdated} 
+											hasLoaded={hasLoaded} 
+											setHasLoaded={setHasLoaded}
+											username={username}
+											setUsername={setUsername} />
 									</Tab.Pane>
 									<Tab.Pane eventKey="second">
 										<AccountSecurity profile={profile} />

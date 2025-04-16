@@ -32,7 +32,7 @@ function App() {
 									<Route exact path='/films/:id' render={() => <FilmsPage />} />
 									<Route exact path='/friends/' render={() => <Friends />} />
 									<Route exact path='/reccomendations' render={() => <Results reccomendationsPage/>} />
-									<Route exact path='/profile/info' render={() => <Profile activeKey='first' />} />
+									<Route exact path='/profile/' render={() => <Profile activeKey='first' />} />
 									<Route exact path='/account/security' render={() => <Profile activeKey='second' />} />
 									<Route exact path='/account/delete' render={() => <Profile activeKey='third' />} />
 									<Route exact path='/resetPassword/sendOTP/' render={() => <SendOTP resetPassword />} />
