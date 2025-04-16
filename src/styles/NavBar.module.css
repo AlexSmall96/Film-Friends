@@ -8,6 +8,11 @@
    --bs-nav-link-hover-color: blue;
 }
 
+.navBar *:hover{
+   text-decoration: none;
+}
+
 .darkBackground {
    background-color: rgba(224, 220, 220, 1);
  }
+

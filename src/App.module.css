@@ -164,11 +164,13 @@
 
 a {
   color: black;
+  font-weight: bold;
   text-decoration: none;
 }
 
 a:hover {
   color: blue;
+  text-decoration: underline
 }
 
 /* Components used across site */
