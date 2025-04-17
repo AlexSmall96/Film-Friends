@@ -51,14 +51,14 @@ const SearchBar = ({setResults, setTotalResults, currentPage, setCurrentPage, se
 			try {
 				// Get data from API, either using event.target or query state variable as the search
 				const response = await axiosReq.get(`filmSearch/?search=${search.trim()}&page=${currentPage}`)
-					if (!response.data.Error){
+					if (response.data.Search){
 						// Set search results
 						setResults(response.data.Search)
 						// Set final page and total results for pagination
 						setFinalPage(
 							Math.ceil(0.1 * response.data.totalResults)
 						)
-						setTotalResults(response.data.totalResults)            
+						setTotalResults(response.data.totalResults)          
 					} else {
 						// If no search results found check if a suggestions item has been selected and try to find data from imdbID
 						if (imdbID !== '') {
@@ -68,7 +68,7 @@ const SearchBar = ({setResults, setTotalResults, currentPage, setCurrentPage, se
 								setFinalPage(1)
 								setTotalResults(1)
 							} else {
-								// If both searches fail but an error message has been sent, set a custom error message to display
+								// If both searches fail but data has been sent, set a custom error message to display
 								setResults([])
 								setError(
 									'There are no results matching your search.'
@@ -77,7 +77,7 @@ const SearchBar = ({setResults, setTotalResults, currentPage, setCurrentPage, se
 						} 
 					}
 			} catch(err){
-				setError('There are no results matching your search.')
+				setError('Unable to display results due to system issues. Please try again later.')
 				setResults([])
 			}
 			setHasLoaded(true)
