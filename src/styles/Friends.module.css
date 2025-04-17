@@ -82,12 +82,14 @@
 
 .friendsList{
     margin-top: 245px;
-    height:700px;
+    max-height:1500px;
+    overflow-y:hidden;
 }
 
 .friendsListNoPagination{
     margin-top: 190px;
-    height:700px;
+    max-height:1500px;
+    overflow-y:hidden;
 }
 
 .results {

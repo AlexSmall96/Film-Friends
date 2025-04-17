@@ -172,9 +172,9 @@ const Friends = () => {
                                         {requests.length?
                                             <p>
                                                 {currentPage !== finalPage ? (
-                                                    `Showing ${filter === 'All'? 'all requests': filter.toLocaleLowerCase()} ${10 * (currentPage - 1) + 1} to ${10 * (currentPage - 1) + 10} of ${totalResults}`
+                                                    `Showing ${filter === 'All'? 'all requests': filter.toLocaleLowerCase()} ${9 * (currentPage - 1) + 1} to ${9 * (currentPage - 1) + 9} of ${totalResults}`
                                                 ):(
-                                                    `Showing ${filter === 'All'? 'all requests': filter.toLocaleLowerCase()} ${10 * (currentPage - 1) + 1} to ${totalResults} of ${totalResults}`
+                                                    `Showing ${filter === 'All'? 'all requests': filter.toLocaleLowerCase()} ${9 * (currentPage - 1) + 1} to ${totalResults} of ${totalResults}`
                                                 )}
                                             </p>
                                         :<p>No requests matching current criteria</p>}
