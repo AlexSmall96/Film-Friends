@@ -97,8 +97,9 @@
 }
 
 .noRecsImage{
-    max-width: 500px;
+    max-width: 400px;
     margin:auto;
+    margin-top: 150px;
 }
 
 .toastContainer {

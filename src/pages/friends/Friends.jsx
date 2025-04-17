@@ -210,8 +210,8 @@ const Friends = () => {
                         </div>
                     :
                         <div className={styles.friendsImage}>
-                            <Image src='https://res.cloudinary.com/dojzptdbc/image/upload/v1744199262/FriendsPlus_jbxswo.png' fluid />
                             <p>It looks like you don't have any friends yet. Search to connect with other users!</p>
+                            <Image src='https://res.cloudinary.com/dojzptdbc/image/upload/v1744199262/FriendsPlus_jbxswo.png' fluid />
                         </div>}
                       
                 </>

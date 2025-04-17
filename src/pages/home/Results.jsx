@@ -250,9 +250,9 @@ const Results = ({reccomendationsPage }) => {
             :    
                 /* IMAGE FOR WHEN NO RECCOMENDATIONS ARE FOUND */
                 <div className={styles.noRecsImage}>
-                    <Image src='https://res.cloudinary.com/dojzptdbc/image/upload/v1744202296/norecs_ci4bj0.png' fluid />
                     <p>{`It looks like you don't have any reccomendations yet.`}</p>
                     <a href='/friends'>Find more friends here!</a>
+                    <Image src='https://res.cloudinary.com/dojzptdbc/image/upload/v1744202296/norecs_ci4bj0.png' fluid />
                 </div>     
         :(
             <Spinner className={appStyles.bigVerticalMargin} />
