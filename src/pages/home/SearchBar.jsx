@@ -9,10 +9,10 @@ The search suggestions functionality was inspired by the following article
 https://www.dhiwise.com/post/how-to-build-react-search-bar-with-suggestions#customizing-the-autocomplete-behavior
 */
 
-const SearchBar = ({setResults, setTotalResults, currentPage, setCurrentPage, setFinalPage, setError, setHasLoaded}) =>{
+const SearchBar = ({setResults, setTotalResults, currentPage, setCurrentPage, setFinalPage, setError, setHasLoaded, setShowMainFilm}) =>{
 	
 	// Initialize state variables
-	const [search, setSearch] = useState(localStorage.getItem('search') || '')
+	const [search, setSearch] = useState('')
 	const [imdbID, setImdbID] = useState('')
 	const [suggestions, setSuggestions] = useState([])
 	const [showSuggestions, setShowSuggestions] = useState(false);
@@ -40,10 +40,6 @@ const SearchBar = ({setResults, setTotalResults, currentPage, setCurrentPage, se
 		}
   	}
 
-	useEffect(() => {
-		localStorage.setItem('search', search)
-	}, [search])
-
 	// Use effect to make a call to OMDB API to get actual results
 	// Triggered by current page or submitted boolean variable changing
 	useEffect(() => {
@@ -58,7 +54,8 @@ const SearchBar = ({setResults, setTotalResults, currentPage, setCurrentPage, se
 						setFinalPage(
 							Math.ceil(0.1 * response.data.totalResults)
 						)
-						setTotalResults(response.data.totalResults)          
+						setTotalResults(response.data.totalResults) 
+						setShowMainFilm(false)        
 					} else {
 						// If no search results found check if a suggestions item has been selected and try to find data from imdbID
 						if (imdbID !== '') {
