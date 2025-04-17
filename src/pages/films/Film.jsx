@@ -83,7 +83,7 @@ const Film = () => {
                             value => <span onClick={isOwner? () => updateViewingData(null, value):null} key={value} className={`fa fa-star ${viewingData.userRating >= value ? styles.checked : styles.unchecked}`}></span>
                         ):''}
                         {/* SAVE / GO TO WATCHLIST BUTTONS IF NOT OWNER OF FILMS LIST */}
-                        {!isOwner? 
+                        {!isOwner && currentUser? 
                             <SaveDropown />
                         : ''}
                 </Form>

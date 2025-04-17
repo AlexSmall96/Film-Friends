@@ -101,7 +101,7 @@ const Results = ({reccomendationsPage }) => {
                         reccomendationsPage? 
                             finalPage > 1? styles.wrapperRecc : styles.wrapperReccNoPagination  
                         : 
-                            !currentUser? styles.wrapperHomeLoggedOut : finalPage > 1? styles.wrapperHome: styles.wrapperHomeNoPagination
+                            !currentUser? styles.wrapperHomeLoggedOut : finalPage > 1 || showMainFilm? styles.wrapperHome: styles.wrapperHomeNoPagination
                         }
                     >
                         <div className={reccomendationsPage? styles.filterComponents : styles.searchComponentsHome}>
@@ -115,6 +115,7 @@ const Results = ({reccomendationsPage }) => {
                                     setFinalPage={setFinalPage} 
                                     setError={setError} 
                                     setHasLoaded={setHasLoaded} 
+                                    setShowMainFilm={setShowMainFilm}
                                 />
                             :   
                                 <ButtonGroup className={appStyles.bigVerticalMargin}>
@@ -160,7 +161,15 @@ const Results = ({reccomendationsPage }) => {
                                             {reccomendationsPage? <br />:''}
                                             <Button variant='link' onClick={() => setShowMainFilm(false)} className={appStyles.bigVerticalMargin}>
                                                 {reccomendationsPage? 'Back to reccomendations': 'Back to search results'}
-                                            </Button>                            
+                                            </Button>
+                                            {!currentUser && !reccomendationsPage? (
+                                                <div className={appStyles.bigVerticalMargin}>
+                                                    <Button variant='link' onClick={() => history.push('/signup')}>Sign up</Button>
+                                                    or 
+                                                    <Button variant='link' onClick={() => history.push('/login')}>Login</Button> 
+                                                        to save and share films
+                                                </div>):('')
+                                            }                             
                                         </>
                                         
                                     }
@@ -169,7 +178,7 @@ const Results = ({reccomendationsPage }) => {
                             ):''}
                         </div>
                     </div>
-                    <div className={currentUser? finalPage > 1 ? styles.resultsHome: styles.resultsHomeNoPagination : styles.resultsHomeLoggedOut}>
+                    <div className={currentUser? finalPage > 1 || showMainFilm ? styles.resultsHome: styles.resultsHomeNoPagination : styles.resultsHomeLoggedOut}>
                         {/* MAIN FILM  */}
                         {results?.length? (
                             hasLoaded? (
