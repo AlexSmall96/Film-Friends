@@ -1,6 +1,5 @@
 import React from 'react';
 import appStyles from '../App.module.css'
-import styles from '../styles/SaveDropdown.module.css'
 import { Button, Dropdown } from 'react-bootstrap';
 import { useCurrentUser } from '../contexts/CurrentUserContext';
 import { useCurrentFilm } from '../contexts/CurrentFilmContext';
@@ -51,7 +50,7 @@ const SaveDropown = () => {
             :
                 <>
                     <div className={appStyles.smallFont}>
-                        <i className={`${styles.green} fa-solid fa-check`}></i> Saved
+                        <i className={`${appStyles.green} fa-solid fa-check`}></i> Saved
                         <Button className={`${appStyles.smallFont}`} onClick={goToWatchlist} variant="link" size="sm">Go to your watchlist</Button>        
                     </div>
                 </>
