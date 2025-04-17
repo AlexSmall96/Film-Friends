@@ -16,7 +16,7 @@ Allows user to share film, delete film, or make public / private
 const EllipsisMenu = ({updateViewingData}) => {
     // Contexts
     const {currentUser} = useCurrentUser()
-    const { currentFilmIds, setCurrentFilmIds, viewingData, omdbData } = useCurrentFilm()
+    const { currentFilmIds, setCurrentFilmIds, viewingData, omdbData, setHasDeleted } = useCurrentFilm()
     const { updated, setUpdated } = useSaveFilmContext()
     // Hooks
     const history = useHistory()
@@ -90,9 +90,11 @@ const EllipsisMenu = ({updateViewingData}) => {
     // Handle Delete - Removes film from watchlist
     const handleDelete = async () => {
         try {
+            setHasDeleted(false)
             await axiosReq.delete(`/films/${currentFilmIds.database}`, {headers: {'Authorization': `Bearer ${currentUser.token}`}} )
             setCurrentFilmIds({imdbID: '', database: ''})
             setUpdated(current => !current)
+            setHasDeleted(true)
         } catch (err) {
             console.log(err)
         }

@@ -29,6 +29,9 @@ export const CurrentFilmProvider = ({ children }) => {
     // Username associated with owner of film list
     const [username, setUsername] = useState('')
 
+    // hasDeleted bool variable to show spinner when film is being deleted
+    const [hasDeleted, setHasDeleted] = useState(true)
+
     return (
         <CurrentFilmContext.Provider value={{
             currentFilmIds,
@@ -42,7 +45,9 @@ export const CurrentFilmProvider = ({ children }) => {
             username,
             setUsername,
             currentReccomendation, 
-            setCurrentReccomendation
+            setCurrentReccomendation,
+            hasDeleted, 
+            setHasDeleted
         }}>
             {children}
         </CurrentFilmContext.Provider>

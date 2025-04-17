@@ -22,7 +22,7 @@ const FilmsPage = () => {
     const { currentUser } = useCurrentUser()
     const { width } = useWindowDimensions()
     const  smallScreen = width <= 767
-    const { currentFilmIds, setCurrentFilmIds, setViewingData, omdbData, setOmdbData, isOwner, setIsOwner, username, setUsername } = useCurrentFilm()
+    const { currentFilmIds, setCurrentFilmIds, setViewingData, omdbData, setOmdbData, isOwner, setIsOwner, username, setUsername, hasDeleted } = useCurrentFilm()
     const { updated } = useSaveFilmContext()
     const { updatedFriends } = useFriendAction()
     const [allFilms, setAllFilms] = useState([])
@@ -236,12 +236,14 @@ const FilmsPage = () => {
                                     <Button variant='link' onClick={() => setShowMainFilm(false)} className={appStyles.bigVerticalMargin}>Back to all films</Button>
                                 :''}
                                 {smallScreen && showMainFilm || !smallScreen?
-                                    isOwner?
-                                        <Film /> 
-                                    :
-                                        <FilmPreviewProvider savedToWatchlist={currentUsersFilmIds.includes(omdbData.imdbID)} filmsPage >
+                                    hasDeleted?
+                                        isOwner?
                                             <Film /> 
-                                        </FilmPreviewProvider>               
+                                        :
+                                            <FilmPreviewProvider savedToWatchlist={currentUsersFilmIds.includes(omdbData.imdbID)} filmsPage >
+                                                <Film /> 
+                                            </FilmPreviewProvider>   
+                                    : <Spinner />            
                                 :''}
                             </Col>
                         </Row>
