@@ -41,7 +41,7 @@ const Profile = ({activeKey}) => {
 				setProfile(profileReponse)
 				const usernameResponse = profileReponse.username
 				const image = profileReponse.image
-				setCurrentUser({ ...currentUser, user: {...currentUser.user, usernameResponse, image}})
+				setCurrentUser({ ...currentUser, user: {...currentUser.user, username: usernameResponse, image}})
 				setUsername(usernameResponse)
 				setHasLoaded(true)
             } catch (err) {
