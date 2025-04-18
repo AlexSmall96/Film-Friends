@@ -49,6 +49,21 @@ router.get('/data/films/:id', auth, async (req, res) => {
     }
 })
 
+// Get all films
+router.get('/data/films/', async (req, res) => {
+    try {
+        const films = await Film.aggregate([
+            { $group: { _id: "$imdbID", film: { $first: "$$ROOT" } } },
+            { $replaceRoot: { newRoot: "$film" } },
+            { $limit: parseInt(req.query.limit) },
+            { $sort: {updatedAt: -1, userRating: 1} }
+        ]);
+        res.status(200).send(films)
+    } catch (err){
+        res.status(500).send(err)
+    }
+})
+
 // Gets film search results from OMDB API
 router.get('/data/filmSearch', async (req, res) => {
     const search = req.query.search
