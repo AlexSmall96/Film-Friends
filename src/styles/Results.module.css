@@ -22,6 +22,10 @@
     z-index: 998;
 }
 
+.wrapperNoSearch{
+    height: 0px;
+}
+
 .searchComponentsHome {
     padding-top: 110px; 
     z-index: 999;
@@ -34,6 +38,10 @@
 
 .resultsHome {
     margin-top:210px;
+}
+
+.resultsNoSearch {
+    margin-top:0
 }
 
 .resultsHomeNoPagination {

@@ -25,6 +25,7 @@
 .searchButton {
     border-radius: 0 1rem 1rem 0;
     background-color: rgb(236, 234, 234);
+    --bs-btn-disabled-opacity: 1
 }
 
 .searchButton:hover{

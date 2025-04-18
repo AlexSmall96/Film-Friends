@@ -3,7 +3,7 @@ import { axiosReq } from '../../api/axiosDefaults';
 import { useCurrentUser } from '../../contexts/CurrentUserContext';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import ResultsPagination from '../../components/ResultsPagination'
-import { Alert, Button, Container, Image, Spinner, Row, Col, ButtonGroup, DropdownButton, Dropdown, Toast, ToastContainer } from 'react-bootstrap';
+import { Alert, Button, Carousel, Container, Image, Spinner, Row, Col, ButtonGroup, DropdownButton, Dropdown, Toast, ToastContainer } from 'react-bootstrap';
 import FilmPreview from '../../components/FilmPreview'
 import Film from '../films/Film'
 import { FilmPreviewProvider } from '../../contexts/FilmPreviewContext';
@@ -14,13 +14,14 @@ import useWindowDimensions from '../../hooks/useWindowDimensions';
 import { useSaveFilmContext } from '../../contexts/SaveFilmContext';
 import { useCurrentFilm } from '../../contexts/CurrentFilmContext';
 import sortBy from 'array-sort-by'
+import FilmPosterCarousel from './FilmPosterCarousel';
 
 const Results = ({reccomendationsPage }) => {
     // Contexts
     const { currentUser, accountDeleted } = useCurrentUser()
     // Hooks
     const history = useHistory()
-    const { mobile } = useWindowDimensions()
+    const { mobile, largeScreen } = useWindowDimensions()
     // Initialize state variables
     const [results, setResults] = useState([])
     const [usersFilmIds, setUsersFilmIds] = useState([])
@@ -39,6 +40,7 @@ const Results = ({reccomendationsPage }) => {
     const { deleted, showMainFilm, setShowMainFilm } = useSaveFilmContext()
     const [hasRecs, setHasRecs] = useState(false)
     const [showToast, setShowToast] = useState(accountDeleted)
+    const [backgroundFilms, setBackgroundFilms] = useState([])
 
     useEffect(() => {
         // Gets the imdbIds of the users saved films, to determine which buttons should appear next to film result
@@ -93,16 +95,30 @@ const Results = ({reccomendationsPage }) => {
         }
     }, [filter, sort, currentUser?.token, deleted, currentPage])
 
+    useEffect(() => {
+        const fetchBackgroundFilms = async () => {
+            try {
+                const response = await axiosReq.get(`/films/?limit=${largeScreen ? 72 : 54}`)
+                setBackgroundFilms(response.data)
+            } catch (err){
+                console.log(err)
+            }
+        }
+        fetchBackgroundFilms()
+    }, [largeScreen])
+
     return (
         hasLoaded?  
             hasRecs || !reccomendationsPage?
                 <> 
                     <div className={
-                        reccomendationsPage? 
-                            finalPage > 1? styles.wrapperRecc : styles.wrapperReccNoPagination  
-                        : 
-                            !currentUser? styles.wrapperHomeLoggedOut : finalPage > 1 || showMainFilm? styles.wrapperHome: styles.wrapperHomeNoPagination
-                        }
+                        results?.length?
+                            reccomendationsPage? 
+                                finalPage > 1? styles.wrapperRecc : styles.wrapperReccNoPagination  
+                            : 
+                                !currentUser? styles.wrapperHomeLoggedOut : finalPage > 1 || showMainFilm? styles.wrapperHome: styles.wrapperHomeNoPagination
+                            :
+                        styles.wrapperNoSearch}
                     >
                         <div className={reccomendationsPage? styles.filterComponents : styles.searchComponentsHome}>
                             {/* SEARCH BAR*/}
@@ -178,7 +194,7 @@ const Results = ({reccomendationsPage }) => {
                             ):''}
                         </div>
                     </div>
-                    <div className={currentUser? finalPage > 1 || showMainFilm ? styles.resultsHome: styles.resultsHomeNoPagination : styles.resultsHomeLoggedOut}>
+                    <div className={results?.length ? currentUser? finalPage > 1 || showMainFilm ? styles.resultsHome: styles.resultsHomeNoPagination : styles.resultsHomeLoggedOut: styles.resultsNoSearch}>
                         {/* MAIN FILM  */}
                         {results?.length? (
                             hasLoaded? (
@@ -231,10 +247,10 @@ const Results = ({reccomendationsPage }) => {
                                 ):(
                                     !reccomendationsPage? 
                                         <>
-                                            {/* DEFAULT HOME SCREEN IMAGE */}
-                                            <div className={styles.resultsHome}>
-                                                <Image alt='A close up of film tape' width={400} src='https://res.cloudinary.com/dojzptdbc/image/upload/v1729270408/movie2_h1bnwo.png'/>
-                                            </div>
+                                            {/* CAROUSEL USED AS BACKGROUND IMAGE */}
+                                            {backgroundFilms.length? 
+                                                <FilmPosterCarousel films={backgroundFilms} />
+                                            :''}
                                             {accountDeleted? 
                                                 /* TOAST MESSAGE IF ACCOUNT HAS JUST BEEN DELETED */
                                                 <ToastContainer

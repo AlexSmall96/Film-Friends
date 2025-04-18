@@ -11,7 +11,7 @@ import { useSaveFilmContext } from '../contexts/SaveFilmContext';
 
 // Displays film poster and data either as a list of search results, saved films or reccomendations
 const FilmPreview = () => {
-    const {film, showDropdown, filmsPage, mobile, smallScreen, setShowMainFilm, message, sender, resultId } = useFilmPreview()
+    const {film, showDropdown, filmsPage, mobile, smallScreen, setShowMainFilm, message, sender, resultId, opaque } = useFilmPreview()
     const { width } = useWindowDimensions()
     const { setCurrentFilmIds, omdbData, setCurrentReccomendation } = useCurrentFilm()
     const omdbStringArray = [film.Director, film.Year, film.Type]
@@ -71,7 +71,7 @@ const FilmPreview = () => {
     return (
             <Row onClick={filmsPage || mobile? handleClick : null}>
                 <Col md={filmsPage? 12 : 6} sm={filmsPage? 12: 4} xs={12} className={`${appStyles.noPadding}`}>
-                    <img className={styles.filmPoster} src={film.Poster}
+                    <img className={`${styles.filmPoster} ${opaque? styles.opaque : ''}`} src={film.Poster}
                         height={posterWidth}
                         width={posterWidth}                         
                         onMouseEnter={!filmsPage && !mobile ? handleMouseEnter : null}

@@ -126,7 +126,7 @@ const SearchBar = ({setResults, setTotalResults, currentPage, setCurrentPage, se
 						</Col>
 						{/* SEARCH BUTTON */}
 						<Col xs={2} sm={2} md={1} className={appStyles.noPadding} >
-							<Button type='submit' disabled={!search.length} variant='outline-secondary' className={styles.searchButton}><i className="fa-solid fa-magnifying-glass"></i></Button>
+							<Button type='submit' variant='secondary' className={styles.searchButton}><i className="fa-solid fa-magnifying-glass"></i></Button>
 						</Col>
 					</Row>
 					<Row>
