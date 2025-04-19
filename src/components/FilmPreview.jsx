@@ -71,7 +71,7 @@ const FilmPreview = () => {
     return (
             <Row onClick={filmsPage || mobile? handleClick : null}>
                 <Col md={filmsPage? 12 : 6} sm={filmsPage? 12: 4} xs={12} className={`${appStyles.noPadding}`}>
-                    <img className={`${styles.filmPoster} ${faded? styles.faded : ''}`} src={film.Poster}
+                    <img className={`${styles.filmPoster} ${faded? styles.faded : styles.hover}`} src={film.Poster}
                         height={posterWidth}
                         width={posterWidth}                         
                         onMouseEnter={!filmsPage && !mobile ? handleMouseEnter : null}

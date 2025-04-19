@@ -17,8 +17,14 @@ The plotPreview class was inspired by https://stackoverflow.com/questions/799306
     width: 100%;
     border-width: 1px;
     border-color: lightgrey;
+    opacity: 0.8;
 }
 
 .faded{
     opacity: 0.5;
+}
+
+.hover:hover{
+    cursor: pointer;
+    opacity: 1;
 }
