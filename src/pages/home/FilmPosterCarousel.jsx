@@ -14,7 +14,7 @@ const FilmPosterCarousel = ({films}) => {
                     film={film} 
                     mobile={true}
                     filmsPage
-                    opaque
+                    faded
                 >
                     <FilmPreview />
                 </FilmPreviewProvider>

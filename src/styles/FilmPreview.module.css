@@ -19,6 +19,6 @@ The plotPreview class was inspired by https://stackoverflow.com/questions/799306
     border-color: lightgrey;
 }
 
-.opaque{
+.faded{
     opacity: 0.5;
 }
