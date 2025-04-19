@@ -56,7 +56,7 @@ router.get('/data/films/', async (req, res) => {
             { $group: { _id: "$imdbID", film: { $first: "$$ROOT" } } },
             { $replaceRoot: { newRoot: "$film" } },
             { $limit: parseInt(req.query.limit) },
-            { $sort: {updatedAt: -1, userRating: 1} }
+            { $sort: {createdAt: -1, userRating: 1} }
         ]);
         res.status(200).send(films)
     } catch (err){
