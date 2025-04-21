@@ -46,6 +46,7 @@ const AccountSecurity = ({profile}) => {
 			...formData, [event.target.name]: event.target.value
 		})
         setDisabled(false)
+        setMessage({})
 	}
 
     return(
