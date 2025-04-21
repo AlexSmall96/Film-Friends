@@ -11,7 +11,7 @@ import { useSaveFilmContext } from '../contexts/SaveFilmContext';
 
 // Displays film poster and data either as a list of search results, saved films or reccomendations
 const FilmPreview = () => {
-    const {film, showDropdown, filmsPage, mobile, smallScreen, setShowMainFilm, message, sender, resultId, faded } = useFilmPreview()
+    const {film, showDropdown, filmsPage, mobile, smallScreen, setShowMainFilm, message, sender, resultId, faded, shareModal } = useFilmPreview()
     const { width } = useWindowDimensions()
     const { setCurrentFilmIds, omdbData, setCurrentReccomendation } = useCurrentFilm()
     const omdbStringArray = [film.Director, film.Year, film.Type]
@@ -44,7 +44,10 @@ const FilmPreview = () => {
             setPosterWidth(filmsPage ? 250 : 300)
         }
         if (width < 576){
-            setPosterWidth(filmsPage ? 0.45 * width : 0.5 * width)
+            setPosterWidth(filmsPage ? 0.45 * width : shareModal? 0.3 * width : 0.5 * width)
+        }
+        if (shareModal && width >= 576){
+            setPosterWidth(150)
         }
     }, [width])
 
@@ -54,7 +57,7 @@ const FilmPreview = () => {
         if (resultId) {
             setCurrentReccomendation({_id: resultId, message, sender})
         }
-        if ((mobile || smallScreen) && !faded) {
+        if ((mobile || smallScreen) && !(faded || shareModal)) {
             setShowMainFilm(true) 
         }
     }
@@ -70,7 +73,7 @@ const FilmPreview = () => {
 
     return (
             <Row onClick={filmsPage || mobile? handleClick : null}>
-                <Col md={filmsPage? 12 : 6} sm={filmsPage? 12: 4} xs={12} className={`${appStyles.noPadding}`}>
+                <Col md={filmsPage || shareModal? 12 : 6} sm={filmsPage || shareModal? 12: 4} xs={12} className={`${!shareModal? appStyles.noPadding: ''}`}>
                     <img className={`${styles.filmPoster} ${faded? styles.faded : styles.hover}`} src={film.Poster}
                         height={posterWidth}
                         width={posterWidth}                         
@@ -88,7 +91,7 @@ const FilmPreview = () => {
                             <Spinner />
                     :
                     <>
-                        {!filmsPage && !message? <h5 className={`${mobile? `${appStyles.verySmallFont} ${appStyles.center} ${appStyles.smallPadding}`: appStyles.smallFont}`}>{film.Title}</h5>:''}
+                        {!filmsPage && !message && !shareModal? <h5 className={`${mobile? `${appStyles.verySmallFont} ${appStyles.center} ${appStyles.smallPadding}`: appStyles.smallFont}`}>{film.Title}</h5>:''}
                         {!mobile && !filmsPage && !message?
                             <>
                                 <p className={`${appStyles.smallFont} ${appStyles.grey}`}>{omdbString}</p>

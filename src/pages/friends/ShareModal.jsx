@@ -5,6 +5,8 @@ import { useCurrentUser } from '../../contexts/CurrentUserContext';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { useFriendData } from '../../contexts/FriendDataContext';
 import appStyles from '../../App.module.css'
+import FilmPreview from '../../components/FilmPreview';
+import { FilmPreviewProvider } from '../../contexts/FilmPreviewContext';
 
 const ShareModal = () => {
     // Contexts
@@ -132,12 +134,19 @@ const ShareModal = () => {
                                         ):('')}
                                         <div className={`${appStyles.modalFilmList} ${appStyles.list} ${appStyles.verticalMargin}`}>
                                             <Row>
-                                            {films.map(
-                                                film => 
-                                                    <Col md={3} sm={3} xs={4} key={film._id}className={appStyles.noPadding} onClick={() => handleFilmChange(film._id)}>
-                                                        <Image src={film.Poster} width={150} thumbnail/>
-                                                    </Col>
-                                            )}
+                                                {films.map(
+                                                    film => 
+                                                        <Col md={4} xs={4} key={film._id} className={appStyles.noPadding} onClick={() => handleFilmChange(film._id)}>
+                                                            <FilmPreviewProvider
+                                                                key={film.imdbID} 
+                                                                film={film}  
+                                                                mobile={true}
+                                                                shareModal
+                                                            >
+                                                                <FilmPreview />
+                                                            </FilmPreviewProvider>
+                                                        </Col>
+                                                )}
                                             </Row>
                                         </div>                                     
                                     <Form className={appStyles.verticalMargin}>
