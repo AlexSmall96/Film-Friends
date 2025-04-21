@@ -206,7 +206,7 @@ const FilmsPage = () => {
                     {allFilms.length?
                         <Row>
                             {smallScreen && !showMainFilm || !smallScreen? 
-                            <Col lg={{span:5, order: 1}} md={{span:4, order:1}} sm={{span: 12, order: 2}} className={`${appStyles.greyBorder} ${appStyles.greyBackground}`}>
+                            <Col lg={{span:5, order: 1}} md={{span:5, order:1}} sm={{span: 12, order: 2}} className={`${appStyles.greyBorder} ${appStyles.greyBackground}`}>
                                 <Filters
                                     filter={filter}
                                     setFilter={setFilter}
@@ -231,7 +231,7 @@ const FilmsPage = () => {
                                 </div>
                             </div>
                             </Col>:''}
-                            <Col lg={7} md={8} sm={{span:12, order:1}}>
+                            <Col lg={7} md={7} sm={{span:12, order:1}}>
                                 {smallScreen && showMainFilm?
                                     <Button variant='link' onClick={() => setShowMainFilm(false)} className={appStyles.bigVerticalMargin}>Back to all films</Button>
                                 :''}

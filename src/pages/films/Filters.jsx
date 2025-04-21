@@ -10,7 +10,7 @@ const Filters = ({ filter, setFilter, sort, setSort }) => {
     return (
         <Container fluid>
         <Row>
-            <Col xl={6} lg={12} md={12} sm={6} xs={12}>
+            <Col xl={4} lg={12} md={12} sm={6} xs={12}>
                 {isOwner? ( 
                     <ButtonGroup className={appStyles.whiteBackground}>
                         <DropdownButton size="sm" variant='outline-secondary' title={`Your ${filter.public? 'Public': 'Private'} Watchlist`}>
@@ -22,7 +22,7 @@ const Filters = ({ filter, setFilter, sort, setSort }) => {
                     `${username}'s Watchlist`
                 )}            
             </Col>
-            <Col xl={6} lg={12} md={12} sm={6} xs={12}>
+            <Col xl={8} lg={12} md={12} sm={6} xs={12}>
                 <ButtonGroup className={`${width <= 575 || width >= 768 && width < 1200? appStyles.verticalMargin : ''} ${appStyles.whiteBackground}`}>
                     <DropdownButton 
                         as={ButtonGroup} 
@@ -41,6 +41,7 @@ const Filters = ({ filter, setFilter, sort, setSort }) => {
                         as={ButtonGroup} 
                         size="sm" 
                         variant='outline-secondary' 
+                        
                         title={
                             <>
                                 <i className="fa-solid fa-filter"></i> {filter.watched}
