@@ -121,7 +121,7 @@ const Results = ({reccomendationsPage }) => {
                     <div className={
                         results?.length?
                             reccomendationsPage? 
-                                finalPage > 1? styles.wrapperRecc : styles.wrapperReccNoPagination  
+                                showMainFilm || finalPage === 1? styles.wrapperReccNoPagination : styles.wrapperRecc 
                             : 
                                 !currentUser? styles.wrapperHomeLoggedOut : finalPage > 1 || showMainFilm? styles.wrapperHome: styles.wrapperHomeNoPagination
                             :
@@ -167,33 +167,31 @@ const Results = ({reccomendationsPage }) => {
                                     {!(showMainFilm && mobile)?
                                         <>
                                             {/* PAGINATION MESSAGE */}
-                                            <p>
-                                                {currentPage !== finalPage ? (
-                                                    `Showing ${reccomendationsPage? 'reccomendations' : 'results'} ${10 * (currentPage - 1) + 1} to ${10 * (currentPage - 1) + 10} of ${totalResults}`
-                                                ):(
-                                                    `Showing ${reccomendationsPage? 'reccomendations' : 'results'} ${10 * (currentPage - 1) + 1} to ${totalResults} of ${totalResults}`
-                                                )}
-                                            </p>
+                                            {reccomendationsPage?
+                                                <p>
+                                                    {currentPage !== finalPage ? (
+                                                        `Showing ${reccomendationsPage? 'reccomendations' : 'results'} ${10 * (currentPage - 1) + 1} to ${10 * (currentPage - 1) + 10} of ${totalResults}`
+                                                    ):(
+                                                        `Showing ${reccomendationsPage? 'reccomendations' : 'results'} ${10 * (currentPage - 1) + 1} to ${totalResults} of ${totalResults}`
+                                                    )}
+                                                </p>:''}
+                                            {!currentUser && !reccomendationsPage? (
+                                                <div className={`${appStyles.bigVerticalMargin}`}>
+                                                    <Button variant='link' onClick={() => history.push('/signup')}>Sign up</Button>
+                                                    or 
+                                                    <Button variant='link' onClick={() => history.push('/login')}>Login</Button> 
+                                                        to save and share films
+                                                </div>):('')
+                                            }        
                                             {/* PAGINATION BUTTONS */}
                                             {finalPage > 1 ? 
                                                 <ResultsPagination currentPage={currentPage} finalPage={finalPage} setCurrentPage={setCurrentPage}/>                       
                                             : '' }    
                                             {/* LOGIN AND SIGNUP BUTTONS IF NOT ALREADY LOGGED IN */}
-                                            {!currentUser && !reccomendationsPage? (
-                                                <div className={appStyles.bigVerticalMargin}>
-                                                    <Button variant='link' onClick={() => history.push('/signup')}>Sign up</Button>
-                                                    or 
-                                                    <Button variant='link' onClick={() => history.push('/login')}>Login</Button> 
-                                                        to save and share films
-                                                </div>):('')
-                                            }                        
+                   
                                         </> 
                                     :   
                                         <>
-                                            {reccomendationsPage? <br />:''}
-                                            <Button variant='link' onClick={() => setShowMainFilm(false)} className={appStyles.bigVerticalMargin}>
-                                                {reccomendationsPage? 'Back to reccomendations': 'Back to search results'}
-                                            </Button>
                                             {!currentUser && !reccomendationsPage? (
                                                 <div className={appStyles.bigVerticalMargin}>
                                                     <Button variant='link' onClick={() => history.push('/signup')}>Sign up</Button>
@@ -201,7 +199,11 @@ const Results = ({reccomendationsPage }) => {
                                                     <Button variant='link' onClick={() => history.push('/login')}>Login</Button> 
                                                         to save and share films
                                                 </div>):('')
-                                            }                             
+                                            }    
+                                            {reccomendationsPage? <br />:''}
+                                            <Button variant='link' onClick={() => setShowMainFilm(false)}>
+                                                {reccomendationsPage? 'Back to reccomendations': 'Back to search results'}
+                                            </Button>                         
                                         </>
                                         
                                     }
