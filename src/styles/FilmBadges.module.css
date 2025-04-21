@@ -1,0 +1,14 @@
+.hidden {
+    margin-bottom: -4px;
+}
+
+.badgeContainer {
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.badge:hover {
+    cursor: pointer;
+    color: black !important;
+    background-color: lightgray !important;
+}

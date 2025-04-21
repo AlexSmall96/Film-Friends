@@ -3,7 +3,7 @@ import { axiosReq } from '../../api/axiosDefaults';
 import { useCurrentUser } from '../../contexts/CurrentUserContext';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import ResultsPagination from '../../components/ResultsPagination'
-import { Alert, Button, Carousel, Container, Image, Spinner, Row, Col, ButtonGroup, DropdownButton, Dropdown, Toast, ToastContainer } from 'react-bootstrap';
+import { Alert, Button, Badge, Stack, Container, Image, Spinner, Row, Col, ButtonGroup, DropdownButton, Dropdown, Toast, ToastContainer } from 'react-bootstrap';
 import FilmPreview from '../../components/FilmPreview'
 import Film from '../films/Film'
 import { FilmPreviewProvider } from '../../contexts/FilmPreviewContext';
@@ -15,6 +15,7 @@ import { useSaveFilmContext } from '../../contexts/SaveFilmContext';
 import { useCurrentFilm } from '../../contexts/CurrentFilmContext';
 import sortBy from 'array-sort-by'
 import FilmPosterCarousel from './FilmPosterCarousel';
+import FilmBadges from './FilmBadges';
 
 const Results = ({reccomendationsPage }) => {
     // Contexts
@@ -123,6 +124,7 @@ const Results = ({reccomendationsPage }) => {
                         <div className={reccomendationsPage? styles.filterComponents : styles.searchComponentsHome}>
                             {/* SEARCH BAR*/}
                             {!reccomendationsPage? 
+                                <>
                                 <SearchBar 
                                     setResults={setResults} 
                                     setTotalResults={setTotalResults} 
@@ -133,6 +135,10 @@ const Results = ({reccomendationsPage }) => {
                                     setHasLoaded={setHasLoaded} 
                                     setShowMainFilm={setShowMainFilm}
                                 />
+                                {backgroundFilms.length?
+                                    <FilmBadges films={backgroundFilms.slice(0,30).map(film => film.Title)} />
+                                :''}
+                              </>
                             :   
                                 <ButtonGroup className={appStyles.bigVerticalMargin}>
                                     <DropdownButton as={ButtonGroup} variant='outline-secondary' title={<><i className="fa-solid fa-filter"></i> {filter}</>}>
