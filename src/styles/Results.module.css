@@ -1,7 +1,7 @@
 .wrapperHome {
     background-color: white;
     width: 100%; 
-    height: 210px;
+    height: 230px;
     position: fixed;
     z-index: 998;
 }
@@ -41,7 +41,7 @@
 }
 
 .resultsHome {
-    margin-top:210px;
+    margin-top:230px;
 }
 
 .resultsNoSearch {
@@ -49,11 +49,11 @@
 }
 
 .resultsHomeNoPagination {
-    margin-top:150px;
+    margin-top:170px;
 }
 
 .resultsHomeLoggedOut {
-    margin-top:240px;
+    margin-top:270px;
 }
 
 .reccomendation {

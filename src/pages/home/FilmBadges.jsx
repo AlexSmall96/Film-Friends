@@ -3,7 +3,7 @@ import { Badge, Row, Container, Stack } from 'react-bootstrap';
 import styles from '../../styles/FilmBadges.module.css'
 import useWindowDimensions from '../../hooks/useWindowDimensions';
 
-const FilmBadges = ({ films }) => {
+const FilmBadges = ({ films, search, setSearch, setSubmitted }) => {
     const containerRef = useRef(null);
     const [visibleFilms, setVisibleFilms] = useState(films);
     const { width } = useWindowDimensions()
@@ -27,13 +27,18 @@ const FilmBadges = ({ films }) => {
         checkVisibility();
     }, [films, width]);
 
+    const handleClick = (event) => {
+        setSearch(event.target.innerHTML)
+        setSubmitted(current => !current)
+    }
+
 
     return (
         <Container ref={containerRef} className={styles.badgeContainer}>
             <Row>
                 <Stack direction="horizontal" gap={2}>
                     {visibleFilms.map((film, index) => (
-                        <Badge key={index} bg="secondary" className={styles.badge}>{film}</Badge>
+                        <Badge key={index} bg="secondary" className={`${styles.badge} ${film === search? styles.selected: ''}`} onClick={handleClick}>{film}</Badge>
                     ))}
                 </Stack>
             </Row>

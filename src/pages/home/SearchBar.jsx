@@ -9,14 +9,13 @@ The search suggestions functionality was inspired by the following article
 https://www.dhiwise.com/post/how-to-build-react-search-bar-with-suggestions#customizing-the-autocomplete-behavior
 */
 
-const SearchBar = ({setResults, setTotalResults, currentPage, setCurrentPage, setFinalPage, setError, setHasLoaded, setShowMainFilm}) =>{
+const SearchBar = ({setResults, setTotalResults, currentPage, setCurrentPage, setFinalPage, setError, setHasLoaded, setShowMainFilm, search, setSearch, submitted, setSubmitted}) =>{
 	
 	// Initialize state variables
-	const [search, setSearch] = useState('')
+	
 	const [imdbID, setImdbID] = useState('')
 	const [suggestions, setSuggestions] = useState([])
 	const [showSuggestions, setShowSuggestions] = useState(false);
-	const [submitted, setSubmitted] = useState(false)
 
 	// Get search results from OMDB API to use as suggestions
   	const handleChange = async (event) => {

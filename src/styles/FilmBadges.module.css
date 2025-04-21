@@ -7,8 +7,18 @@
     overflow: hidden;
 }
 
+.badge {
+    background-color: rgb(231, 229, 229) !important;
+    color: black !important;
+}
+
 .badge:hover {
     cursor: pointer;
     color: black !important;
     background-color: lightgray !important;
+}
+
+.selected {
+    color: white !important;
+    background-color: rgb(104, 102, 102) !important;
 }

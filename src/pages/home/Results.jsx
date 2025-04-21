@@ -42,6 +42,8 @@ const Results = ({reccomendationsPage }) => {
     const [hasRecs, setHasRecs] = useState(false)
     const [showToast, setShowToast] = useState(accountDeleted)
     const [backgroundFilms, setBackgroundFilms] = useState([])
+    const [search, setSearch] = useState('')
+    const [submitted, setSubmitted] = useState(false)
 
     useEffect(() => {
         // Gets the imdbIds of the users saved films, to determine which buttons should appear next to film result
@@ -134,9 +136,13 @@ const Results = ({reccomendationsPage }) => {
                                     setError={setError} 
                                     setHasLoaded={setHasLoaded} 
                                     setShowMainFilm={setShowMainFilm}
+                                    search={search} 
+                                    setSearch={setSearch}
+                                    submitted={submitted} 
+                                    setSubmitted={setSubmitted}
                                 />
                                 {backgroundFilms.length?
-                                    <FilmBadges films={backgroundFilms.slice(0,30).map(film => film.Title)} />
+                                    <FilmBadges search={search} setSearch={setSearch} setSubmitted={setSubmitted} films={backgroundFilms.slice(0,30).map(film => film.Title)} />
                                 :''}
                               </>
                             :   
