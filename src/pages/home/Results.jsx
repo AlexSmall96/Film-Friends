@@ -110,6 +110,10 @@ const Results = ({reccomendationsPage }) => {
         fetchBackgroundFilms()
     }, [largeScreen])
 
+    useEffect(() => {
+        setCurrentPage(1)
+    }, [search])
+
     return (
         hasLoaded?  
             hasRecs || !reccomendationsPage?
