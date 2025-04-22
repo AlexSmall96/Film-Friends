@@ -11,16 +11,25 @@ import { useCurrentFilm } from '../../contexts/CurrentFilmContext';
 import { useSaveFilmContext } from '../../contexts/SaveFilmContext';
 import useWindowDimensions from '../../hooks/useWindowDimensions';
 
+/* 
+Film component used to display main film.
+Includes full data available from OMDB API.
+Displays and updates user ratings.
+*/
 const Film = () => {
-    const extraBP = 550
-    const ratingValues = [1, 2, 3, 4, 5]
+    // Contexts
     const { currentUser } = useCurrentUser()
     const { currentFilmIds, viewingData, setViewingData, omdbData, isOwner, username } = useCurrentFilm()
     const { setUpdated } = useSaveFilmContext()
     const { width } = useWindowDimensions()
+    const extraBP = 550
+    const ratingValues = [1, 2, 3, 4, 5]
+
+    // Initialise variables
     const omdbStringArray = [omdbData.Director, omdbData.Year, omdbData.Runtime]
     const omdbString = omdbStringArray.filter(value => value && value !== 'N/A').join(', ')
     const Poster = omdbData.Poster !== 'N/A'? omdbData.Poster: 'https://res.cloudinary.com/dojzptdbc/image/upload/v1726945998/default-movie_uajvdm.png'
+    
     // Updates a users rating, watched value, or public / private marking
     const updateViewingData = async (event, value, publicFilm) => {
         let reqObj, stateObj
@@ -45,10 +54,12 @@ const Film = () => {
     
     return (
         <>
-        <Row>
+        <Row>   
+            {/* FILM POSTER */}
             <Col md={6} xs={5}>
                 <Image src={Poster} thumbnail fluid />
             </Col>
+            {/* FILM DATA */}
             <Col md={6} xs={7} className={appStyles.leftAlign}>
                 {isOwner?
                     <EllipsisMenu 
@@ -68,6 +79,7 @@ const Film = () => {
                     {omdbData.rt? <IconRating index={1} value={omdbData.rt} /> : ''}
                     {omdbData.mc? <IconRating index={2} value={omdbData.mc} /> : ''}
                 </p>
+                {/* FORM TO UPDATE WATCHED BOOL AND USER RATING */}
                 <Form>
                     {isOwner?
                         <Form.Check 
@@ -89,6 +101,7 @@ const Film = () => {
                 </Form>
             </Col>
         </Row>
+            {/* SHOW PLOT UNDERNEATH ON SMALL SCREEN */}
             {width <= extraBP?
                 <Row>
                     <p className={`${appStyles.verticalMargin} ${appStyles.leftAlign} ${appStyles.paragraphFont}`}>{omdbData.Plot || ''}</p>

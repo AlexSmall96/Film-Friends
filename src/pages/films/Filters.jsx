@@ -4,14 +4,19 @@ import appStyles from '../../App.module.css'
 import { useCurrentFilm } from '../../contexts/CurrentFilmContext';
 import useWindowDimensions from '../../hooks/useWindowDimensions';
 
+// A collection of buttons used to filter and sort a users watchlist
 const Filters = ({ filter, setFilter, sort, setSort }) => {
+
+    // Contexts and hooks
     const {isOwner, username} = useCurrentFilm()
     const { width } = useWindowDimensions()
+
     return (
         <Container fluid>
         <Row>
             <Col xl={4} lg={12} md={12} sm={6} xs={12}>
                 {isOwner? ( 
+                    /* CHANGE WATCHLIST TO PRIVATE OR PUBLIC */
                     <ButtonGroup className={appStyles.whiteBackground}>
                         <DropdownButton size="sm" variant='outline-secondary' title={`Your ${filter.public? 'Public': 'Private'} Watchlist`}>
                             <Dropdown.Item onClick={!filter.public ? () => setFilter({public: true, watched: filter.watched}): null}>Public</Dropdown.Item>
@@ -23,6 +28,7 @@ const Filters = ({ filter, setFilter, sort, setSort }) => {
                 )}            
             </Col>
             <Col xl={8} lg={12} md={12} sm={6} xs={12}>
+                {/* SORT AND FILTER BY WATCHED/NOT WATCHED */}
                 <ButtonGroup className={`${width <= 575 || width >= 768 && width < 1200? appStyles.verticalMargin : ''} ${appStyles.whiteBackground}`}>
                     <DropdownButton 
                         as={ButtonGroup} 

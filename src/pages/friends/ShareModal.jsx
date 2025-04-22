@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { Button, Container, Row, Col, Dropdown, DropdownButton, Modal, Form, Image, Spinner, ButtonGroup } from 'react-bootstrap';
+import { Button, Container, Row, Col, Dropdown, DropdownButton, Modal, Form, Spinner, ButtonGroup } from 'react-bootstrap';
 import { axiosReq } from '../../api/axiosDefaults';
 import { useCurrentUser } from '../../contexts/CurrentUserContext';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
@@ -8,6 +8,10 @@ import appStyles from '../../App.module.css'
 import FilmPreview from '../../components/FilmPreview';
 import { FilmPreviewProvider } from '../../contexts/FilmPreviewContext';
 
+/* 
+Used to send reccomendations to other users.
+User is selected on friends page, film is selected in modal body.
+*/
 const ShareModal = () => {
     // Contexts
     const { currentUser } = useCurrentUser()
@@ -112,20 +116,22 @@ const ShareModal = () => {
                     {hasLoaded? 
                         allFilms.length?
                             <>
-                            <Container>
-                                <Row>
-                                    <p>
-                                        {films.length? 
-                                            sent? <><i className={`fa-solid fa-check ${appStyles.green}`}></i> Sent </> : ''
-                                        :
-                                        <>
-                                            You've shared all your public films with {user.username}.
-                                            <Button variant='link' href={`/films/${currentUser.user._id}`} >Update your films list</Button>
-                                                or
-                                            <Button variant='link' href='/'>Browse more films.</Button>
-                                        </>
-                                        }
-                                    </p>
+                                <Container>
+                                    <Row>
+                                        {/* FEEDBACK TO USER */}
+                                        <p>
+                                            {films.length? 
+                                                sent? <><i className={`fa-solid fa-check ${appStyles.green}`}></i> Sent </> : ''
+                                            :
+                                            <>
+                                                You've shared all your public films with {user.username}.
+                                                <Button variant='link' href={`/films/${currentUser.user._id}`} >Update your films list</Button>
+                                                    or
+                                                <Button variant='link' href='/'>Browse more films.</Button>
+                                            </>
+                                            }
+                                        </p>
+                                        {/* LIST OF FILMS TO SELECT */}
                                         {films.length? (
                                             <DropdownButton variant='outline-secondary' size='sm' title={<><i className="fa-solid fa-sort"></i> {sort}</>}>
                                                 <Dropdown.Item onClick={() => setSort('Last Updated')}>Last Updated</Dropdown.Item>
@@ -149,15 +155,16 @@ const ShareModal = () => {
                                                 )}
                                             </Row>
                                         </div>                                     
-                                    <Form className={appStyles.verticalMargin}>
-                                         <Form.Label>Message:</Form.Label>
-                                        <Form.Control as="textarea" className={`${appStyles.modalText} ${!selectedFilm? appStyles.grey : ''}`} readOnly={selectedFilm === null} value={message} onChange={handleMessageChange} />
-                                    </Form>
-                                </Row>
+                                        <Form className={appStyles.verticalMargin}>
+                                            <Form.Label>Message:</Form.Label>
+                                            <Form.Control as="textarea" className={`${appStyles.modalText} ${!selectedFilm? appStyles.grey : ''}`} readOnly={selectedFilm === null} value={message} onChange={handleMessageChange} />
+                                        </Form>
+                                    </Row>
                                 </Container>
                             </>
                         :   
                             <>
+                                {/* WHEN NO PUBLIC FILMS ARE FOUND, LINK TO WATCHLIST */}
                                 You don't have any public films. 
                                 <p>
                                     <Button onClick={() => history.push('/films')} variant='link'>Go to your watchlist</Button> to mark a film as public.

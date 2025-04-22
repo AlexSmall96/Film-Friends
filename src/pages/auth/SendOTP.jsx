@@ -104,53 +104,98 @@ const SendOTP = ({resetPassword}) => {
 
     return (
         <Container>
+            {/* IMAGE */}
             <div className={styles.otpImage}>
                 <Image src='https://res.cloudinary.com/dojzptdbc/image/upload/v1744206272/shield1_zsajlz.png' fluid/>
             </div>
-        <Form onSubmit={handleSubmit}>
-            {hasLoaded?
-                responseMessage?(
-                    <>
-                        {!verified?
-                            <Form.Group>
-                                <Form.Label className={appStyles.horizMargin}>{responseMessage}</Form.Label>
-                                <Form.Control onChange={handleChange} value={formData.OTP} className={styles.passcodeInput} name='OTP' type='text' placeholder='* * * * * *' maxLength='6'/>
-                                {!expired?
-                                    <>
-                                        <Button onClick={checkPasscode} variant='outline-secondary' className={`${appStyles.roundButton} ${appStyles.verticalMargin}`} type='button'>Verify</Button>
-                                        <br />                             
-                                    </> 
-                                :''}
-                                <br />
-                                <ButtonGroup>
-                                {!resetPassword?<Button variant='outline-secondary' className={appStyles.roundButton} onClick={() => history.goBack()}  type='button'><i className="fa-solid fa-user"></i> Back to Profile</Button> : ''}
-                                    <Button type='submit' variant='outline-secondary' className={`${appStyles.roundButton}`}><i className="fa-solid fa-paper-plane"></i> Resend</Button>
-                                </ButtonGroup>
-                            </Form.Group>  
-                        :''}
-                        {verified? responseMessage : ''}
-                        {!resetPassword && verified?
+            <Form onSubmit={handleSubmit}>
+                {hasLoaded?
+                    responseMessage?(
                         <>
-                            <br />
-                            <Button variant='outline-secondary' className={`${appStyles.roundButton} ${appStyles.verticalMargin}`} onClick={() => history.goBack()}  type='button'><i className="fa-solid fa-user"></i> Back to Profile</Button>
-                        </>:''}
-                    </>
-                ):(
-                    <>
-                        <Form.Group>
-                            <Form.Label>{prompt}</Form.Label>
-                            <Form.Control onChange={handleChange} value={formData.email} className={styles.form} name='email' type='email' placeholder='youremail'/>
-                        </Form.Group>
-                        <p className={`${appStyles.verticalMargin} ${appStyles.smallFont}`}>{error || ''}</p>
-                        <ButtonGroup>
-                        {!resetPassword && !verified?<Button variant='outline-secondary' className={appStyles.roundButton} onClick={() => history.goBack()}  type='button'><i className="fa-solid fa-user"></i> Back to Profile</Button> : ''}
-                            <Button variant='outline-secondary' className={appStyles.roundButton} type='submit'><i className="fa-solid fa-paper-plane"></i> Send</Button>
-                        </ButtonGroup>
-                    </>
-                )
-            : (<Spinner />)
-            }
-        </Form>
+                            {!verified?
+                                <Form.Group>
+                                    {/* ENTER OTP */}
+                                    <Form.Label className={appStyles.horizMargin}>{responseMessage}</Form.Label>
+                                    <Form.Control 
+                                        onChange={handleChange} 
+                                        value={formData.OTP} 
+                                        className={styles.passcodeInput} 
+                                        name='OTP' 
+                                        type='text' 
+                                        placeholder='* * * * * *' 
+                                        maxLength='6'
+                                    />
+                                    {!expired?
+                                        <>
+                                            {/* VERIFY OTP */}
+                                            <Button 
+                                                onClick={checkPasscode} 
+                                                variant='outline-secondary' 
+                                                className={`${appStyles.roundButton} ${appStyles.verticalMargin}`} 
+                                                type='button'
+                                            >
+                                                Verify
+                                            </Button>
+                                            <br />                             
+                                        </> 
+                                    :''}
+                                    <br />
+                                    {/* RESEND OR BACK TO PROFILE */}
+                                    <ButtonGroup>
+                                        {!resetPassword?
+                                            <Button variant='outline-secondary' className={appStyles.roundButton} onClick={() => history.goBack()}  type='button'>
+                                                <i className="fa-solid fa-user"></i> Back to Profile
+                                            </Button> 
+                                        : ''}
+                                        <Button type='submit' variant='outline-secondary' className={`${appStyles.roundButton}`}>
+                                            <i className="fa-solid fa-paper-plane"></i> Resend
+                                        </Button>
+                                    </ButtonGroup>
+                                </Form.Group>  
+                            :''}
+                            {/* SUCCESS/ERROR MESSAGE */}
+                            {verified? responseMessage : ''}
+                            {!resetPassword && verified?
+                            <>
+                                <br />
+                                <Button 
+                                    variant='outline-secondary' 
+                                    className={`${appStyles.roundButton} ${appStyles.verticalMargin}`} 
+                                    onClick={() => history.goBack()}  
+                                    type='button'
+                                >
+                                    <i className="fa-solid fa-user"></i> Back to Profile
+                                </Button>
+                            </>:''}
+                        </>
+                    ):(
+                        <>
+                            {/* ENTER EMAIL ADDRESS TO SEND OTP */}
+                            <Form.Group>
+                                <Form.Label>{prompt}</Form.Label>
+                                <Form.Control onChange={handleChange} value={formData.email} className={styles.form} name='email' type='email' placeholder='youremail'/>
+                            </Form.Group>
+                            <p className={`${appStyles.verticalMargin} ${appStyles.smallFont}`}>{error || ''}</p>
+                            <ButtonGroup>
+                                {!resetPassword && !verified?
+                                    <Button 
+                                        variant='outline-secondary' 
+                                        className={appStyles.roundButton} 
+                                        onClick={() => history.goBack()}  
+                                        type='button'><i 
+                                        className="fa-solid fa-user"
+                                    >
+                                        </i> Back to Profile
+                                    </Button> 
+                                : ''}
+                                <Button variant='outline-secondary' className={appStyles.roundButton} type='submit'><i className="fa-solid fa-paper-plane"></i> Send</Button>
+                            </ButtonGroup>
+                        </>
+                    )
+                : 
+                    (<Spinner />)
+                }
+            </Form>
         </Container>
     )
 }

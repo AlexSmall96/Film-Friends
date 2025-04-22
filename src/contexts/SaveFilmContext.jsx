@@ -3,6 +3,7 @@ import { axiosReq } from '../api/axiosDefaults';
 import { useCurrentUser } from './CurrentUserContext';
 import { useCurrentFilm } from './CurrentFilmContext';
 
+// Defines several functions used in saving and deleting films and deleting reccomendations
 const SaveFilmContext = createContext();
 
 export const SaveFilmProvider = ({ children }) => {
@@ -15,8 +16,8 @@ export const SaveFilmProvider = ({ children }) => {
     const [deleted, setDeleted] = useState(false)
     const [showMainFilm, setShowMainFilm] = useState(false)
 
+    // Save film to users watchlist
     const saveFilm = async (Title, imdbID, Poster, Year, Type, publicFilm) => {
-        // Get director and genre from OMDB API
         try {
             const response = await axiosReq.get(`filmData/?imdbID=${imdbID}`)
             const Director = response.data.Director
@@ -30,6 +31,7 @@ export const SaveFilmProvider = ({ children }) => {
         }
     }
 
+    // Delete reccomendation (remove from users reccomondation list)
     const deleteReccomendation = async (id) => {
         try {
             await axiosReq.delete(`/reccomendations/${id}`, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
@@ -40,8 +42,8 @@ export const SaveFilmProvider = ({ children }) => {
         }
     }
 
+    // Get individual film data from OMDB API for main view
     useEffect(() => {   
-        // Get individual film data from OMDB API for main view
         const getOMDBData = async () => {
             try {
                 setHasLoadedPlot(false)

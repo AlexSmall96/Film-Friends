@@ -16,15 +16,24 @@ import styles from '../../styles/FilmsPage.module.css'
 import PublicProfie from './PublicProfile';
 import useWindowDimensions from '../../hooks/useWindowDimensions';
 
+/*
+Displays a users watch list (public and private if owner, just public if viewing another users watchlist).
+Displays film stats and acts as public profile for viewing another users profile
+*/
 const FilmsPage = () => {
+    // Redirect if not logged in
     useRedirect()
+    // Use params
     const { id } = useParams()
     const { currentUser } = useCurrentUser()
+    // Hooks
     const { width } = useWindowDimensions()
-    const  smallScreen = width <= 767
+    // Contexts
     const { currentFilmIds, setCurrentFilmIds, setViewingData, omdbData, setOmdbData, isOwner, setIsOwner, username, setUsername, hasDeleted } = useCurrentFilm()
     const { updated } = useSaveFilmContext()
     const { updatedFriends } = useFriendAction()
+    // Initialise variables
+    const  smallScreen = width <= 767
     const [allFilms, setAllFilms] = useState([])
     const [filmStats, setFilmStats] = useState({savedCount: 0, watchedCount: 0})
     const [genreCounts, setGenreCounts] = useState({})
@@ -42,6 +51,7 @@ const FilmsPage = () => {
     const [requestIds, setRequestIds] = useState([])
     const [requests, setRequests] = useState([])
     const [showMainFilm, setShowMainFilm] = useState(false)
+    
     // Helper functions for loading data
     // Check if a film matches current criteria specified by filters
     const checkFilm = (film) => {
@@ -170,6 +180,7 @@ const FilmsPage = () => {
         getOMDBandViewingData()
     }, [currentFilmIds])
 
+    // Check who film has already been shared with
     useEffect(() => {
         const getRequestData = async () => {
             try {
@@ -190,6 +201,7 @@ const FilmsPage = () => {
             {hasLoaded?
                 <Container>
                     {allFilms.length? 
+                        /* PUBLIC PROFILE - FILM STATS, AND PROFILE IMAGE/USERNAME */
                         <PublicProfie 
                             profile={profile} 
                             requestIds={requestIds} 
@@ -207,6 +219,7 @@ const FilmsPage = () => {
                         <Row>
                             {smallScreen && !showMainFilm || !smallScreen? 
                             <Col lg={{span:5, order: 1}} md={{span:5, order:1}} sm={{span: 12, order: 2}} className={`${appStyles.greyBorder} ${appStyles.greyBackground}`}>
+                                {/* FILTERS TO CHANGE WATCHLIST */}
                                 <Filters
                                     filter={filter}
                                     setFilter={setFilter}
@@ -219,6 +232,7 @@ const FilmsPage = () => {
                                 <div className={`${styles.filmListParent}`}>
                                     {filteredFilms.length?
                                     <Row>
+                                        {/* DISPLAY USERS FILMS AS PREVIEWS */}
                                         {filteredFilms.map(film => 
                                             <FilmPreviewProvider key={film._id} film={film} setShowMainFilm={setShowMainFilm} smallScreen={smallScreen} filmsPage>
                                                 <Col lg={4} md={6} sm={4} xs={4}>
@@ -235,6 +249,7 @@ const FilmsPage = () => {
                                 {smallScreen && showMainFilm?
                                     <Button variant='link' onClick={() => setShowMainFilm(false)} className={appStyles.bigVerticalMargin}>Back to all films</Button>
                                 :''}
+                                {/* MAIN FILM WITH FULL DATA */}
                                 {smallScreen && showMainFilm || !smallScreen?
                                     hasDeleted?
                                         isOwner?
@@ -248,6 +263,7 @@ const FilmsPage = () => {
                             </Col>
                         </Row>
                     :
+                    /* IMAGE FOR WHEN NO FILMS ARE FOUND */
                     <div className={styles.filmsImage}>
                         <Image src='https://res.cloudinary.com/dojzptdbc/image/upload/v1744201012/nofilms_fmw6yd.png' fluid />
                         <p>{`It looks like ${isOwner? "you dont't": username + " doesn't"} have any saved films.`}</p>

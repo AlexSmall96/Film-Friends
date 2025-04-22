@@ -12,6 +12,10 @@ import { useRedirect } from '../../hooks/useRedirect';
 import ResultsPagination from '../../components/ResultsPagination';
 import Avatar from '../../components/Avatar';
 
+/*
+Displays users pending and accepted friend requests along with status of each
+ALlows user to search for new friends
+*/
 const Friends = () => {
     useRedirect()
     // Contexts
@@ -130,6 +134,7 @@ const Friends = () => {
                                         />
                                 </Row>
                                 <Row>
+                                    {/* SEARCH RESULTS  */}
                                     <Col xs={10} sm={10} md={11} className={`${appStyles.noPadding} ${styles.results} ${!showResults? styles.noBorder:' '} ${appStyles.list}`}>
                                         {results.length && showResults? 
                                             results.map(result =>
@@ -157,6 +162,7 @@ const Friends = () => {
                             </form>
                                 {hasFriends?
                                     <>
+                                        {/* FILTER ACCEPTED/PENDING/ALL REQUESTS */}
                                         <ButtonGroup className={appStyles.bigVerticalMargin}>
                                             <DropdownButton as={ButtonGroup} variant='outline-secondary' title={<><i className="fa-solid fa-filter"></i> {filter}</>}>
                                                 <Dropdown.Item onClick={() => setFilter('All')}>All</Dropdown.Item>
@@ -188,6 +194,7 @@ const Friends = () => {
                         </div>
                     </div>
                     {hasFriends?
+                        /* SHOW REQUESTS AS USERNAME AND IMAGE */
                         <div className={finalPage > 1?styles.friendsList: styles.friendsListNoPagination}>
                             <Container>
                                 <Row className={`${appStyles.verticalMargin}`}>
@@ -209,6 +216,7 @@ const Friends = () => {
                             </Container>
                         </div>
                     :
+                        /* IMAGE WHEN NO FRIENDS ARE FOUND  */
                         <div className={styles.friendsImage}>
                             <p>It looks like you don't have any friends yet. Search to connect with other users!</p>
                             <Image src='https://res.cloudinary.com/dojzptdbc/image/upload/v1744199262/FriendsPlus_jbxswo.png' fluid />

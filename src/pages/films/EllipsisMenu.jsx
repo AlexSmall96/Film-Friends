@@ -134,7 +134,7 @@ const EllipsisMenu = ({updateViewingData}) => {
                                     <i className="fa-regular fa-user"></i>
                                     <Dropdown>
                                         <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
-                                        <strong> {recipient?.username || 'Select recipient'}</strong>
+                                            <strong> {recipient?.username || 'Select recipient'}</strong>
                                         </Dropdown.Toggle>
                                         <Dropdown.Menu as={CustomMenu}>
                                             <div className={styles.recipientList}>
@@ -157,34 +157,38 @@ const EllipsisMenu = ({updateViewingData}) => {
                                 You don't have any friends to share this film with
                                 <Button variant='link' onClick={() => history.push('/friends')}>Search for users</Button>
                             </>
-                        
                     :(
                         ''
                     )}
                 </Modal.Header>
                 {/* FILM TITLE AND IMAGE IN BODY */}
                 <Modal.Body>
-                {hasLoaded? (
-                    <>
-                        <i className="fa-solid fa-film"></i> <strong>{omdbData.Title}</strong> 
-                    </>
-                    ):(
-                        <Spinner />
-                    )}
+                    {hasLoaded? 
+                        <>
+                            <i className="fa-solid fa-film"></i> <strong>{omdbData.Title}</strong> 
+                        </>
+                        :
+                            <Spinner />
+                    }
                     <Form>
-                        <Form.Control className={`${appStyles.modalText} ${appStyles.verticalMargin} ${!recipient? appStyles.grey : ''}`} as='textarea' readOnly={recipient === null} value={message} onChange={handleMessageChange}>
+                        <Form.Control 
+                            className={`${appStyles.modalText} ${appStyles.verticalMargin} ${!recipient? appStyles.grey : ''}`} 
+                            as='textarea' 
+                            readOnly={recipient === null} 
+                            value={message} 
+                            onChange={handleMessageChange}
+                        >
                         </Form.Control>
                     </Form>
                 </Modal.Body>
                 {/* SEND AND CLOSE BUTTONS */}
                 <Modal.Footer>
-
                     <ButtonGroup>
                         <Button variant="outline-secondary" className={appStyles.roundButton} onClick={handleCloseModal}>
-                        <i className="fa-solid fa-xmark"></i> Close
+                            <i className="fa-solid fa-xmark"></i> Close
                         </Button>
                         <Button disabled={recipient === null} variant="outline-secondary" className={appStyles.roundButton} onClick={handleSend}>
-                        <i className="fa-solid fa-paper-plane"></i> {sent && !hasLoaded ? 'Sending...' : 'Send'}
+                            <i className="fa-solid fa-paper-plane"></i> {sent && !hasLoaded ? 'Sending...' : 'Send'}
                         </Button>
                     </ButtonGroup>
                 </Modal.Footer>

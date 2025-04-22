@@ -7,6 +7,7 @@ import { useFilmPreview } from '../contexts/FilmPreviewContext';
 import { useSaveFilmContext } from '../contexts/SaveFilmContext';
 import { useCurrentFilm } from '../contexts/CurrentFilmContext';
 
+// Used as confirmation when user requests to delete reccomendation or friend
 const DeleteModal = ({message}) => {
     // Contexts
     const { deleteRequest } = useFriendAction()

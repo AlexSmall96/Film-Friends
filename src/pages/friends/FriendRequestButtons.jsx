@@ -13,6 +13,7 @@ Changes what is displayed depending on wether the component is being used in sea
 */
 const FriendRequestButtons = () => {
 
+    // Contexts
     const { request } = useFriendData()
     const { accepted, isSender, reciever } = request
     const { updateRequest } = useFriendAction()
@@ -21,7 +22,7 @@ const FriendRequestButtons = () => {
         <>
             {
                 accepted || isSender?
-                    <>
+                    <>  {/* SHOW TEXT IF FRIENDS OR USER HAS SENT REQUEST */}
                         <p>
                             {accepted? 
                                 <>
@@ -33,6 +34,8 @@ const FriendRequestButtons = () => {
                                 </>
                             }
                         </p>
+                        {/* IF REQUEST ACCEPTED - SHARE MODAL TO SHARE FILMS */}
+                        {/* ALSO INCLUDE DELETE MODDAL TO REMOVE FRIEND */}
                         <ButtonGroup>
                             {accepted? 
                                 <ShareModal /> 
@@ -44,11 +47,12 @@ const FriendRequestButtons = () => {
                     </>
                 :   
                     <>
-                    <p><i className="fa-solid fa-envelope-open"></i> Wants to be friends</p>
-                    <ButtonGroup>
-                        <Button onClick={() => updateRequest(true, request._id)} variant='outline-secondary' size='sm' className={appStyles.roundButton}><i className="fa-solid fa-check"></i> Accept</Button>
-                        <Button onClick={() => updateRequest(false, request._id)} variant='outline-secondary' size='sm' className={appStyles.roundButton}><i className="fa-solid fa-xmark"></i> Decline</Button>  
-                    </ButtonGroup>
+                        {/* ACCEPT/DECLINE BUTTONS IF USER HAS RECIEVED REQUEST */}
+                        <p><i className="fa-solid fa-envelope-open"></i> Wants to be friends</p>
+                        <ButtonGroup>
+                            <Button onClick={() => updateRequest(true, request._id)} variant='outline-secondary' size='sm' className={appStyles.roundButton}><i className="fa-solid fa-check"></i> Accept</Button>
+                            <Button onClick={() => updateRequest(false, request._id)} variant='outline-secondary' size='sm' className={appStyles.roundButton}><i className="fa-solid fa-xmark"></i> Decline</Button>  
+                        </ButtonGroup>
                     </>
                   
             }   

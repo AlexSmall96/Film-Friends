@@ -8,10 +8,18 @@ import useWindowDimensions from '../../hooks/useWindowDimensions';
 import 'react-circular-progressbar/dist/styles.css';
 import Avatar from '../../components/Avatar';
 
+/*
+Displays a users stats: films watched, favourite directors and favourite genres.
+Acts as a public profile when a user views another users watchlist
+Also displays similarity score based on films two users have in common.
+*/
 const PublicProfile = ({profile, filmStats, showStats, similarity, directorCounts, genreCounts}) => {
+    // Hooks, Contexts and variables
     const { isOwner } = useCurrentFilm()
     const { width } = useWindowDimensions()
     const [avatarHeight, setAvatarHeight] = useState(100)
+
+    // Tooltip for similarity score
     const renderTooltip = (name, value, bool) => (
         <Tooltip id="button-tooltip">
             {bool?
@@ -21,6 +29,7 @@ const PublicProfile = ({profile, filmStats, showStats, similarity, directorCount
         </Tooltip>
     )
 
+    // Change user image height based on screen width
     useEffect(() => {
         if (width <= 767){
             setAvatarHeight(50)
@@ -33,8 +42,10 @@ const PublicProfile = ({profile, filmStats, showStats, similarity, directorCount
         }
     }, [width])
 
+
     return (
         <Row className={`${width >= 576? `${appStyles.greyBorder} ${appStyles.greyBackground}` : ''} ${appStyles.bigVerticalMargin}`}>
+            {/* PROFILE PICTURE AND USERNAME */}
             <Col md={3} sm={1} xs={2}>
                 {isOwner? 
                     <a href='/profile'><h4 className={`${appStyles.smallFont} ${appStyles.headingFont}`}>{profile.username}</h4></a>
@@ -48,6 +59,7 @@ const PublicProfile = ({profile, filmStats, showStats, similarity, directorCount
                     <Col md={3} sm={{span:3, offset:0}} xs={{span:3, offset: 1}}>
                         <h4 className={`${appStyles.smallFont} ${appStyles.headingFont}`}>{isOwner? 'Watched' : 'Similarity'}</h4>
                         {isOwner?
+                            /* WATCHED COUNT / SIMILARITY SCORE */
                             <div className={styles.progressBarParent}>
                                 <CircularProgressbar value={100 * filmStats.watchedCount / filmStats.savedCount} text={`${filmStats.watchedCount} / ${filmStats.savedCount}`} />
                             </div>
@@ -56,6 +68,7 @@ const PublicProfile = ({profile, filmStats, showStats, similarity, directorCount
                                 <CircularProgressbar value={100 * similarity} text={`${100 * similarity}%`} />
                             </div>}
                     </Col>
+                    {/* FAVOURITE GENRES */}
                     <Col md={3} sm={4} xs={12}>
                         <h4 className={`${appStyles.smallFont} ${appStyles.headingFont}`}>{width >= 576 ? 'Favourite Genres':''}</h4>
                             {genreCounts.length?
@@ -79,6 +92,7 @@ const PublicProfile = ({profile, filmStats, showStats, similarity, directorCount
                             :
                                 width >= 576? <Avatar src='https://res.cloudinary.com/dojzptdbc/image/upload/v1744639090/question_ydkaop.png' height={avatarHeight} />:''}
                     </Col>
+                    {/* FAVOURITE DIRECTORS */}
                     <Col md={3} sm={4} xs={12}>
                         <h4 className={`${appStyles.smallFont} ${appStyles.headingFont}`}>{width >= 576 ? 'Favourite Directors':''}</h4>
                             {directorCounts.length?

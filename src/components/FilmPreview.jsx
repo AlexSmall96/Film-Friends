@@ -9,11 +9,14 @@ import useWindowDimensions from '../hooks/useWindowDimensions';
 import SaveDropown from './SaveDropdown';
 import { useSaveFilmContext } from '../contexts/SaveFilmContext';
 
-// Displays film poster and data either as a list of search results, saved films or reccomendations
+// Displays film poster and preview of data either as a list of search results, saved films or reccomendations
 const FilmPreview = () => {
+    // Contexts
     const {film, showDropdown, filmsPage, mobile, smallScreen, setShowMainFilm, message, sender, resultId, faded, shareModal } = useFilmPreview()
-    const { width } = useWindowDimensions()
     const { setCurrentFilmIds, omdbData, setCurrentReccomendation } = useCurrentFilm()
+    // Hooks
+    const { width } = useWindowDimensions()
+    // Initialize variables
     const omdbStringArray = [film.Director, film.Year, film.Type]
     const omdbString = omdbStringArray.filter(value => value).join(', ')
     const { setHoveredOverImdbID, hasLoadedPlot } = useSaveFilmContext()
@@ -27,6 +30,7 @@ const FilmPreview = () => {
         }
     }, [mobile])
 
+    // Set width of poster depending on screen width
     useEffect(() => {
         if (width >= 1400){
             setPosterWidth(filmsPage ? 250 : 350)
@@ -52,6 +56,7 @@ const FilmPreview = () => {
     }, [width])
 
 
+    // Click on preview to update main film based on film ids
     const handleClick = async () => {
         await setCurrentFilmIds({imdbID:film.imdbID, database:film._id})
         if (resultId) {
@@ -62,6 +67,7 @@ const FilmPreview = () => {
         }
     }
 
+    // Show plot when mouse is hovered
     const handleMouseEnter = () => {
         setHoveredOverImdbID(film.imdbID)
         setShowPlot(true)
@@ -72,46 +78,50 @@ const FilmPreview = () => {
     }
 
     return (
-            <Row onClick={filmsPage || mobile? handleClick : null}>
-                <Col md={filmsPage || shareModal? 12 : 6} sm={filmsPage || shareModal? 12: 4} xs={12} className={`${!shareModal? appStyles.noPadding: ''}`}>
-                    <img className={`${styles.filmPoster} ${faded? styles.faded : styles.hover}`} src={film.Poster}
-                        height={posterWidth}
-                        width={posterWidth}                         
-                        onMouseEnter={!filmsPage && !mobile ? handleMouseEnter : null}
-                        onMouseLeave={!filmsPage && !mobile ? handleMouseLeave : null}
-                    />
-                </Col>
-                <Col md={filmsPage? 8 : 6} className={appStyles.leftAlign} sm={8} xs={12}>
-                    {showPlot? 
-                        hasLoadedPlot?
-                            <p className={`${appStyles.smallFont} ${appStyles.paragraphFont} ${width < 1200 ? styles.plotPreview: ''}`}>
-                                {omdbData.Plot}
-                            </p>
-                        : 
-                            <Spinner />
-                    :
-                    <>
-                        {!filmsPage && !message && !shareModal? <h5 className={`${mobile? `${appStyles.verySmallFont} ${appStyles.center} ${appStyles.smallPadding}`: appStyles.smallFont}`}>{film.Title}</h5>:''}
-                        {!mobile && !filmsPage && !message?
-                            <>
-                                <p className={`${appStyles.smallFont} ${appStyles.grey}`}>{omdbString}</p>
-                                <p className={`${appStyles.smallFont} ${appStyles.grey}`}>{filmsPage? film.Genre : '' }</p>                        
-                            </>:''
-                        }
-                    </>}
-                    {sender && message && !mobile && !showPlot? 
-                    <>
-                    
-                    <Alert variant='light' className={appStyles.verySmallFont}>
-                        <strong>{sender.username}: </strong>{message}
-                    </Alert>
+        <Row onClick={filmsPage || mobile? handleClick : null}>
+            {/* POSTER */}
+            <Col md={filmsPage || shareModal? 12 : 6} sm={filmsPage || shareModal? 12: 4} xs={12} className={`${!shareModal? appStyles.noPadding: ''}`}>
+                <img className={`${styles.filmPoster} ${faded? styles.faded : styles.hover}`} src={film.Poster}
+                    height={posterWidth}
+                    width={posterWidth}                         
+                    onMouseEnter={!filmsPage && !mobile ? handleMouseEnter : null}
+                    onMouseLeave={!filmsPage && !mobile ? handleMouseLeave : null}
+                />
+            </Col>
+            {/* PLOT */}
+            <Col md={filmsPage? 8 : 6} className={appStyles.leftAlign} sm={8} xs={12}>
+                {showPlot? 
+                    hasLoadedPlot?
+                        <p className={`${appStyles.smallFont} ${appStyles.paragraphFont} ${width < 1200 ? styles.plotPreview: ''}`}>
+                            {omdbData.Plot}
+                        </p>
+                    : 
+                        <Spinner />
+                :
+                <>
+                    {/* TITLE, GENRE, DIRECTOR AND YEAR */}
+                    {!filmsPage && !message && !shareModal? <h5 className={`${mobile? `${appStyles.verySmallFont} ${appStyles.center} ${appStyles.smallPadding}`: appStyles.smallFont}`}>{film.Title}</h5>:''}
+                    {!mobile && !filmsPage && !message?
+                        <>
+                            <p className={`${appStyles.smallFont} ${appStyles.grey}`}>{omdbString}</p>
+                            <p className={`${appStyles.smallFont} ${appStyles.grey}`}>{filmsPage? film.Genre : '' }</p>                        
+                        </>:''
+                    }
+                </>}
+                {sender && message && !mobile && !showPlot? 
+                <>
+                {/* RECCOMENDATION MESSAGE */}
+                <Alert variant='light' className={appStyles.verySmallFont}>
+                    <strong>{sender.username}: </strong>{message}
+                </Alert>
 
-                    </> :''}     
-                    {showDropdown && currentUser && !mobile? 
-                        <SaveDropown />
-                    :''} 
-                </Col>
-            </Row>
+                </> :''}     
+                {/* DROPDOWN BUTTON TO SAVE FILM */}
+                {showDropdown && currentUser && !mobile? 
+                    <SaveDropown />
+                :''} 
+            </Col>
+        </Row>
     )
 }
 

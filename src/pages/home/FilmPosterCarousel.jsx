@@ -4,9 +4,12 @@ import FilmPreview from '../../components/FilmPreview';
 import { FilmPreviewProvider } from '../../contexts/FilmPreviewContext';
 import useWindowDimensions from '../../hooks/useWindowDimensions';
 
+// Displays a collection of film images as a carousel, used as home page background
 const FilmPosterCarousel = ({films}) => {
+    // Hooks
     const { largeScreen } = useWindowDimensions()
     
+    // Column structure used to display film poster
     const FilmCol = (film) => {
         return (
             <Col key={film.imdbID} lg={2} md={4} xs={4}>
@@ -21,7 +24,7 @@ const FilmPosterCarousel = ({films}) => {
             </Col>
         )
     }
-
+    // Return 3 carousel items, each with 24 or 18 film posters depending on screen size
     return (
         <Carousel data-bs-theme="dark" nextIcon={null} prevIcon={null} indicators={false} fade>
             <Carousel.Item>

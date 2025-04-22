@@ -3,7 +3,7 @@ import { axiosReq } from '../../api/axiosDefaults';
 import { useCurrentUser } from '../../contexts/CurrentUserContext';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import ResultsPagination from '../../components/ResultsPagination'
-import { Alert, Button, Badge, Stack, Container, Image, Spinner, Row, Col, ButtonGroup, DropdownButton, Dropdown, Toast, ToastContainer } from 'react-bootstrap';
+import { Alert, Button, Container, Image, Spinner, Row, Col, ButtonGroup, DropdownButton, Dropdown, Toast, ToastContainer } from 'react-bootstrap';
 import FilmPreview from '../../components/FilmPreview'
 import Film from '../films/Film'
 import { FilmPreviewProvider } from '../../contexts/FilmPreviewContext';
@@ -17,6 +17,10 @@ import sortBy from 'array-sort-by'
 import FilmPosterCarousel from './FilmPosterCarousel';
 import FilmBadges from './FilmBadges';
 
+/* 
+Acts as home page and reccomendations page.
+If home page, displays search bar with search results. Also renders trending films as background image and titles as badges.
+*/ 
 const Results = ({reccomendationsPage }) => {
     // Contexts
     const { currentUser, accountDeleted } = useCurrentUser()
@@ -98,6 +102,7 @@ const Results = ({reccomendationsPage }) => {
         }
     }, [filter, sort, currentUser?.token, deleted, currentPage])
 
+    // Gets most recent updated films to use as background image
     useEffect(() => {
         const fetchBackgroundFilms = async () => {
             try {
@@ -110,6 +115,7 @@ const Results = ({reccomendationsPage }) => {
         fetchBackgroundFilms()
     }, [largeScreen])
 
+    // Set currentPage to 1 if search is changed
     useEffect(() => {
         setCurrentPage(1)
     }, [search])
@@ -145,11 +151,12 @@ const Results = ({reccomendationsPage }) => {
                                     submitted={submitted} 
                                     setSubmitted={setSubmitted}
                                 />
+                                {/* BACKGROUND FILMS */}
                                 {backgroundFilms.length?
                                     <FilmBadges search={search} setSearch={setSearch} setSubmitted={setSubmitted} films={backgroundFilms.slice(0,30).map(film => film.Title)} />
                                 :''}
                               </>
-                            :   
+                            :   /* FILTERS */
                                 <ButtonGroup className={appStyles.bigVerticalMargin}>
                                     <DropdownButton as={ButtonGroup} variant='outline-secondary' title={<><i className="fa-solid fa-filter"></i> {filter}</>}>
                                         <Dropdown.Item onClick={() => setFilter('All')}>All</Dropdown.Item>
@@ -192,6 +199,7 @@ const Results = ({reccomendationsPage }) => {
                                         </> 
                                     :   
                                         <>
+                                            {/* LOGIN / SIGNUP BUTTONS */}
                                             {!currentUser && !reccomendationsPage? (
                                                 <div className={appStyles.bigVerticalMargin}>
                                                     <Button variant='link' onClick={() => history.push('/signup')}>Sign up</Button>
@@ -199,7 +207,8 @@ const Results = ({reccomendationsPage }) => {
                                                     <Button variant='link' onClick={() => history.push('/login')}>Login</Button> 
                                                         to save and share films
                                                 </div>):('')
-                                            }    
+                                            }
+                                            {/* HIDE MAIN FILM FOR MOBILE VIEW */}    
                                             {reccomendationsPage? <br />:''}
                                             <Button variant='link' onClick={() => setShowMainFilm(false)}>
                                                 {reccomendationsPage? 'Back to reccomendations': 'Back to search results'}

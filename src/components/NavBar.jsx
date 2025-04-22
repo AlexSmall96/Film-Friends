@@ -19,22 +19,21 @@ const NavBar = () => {
     const handleLogout = async () => {
         localStorage.clear()
         try {
-            await axiosReq.post('/users/logout', {}, {
-                headers: {'Authorization': `Bearer ${currentUser?.token}`}
-            })
+            await axiosReq.post('/users/logout', {}, {headers: {'Authorization': `Bearer ${currentUser?.token}`}})
             setCurrentUser(null)
             setExpanded(false)
         } catch(err) {
             console.log(err)
         }
     }
-
+    
     useEffect(() => {
         if (width > 767){
             setExpanded(false)
         }
     }, [width])
 
+    // Ensure nav bar is collapsed when user clicks another part of screen
     document.addEventListener('mouseup', (event) => {
         if (!event.target.classList.contains('offcanvas-body')){
             setExpanded(false) 
@@ -44,6 +43,7 @@ const NavBar = () => {
     const handleClick = () => {
         setExpanded(false)
     }
+
     // Logged in icons: films, friends, reccomendations, user dropdown
     const loggedInIcons = 
     <>  
@@ -61,6 +61,7 @@ const NavBar = () => {
         <Nav.Link href='/reccomendations' onClick={handleClick} className={width <= 767? styles.underlineSection:''}>
             <i className="fa-solid fa-envelope"></i> Reccomendations
         </Nav.Link>
+        {/* MOBILE VIEW */}
         {width <= 767?(
             <div className={styles.underlineSection}>
                 <Nav.Link href={`/profile/`} onClick={handleClick}>
@@ -108,6 +109,7 @@ const NavBar = () => {
 
     return (
         <Navbar expand={'md'} expanded={expanded} sticky='top' className={`${styles.darkBackground} ${styles.navBar}`}>
+            {/* LOGO */}
             <Navbar.Brand href="/">
                 <h3 className={`${appStyles.bold} ${appStyles.headingFont} ${appStyles.horizMargin}`}>
                     FILM
@@ -115,6 +117,7 @@ const NavBar = () => {
                     FRIENDS
                 </h3>
             </Navbar.Brand>
+            {/* HAMBURGER MENU TO EXPAND/COLLAPSE */}
             <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-md`} className={`${appStyles.horizMargin}`} onClick={() => setExpanded(true)}/>
             <Navbar.Offcanvas
                 id={`offcanvasNavbar-expand-md`}
@@ -123,6 +126,7 @@ const NavBar = () => {
             >
                 <Offcanvas.Header closeButton className={currentUser? styles.underlineSection: ''}>
                 <Container>
+                    {/* USERNAME, IMAGE, AND EMAIL ADDRESS */}
                     {currentUser? 
                         <Row>
                             <Col sm={2} xs={2}>
@@ -142,6 +146,7 @@ const NavBar = () => {
                     :''}
                 </Container>
                 </Offcanvas.Header>
+                {/* REMAINING ICONS */}
                 <Offcanvas.Body className={styles.navBar}>
                     <Nav className={`${appStyles.headingFont} justify-content-end flex-grow-1 pe-3`}>
                         {currentUser? loggedInIcons: loggedOutIcons}

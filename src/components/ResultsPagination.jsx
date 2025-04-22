@@ -6,8 +6,11 @@ import useWindowDimensions from '../hooks/useWindowDimensions';
 // Renders a custom pagination component depending on the number of pages and current page selected
 // Shows a certain number of page links depending on window size
 const ResultsPagination = ({currentPage, setCurrentPage, finalPage}) => {
+
+    // Initialise variables
     const {width} = useWindowDimensions()
     const [pages, setPages] = useState([])
+
     // Use current page and final page to determine pages array
     useEffect(() => {
         const show = width >= 475? 10 : width >= 387? 8 : 6
@@ -47,14 +50,26 @@ const ResultsPagination = ({currentPage, setCurrentPage, finalPage}) => {
         <>
             {/* MAP PAGES ARRAY TO BUTTONS */}
             {currentPage !== 1?
-                <Button size='sm' onClick={() => setCurrentPage(currentPage - 1)} variant='link'><i className="fa-solid fa-chevron-left"></i></Button>
+                <Button size='sm' onClick={() => setCurrentPage(currentPage - 1)} variant='link'>
+                    <i className="fa-solid fa-chevron-left"></i>
+                </Button>
             :''
             }
                 {pages.map(page => 
-                    <Button key={page.key} disabled={page.display === '...'} className={appStyles.noUnderline} variant={page.display === currentPage? 'secondary': 'link'} onClick={() => setCurrentPage(page.display)}>{page.display}</Button>
+                    <Button 
+                        key={page.key} 
+                        disabled={page.display === '...'} 
+                        className={appStyles.noUnderline} 
+                        variant={page.display === currentPage? 'secondary': 'link'} 
+                        onClick={() => setCurrentPage(page.display)}
+                    >
+                        {page.display}
+                    </Button>
                 )}
             {currentPage !== finalPage?
-                <Button size='sm' disabled={currentPage === finalPage} onClick={() => setCurrentPage(currentPage + 1)} variant='link'><i className="fa-solid fa-chevron-right"></i></Button>  
+                <Button size='sm' disabled={currentPage === finalPage} onClick={() => setCurrentPage(currentPage + 1)} variant='link'>
+                    <i className="fa-solid fa-chevron-right"></i>
+                </Button>  
             :''}   
         </>
     )

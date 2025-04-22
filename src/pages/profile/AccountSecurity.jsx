@@ -5,8 +5,14 @@ import { useCurrentUser } from '../../contexts/CurrentUserContext';
 import {Container, Form, Button, InputGroup} from 'react-bootstrap'
 import appStyles from '../../App.module.css'
 
+/* 
+Form for updating email address and password. 
+Password change is handled in this component, email address change directs user to send OTP page.
+*/
 const AccountSecurity = ({profile}) => {
+    // Current User context
     const { currentUser } = useCurrentUser()
+    // Initialise state variables
     const history = useHistory()
     const [formData, setFormData] = useState({
             password0: '',
@@ -16,6 +22,7 @@ const AccountSecurity = ({profile}) => {
     const [message, setMessage] = useState({})
     const [disabled, setDisabled] = useState(true)
     
+    // Submit new password
     const handleSubmitPassword = async (event) => {
         event.preventDefault()
         const {password0, password1, password2} = formData
@@ -37,10 +44,11 @@ const AccountSecurity = ({profile}) => {
               }
           }
       } else {
-          setMessage({password: 'Passwords do not match'})
+          setMessage({password: 'Passwords do not match.'})
       }
     }
 
+    // Handle form data change
     const handleChangePassword = (event) => {
 		setFormData({
 			...formData, [event.target.name]: event.target.value
@@ -52,6 +60,7 @@ const AccountSecurity = ({profile}) => {
     return(
         <Container>
         <h5 className={`${appStyles.verticalMargin} ${appStyles.headingFont}`}>Account Security</h5>
+            {/* EMAIL ADDRESS */}
             <span className={`${appStyles.leftAlign} ${appStyles.smallFont}`}>Email:</span>
             <InputGroup className="mb-3">
                 <Form.Control
@@ -61,6 +70,7 @@ const AccountSecurity = ({profile}) => {
                 />
                 <Button type='button' variant='outline-secondary' onClick={() => history.push('/changeEmail/sendOTP')}><i className="fa-solid fa-pen"></i></Button>
             </InputGroup>
+        {/* PASSWORD */}
         <Form onSubmit={handleSubmitPassword}>
             <span className={`${appStyles.leftAlign} ${appStyles.smallFont}`}>Password:</span>
             <Form.Group>
@@ -87,6 +97,7 @@ const AccountSecurity = ({profile}) => {
                 />
                 <Form.Text muted>{message.password || ''}</Form.Text>
             </Form.Group>
+            {/* SUBMIT BUTTON */}
             <Button disabled={disabled} variant='outline-secondary' className={`${appStyles.roundButton} ${appStyles.verticalMargin}`} type='submit'>Change Password</Button>
          </Form>
         </Container>

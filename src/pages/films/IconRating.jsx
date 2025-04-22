@@ -1,6 +1,11 @@
 import React from 'react';
 import {Image, OverlayTrigger, Tooltip, } from 'react-bootstrap'
 import appStyles from '../../App.module.css'
+
+/* 
+Displays an image and a value for each rating in Film component.
+Ratings can be from IMDB, Rotten tomatoes or metacritic.
+*/
 const IconRating = ({index, value}) => {
 
     const data = [

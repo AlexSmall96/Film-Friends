@@ -1,4 +1,5 @@
 /* 
+Hook to return variables related to screen width and height.
 The below code was taken from the following article
 https://stackoverflow.com/questions/36862334/get-viewport-window-height-in-reactjs
 */

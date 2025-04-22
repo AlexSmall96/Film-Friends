@@ -1,6 +1,7 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
 import axios from "axios";
 /* 
+Current user context. Sets current user on log in and updates local storage when current user is changed.
 The code to get user from local storage was taken from the below article
 https://www.freecodecamp.org/news/how-to-use-localstorage-with-react-hooks-to-set-and-get-items/
 */
@@ -9,11 +10,13 @@ export const CurrentUserContext = createContext()
 
 export const CurrentUserProvider = ({ children }) => {
 
+    // Check if a user is saved in local storage
     const getStoredUser = () => {
         const storedUser = localStorage.getItem('storedUser')
         return storedUser ? JSON.parse(storedUser): null
     }
 
+    // Make HTTP request to check if token is still valid
     const checkToken = async (token) => {
         try {
             const response = axios.get('/users/token', {headers: {'Authorization': `Bearer ${token}`}})
@@ -34,6 +37,7 @@ export const CurrentUserProvider = ({ children }) => {
         storedUser && tokenIsValid ? (storedUser):(null)
     )
 
+    // Update local storage whenever current user is updated
     useEffect(() => {
         if (currentUser){
             localStorage.setItem('storedUser', JSON.stringify(currentUser));
@@ -42,8 +46,9 @@ export const CurrentUserProvider = ({ children }) => {
         }
     }, [currentUser])
 
+    // Define accountDeleted bool var to display message on home screen after deletion
     const [accountDeleted, setAccountDeleted] = useState(false)
-
+    
     return (
         <CurrentUserContext.Provider value={{currentUser, setCurrentUser, accountDeleted, setAccountDeleted}}>
             {children}

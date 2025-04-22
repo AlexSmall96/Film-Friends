@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 
+// Custom boostrap toggle and menu, used to search for users in ellipsis menu
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
   <a
     href=""

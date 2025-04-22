@@ -9,6 +9,7 @@ import ProfileEdit from './ProfileEdit';
 import { useRedirect } from '../../hooks/useRedirect';
 import useWindowDimensions from '../../hooks/useWindowDimensions';
 
+// Displays users image along with tabs containing different sections of profile data: username, image, account security and delete account.
 const Profile = ({activeKey}) => {
     // Hooks
 	const { width } = useWindowDimensions()
@@ -55,6 +56,7 @@ const Profile = ({activeKey}) => {
 		<>
 			{ width < 360 ? <h5 className={`${appStyles.verticalMargin} ${appStyles.headingFont}`}>{profile.username}</h5>: ''}
 				<Container className={styles.profileBox}>
+					{/* TABS TO NAVIGATE BETWEEN SECTIONS */}
 					<Tab.Container defaultActiveKey={activeKey}>
 						<Row>
 							<Col md={3} sm={4} xs={12} className={`${appStyles.noPadding} ${styles.underline}`}>
@@ -83,6 +85,7 @@ const Profile = ({activeKey}) => {
 							</Col>
 							<Col md={9} sm={8} xs={12} className={styles.mainSection}>
 								<Tab.Content>
+									{/* PROFILE EDIT */}
 									<Tab.Pane eventKey="first">
 										<ProfileEdit 
 											setUpdated={setUpdated} 
@@ -91,6 +94,7 @@ const Profile = ({activeKey}) => {
 											username={username}
 											setUsername={setUsername} />
 									</Tab.Pane>
+									{/* ACCOUNT SECURITY */}
 									<Tab.Pane eventKey="second">
 										<AccountSecurity profile={profile} />
 									</Tab.Pane>

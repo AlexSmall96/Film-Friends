@@ -5,14 +5,13 @@ import appStyles from '../../App.module.css'
 import styles from '../../styles/SearchBar.module.css'
 
 /* 
+Used in results page (home page format) to allow users to search for films and display results.
 The search suggestions functionality was inspired by the following article
 https://www.dhiwise.com/post/how-to-build-react-search-bar-with-suggestions#customizing-the-autocomplete-behavior
 */
-
 const SearchBar = ({setResults, setTotalResults, currentPage, setCurrentPage, setFinalPage, setError, setHasLoaded, setShowMainFilm, search, setSearch, submitted, setSubmitted}) =>{
 	
 	// Initialize state variables
-	
 	const [imdbID, setImdbID] = useState('')
 	const [suggestions, setSuggestions] = useState([])
 	const [showSuggestions, setShowSuggestions] = useState(false);

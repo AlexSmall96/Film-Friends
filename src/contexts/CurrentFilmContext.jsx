@@ -1,11 +1,8 @@
 import React, { createContext, useState, useContext } from "react";
-import { axiosReq } from "../api/axiosDefaults";
-import { useCurrentUser } from "./CurrentUserContext";
 
 /* 
 Creates a context for film selected in films page 
 Stores the value of current Film ids to get and update film data
-Used in films page, film component and ellipsis menu
 */
 export const CurrentFilmContext = createContext()
 
@@ -18,6 +15,7 @@ export const CurrentFilmProvider = ({ children }) => {
         imdbID: '', database: ''
     })
 
+    // Keep track of currently viewed reccomendation for reccomendations page mobile view
     const [currentReccomendation, setCurrentReccomendation] = useState({_id: '', message: '', sender: ''})
 
     // State variables related to film data
