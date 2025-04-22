@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { axiosReq } from '../../api/axiosDefaults';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { Button, Form, Image } from 'react-bootstrap';
 import styles from '../../styles/Signup.module.css';
+import appStyles from '../../App.module.css'
 
 const Signup = () => {
     // Declare hooks
@@ -19,14 +20,22 @@ const Signup = () => {
         email: '',
         password:''
     });
+    const [disabled, setDisabled] = useState(true)
 
     // Handle change when user inputs data
     const handleChange = (event) => {
+        setErrors({})
         setSignUpData({
             ...signUpData,
             [event.target.name]: event.target.value,
         });
     };
+
+    // Make sign up button disabled if a field is left blank
+    useEffect(() => {
+        const { username, email, password } = signUpData
+        setDisabled(username === '' || email === '' || password === '')
+    }, [signUpData])
 
     // Handle form submit with sign up details
     const handleSubmit = async (event) => {
@@ -54,10 +63,9 @@ const Signup = () => {
         }
     };
 
-    // Render signup page
     return (
         <>
-            <Image width={300} src='https://res.cloudinary.com/dojzptdbc/image/upload/v1730293188/signupImage_ohgj8z.png' alt='A roll of film tape'></Image>
+            <Image width={300} src='https://res.cloudinary.com/dojzptdbc/image/upload/v1730293188/signupImage_ohgj8z.png' alt='A roll of film tape' />
             <Form onSubmit={handleSubmit} className={styles.form}>
                 {/* EMAIL */}
                 <Form.Group className="mb-3">
@@ -80,7 +88,7 @@ const Signup = () => {
                 </Form.Group>
                 {/* PASSWORD ERROR */}
                 {errors.password? (<p>{errors.password.message}</p>):('')}
-                <Button variant="secondary" type="submit">
+                <Button disabled={disabled} variant="outline-secondary" type="submit" className={appStyles.roundButton}>
                     Sign Up
                 </Button>
                 <p>Already have an account?<Button variant='link' onClick={() => history.push('/login')}>Login</Button></p>

@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { axiosReq } from '../../api/axiosDefaults';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { useCurrentUser } from '../../contexts/CurrentUserContext'
 import { Button, Form, Image } from 'react-bootstrap';
 import styles from '../../styles/Login.module.css'
+import appStyles from '../../App.module.css'
 
+// Login page
 const Login = () => {
     // Declare hooks
     const history = useHistory()
@@ -15,6 +17,7 @@ const Login = () => {
         password: ''
     });
     const [error, setError] = useState('');
+    const [disabled, setDisabled] = useState(true)
 
     // Handle change when user inputs data
     const handleChange = (event) => {
@@ -22,7 +25,14 @@ const Login = () => {
             ...loginData,
             [event.target.name]: event.target.value,
         });
+        setError('')
     };
+
+    // Make login button disabled if a field is left blank
+    useEffect(() => {
+        const { email, password } = loginData
+        setDisabled(email === '' || password === '')
+    }, [loginData])
 
     // Handle form submit with login details
     const handleSubmit = async (event) => {
@@ -33,16 +43,16 @@ const Login = () => {
           history.push('/')
         } catch (err) {
             if (err.status === 400) {
-                setError('Incorrect username or password')
+                setError('Incorrect username or password.')
             } else {
                 setError('Currently unable to login. Please try again later.')
             }
         }
     };
-    // Render login page
+
     return (
         <>
-            <Image width={300} src='https://res.cloudinary.com/dojzptdbc/image/upload/v1730298790/loginImage_tpvqcy.png' alt='A film take board'></Image>
+            <Image width={300} src='https://res.cloudinary.com/dojzptdbc/image/upload/v1730298790/loginImage_tpvqcy.png' alt='A film take board' />
             <Form onSubmit={handleSubmit} className={styles.form}>
                 {/* EMAIL */}   
                 <Form.Group className="mb-3">
@@ -57,12 +67,13 @@ const Login = () => {
                 
                 {/* ERROR */}
                 {error? (<p>{error}</p>):('')}
-                <Button variant="secondary" type="submit">
+                <Button variant="outline-secondary" disabled={disabled} className={appStyles.roundButton} type="submit">
                     Login
                 </Button>
                 <p>
                     <Button variant='link' onClick={() => history.push('/resetPassword/sendOTP/')}>Forgotten password?</Button>
                 </p>
+                {/* SIGN UP LINK */}
                 <p>Don't have an account?<Button variant='link' onClick={() => history.push('/signup')}>Sign up</Button></p>
             </Form>
         </>
