@@ -27,9 +27,9 @@ const IconRating = ({index, value}) => {
             delay={{ show: 250, hide: 400 }}
             overlay={renderTooltip((data[index]).name, value )}
         >
-            <Image width={25} src={data[index].src} />
+            <Image width={25} src={data[index].src} alt={data[index].name} />
         </OverlayTrigger>
-        <span className={appStyles.smallFont}>{` ${value} `} </span>       
+        <span className={appStyles.smallFont}>{`${value}`} </span>       
         </>
     )
 }
