@@ -53,7 +53,7 @@ const FilmPreview = () => {
         if (shareModal && width >= 576){
             setPosterWidth(150)
         }
-    }, [width])
+    }, [width, filmsPage, shareModal])
 
 
     // Click on preview to update main film based on film ids
@@ -86,6 +86,7 @@ const FilmPreview = () => {
                     width={posterWidth}                         
                     onMouseEnter={!filmsPage && !mobile ? handleMouseEnter : null}
                     onMouseLeave={!filmsPage && !mobile ? handleMouseLeave : null}
+                    alt={`Poster for ${film.Title}`}
                 />
             </Col>
             {/* PLOT */}
