@@ -16,7 +16,7 @@ export const FilmPreviewProvider = ({
     smallScreen, 
     message, 
     sender, 
-    resultId, 
+    resultId,
     mainFilm, 
     children, 
     faded, 

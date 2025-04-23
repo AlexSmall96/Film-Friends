@@ -78,7 +78,7 @@ const SearchBar = ({setResults, setTotalResults, currentPage, setCurrentPage, se
 			setHasLoaded(true)
 		}
 		fetchData()
-	}, [submitted, currentPage])
+	}, [submitted, currentPage, imdbID, setError, setFinalPage, setHasLoaded, setResults, setShowMainFilm, setTotalResults])
 
 	// Handle submit to fetch search results
 	const handleSubmit = (event) => {
@@ -109,7 +109,7 @@ const SearchBar = ({setResults, setTotalResults, currentPage, setCurrentPage, se
   	return (
 		<>
 			{/* FORM  */}
-				<Container className={`${appStyles.bigVerticalMargin}`}>
+			<Container className={`${appStyles.bigVerticalMargin}`}>
 				<form onSubmit={handleSubmit}>
 					<Row >
 						<Col xs={10} sm={10} md={11} className={`${appStyles.noPadding}`}>
@@ -142,8 +142,8 @@ const SearchBar = ({setResults, setTotalResults, currentPage, setCurrentPage, se
 							:''}
 						</Col>
 					</Row>
-					</form>
-				</Container>
+				</form>
+			</Container>
 		</>
   )
 }

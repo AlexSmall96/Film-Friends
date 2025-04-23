@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Badge, Row, Container, Stack } from 'react-bootstrap';
 import styles from '../../styles/FilmBadges.module.css'
 import useWindowDimensions from '../../hooks/useWindowDimensions';

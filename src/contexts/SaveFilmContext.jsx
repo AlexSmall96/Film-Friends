@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import React,{ createContext, useContext, useState, useEffect } from 'react';
 import { axiosReq } from '../api/axiosDefaults';
 import { useCurrentUser } from './CurrentUserContext';
 import { useCurrentFilm } from './CurrentFilmContext';
@@ -55,7 +55,7 @@ export const SaveFilmProvider = ({ children }) => {
             }
         }
         getOMDBData()
-    }, [hoveredOverImdbID])
+    }, [hoveredOverImdbID, setOmdbData])
            
     return (
         <SaveFilmContext.Provider value={{saveFilm, updated, setUpdated, hasLoadedPlot, setHoveredOverImdbID, deleteReccomendation, deleted, showMainFilm, setShowMainFilm}}>

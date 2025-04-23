@@ -29,7 +29,7 @@ const Filters = ({ filter, setFilter, sort, setSort }) => {
             </Col>
             <Col xl={8} lg={12} md={12} sm={6} xs={12}>
                 {/* SORT AND FILTER BY WATCHED/NOT WATCHED */}
-                <ButtonGroup className={`${width <= 575 || width >= 768 && width < 1200? appStyles.verticalMargin : ''} ${appStyles.whiteBackground}`}>
+                <ButtonGroup className={`${width <= 575 || (width >= 768 && width < 1200)? appStyles.verticalMargin : ''} ${appStyles.whiteBackground}`}>
                     <DropdownButton 
                         as={ButtonGroup} 
                         size="sm" 

@@ -78,7 +78,7 @@ const Results = ({reccomendationsPage }) => {
             }
         }
         getOMDBData()
-    }, [currentFilmIds])
+    }, [currentFilmIds, setOmdbData, reccomendationsPage])
 
     useEffect(() => {
         // Get users reccomendations if component is being used as reccomendations page
@@ -100,7 +100,7 @@ const Results = ({reccomendationsPage }) => {
         if (reccomendationsPage){
             fetchReccomendations()
         }
-    }, [filter, sort, currentUser?.token, deleted, currentPage])
+    }, [filter, sort, currentUser?.token, deleted, currentPage, reccomendationsPage])
 
     // Gets most recent updated films to use as background image
     useEffect(() => {

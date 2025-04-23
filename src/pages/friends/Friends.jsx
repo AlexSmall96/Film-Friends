@@ -40,13 +40,6 @@ const Friends = () => {
         return sort === 'A-Z' ? req.isSender? req.reciever.username: req.sender.username: req.updatedAt
     }
 
-    const checkRequest = (req) => {
-        if (filter === 'All'){
-            return true
-        }
-        return filter === 'Friends' ? req.accepted : !req.accepted
-    }
-
     useEffect(() => {
         // Gets all the users that match the criteria provided by search
         const fetchUsers = async () => {
@@ -66,6 +59,14 @@ const Friends = () => {
     }, [search, currentUser?.user._id, currentUser?.token])
 
     useEffect(() => {
+        // Checks if a request matches current criteria
+        const checkRequest = (req) => {
+            if (filter === 'All'){
+                return true
+            }
+            return filter === 'Friends' ? req.accepted : !req.accepted
+        }
+    
         // Gets all the current users sent or recieved friend requests
         // Creates a request ids array to be used to determine text in search results
         const fetchRequests = async () => {

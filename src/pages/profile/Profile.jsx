@@ -50,7 +50,7 @@ const Profile = ({activeKey}) => {
             }
         }
         fetchProfile()
-    }, [currentUser?.token, updated])
+    }, [currentUser?.token, updated, currentUser, setCurrentUser])
 
     return (
 		<>
