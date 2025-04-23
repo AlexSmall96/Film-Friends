@@ -52,48 +52,47 @@ const FilmsPage = () => {
     const [requests, setRequests] = useState([])
     const [showMainFilm, setShowMainFilm] = useState(false)
     
-    // Helper functions for loading data
-    // Check if a film matches current criteria specified by filters
-    const checkFilm = (film) => {
-        return (
-            film.public === filter.public
-        ) && (
-            filter.watched === 'All'? true: filter.watched === 'Watched'? film.watched: !film.watched
-        )
-    }
-    // Gets the average ratings for a director or genre across users all public and watched films
-    const getAverageRatings = (publicWatchedFilms, name, bool) => {
-        // If bool is true, top genres are found, otherwise directors.
-        const matchingFilms = publicWatchedFilms.filter(film => bool? film.Genre.includes(name) : film.Director.includes(name) )
-        const total = matchingFilms.reduce((acc, curr) => {
-            acc = acc + curr.userRating
-            return acc
-        }, 0)
-        const avg = total / matchingFilms.length
-        return [name, avg]
-    }
-
-    // Gets the genres or directors from uers public and watched films and calls getAverageRatings to get the top 3 highest rated
-    const getTopThree = (publicWatchedFilms, bool) => {
-        // If bool is true, top genres are found, otherwise directors.
-        const data = publicWatchedFilms.map(film => bool? film.Genre : film.Director)
-        const filteredData = data.filter(value => !bool? value !== 'N/A': true)
-        let processedData = filteredData
-        if (bool){
-            const splitData = data.map(name => name.split(',').map(word => word.trim()))
-            processedData = splitData.reduce((acc, curr) => {
-                acc = acc.concat(curr)
-                return acc
-            }, [])
-        }
-        const uniqueData = [...new Set(processedData)]
-        const averageRatings = uniqueData.map((name) => getAverageRatings(publicWatchedFilms, name, bool))
-        const topThree = averageRatings.sort(([, countA], [, countB]) => countB - countA).slice(0,3)
-        return topThree
-    }
-
     // Functions that retrieve or update film list when film data is changed
     useEffect(() => {
+        // Helper functions for loading data
+        // Check if a film matches current criteria specified by filters
+        const checkFilm = (film) => {
+            return (
+                film.public === filter.public
+            ) && (
+                filter.watched === 'All'? true: filter.watched === 'Watched'? film.watched: !film.watched
+            )
+        }
+        // Gets the average ratings for a director or genre across users all public and watched films
+        const getAverageRatings = (publicWatchedFilms, name, bool) => {
+            // If bool is true, top genres are found, otherwise directors.
+            const matchingFilms = publicWatchedFilms.filter(film => bool? film.Genre.includes(name) : film.Director.includes(name) )
+            const total = matchingFilms.reduce((acc, curr) => {
+                acc = acc + curr.userRating
+                return acc
+            }, 0)
+            const avg = total / matchingFilms.length
+            return [name, avg]
+        }
+
+        // Gets the genres or directors from uers public and watched films and calls getAverageRatings to get the top 3 highest rated
+        const getTopThree = (publicWatchedFilms, bool) => {
+            // If bool is true, top genres are found, otherwise directors.
+            const data = publicWatchedFilms.map(film => bool? film.Genre : film.Director)
+            const filteredData = data.filter(value => !bool? value !== 'N/A': true)
+            let processedData = filteredData
+            if (bool){
+                const splitData = data.map(name => name.split(',').map(word => word.trim()))
+                processedData = splitData.reduce((acc, curr) => {
+                    acc = acc.concat(curr)
+                    return acc
+                }, [])
+            }
+            const uniqueData = [...new Set(processedData)]
+            const averageRatings = uniqueData.map((name) => getAverageRatings(publicWatchedFilms, name, bool))
+            const topThree = averageRatings.sort(([, countA], [, countB]) => countB - countA).slice(0,3)
+            return topThree
+        }
         // Get users films for film list
         const fetchProfileAndFilms = async () => {
             try {
@@ -129,7 +128,7 @@ const FilmsPage = () => {
             }
         }
         fetchProfileAndFilms()
-    },[filter, sort, updated, id])
+    },[filter, sort, updated, id, currentFilmIds?.imdbID, currentUser?.token, isOwner, setCurrentFilmIds, setUsername ])
 
     // Functions that update data specific to the user
     useEffect(() => {
@@ -159,7 +158,7 @@ const FilmsPage = () => {
         if (currentFilmIds.imdbID !== '' && allFilms.length){
             findOwnersVersionOfFilm()
         }
-    },[id, updated, allFilms])
+    },[id, updated, allFilms, currentFilmIds.imdbID, currentUser, setCurrentFilmIds, setIsOwner ])
 
     // Functions that only depend on change of current film
     useEffect(() => {   
@@ -178,7 +177,7 @@ const FilmsPage = () => {
             }
         }
         getOMDBandViewingData()
-    }, [currentFilmIds])
+    }, [currentFilmIds, setOmdbData, setViewingData])
 
     // Check who film has already been shared with
     useEffect(() => {
@@ -194,7 +193,7 @@ const FilmsPage = () => {
             }
         }
         getRequestData()
-    }, [updatedFriends])
+    }, [updatedFriends, currentUser?.token])
 
     return (
         <>
@@ -217,7 +216,7 @@ const FilmsPage = () => {
                     :''}
                     {allFilms.length?
                         <Row>
-                            {smallScreen && !showMainFilm || !smallScreen? 
+                            {(smallScreen && !showMainFilm) || !smallScreen? 
                             <Col lg={{span:5, order: 1}} md={{span:5, order:1}} sm={{span: 12, order: 2}} className={`${appStyles.greyBorder} ${appStyles.greyBackground}`}>
                                 {/* FILTERS TO CHANGE WATCHLIST */}
                                 <Filters
@@ -250,7 +249,7 @@ const FilmsPage = () => {
                                     <Button variant='link' onClick={() => setShowMainFilm(false)} className={appStyles.bigVerticalMargin}>Back to all films</Button>
                                 :''}
                                 {/* MAIN FILM WITH FULL DATA */}
-                                {smallScreen && showMainFilm || !smallScreen?
+                                {(smallScreen && showMainFilm) || !smallScreen?
                                     hasDeleted?
                                         isOwner?
                                             <Film /> 
@@ -270,7 +269,7 @@ const FilmsPage = () => {
                         {isOwner? <a href='/'>Browse films here!</a>:''}
                     </div>
                     }
-                </Container>
+                </Container> 
             :  
                 <Spinner className={appStyles.bigVerticalMargin} />
             }
