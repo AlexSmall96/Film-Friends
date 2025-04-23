@@ -17,9 +17,7 @@ const FilmBadges = ({ films, search, setSearch, setSubmitted }) => {
                 const visibleFilmsList = [];
                 for (const [index, badge] of badges.entries()){
                     const badgeRect = badge.getBoundingClientRect();
-                    if (badgeRect.right >= width) {
-                        
-                    } else {
+                    if (badgeRect.right < width - 15) {
                         visibleFilmsList.push(films[index]);
                     }
                 }
