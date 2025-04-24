@@ -4,29 +4,20 @@
 import FilmBadges from './FilmBadges'
 import React from 'react';
 import '@testing-library/jest-dom/vitest';
-import { render, act } from '@testing-library/react';
+import { act } from '@testing-library/react';
 import { test, expect} from 'vitest';
 import setupTests from '../../test-utils/setupTests';
 import { vi } from 'vitest';
-import { FilmSearchContext } from '../../contexts/FilmSearchContext';
+import renderWithNullContext from '../../test-utils/renderWithNullContext';
 
 setupTests()
 
 // Define sample data to pass into component
 const films = ['Spider-Man 2', 'Love Actually', 'Memento', 'Inception']
 
-const renderWithContext = () => {
-    return(
-        render(
-            <FilmSearchContext.Provider value={{}}>
-                <FilmBadges films={films} />
-            </FilmSearchContext.Provider>
-        )
-    )
-}
 test('Each film should appear once in badges and once in hidden badges.', () => {
     // Render component
-    const { container } = renderWithContext()
+    const { container } = renderWithNullContext(<FilmBadges />, {films})
     // Get elements with class name visible badge
     const visibleBadges = container.getElementsByClassName('_badge_da902b')
     // Should have length 4
@@ -49,7 +40,7 @@ test('Each film should appear once in badges and once in hidden badges.', () => 
 
 test('When screen width is changed, badges should dissapear if their right border is cut off', async () => {
     // Render component
-    const { container } = renderWithContext()
+    const { container } = renderWithNullContext(<FilmBadges />, {films})
     // Get both badges for each film (hidden and visible)
     const hiddenBadgeElements = container.getElementsByClassName('hidden-badge')
     const hiddenBadges = Array.from(hiddenBadgeElements)

@@ -4,40 +4,13 @@
 import FriendRequestButtons from './FriendRequestButtons'
 import React from 'react';
 import '@testing-library/jest-dom/vitest';
-import { screen, render } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { test, expect, describe} from 'vitest';
 import setupTests from '../../test-utils/setupTests';
 import { FriendDataProvider } from '../../contexts/FriendDataContext';
-import { FriendActionContext } from '../../contexts/FriendActionContext';
-import { CurrentUserContext } from '../../contexts/CurrentUserContext';
-import { SaveFilmProvider } from '../../contexts/SaveFilmContext';
-import { CurrentFilmContext } from '../../contexts/CurrentFilmContext';
+import renderWithNullContext from '../../test-utils/renderWithNullContext';
 
-// If request is accepted and user is sender, should display text with friends
-// Should also display sharemodal and delete modal button (just test if they appear)
 setupTests()
-
-/* 
-Render with FriendDataProvider to pass request data into component
-All other contexts are rendered with empty data
-*/
-const renderWithContext = (request) => {
-    return (
-        render(
-            <FriendActionContext.Provider value={{}}>
-                <CurrentUserContext.Provider value={{}}>
-                    <CurrentFilmContext.Provider value={{}}>
-                        <SaveFilmProvider>
-                            <FriendDataProvider request={request}>
-                                <FriendRequestButtons />
-                            </FriendDataProvider>
-                        </SaveFilmProvider>
-                    </CurrentFilmContext.Provider>
-            </CurrentUserContext.Provider>
-            </FriendActionContext.Provider>
-        )
-    )
-}
 
 describe('RENDERING CORRECT BUTTONS AND TEXT WHEN CURRENT USER IS SENDER', () => {
     test('If request has been accepted, "Friends" text should be displayed along with share modal and delete modal.', () => {
@@ -51,7 +24,11 @@ describe('RENDERING CORRECT BUTTONS AND TEXT WHEN CURRENT USER IS SENDER', () =>
             isSender: true
         }   
         // Render component
-        renderWithContext(request)
+        renderWithNullContext(
+            <FriendDataProvider>
+                <FriendRequestButtons  />
+            </FriendDataProvider>, {request} 
+        )
         // Find text saying 'Friends'
         const friendsText = screen.getByText('Friends')
         expect(friendsText).toBeInTheDocument()
@@ -72,7 +49,11 @@ describe('RENDERING CORRECT BUTTONS AND TEXT WHEN CURRENT USER IS SENDER', () =>
             isSender: true
         }         
         // Render component
-        renderWithContext(request)
+        renderWithNullContext(
+            <FriendDataProvider>
+                <FriendRequestButtons  />
+            </FriendDataProvider>, {request} 
+        )
         // Find text saying 'Friend Request Pending'
         const pendingText = screen.getByText('Friend request pending')
         expect(pendingText).toBeInTheDocument()
@@ -97,7 +78,11 @@ describe('RENDERING CORRECT BUTTONS AND TEXT WHEN CURRENT USER IS RECIEVER', () 
             isSender: false
         }  
         // Render component
-        renderWithContext(request)
+        renderWithNullContext(
+            <FriendDataProvider>
+                <FriendRequestButtons  />
+            </FriendDataProvider>, {request} 
+        )
         // Accept and decline buttons should be present
         const acceptBtn = screen.getByRole('button', {name: 'Accept'})
         expect(acceptBtn).toBeInTheDocument()
