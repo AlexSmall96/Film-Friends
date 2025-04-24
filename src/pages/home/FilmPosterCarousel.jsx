@@ -15,9 +15,10 @@ const FilmPosterCarousel = ({films}) => {
             <Col key={film.imdbID} lg={2} md={4} xs={4}>
                 <FilmPreviewProvider 
                     film={film} 
-                    mobile={true}
+                    mobile
                     filmsPage
                     faded
+                    carousel
                 >
                     <FilmPreview />
                 </FilmPreviewProvider>

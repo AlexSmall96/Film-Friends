@@ -47,7 +47,7 @@ const Results = ({reccomendationsPage }) => {
     const [hasRecs, setHasRecs] = useState(false)
     const [showToast, setShowToast] = useState(accountDeleted)
     const [backgroundFilms, setBackgroundFilms] = useState([])
-    const { search, setSearch, submitted, setSubmitted } = useFilmSearchContext()
+    const { search, setSearch, submitted, setSubmitted, setSearchedViaCarousel } = useFilmSearchContext()
 
     useEffect(() => {
         // Gets the imdbIds of the users saved films, to determine which buttons should appear next to film result
@@ -119,6 +119,11 @@ const Results = ({reccomendationsPage }) => {
     useEffect(() => {
         setCurrentPage(1)
     }, [search])
+
+    const backToSearchResults = () => {
+        setShowMainFilm(false)
+        setSearchedViaCarousel(false)
+    }
 
     return (
         hasLoaded?  
@@ -208,7 +213,7 @@ const Results = ({reccomendationsPage }) => {
                                             }
                                             {/* HIDE MAIN FILM FOR MOBILE VIEW */}    
                                             {reccomendationsPage? <br />:''}
-                                            <Button variant='link' onClick={() => setShowMainFilm(false)}>
+                                            <Button variant='link' onClick={backToSearchResults}>
                                                 {reccomendationsPage? 'Back to reccomendations': 'Back to search results'}
                                             </Button>                         
                                         </>
