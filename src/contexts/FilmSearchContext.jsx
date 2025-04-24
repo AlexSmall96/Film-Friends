@@ -1,10 +1,7 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { axiosReq } from '../api/axiosDefaults';
-import { useCurrentUser } from './CurrentUserContext';
-import { useCurrentFilm } from './CurrentFilmContext';
+import React, { createContext, useContext, useState } from 'react';
 
 // Defines several functions used in saving and deleting films and deleting reccomendations
-const FilmSearchContext = createContext();
+export const FilmSearchContext = createContext();
 
 export const FilmSearchProvider = ({ children }) => {
     
