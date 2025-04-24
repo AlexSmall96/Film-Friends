@@ -2,13 +2,14 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Badge, Row, Container, Stack } from 'react-bootstrap';
 import styles from '../../styles/FilmBadges.module.css'
 import useWindowDimensions from '../../hooks/useWindowDimensions';
+import { useFilmSearchContext } from '../../contexts/FilmSearchContext';
 
 // Used in home page to show titles of most recently updated films
-const FilmBadges = ({ films, search, setSearch, setSubmitted }) => {
+const FilmBadges = ({ films }) => {
     const containerRef = useRef(null);
     const [visibleFilms, setVisibleFilms] = useState(films);
     const { width } = useWindowDimensions()
-    
+    const { search, setSearch, setSubmitted } = useFilmSearchContext()
     // Checks wether or not a badge is fully visible when window resizes
     useEffect(() => {
         const checkVisibility = () => {
