@@ -14,8 +14,10 @@ const {
     wipeDBAndSaveData,
     closeConnection,
     userOne,
+    userTwo,
     userOneAuth,
     userTwoAuth,
+    userThreeAuth
 } = require('./test-utils/setupRouterTests')
 
 // Wipe database before each test and setup test data
@@ -28,7 +30,7 @@ afterAll(closeConnection)
 describe('SIGN UP', () => {
     test('Should sign up a new user', async () => {
         // Correct status code
-        const response = await request(app).post('/users').send({username: 'Alex', email: 'alex@example.com', password: 'Red123@!'}).expect(201)
+        const response = await request(app).post('/data/users').send({username: 'Alex', email: 'alex@example.com', password: 'Red123@!'}).expect(201)
         // Assert that the database was changed correctly
         const user = await User.findById(response.body.user._id)
         expect(user).not.toBeNull()
@@ -45,14 +47,12 @@ describe('SIGN UP', () => {
     })
     test('User sign up should fail with invalid data', async () => {
         // Username taken
-        await request(app).post('/users').send({username: 'Jane'}).expect(400)
+        await request(app).post('/data/users').send({username: 'Jane'}).expect(400)
         // Email taken
-        await request(app).post('/users').send({email: 'jane@example.com'}).expect(400)
+        await request(app).post('/data/users').send({email: 'jane@example.com'}).expect(400)
         // Custom error messages
-        const response = await request(app).post('/users').send({age: -1, email: 'mike@', password: 'password'}).expect(400)
+        const response = await request(app).post('/data/users').send({email: 'mike@', password: 'password'}).expect(400)
         const errors = response.body.errors
-        // Invalid age
-        expect(errors.age.message).toBe('Age must be a positive number.')
         // Invalid email
         expect(errors.email.message).toBe('Email is invalid')
         // Invalid password
@@ -64,7 +64,7 @@ describe('SIGN UP', () => {
 describe('LOGIN', () => {
     test('Should be able to login with valid credentials', async () => {
         // Correct status code
-        const response = await request(app).post('/users/login')
+        const response = await request(app).post('/data/users/login')
         .send({email: userOne.email, password: userOne.password})
         .expect(200)
         // Correct token is created
@@ -72,7 +72,7 @@ describe('LOGIN', () => {
     })
     test('Login should fail with invalid credentials', async () => {
         // Correct status code
-        await request(app).post('/users/login')
+        await request(app).post('/data/users/login')
         .send({email: userOne.email, password: 'wrongpassword'})
         .expect(400)
     })
@@ -82,13 +82,13 @@ describe('LOGIN', () => {
 describe('LOGOUT', () => {
     test('Logout should be successful when authenticated', async () => {
         // Correct status code
-        await request(app).post('/users/logout').set(...userOneAuth).expect(200)
+        await request(app).post('/data/users/logout').set(...userOneAuth).expect(200)
         // Token has been removed from tokens array
         expect(userOne.tokens.length).toBe(1)
     })
     test('Logout should be unsuccessful when not authenticated', async () => {
         // Correct status code
-        const response = await request(app).post('/users/logout').expect(401)
+        const response = await request(app).post('/data/users/logout').expect(401)
         // Correct error message
         expect(response.body.error).toBe('Please authenticate.')
     })
@@ -97,17 +97,17 @@ describe('LOGOUT', () => {
 // Check token tests
 describe('CHECK TOKEN', () => {
     test('Valid token should return a 200 status code', async () => {
-        await request(app).get('/users/token').set(...userOneAuth).expect(200)
+        await request(app).get('/data/users/token').set(...userOneAuth).expect(200)
     })
     test('Invalid or expired token should return a 401 status code', async () => {
         // No token
-        await request(app).get('/users/token').expect(401)
+        await request(app).get('/data/users/token').expect(401)
         // Invalid token
-        await request(app).get('/users/token').set('Authorization', `Bearer 123`).expect(401)
+        await request(app).get('/data/users/token').set('Authorization', `Bearer 123`).expect(401)
         // Expired token
         // Logout user so token expires
-        await request(app).post('/users/logout').set(...userOneAuth)
-        await request(app).get('/users/token').set(...userOneAuth).expect(401)
+        await request(app).post('/data/users/logout').set(...userOneAuth)
+        await request(app).get('/data/users/token').set(...userOneAuth).expect(401)
     })
 })
 
@@ -116,34 +116,43 @@ describe('VIEW PROFILE', () => {
     test('User should be able to view their own profile', async () => {
         // userOne views their own profile
         // Correct status code
-        const response = await request(app).get(`/users/${userOne._id}`).set(...userOneAuth).expect(200)
+        const response = await request(app).get(`/data/users/${userOne._id}`).set(...userOneAuth).expect(200)
         // Correct data is returned
         expect(response.body.profile.username).toBe('Mike')
         expect(response.body.profile.email).toBe('mike@example.com')
         expect(response.body.profile.image).toBe('https://res.cloudinary.com/dojzptdbc/image/upload/v1691658951/media/images/pexels-photo-1043474_mfhznv.jpg')
-        expect(response.body.profile.age).toBe(0)
     })
-    test('User should be able to view another users username, age and profile image', async () => {
+    test('User should be able to view another users username and profile image', async () => {
         // userTwo views userOne's profile
         // Correct status code
-        const response = await request(app).get(`/users/${userOne._id}`).set(...userTwoAuth).expect(200)
+        const response = await request(app).get(`/data/users/${userOne._id}`).set(...userTwoAuth).expect(200)
         // Correct data is returned
         expect(response.body.profile.username).toBe('Mike')
-        expect(response.body.profile.age).toBe(0)
         expect(response.body.profile.image).toBe('https://res.cloudinary.com/dojzptdbc/image/upload/v1691658951/media/images/pexels-photo-1043474_mfhznv.jpg')
         // Private data is not returned
         expect(Object.keys(response.body.profile).includes('email')).toBe(false)
         expect(Object.keys(response.body.profile).includes('password')).toBe(false)
     })
+    test('Similarity scores should be correct', async () => {
+        // userTwo views userOne's profile
+        const response = await request(app).get(`/data/users/${userOne._id}`).set(...userTwoAuth).expect(200)
+        // Similarity score should be 0.7; the average score across both common films
+        // Star Wars rated as 5 (user 1) and 4 (user 2): 0.8 similarity
+        // Love Actually rated as 3 (user 1) and 1 (user 2): 0.6 similarity
+        expect(response.body.similarity).toBe(0.7)
+        // userThree views userTwo's profile
+        const responseNullScore = await request(app).get(`/data/users/${userTwo._id}`).set(...userThreeAuth).expect(200)
+        expect(responseNullScore.body.similarity).toBe(null)
+    })
     test('View profile should be unsuccessful when not authenticated', async () => {
         // Correct status code
-        const response = await request(app).get(`/users/${userOne._id}`).expect(401)
+        const response = await request(app).get(`/data/users/${userOne._id}`).expect(401)
         // Correct error message
         expect(response.body.error).toBe('Please authenticate.')
     })
     test('View profile should fail with invalid id', async () => {
         // Correct status code
-        await request(app).get('/users/123').set(...userOneAuth).expect(400)
+        await request(app).get('/data/users/123').set(...userOneAuth).expect(400)
     })
 })
 
@@ -151,26 +160,26 @@ describe('VIEW PROFILE', () => {
 describe('SEARCH FOR PROFILES', () => {
     test('Should be able to search for user by username', async () => {
         // Search 1: Search for ' USer' - should return user0...user9 with status code 200
-        const resultsForUser = await request(app).get('/users/?username= USer').set(...userOneAuth).expect(200)
+        const resultsForUser = await request(app).get('/data/users/?username= USer').set(...userOneAuth).expect(200)
         expect(resultsForUser.body.length).toBe(10)
         // Test pagination - should return the correct number per page
-        const resultsForUserPaginated1 = await request(app).get('/users/?username=User&limit=5&skip=0').set(...userOneAuth).expect(200)
-        const resultsForUserPaginated2 = await request(app).get('/users/?username=User&limit=3&skip=3').set(...userOneAuth).expect(200)
+        const resultsForUserPaginated1 = await request(app).get('/data/users/?username=User&limit=5&skip=0').set(...userOneAuth).expect(200)
+        const resultsForUserPaginated2 = await request(app).get('/data/users/?username=User&limit=3&skip=3').set(...userOneAuth).expect(200)
         expect(resultsForUserPaginated1.body.length).toBe(5)
         expect(resultsForUserPaginated2.body.length).toBe(3)
         // Test Sorting - last updated should be the first in list
         expect(resultsForUserPaginated1.body[0].username).toBe('user9')
         // Search 2: Search for 'user2 ' - should only return user2 with status code 200
-        const resultsForUser2 = await request(app).get('/users/?username=user2 ').set(...userOneAuth).expect(200)
+        const resultsForUser2 = await request(app).get('/data/users/?username=user2 ').set(...userOneAuth).expect(200)
         expect(resultsForUser2.body.length).toBe(1)
         expect(resultsForUser2.body[0].email).toBe('user2@example.com')
         // Search 3: Search for abc - should return no results with status code 200
-        const resultsForAbc = await request(app).get('/users/?username=abc').set(...userOneAuth).expect(200)
+        const resultsForAbc = await request(app).get('/data/users/?username=abc').set(...userOneAuth).expect(200)
         expect(resultsForAbc.body.length).toBe(0)
     })
     test('Search for profiles should be unsuccessful when not authenticated', async () => {
         // Correct status code
-        const response = await request(app).get('/users/?username= User').expect(401)
+        const response = await request(app).get('/data/users/?username= User').expect(401)
         // Correct error message
         expect(response.body.error).toBe('Please authenticate.')
     })
@@ -178,38 +187,38 @@ describe('SEARCH FOR PROFILES', () => {
 
 // Edit profile
 describe('EDIT PROFILE', () => {
-    test('Should be able to edit valid fields with valid data', async () => {
+    test('Should be able to edit username and email with valid data', async () => {
         // Correct status code
-        await request(app).patch(`/users/me`).send({
+        await request(app).patch(`/data/users/me`).send({
             username: 'Mike2',
-            email: 'mike2@example.com',
-            age: 28,
-            password: 'new12345'
+            email: 'mike2@example.com'
         }).set(...userOneAuth).expect(200)
         // Assert that the database was changed correctly
         const user = await User.findById(userOne._id)
         expect(user.username).toBe('Mike2')
         expect(user.email).toBe('mike2@example.com')
-        expect(user.age).toBe(28)
+    })
+    test('Should be able to update password with valid data', async () => {
+        await request(app).patch(`/data/users/me`).send({
+            currPassword: '56what!!',
+            newPassword: '76what!!'
+        }).set(...userOneAuth).expect(200)
     })
     test('Profile edit should fail with invalid data', async () => {
         // Username taken
-        await request(app).patch(`/users/me`).send({username: 'user1'}).set(...userOneAuth).expect(400)
+        await request(app).patch(`/data/users/me`).send({username: 'user1'}).set(...userOneAuth).expect(400)
         // Email taken
-        await request(app).patch(`/users/me`).send({email: 'user1@example.com'}).set(...userOneAuth).expect(400)
-        // Custom error messages
-        const response = await request(app).patch(`/users/me`).send({age: -1, email: 'mike@', password: 'password'}).set(...userOneAuth).expect(400)
-        const errors = response.body.errors
-        // Invalid age
-        expect(errors.age.message).toBe('Age must be a positive number.')
-        // Invalid email
-        expect(errors.email.message).toBe('Email is invalid')
-        // Invalid password
-        expect(errors.password.message).toBe('Password cannot contain "password"')
+        await request(app).patch(`/data/users/me`).send({email: 'user1@example.com'}).set(...userOneAuth).expect(400)
+        // Current password incorrect
+        const responseCurrPassword = await request(app).patch(`/data/users/me`).send({email: 'mike@example.com', currPassword: '100what!!'}).set(...userOneAuth).expect(400)
+        expect(responseCurrPassword.body.errors.password.message).toBe('Current password incorrect.')
+        // New password invalid
+        const responseNewPassword = await request(app).patch(`/data/users/me`).send({email: 'mike@example.com', currPassword: '56what!!', newPassword: 'password'}).set(...userOneAuth).expect(400)
+        expect(responseNewPassword.body.errors.password.message).toBe('Password cannot contain "password"')
     })
     test('Profile edit should be unsuccessful when not authenticated', async () => {
         // Correct status code
-        const response = await request(app).patch(`/users/me`).send({username: 'Mike3'}).expect(401)
+        const response = await request(app).patch(`/data/users/me`).send({username: 'Mike3'}).expect(401)
         // Correct error message
         expect(response.body.error).toBe('Please authenticate.')
     })
@@ -220,7 +229,7 @@ describe('EDIT PROFILE', () => {
 describe('DELETE PROFILE', () => {
     test('Should delete profile when authenticated', async () => {
         // Correct status code
-        await request(app).delete(`/users/me`).set(...userOneAuth).expect(200)
+        await request(app).delete(`/data/users/me`).set(...userOneAuth).expect(200)
         // Assert the database was changed correctly
         const user = await User.findById(userOne._id)
         expect(user).toBeNull()
@@ -232,7 +241,7 @@ describe('DELETE PROFILE', () => {
     })
     test('Profile delete should be unsuccessful when not authenticated', async () => {
         // Correct status code
-        const response = await request(app).delete(`/users/me`).expect(401)
+        const response = await request(app).delete(`/data/users/me`).expect(401)
         // Correct error message
         expect(response.body.error).toBe('Please authenticate.')
     })

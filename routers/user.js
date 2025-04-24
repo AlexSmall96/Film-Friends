@@ -204,6 +204,7 @@ router.patch('/data/users/me', auth, async (req, res) => {
     }
 })
 
+// Reset password
 router.patch('/data/users/resetPassword', async (req, res) => {
     try {
         console.log(req.body)

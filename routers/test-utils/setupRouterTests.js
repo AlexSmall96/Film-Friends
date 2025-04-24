@@ -60,6 +60,12 @@ const filmThree = {_id: filmThreeId, Title: 'film three', imdbID: 'f123', owner:
 const requestOne = {_id: requestOneId, sender: userTwoId, reciever: userThreeId, senderUsername: 'Steve', recieverUsername:'claire'}
 const recOne = {_id: recOneId, film: filmOneAId, reciever: userTwoId, sender: userOneId}
 
+const starWarsUser1 = {_id: new mongoose.Types.ObjectId(), Title: 'Star Wars', imdbID: 'starwars', owner: userOneId, userRating: 5, public: true, watched: true}
+const starWarsUser2 = {_id: new mongoose.Types.ObjectId(), Title: 'Star Wars', imdbID: 'starwars', owner: userTwoId, userRating: 4, public: true, watched: true}
+
+const loveActuallyUser1 = {_id: new mongoose.Types.ObjectId(), Title: 'Love Actually', imdbID: 'loveact', owner: userOneId, userRating: 3, public: true, watched: true}
+const loveActuallyUser2 = {_id: new mongoose.Types.ObjectId(), Title: 'Love Actually', imdbID: 'loveact', owner: userTwoId, userRating: 1, public: true, watched: true}
+
 // Wipe database before each test and setup test data
 const wipeDBAndSaveData = async () => {
     await User.deleteMany()
@@ -74,6 +80,10 @@ const wipeDBAndSaveData = async () => {
     await new Film(filmOneC).save()
     await new Film(filmOneD).save()
     await new Film(filmTwo).save()
+    await new Film(starWarsUser1).save()
+    await new Film(starWarsUser2).save()
+    await new Film(loveActuallyUser1).save()
+    await new Film(loveActuallyUser2).save()
     await new Request(requestOne).save()
     await new Reccomendation(recOne).save()
     // Auto generate 10 users to test request pagination and sorting
