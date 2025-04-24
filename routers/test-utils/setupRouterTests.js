@@ -99,7 +99,8 @@ const wipeDBAndSaveData = async () => {
             _id: filmId,
             Title: `A film reccomended by user${i}`,
             imdbID: `imdbID${i}`,
-            owner: user._id
+            owner: user._id,
+            userRating: i == 0? 5: 4
         }).save()
         await new Reccomendation({
             film: film._id,
