@@ -4,7 +4,7 @@ import { useCurrentUser } from './CurrentUserContext';
 import { useCurrentFilm } from './CurrentFilmContext';
 
 // Defines several functions used in saving and deleting films and deleting reccomendations
-const SaveFilmContext = createContext();
+export const SaveFilmContext = createContext();
 
 export const SaveFilmProvider = ({ children }) => {
 
