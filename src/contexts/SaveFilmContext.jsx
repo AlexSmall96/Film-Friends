@@ -1,4 +1,4 @@
-import React,{ createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { axiosReq } from '../api/axiosDefaults';
 import { useCurrentUser } from './CurrentUserContext';
 import { useCurrentFilm } from './CurrentFilmContext';

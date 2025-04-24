@@ -28,3 +28,8 @@ The plotPreview class was inspired by https://stackoverflow.com/questions/799306
     cursor: pointer;
     opacity: 1;
 }
+
+.hoverCarousel:hover{
+    cursor: pointer;
+    opacity: 0.7;  
+}

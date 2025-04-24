@@ -16,6 +16,7 @@ import { SaveFilmProvider } from './contexts/SaveFilmContext.jsx';
 import ResetPassword from './pages/auth/ResetPassword.jsx';
 import SendOTP from './pages/auth/SendOTP.jsx';
 import styles from './App.module.css'
+import { FilmSearchProvider } from './contexts/FilmSearchContext.jsx';
 
 function App() {
   return (
@@ -25,23 +26,25 @@ function App() {
         		<CurrentFilmProvider>
 					<FriendActionProvider>
 						<SaveFilmProvider>
-							<Router>
-								<NavBar />
-								<Switch>
-									<Route exact path='/' render={() => <Results />} />
-									<Route exact path='/films/:id' render={() => <FilmsPage />} />
-									<Route exact path='/friends/' render={() => <Friends />} />
-									<Route exact path='/reccomendations' render={() => <Results reccomendationsPage/>} />
-									<Route exact path='/profile/' render={() => <Profile activeKey='first' />} />
-									<Route exact path='/account/security' render={() => <Profile activeKey='second' />} />
-									<Route exact path='/account/delete' render={() => <Profile activeKey='third' />} />
-									<Route exact path='/resetPassword/sendOTP/' render={() => <SendOTP resetPassword />} />
-									<Route exact path='/changeEmail/sendOTP' render={() => <SendOTP changeEmail />} />
-									<Route exact path='/resetPassword/' render={() => <ResetPassword />} />
-									<Route exact path='/signup' render={() => <Signup />} />
-									<Route exact path='/login' render={() => <Login />} />
-								</Switch>
-							</Router>
+							<FilmSearchProvider>
+								<Router>
+									<NavBar />
+									<Switch>
+										<Route exact path='/' render={() => <Results />} />
+										<Route exact path='/films/:id' render={() => <FilmsPage />} />
+										<Route exact path='/friends/' render={() => <Friends />} />
+										<Route exact path='/reccomendations' render={() => <Results reccomendationsPage/>} />
+										<Route exact path='/profile/' render={() => <Profile activeKey='first' />} />
+										<Route exact path='/account/security' render={() => <Profile activeKey='second' />} />
+										<Route exact path='/account/delete' render={() => <Profile activeKey='third' />} />
+										<Route exact path='/resetPassword/sendOTP/' render={() => <SendOTP resetPassword />} />
+										<Route exact path='/changeEmail/sendOTP' render={() => <SendOTP changeEmail />} />
+										<Route exact path='/resetPassword/' render={() => <ResetPassword />} />
+										<Route exact path='/signup' render={() => <Signup />} />
+										<Route exact path='/login' render={() => <Login />} />
+									</Switch>
+								</Router>
+							</FilmSearchProvider>
 						</SaveFilmProvider>
 					</FriendActionProvider>
         		</CurrentFilmProvider>

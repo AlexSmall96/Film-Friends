@@ -20,7 +20,8 @@ export const FilmPreviewProvider = ({
     mainFilm, 
     children, 
     faded, 
-    shareModal
+    shareModal,
+    carousel
 }) => {
 
     return (
@@ -37,7 +38,8 @@ export const FilmPreviewProvider = ({
             resultId, 
             mainFilm, 
             faded, 
-            shareModal
+            shareModal,
+            carousel
         }}>
             {children}
         </FilmPreviewContext.Provider>

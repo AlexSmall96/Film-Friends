@@ -16,6 +16,7 @@ import { useCurrentFilm } from '../../contexts/CurrentFilmContext';
 import sortBy from 'array-sort-by'
 import FilmPosterCarousel from './FilmPosterCarousel';
 import FilmBadges from './FilmBadges';
+import { useFilmSearchContext } from '../../contexts/FilmSearchContext';
 
 /* 
 Acts as home page and reccomendations page.
@@ -46,8 +47,7 @@ const Results = ({reccomendationsPage }) => {
     const [hasRecs, setHasRecs] = useState(false)
     const [showToast, setShowToast] = useState(accountDeleted)
     const [backgroundFilms, setBackgroundFilms] = useState([])
-    const [search, setSearch] = useState('')
-    const [submitted, setSubmitted] = useState(false)
+    const { search, setSearch, submitted, setSubmitted } = useFilmSearchContext()
 
     useEffect(() => {
         // Gets the imdbIds of the users saved films, to determine which buttons should appear next to film result
@@ -194,8 +194,6 @@ const Results = ({reccomendationsPage }) => {
                                             {finalPage > 1 ? 
                                                 <ResultsPagination currentPage={currentPage} finalPage={finalPage} setCurrentPage={setCurrentPage}/>                       
                                             : '' }    
-                                            {/* LOGIN AND SIGNUP BUTTONS IF NOT ALREADY LOGGED IN */}
-                   
                                         </> 
                                     :   
                                         <>
@@ -254,7 +252,6 @@ const Results = ({reccomendationsPage }) => {
                                                     resultId={result._id} 
                                                     savedToWatchlist={usersFilmIds.includes(result.imdbID || result.film.imdbID)} 
                                                     mobile={mobile}
-                                                    setShowMainFilm={setShowMainFilm}
                                                     message={result.message || null}
                                                     sender={result.sender || null}
                                                 >

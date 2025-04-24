@@ -3,6 +3,7 @@ import { axiosReq } from '../../api/axiosDefaults'
 import { Button, Container, Row, Col} from 'react-bootstrap'
 import appStyles from '../../App.module.css'
 import styles from '../../styles/SearchBar.module.css'
+import { useFilmSearchContext } from '../../contexts/FilmSearchContext'
 
 /* 
 Used in results page (home page format) to allow users to search for films and display results.
@@ -15,7 +16,7 @@ const SearchBar = ({setResults, setTotalResults, currentPage, setCurrentPage, se
 	const [imdbID, setImdbID] = useState('')
 	const [suggestions, setSuggestions] = useState([])
 	const [showSuggestions, setShowSuggestions] = useState(false);
-
+	const { searchedViaCarousel, setSearchedViaCarousel } = useFilmSearchContext()
 	// Get search results from OMDB API to use as suggestions
   	const handleChange = async (event) => {
 		const string = event.target.value
@@ -35,6 +36,7 @@ const SearchBar = ({setResults, setTotalResults, currentPage, setCurrentPage, se
 			}
 			setShowSuggestions(false)
 			setSuggestions([])
+			setSearchedViaCarousel(false)
 		}
   	}
 
@@ -53,7 +55,7 @@ const SearchBar = ({setResults, setTotalResults, currentPage, setCurrentPage, se
 							Math.ceil(0.1 * response.data.totalResults)
 						)
 						setTotalResults(response.data.totalResults) 
-						setShowMainFilm(false)        
+						setShowMainFilm(searchedViaCarousel)        
 					} else {
 						// If no search results found check if a suggestions item has been selected and try to find data from imdbID
 						if (imdbID !== '') {

@@ -8,12 +8,15 @@ import { useFilmPreview } from '../contexts/FilmPreviewContext';
 import useWindowDimensions from '../hooks/useWindowDimensions';
 import SaveDropown from './SaveDropdown';
 import { useSaveFilmContext } from '../contexts/SaveFilmContext';
+import { useFilmSearchContext } from '../contexts/FilmSearchContext';
 
 // Displays film poster and preview of data either as a list of search results, saved films or reccomendations
 const FilmPreview = () => {
     // Contexts
-    const {film, showDropdown, filmsPage, mobile, smallScreen, setShowMainFilm, message, sender, resultId, faded, shareModal } = useFilmPreview()
+    const {film, showDropdown, filmsPage, mobile, smallScreen, message, sender, resultId, faded, shareModal, carousel } = useFilmPreview()
     const { setCurrentFilmIds, omdbData, setCurrentReccomendation } = useCurrentFilm()
+    const { setSearch, setSubmitted, setSearchedViaCarousel } = useFilmSearchContext()
+    const { setShowMainFilm } = useSaveFilmContext()
     // Hooks
     const { width } = useWindowDimensions()
     // Initialize variables
@@ -65,6 +68,11 @@ const FilmPreview = () => {
         if ((mobile || smallScreen) && !(faded || shareModal)) {
             setShowMainFilm(true) 
         }
+        if (carousel){
+            setSearch(film.Title)
+            setSubmitted(current => !current)
+            setSearchedViaCarousel(true)
+        }
     }
 
     // Show plot when mouse is hovered
@@ -81,7 +89,7 @@ const FilmPreview = () => {
         <Row onClick={filmsPage || mobile? handleClick : null}>
             {/* POSTER */}
             <Col md={filmsPage || shareModal? 12 : 6} sm={filmsPage || shareModal? 12: 4} xs={12} className={`${!shareModal? appStyles.noPadding: ''}`}>
-                <img className={`${styles.filmPoster} ${faded? styles.faded : styles.hover}`} src={film.Poster}
+                <img className={`${styles.filmPoster} ${faded? styles.faded : ''} ${carousel? styles.hoverCarousel: styles.hover}`} src={film.Poster}
                     height={posterWidth}
                     width={posterWidth}                         
                     onMouseEnter={!filmsPage && !mobile ? handleMouseEnter : null}
