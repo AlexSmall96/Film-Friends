@@ -21,7 +21,7 @@ const ProfileEdit = ({setUpdated, hasLoaded, setHasLoaded, username, setUsername
     // Handle change for username
     const handleUsernameChange = (event) => {
         setUsername(event.target.value)
-        setDisabled(event.target.value === '' || event.target.value === currentUser.user.username)
+        setDisabled(event.target.value === '' || (event.target.value === currentUser.user.username && imageBase64 === "") )
         setMessage({})
         setUsernameChanged(event.target.value !== '' && event.target.value !== currentUser.user.username)
     }
