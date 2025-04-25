@@ -57,7 +57,7 @@ const filmOneC = {Title: 'film one c', imdbID: 'u345', owner: userOneId, public:
 const filmOneD = {Title: 'film one d', imdbID: 'v345', owner: userOneId, public: false}
 const filmTwo = {_id: filmTwoId, Title: 'film two', imdbID: 'e123', owner: userTwoId, public: true}
 const filmThree = {_id: filmThreeId, Title: 'film three', imdbID: 'f123', owner: userTwoId, public: false}
-const requestOne = {_id: requestOneId, sender: userTwoId, reciever: userThreeId, senderUsername: 'Steve', recieverUsername:'claire'}
+const requestOne = {_id: requestOneId, sender: userTwoId, reciever: userThreeId}
 const recOne = {_id: recOneId, film: filmOneAId, reciever: userTwoId, sender: userOneId}
 
 const starWarsUser1 = {_id: new mongoose.Types.ObjectId(), Title: 'Star Wars', imdbID: 'starwars', owner: userOneId, userRating: 5, public: true, watched: true}
@@ -98,10 +98,7 @@ const wipeDBAndSaveData = async () => {
         await new Request({
             sender: i < 5 ? userOneId : user._id, 
             reciever: i < 5 ? user._id : userOneId,
-            declined: i == 2,
-            accepted: i == 1,
-            senderUsername: `user${i}`,
-            recieverUsername: 'Mike'
+            accepted: i == 1
         }).save()
         // Create 10 reccomendations to test reccomendation pagination and sorting
         let filmId = new mongoose.Types.ObjectId()
