@@ -19,7 +19,7 @@ router.post('/data/requests', auth, async (req, res) => {
         if (reciever === sender) {
             return res.status(400).send({error: "You can't send a friend request to yourself."})
         }
-        const existingRequests = await Request.find({$or:[{sender, reciever, declined: false}, {sender:reciever, reciever: sender, declined: false}]})
+        const existingRequests = await Request.find({$or:[{sender, reciever}, {sender:reciever, reciever: sender}]})
         if (existingRequests.length) {
             return res.status(400).send({error: "Friend request already sent."})
         }
@@ -55,7 +55,6 @@ const enrichRequest = async (request, currentUser) => {
         sender, 
         reciever, 
         accepted: request.accepted,
-        declined: request.declined,
         createdAt: request.createdAt,
         updatedAt: request.updatedAt
     }
@@ -69,7 +68,7 @@ router.get('/data/requests', auth, async (req, res) => {
     const _id = req.user._id
     try {
         // Find all users pending and accepted friend requests
-        const requests = await Request.find({$or: [{sender: _id}, {reciever: _id, declined: false}]})        
+        const requests = await Request.find({$or: [{sender: _id}, {reciever: _id}]})        
             .sort({accepted: 1, updatedAt: -1})
             .limit(req.query.limit)
             .skip(req.query.skip)

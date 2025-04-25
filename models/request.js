@@ -20,11 +20,7 @@ const requestSchema = new mongoose.Schema({
     accepted: {
         type: Boolean,
         default: false
-    },
-    declined: {
-        type: Boolean,
-        default: false
-    },
+    }
 }, {timestamps: true})
 
 // Virtual field for Reccomendation based on request
