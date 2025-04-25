@@ -16,7 +16,7 @@ const FriendRequestButtons = () => {
     // Contexts
     const { request } = useFriendData()
     const { accepted, isSender, reciever } = request
-    const { updateRequest } = useFriendAction()
+    const { acceptRequest, deleteRequest } = useFriendAction()
 
     return (
         <>
@@ -50,8 +50,8 @@ const FriendRequestButtons = () => {
                         {/* ACCEPT/DECLINE BUTTONS IF USER HAS RECIEVED REQUEST */}
                         <p><i className="fa-solid fa-envelope-open"></i> Wants to be friends</p>
                         <ButtonGroup>
-                            <Button onClick={() => updateRequest(true, request._id)} variant='outline-secondary' size='sm' className={appStyles.roundButton}><i className="fa-solid fa-check"></i> Accept</Button>
-                            <Button onClick={() => updateRequest(false, request._id)} variant='outline-secondary' size='sm' className={appStyles.roundButton}><i className="fa-solid fa-xmark"></i> Decline</Button>  
+                            <Button onClick={() => acceptRequest(request._id)} variant='outline-secondary' size='sm' className={appStyles.roundButton}><i className="fa-solid fa-check"></i> Accept</Button>
+                            <Button onClick={() => deleteRequest(request._id)} variant='outline-secondary' size='sm' className={appStyles.roundButton}><i className="fa-solid fa-xmark"></i> Decline</Button>  
                         </ButtonGroup>
                     </>
                   

@@ -25,10 +25,9 @@ export const FriendActionProvider = ({ children }) => {
     }
 
     // Updates the status of the friend request to accepted or declined
-    const updateRequest = async (accepted, id) => {
-        const update = accepted? {accepted: true} : {declined: true}
+    const acceptRequest = async (id) => {
         try {
-            await axiosReq.patch(`/requests/${id}`, update, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
+            await axiosReq.patch(`/requests/${id}`, {accepted: true}, {headers: {'Authorization': `Bearer ${currentUser.token}`}})
             setUpdatedFriends(!updatedFriends)
         } catch (err) {
             console.log(err)
@@ -36,7 +35,7 @@ export const FriendActionProvider = ({ children }) => {
     }
 
     return (
-        <FriendActionContext.Provider value={{updatedFriends, setUpdatedFriends, updateRequest, deleteRequest}}>
+        <FriendActionContext.Provider value={{updatedFriends, setUpdatedFriends, acceptRequest, deleteRequest}}>
             {children}
         </FriendActionContext.Provider>
     )
