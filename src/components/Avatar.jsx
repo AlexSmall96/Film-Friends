@@ -3,7 +3,7 @@ import styles from '../styles/Avatar.module.css'
 import { useCurrentUser } from '../contexts/CurrentUserContext';
 
 /* Customizable profile image component */
-const Avatar = ({src, height=45, square}) => {
+const Avatar = ({src, height=45, square, alt}) => {
 
     // Use currentUser as default image if no src is provided
     const { currentUser } = useCurrentUser()
@@ -14,7 +14,7 @@ const Avatar = ({src, height=45, square}) => {
             src={src || currentUser?.user.image }
             height={height}
             width={height} 
-            alt="avatar" 
+            alt={alt || "avatar"}
         />
     );
   };

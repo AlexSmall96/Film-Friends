@@ -7,6 +7,7 @@ import { CircularProgressbar } from 'react-circular-progressbar';
 import useWindowDimensions from '../../hooks/useWindowDimensions';
 import 'react-circular-progressbar/dist/styles.css';
 import Avatar from '../../components/Avatar';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 
 /*
 Displays a users stats: films watched, favourite directors and favourite genres.
@@ -18,8 +19,8 @@ const PublicProfile = ({profile, filmStats, showStats, similarity, directorCount
     const { isOwner } = useCurrentFilm()
     const { width } = useWindowDimensions()
     const [avatarHeight, setAvatarHeight] = useState(100)
-
-    // Tooltip for similarity score
+    const similarityMessage = `Based on films that you and ${profile.username} have in common, your ratings are ${100*similarity || 0}% similar.`
+    // Tooltip for genre and director counts
     const renderTooltip = (name, value, bool) => (
         <Tooltip id="button-tooltip">
             {bool?
@@ -42,13 +43,14 @@ const PublicProfile = ({profile, filmStats, showStats, similarity, directorCount
         }
     }, [width])
 
+    const history = useHistory()
 
     return (
         <Row className={`${width >= 576? `${appStyles.greyBorder} ${appStyles.greyBackground}` : ''} ${appStyles.bigVerticalMargin}`}>
             {/* PROFILE PICTURE AND USERNAME */}
             <Col md={3} sm={1} xs={2}>
                 {isOwner? 
-                    <a href='/profile'><h4 className={`${appStyles.smallFont} ${appStyles.headingFont}`}>{profile.username}</h4></a>
+                    <a href={''}><h4 onClick={() => history.push('/profile')} className={`${appStyles.smallFont} ${appStyles.headingFont}`}>{profile.username}</h4></a>
                 :
                     <h4 className={`${appStyles.smallFont} ${appStyles.headingFont}`}>{profile.username}</h4>
                 }
@@ -64,9 +66,15 @@ const PublicProfile = ({profile, filmStats, showStats, similarity, directorCount
                                 <CircularProgressbar value={100 * filmStats.watchedCount / filmStats.savedCount} text={`${filmStats.watchedCount} / ${filmStats.savedCount}`} />
                             </div>
                         :
+                        <OverlayTrigger
+                            placement="top"
+                            delay={{ show: 250, hide: 400 }}
+                            overlay={<Tooltip id="button-tooltip-2">{similarityMessage}</Tooltip>}
+                        >
                             <div className={styles.progressBarParent}>
                                 <CircularProgressbar value={100 * similarity} text={`${100 * similarity}%`} />
-                            </div>}
+                            </div>
+                        </OverlayTrigger>}
                     </Col>
                     {/* FAVOURITE GENRES */}
                     <Col md={3} sm={4} xs={12}>
@@ -90,7 +98,7 @@ const PublicProfile = ({profile, filmStats, showStats, similarity, directorCount
                                         ))}
                                     </Stack>
                             :
-                                width >= 576? <Avatar src='https://res.cloudinary.com/dojzptdbc/image/upload/v1744639090/question_ydkaop.png' height={avatarHeight} />:''}
+                                width >= 576? <Avatar src='https://res.cloudinary.com/dojzptdbc/image/upload/v1744639090/question_ydkaop.png' height={avatarHeight} alt='question mark' />:''}
                     </Col>
                     {/* FAVOURITE DIRECTORS */}
                     <Col md={3} sm={4} xs={12}>
@@ -114,7 +122,7 @@ const PublicProfile = ({profile, filmStats, showStats, similarity, directorCount
                                     ))}
                                 </Stack>
                             :
-                                width >= 576?<Avatar src='https://res.cloudinary.com/dojzptdbc/image/upload/v1744639090/question_ydkaop.png' height={avatarHeight} />:''}
+                                width >= 576?<Avatar src='https://res.cloudinary.com/dojzptdbc/image/upload/v1744639090/question_ydkaop.png' height={avatarHeight} alt='question mark' />:''}
                     </Col>            
                 </>
             :''
