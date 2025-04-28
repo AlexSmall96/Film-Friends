@@ -29,7 +29,7 @@ const IconRating = ({index, value}) => {
         >
             <Image width={25} src={data[index].src} alt={data[index].name} />
         </OverlayTrigger>
-        <span className={appStyles.smallFont}>{`${value}`} </span>       
+        <span className={`${appStyles.smallFont} ${appStyles.smallLeftHorizMargin}`}>{`${value}`} </span>       
         </>
     )
 }

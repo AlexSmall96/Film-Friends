@@ -22,7 +22,7 @@ const Filters = ({ filter, setFilter, sort, setSort }) => {
                             <Dropdown.Item onClick={!filter.public ? () => setFilter({public: true, watched: filter.watched}): null}>Public</Dropdown.Item>
                             <Dropdown.Item onClick={filter.public ? () => setFilter({public: false, watched: filter.watched}): null}>Private</Dropdown.Item>
                         </DropdownButton>
-                        </ButtonGroup>
+                    </ButtonGroup>
                 ):(
                     `${username}'s Watchlist`
                 )}            

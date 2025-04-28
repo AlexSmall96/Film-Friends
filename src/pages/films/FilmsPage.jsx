@@ -30,7 +30,7 @@ const FilmsPage = () => {
     const { width } = useWindowDimensions()
     // Contexts
     const { currentFilmIds, setCurrentFilmIds, setViewingData, omdbData, setOmdbData, isOwner, setIsOwner, username, setUsername, hasDeleted } = useCurrentFilm()
-    const { updated } = useSaveFilmContext()
+    const { updated, showMainFilm, setShowMainFilm } = useSaveFilmContext()
     const { updatedFriends } = useFriendAction()
     // Initialise variables
     const  smallScreen = width <= 767
@@ -50,7 +50,6 @@ const FilmsPage = () => {
     const [currentUsersFilmIds, setCurrentUsersFilmIds] = useState([])
     const [requestIds, setRequestIds] = useState([])
     const [requests, setRequests] = useState([])
-    const [showMainFilm, setShowMainFilm] = useState(false)
     
     // Functions that retrieve or update film list when film data is changed
     useEffect(() => {
