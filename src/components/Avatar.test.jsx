@@ -4,32 +4,17 @@
 import Avatar from './Avatar'
 import React from 'react';
 import '@testing-library/jest-dom/vitest';
-import { screen, render } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { test, expect} from 'vitest';
 import setupTests from '../test-utils/setupTests';
-import { CurrentUserContext } from '../contexts/CurrentUserContext';
+import renderWithNullContext from '../test-utils/renderWithNullContext';
 
 setupTests()
-
-// Render component with CurrentUserContext
-const renderWithContext = (component, currentUser) => {
-    return(
-        render(
-            <CurrentUserContext.Provider value={{currentUser}}>
-                {component}
-            </CurrentUserContext.Provider>
-        )
-    )
-}
-
-// Define currentUser data
-const currentUserImage = 'https://res.cloudinary.com/dojzptdbc/image/upload/v1744368051/defaultProfile_hizptb.png'
-const currentUser = {user: {username: 'user1', _id: 'user1id', image: currentUserImage}}
 
 test('When rendered with all props, the image should have correct height, width and source.', () => {
     const src = 'https://res.cloudinary.com/dojzptdbc/image/upload/v1744633674/defaultProfile_fjp9f4.png'
     // Render component
-    renderWithContext(<Avatar src={src} height={100} />, null)
+    renderWithNullContext(<Avatar />, {src, height: 100})
     // Find image
     const image = screen.getByRole('img', {name: 'avatar'})
     expect(image).toBeInTheDocument()
@@ -41,7 +26,7 @@ test('When rendered with all props, the image should have correct height, width 
 
 test('When rendered with no props, the image should have default source and height.', () => {
     // Render component
-    renderWithContext(<Avatar />, currentUser)
+    renderWithNullContext(<Avatar />)
     // Find image
     const image = screen.getByRole('img', {name: 'avatar'})
     expect(image).toBeInTheDocument()
@@ -53,7 +38,7 @@ test('When rendered with no props, the image should have default source and heig
 
 test('When rendered with square prop as true, the image should have class name squareAvatar and not avatar.', () => {
     // Render component with square as true
-    renderWithContext(<Avatar square />, currentUser)
+    renderWithNullContext(<Avatar />, {square: true})
     const image = screen.getByRole('img', {name: 'avatar'})
     expect(image).toBeInTheDocument()
     expect(image).not.toHaveClass('_avatar_a0aacb')
@@ -62,7 +47,7 @@ test('When rendered with square prop as true, the image should have class name s
 
 test('When rendered with square prop as false, the image should have class name avatar and not squareAvatar', () => {
     // Render component with square as false
-    renderWithContext(<Avatar />, currentUser)
+    renderWithNullContext(<Avatar />, {square: false})
     const image = screen.getByRole('img', {name: 'avatar'})
     expect(image).toBeInTheDocument()
     expect(image).not.toHaveClass('_squareAvatar_a0aacb')
