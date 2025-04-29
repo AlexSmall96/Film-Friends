@@ -24,7 +24,7 @@ const renderWithContext = (
     path, // Initial path for history,
     currentFilmData, // Data to pass into currentFilm context
     friendData, // Data to pass into FriendDataProvider
-    currentUser={user: {username: 'user1', _id: 'user1id', image: currentUserImage}}, // default currentUser value
+    currentUser={user: {username: 'user1', _id: 'user1id', image: currentUserImage, email: 'user1@email.com'}}, // default currentUser value
 ) => {
 
     // Desctructure film preview data

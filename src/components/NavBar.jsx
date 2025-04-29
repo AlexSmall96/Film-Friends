@@ -53,7 +53,7 @@ const NavBar = () => {
             </Nav.Link>
         :''}
         <Nav.Link href={`/films/${currentUser?.user._id}`} onClick={handleClick}>
-                <i className="fa-solid fa-clapperboard"></i> My Films
+            <i className="fa-solid fa-clapperboard"></i> My Films
         </Nav.Link>
         <Nav.Link href='/friends' onClick={handleClick}>
             <i className="fa-solid fa-users"></i> Friends
@@ -68,7 +68,7 @@ const NavBar = () => {
                     <i className="fa-solid fa-user"></i> Profile
                 </Nav.Link>
                 <Nav.Link href={`/account/security`} onClick={handleClick}>
-                    <i className="fa-solid fa-shield-halved"></i> Acount Security
+                    <i className="fa-solid fa-shield-halved"></i> Account Security
                 </Nav.Link>
                 <Nav.Link href='/' onClick={handleLogout}  >
                     <i className="fa-solid fa-right-from-bracket"></i> Logout
@@ -83,7 +83,7 @@ const NavBar = () => {
                     <i className="fa-solid fa-user"></i> Profile
                 </NavDropdown.Item>
                 <NavDropdown.Item href={`/account/security`}>
-                    <i className="fa-solid fa-shield-halved"></i> Acount Security
+                    <i className="fa-solid fa-shield-halved"></i> Account Security
                 </NavDropdown.Item>
                 <NavDropdown.Item href='/' onClick={handleLogout}>
                     <i className="fa-solid fa-right-from-bracket"></i> Logout
