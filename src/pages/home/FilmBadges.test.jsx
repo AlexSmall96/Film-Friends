@@ -8,7 +8,7 @@ import { act } from '@testing-library/react';
 import { test, expect} from 'vitest';
 import setupTests from '../../test-utils/setupTests';
 import { vi } from 'vitest';
-import renderWithNullContext from '../../test-utils/renderWithNullContext';
+import renderWithContext from '../../test-utils/renderWithContext';
 
 setupTests()
 
@@ -17,7 +17,8 @@ const films = ['Spider-Man 2', 'Love Actually', 'Memento', 'Inception']
 
 test('Each film should appear once in badges and once in hidden badges.', () => {
     // Render component
-    const { container } = renderWithNullContext(<FilmBadges />, {films})
+    const { component } = renderWithContext(<FilmBadges />, null, {films})
+    const container = component.container
     // Get elements with class name visible badge
     const visibleBadges = container.getElementsByClassName('_badge_da902b')
     // Should have length 4
@@ -40,7 +41,8 @@ test('Each film should appear once in badges and once in hidden badges.', () => 
 
 test('When screen width is changed, badges should dissapear if their right border is cut off', async () => {
     // Render component
-    const { container } = renderWithNullContext(<FilmBadges />, {films})
+    const { component } = renderWithContext(<FilmBadges />, null, {films})
+    const container = component.container
     // Get both badges for each film (hidden and visible)
     const hiddenBadgeElements = container.getElementsByClassName('hidden-badge')
     const hiddenBadges = Array.from(hiddenBadgeElements)

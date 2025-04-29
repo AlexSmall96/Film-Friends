@@ -7,7 +7,7 @@ import '@testing-library/jest-dom/vitest';
 import { act, waitFor } from '@testing-library/react';
 import { test, expect, describe } from 'vitest';
 import setupTests from '../../test-utils/setupTests';
-import renderWithNullContext from '../../test-utils/renderWithNullContext';
+import renderWithContext from '../../test-utils/renderWithContext';
 
 setupTests()
 
@@ -29,7 +29,8 @@ for (let i=0; i<72; i++){
 describe('CORRECT ITEM IS ACTIVE', () => {
     test('The 1st carousel item should be active, and the 2nd and 3rd should not be active.', async () => {
         // Render component
-        const { container } = renderWithNullContext(<FilmPosterCarousel />, {films})
+        const { component } = renderWithContext(<FilmPosterCarousel />, null, {films})
+        const container = component.container
         // Should be 3 carousel items
         const items = container.getElementsByClassName('carousel-item')
         expect(items).toHaveLength(3)
@@ -44,7 +45,8 @@ describe('CORRECT ITEM IS ACTIVE', () => {
 describe('FILMS ARE DISTRIBUTED CORRECTLY', () => {
     test('For large screens, films are distributed correctly across the three carousel items.', () => {
         // Render component
-        const { container } = renderWithNullContext(<FilmPosterCarousel />, {films})
+        const { component } = renderWithContext(<FilmPosterCarousel />, null, {films})
+        const container = component.container
         // Ensure width is set for large screen: 1000
         act(() => {
             global.innerWidth = 1000;
@@ -72,7 +74,8 @@ describe('FILMS ARE DISTRIBUTED CORRECTLY', () => {
     
     test('For small screens, films are distributed correctly across the three carousel items.', () => {
         // Render component
-        const { container } = renderWithNullContext(<FilmPosterCarousel />, {films})
+        const { component } = renderWithContext(<FilmPosterCarousel />, null, {films})
+        const container = component.container
         // Ensure width is set for small screen: 500
         act(() => {
             global.innerWidth = 500;

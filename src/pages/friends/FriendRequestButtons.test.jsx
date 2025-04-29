@@ -7,8 +7,7 @@ import '@testing-library/jest-dom/vitest';
 import { screen } from '@testing-library/react';
 import { test, expect, describe} from 'vitest';
 import setupTests from '../../test-utils/setupTests';
-import { FriendDataProvider } from '../../contexts/FriendDataContext';
-import renderWithNullContext from '../../test-utils/renderWithNullContext';
+import renderWithContext from '../../test-utils/renderWithContext';
 
 setupTests()
 
@@ -23,12 +22,7 @@ describe('RENDERING CORRECT BUTTONS AND TEXT WHEN CURRENT USER IS SENDER', () =>
             declined: false,
             isSender: true
         }   
-        // Render component
-        renderWithNullContext(
-            <FriendDataProvider>
-                <FriendRequestButtons  />
-            </FriendDataProvider>, {request} 
-        )
+        renderWithContext(<FriendRequestButtons />, null, null, null, null, {request})
         // Find text saying 'Friends'
         const friendsText = screen.getByText('Friends')
         expect(friendsText).toBeInTheDocument()
@@ -49,11 +43,7 @@ describe('RENDERING CORRECT BUTTONS AND TEXT WHEN CURRENT USER IS SENDER', () =>
             isSender: true
         }         
         // Render component
-        renderWithNullContext(
-            <FriendDataProvider>
-                <FriendRequestButtons  />
-            </FriendDataProvider>, {request} 
-        )
+        renderWithContext(<FriendRequestButtons />, null, null, null, null, {request})
         // Find text saying 'Friend Request Pending'
         const pendingText = screen.getByText('Friend request pending')
         expect(pendingText).toBeInTheDocument()
@@ -78,11 +68,7 @@ describe('RENDERING CORRECT BUTTONS AND TEXT WHEN CURRENT USER IS RECIEVER', () 
             isSender: false
         }  
         // Render component
-        renderWithNullContext(
-            <FriendDataProvider>
-                <FriendRequestButtons  />
-            </FriendDataProvider>, {request} 
-        )
+        renderWithContext(<FriendRequestButtons />, null, null, null, null, {request})
         // Accept and decline buttons should be present
         const acceptBtn = screen.getByRole('button', {name: 'Accept'})
         expect(acceptBtn).toBeInTheDocument()

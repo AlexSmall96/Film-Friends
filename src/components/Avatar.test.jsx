@@ -7,14 +7,15 @@ import '@testing-library/jest-dom/vitest';
 import { screen } from '@testing-library/react';
 import { test, expect} from 'vitest';
 import setupTests from '../test-utils/setupTests';
-import renderWithNullContext from '../test-utils/renderWithNullContext';
+import renderWithContext from '../test-utils/renderWithContext';
 
 setupTests()
 
 test('When rendered with all props, the image should have correct height, width and source.', () => {
     const src = 'https://res.cloudinary.com/dojzptdbc/image/upload/v1744633674/defaultProfile_fjp9f4.png'
+    const props = {src, height: 100}
     // Render component
-    renderWithNullContext(<Avatar />, {src, height: 100})
+    renderWithContext(<Avatar />, null, props)
     // Find image
     const image = screen.getByRole('img', {name: 'avatar'})
     expect(image).toBeInTheDocument()
@@ -26,7 +27,7 @@ test('When rendered with all props, the image should have correct height, width 
 
 test('When rendered with no props, the image should have default source and height.', () => {
     // Render component
-    renderWithNullContext(<Avatar />)
+    renderWithContext(<Avatar />)
     // Find image
     const image = screen.getByRole('img', {name: 'avatar'})
     expect(image).toBeInTheDocument()
@@ -38,7 +39,8 @@ test('When rendered with no props, the image should have default source and heig
 
 test('When rendered with square prop as true, the image should have class name squareAvatar and not avatar.', () => {
     // Render component with square as true
-    renderWithNullContext(<Avatar />, {square: true})
+    const props = {square: true}
+    renderWithContext(<Avatar />, null, props)
     const image = screen.getByRole('img', {name: 'avatar'})
     expect(image).toBeInTheDocument()
     expect(image).not.toHaveClass('_avatar_a0aacb')
@@ -47,7 +49,7 @@ test('When rendered with square prop as true, the image should have class name s
 
 test('When rendered with square prop as false, the image should have class name avatar and not squareAvatar', () => {
     // Render component with square as false
-    renderWithNullContext(<Avatar />, {square: false})
+    renderWithContext(<Avatar />, {square: false})
     const image = screen.getByRole('img', {name: 'avatar'})
     expect(image).toBeInTheDocument()
     expect(image).not.toHaveClass('_squareAvatar_a0aacb')

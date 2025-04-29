@@ -8,7 +8,7 @@ import { test, expect, describe} from 'vitest';
 import setupTests from '../test-utils/setupTests';
 import DeleteModal from './DeleteModal';
 import userEvent from '@testing-library/user-event';
-import renderWithNullContext from '../test-utils/renderWithNullContext';
+import renderWithContext from '../test-utils/renderWithContext';
 
 setupTests()
 
@@ -19,7 +19,7 @@ const message = 'Are you sure you want to remove film 1 from your reccomendation
 describe('RENDERING CORRECT BUTTONS AND TEXT', () => {
     test('Only one button with text remove should be present', async () => {
         // Render component
-        renderWithNullContext(<DeleteModal />, {message})
+        renderWithContext(<DeleteModal />, null, {message})
         // Only 1 button should be present
         const buttons = screen.getAllByRole('button')
         expect(buttons).toHaveLength(1)
@@ -32,7 +32,7 @@ describe('RENDERING CORRECT BUTTONS AND TEXT', () => {
     })
     test('Clicking remove button should display modal text with yes and no buttons', async () => {
         // Render component
-        renderWithNullContext(<DeleteModal />, {message})
+        renderWithContext(<DeleteModal />, null, {message})
         // Find and click button
         const button = screen.getAllByRole('button')[0]
         await user.click(button)
@@ -52,7 +52,7 @@ describe('RENDERING CORRECT BUTTONS AND TEXT', () => {
 describe('CLICKING MODAL BUTTONS', () => {
     test('Clicking no button hides modal', async () => {
         // Render component
-        renderWithNullContext(<DeleteModal />, {message})
+        renderWithContext(<DeleteModal />, {message})
         // Find and click show button
         const button = screen.getAllByRole('button')[0]
         await user.click(button) 
@@ -67,7 +67,7 @@ describe('CLICKING MODAL BUTTONS', () => {
     })
     test('Clicking yes button changes button text to "deleting..."', async () => {
         // Render component
-        renderWithNullContext(<DeleteModal />, {message})
+        renderWithContext(<DeleteModal />, {message})
         // Find and click show button
         const button = screen.getAllByRole('button')[0]
         await user.click(button) 

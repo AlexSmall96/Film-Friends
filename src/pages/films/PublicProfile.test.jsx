@@ -4,35 +4,14 @@
 import PublicProfile from './PublicProfile'
 import React from 'react';
 import '@testing-library/jest-dom/vitest';
-import { screen, render, waitFor, act } from '@testing-library/react';
+import { screen, waitFor, act } from '@testing-library/react';
 import { test, expect, describe} from 'vitest';
 import setupTests from '../../test-utils/setupTests';
 import userEvent from '@testing-library/user-event'
-import { CurrentUserContext } from '../../contexts/CurrentUserContext';
-import { CurrentFilmContext } from '../../contexts/CurrentFilmContext';
-import { createMemoryHistory } from 'history';
-import { Router } from 'react-router-dom';
-import { Route } from 'react-router-dom';
+import renderWithContext from '../../test-utils/renderWithContext';
 
-// Render component with CurrentUserContext, CurrentFilmContext and router
-const renderWithContext = (component, currentUser, isOwner, props) => {
-    const history = createMemoryHistory({ initialEntries: [`/films/user1id`] });
-    return(
-        {component:render(
-            <CurrentFilmContext.Provider value={{isOwner}}>
-                <CurrentUserContext.Provider value={{currentUser}}>
-                    <Router history={history}>
-                        <Route path={`/films/:id`} render={() => React.cloneElement(component, props)} />
-                    </Router>
-                </CurrentUserContext.Provider>
-            </CurrentFilmContext.Provider>
-        ), history}
-    )
-}
-
-// Define currentUser data
-const currentUserImage = 'https://res.cloudinary.com/dojzptdbc/image/upload/v1744368051/defaultProfile_hizptb.png'
-const currentUser = {user: {username: 'user1', _id: 'user1id', image: currentUserImage}}
+// Define profile data
+const profileImage = 'https://res.cloudinary.com/dojzptdbc/image/upload/v1744368051/defaultProfile_hizptb.png'
 
 const user = userEvent.setup()
 
@@ -41,18 +20,22 @@ setupTests()
 describe('RENDERING USERNAME AND IMAGE', () => {
     test('Username and profile image should be rendered.', () => {
         // render component
-        renderWithContext(<PublicProfile profile={currentUser.user} />, currentUser, false)
+        const props = {profile: {username: 'user1', _id: 'user1id', image:profileImage}}
+        renderWithContext(<PublicProfile />, null, props)
         // image should be present
         const image = screen.getByRole('img', {name: 'avatar'})
         expect(image).toBeInTheDocument()
-        expect(image.src).toBe(currentUserImage)
+        expect(image.src).toBe(profileImage)
         // username should be present
         const username = screen.getByRole('heading', {name: 'user1'})
         expect(username).toBeInTheDocument()
     })
     test('If the current user is owner of public profile, clicking username should redirect user to the full profile page.', async () => {
         // render component
-        const { history } = renderWithContext(<PublicProfile profile={currentUser.user} />, currentUser, true)
+        const props = {profile: {username: 'user1', _id: 'user1id', image:profileImage}}
+        const currentFilmData = {isOwner: true}
+        const path = '/films/user1id'
+        const { history } = renderWithContext(<PublicProfile />, null, props, path, currentFilmData)
         expect(history.location.pathname).toBe('/films/user1id')
         const username = screen.getByRole('heading', {username: 'user1'})
         await user.click(username)
@@ -67,13 +50,12 @@ describe('RENDERING WATCHED PROGRESS BAR AND SIMILARITY SCORE', () => {
             filmStats: {savedCount: 8, watchedCount: 4},
             showStats: true,
             genreCounts: [['Sci-Fi', 4], ['Action', 3], ['Adventure', 3]],
-            directorCounts: [['Sam Raimi', 4], ['J.J. Abrams', 4], ['George Lucas', 2]]
+            directorCounts: [['Sam Raimi', 4], ['J.J. Abrams', 4], ['George Lucas', 2]],
+            profile: {username: 'user1', _id: 'user1id', image:profileImage}
         }
+        const currentFilmData = {isOwner: true}
         // Render component
-        renderWithContext(
-            <PublicProfile profile={currentUser.user} />, 
-            currentUser, 
-            true, props)
+        renderWithContext(<PublicProfile />, null, props, null, currentFilmData)
         // Find watched header
         const watchedHeading = screen.getByRole('heading', {name: 'Watched'})
         expect(watchedHeading).toBeInTheDocument()
@@ -87,13 +69,12 @@ describe('RENDERING WATCHED PROGRESS BAR AND SIMILARITY SCORE', () => {
             similarity: 0.6,
             showStats: true,
             genreCounts: [['Sci-Fi', 4], ['Action', 3], ['Adventure', 3]],
-            directorCounts: [['Sam Raimi', 4], ['J.J. Abrams', 4], ['George Lucas', 2]]
+            directorCounts: [['Sam Raimi', 4], ['J.J. Abrams', 4], ['George Lucas', 2]],
+            profile: {username: 'user1', _id: 'user1id', image:profileImage}
         } 
+        const currentFilmData = {isOwner: false}
         // Render component
-        renderWithContext(
-            <PublicProfile profile={currentUser.user} />, 
-            currentUser, 
-            false, props)
+        renderWithContext(<PublicProfile />, null, props, null, currentFilmData)
         // Find similarity header
         const similarityHeading = screen.getByRole('heading', {name: 'Similarity'})
         expect(similarityHeading).toBeInTheDocument()
@@ -110,14 +91,12 @@ describe('RENDERING FAVOURITE GENRES AND DIRECTORS PROGRESS BARS', () => {
             similarity: 0.6,
             showStats: true,
             genreCounts: [['Sci-Fi', 4], ['Action', 3], ['Adventure', 3]],
-            directorCounts: [['Sam Raimi', 4], ['J.J. Abrams', 4], ['George Lucas', 2]]
+            directorCounts: [['Sam Raimi', 4], ['J.J. Abrams', 4], ['George Lucas', 2]],
+            profile: {username: 'user1', _id: 'user1id', image:profileImage}
         } 
+        const currentFilmData = {isOwner: false}
         // Render component
-        const { component } = renderWithContext(
-            <PublicProfile profile={currentUser.user} />, 
-            currentUser, 
-            false, props
-        )
+        const { component } = renderWithContext(<PublicProfile />, null, props, null, currentFilmData)
         // Set width
         act(() => {
             global.innerWidth = 1000;
@@ -159,20 +138,17 @@ describe('RENDERING FAVOURITE GENRES AND DIRECTORS PROGRESS BARS', () => {
             similarity: 0.6,
             showStats: true,
             genreCounts: [['Sci-Fi', 4], ['Action', 3], ['Adventure', 3]],
-            directorCounts: [['Sam Raimi', 4], ['J.J. Abrams', 4], ['George Lucas', 2]]
+            directorCounts: [['Sam Raimi', 4], ['J.J. Abrams', 4], ['George Lucas', 2]],
+            profile: {username: 'user1', _id: 'user1id', image:profileImage}
         }        
+        const currentFilmData = {isOwner: false}
         // Render component
-        const { component } = renderWithContext(
-            <PublicProfile profile={currentUser.user} />, 
-            currentUser, 
-            false, props
-        )
+        const { component } = renderWithContext(<PublicProfile />, null, props, null, currentFilmData)
         // Set width
         act(() => {
             global.innerWidth = 500;
             global.dispatchEvent(new Event('resize'));
         });
-        screen.debug()
         // Get all badges
         const badges = component.container.getElementsByClassName('badge')
         // Should be 6 total
@@ -204,14 +180,12 @@ describe('RENDERING FAVOURITE GENRES AND DIRECTORS PROGRESS BARS', () => {
             filmStats: {savedCount: 8, watchedCount: 0},
             showStats: true,
             genreCounts: [],
-            directorCounts: []
+            directorCounts: [],
+            profile: {username: 'user1', _id: 'user1id', image:profileImage}
         }        
+        const currentFilmData = {isOwner: false}
         // Render component
-        const {component} = renderWithContext(
-            <PublicProfile profile={currentUser.user} />, 
-            currentUser, 
-            true, props
-        )
+        const { component } = renderWithContext(<PublicProfile />, null, props, null, currentFilmData)
         // Set width
         act(() => {
             global.innerWidth = 1000;
@@ -246,14 +220,12 @@ describe('HOVERING OVER ELEMENTS DISPLAYS TOOLTIPS', () => {
             similarity: 0.6,
             showStats: true,
             genreCounts: [['Sci-Fi', 4], ['Action', 3], ['Adventure', 3]],
-            directorCounts: [['Sam Raimi', 4], ['J.J. Abrams', 4], ['George Lucas', 2]]
+            directorCounts: [['Sam Raimi', 4], ['J.J. Abrams', 4], ['George Lucas', 2]],
+            profile: {username: 'user1', _id: 'user1id', image:profileImage}
         } 
         // Render component
-        renderWithContext(
-            <PublicProfile profile={currentUser.user} />, 
-            currentUser, 
-            false, props
-        )      
+        const currentFilmData = {isOwner: false}
+        renderWithContext(<PublicProfile />, null, props, null, currentFilmData)      
         // Find similarity text saying 60%
         const similarityCount = screen.getByText('60%')
         expect(similarityCount).toBeInTheDocument()    
@@ -287,17 +259,15 @@ describe('HOVERING OVER ELEMENTS DISPLAYS TOOLTIPS', () => {
     test('Hovering over progress bars displays correct message based on genre or director', () => {
         // Define sample data to pass in to component
         const props = {
-            filmStats: {savedCount: 8, watchedCount: 4},
+            similarity: 0.6,
             showStats: true,
             genreCounts: [['Sci-Fi', 4], ['Action', 3], ['Adventure', 3]],
-            directorCounts: [['Sam Raimi', 4], ['J.J. Abrams', 4], ['George Lucas', 2]]
+            directorCounts: [['Sam Raimi', 4], ['J.J. Abrams', 4], ['George Lucas', 2]],
+            profile: {username: 'user1', _id: 'user1id', image:profileImage}
         } 
         // Render component
-        renderWithContext(
-            <PublicProfile profile={currentUser.user} />, 
-            currentUser, 
-            true, props
-        )    
+        const currentFilmData = {isOwner: false}
+        renderWithContext(<PublicProfile />, null, props, null, currentFilmData)   
         // Set width to ensure progress bar appears
         act(() => {
             global.innerWidth = 1000;

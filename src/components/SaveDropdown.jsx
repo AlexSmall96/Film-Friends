@@ -66,7 +66,7 @@ const SaveDropown = () => {
                 </>
             }
             {/* IF USED AS RECCOMENDATION ALSO INCLUDE DELETE MODAL */}  
-            {message || currentReccomendation.message ?
+            {message || currentReccomendation?.message ?
                 <FriendDataProvider>
                     <DeleteModal 
                         message={`Are you sure you want to remove ${film?.Title || omdbData.Title } from your reccomendations?`}
