@@ -22,7 +22,8 @@ describe('RENDERING CORRECT BUTTONS AND TEXT WHEN CURRENT USER IS SENDER', () =>
             declined: false,
             isSender: true
         }   
-        renderWithContext(<FriendRequestButtons />, null, null, null, null, {request})
+        const friendData = {request}
+        renderWithContext(<FriendRequestButtons />, {friendData})
         // Find text saying 'Friends'
         const friendsText = screen.getByText('Friends')
         expect(friendsText).toBeInTheDocument()
@@ -41,9 +42,10 @@ describe('RENDERING CORRECT BUTTONS AND TEXT WHEN CURRENT USER IS SENDER', () =>
             accepted: false,
             declined: false,
             isSender: true
-        }         
+        }     
+        const friendData = {request}    
         // Render component
-        renderWithContext(<FriendRequestButtons />, null, null, null, null, {request})
+        renderWithContext(<FriendRequestButtons />, {friendData})
         // Find text saying 'Friend Request Pending'
         const pendingText = screen.getByText('Friend request pending')
         expect(pendingText).toBeInTheDocument()
@@ -67,8 +69,9 @@ describe('RENDERING CORRECT BUTTONS AND TEXT WHEN CURRENT USER IS RECIEVER', () 
             declined: false,
             isSender: false
         }  
+        const friendData = {request}
         // Render component
-        renderWithContext(<FriendRequestButtons />, null, null, null, null, {request})
+        renderWithContext(<FriendRequestButtons />, {friendData})
         // Accept and decline buttons should be present
         const acceptBtn = screen.getByRole('button', {name: 'Accept'})
         expect(acceptBtn).toBeInTheDocument()

@@ -8,7 +8,7 @@ import { useSaveFilmContext } from '../contexts/SaveFilmContext';
 import { useCurrentFilm } from '../contexts/CurrentFilmContext';
 
 // Used as confirmation when user requests to delete reccomendation or friend
-const DeleteModal = ({message}) => {
+const DeleteModal = ({confirmMessage}) => {
     // Contexts
     const { deleteRequest } = useFriendAction()
     const { request  } = useFriendData()
@@ -29,7 +29,7 @@ const DeleteModal = ({message}) => {
             {/* MODAL CONTENT */}
             <Modal show={show} onHide={() => setShow(false)}>
                 <Modal.Body>
-                    {message}
+                    {confirmMessage}
                 </Modal.Body>
                 {/* MODAL BUTTONS */}
                 <Modal.Footer>

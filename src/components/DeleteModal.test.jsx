@@ -14,12 +14,13 @@ setupTests()
 
 const user = userEvent.setup()
 
-const message = 'Are you sure you want to remove film 1 from your reccomendations?'
+const confirmMessage = 'Are you sure you want to remove film 1 from your reccomendations?'
+const props = { confirmMessage }
 
 describe('RENDERING CORRECT BUTTONS AND TEXT', () => {
     test('Only one button with text remove should be present', async () => {
         // Render component
-        renderWithContext(<DeleteModal />, null, {message})
+        renderWithContext(<DeleteModal />, {props})
         // Only 1 button should be present
         const buttons = screen.getAllByRole('button')
         expect(buttons).toHaveLength(1)
@@ -27,19 +28,19 @@ describe('RENDERING CORRECT BUTTONS AND TEXT', () => {
         // Modal and message should not be present
         const modal = screen.queryByRole('dialog')
         expect(modal).not.toBeInTheDocument()
-        const modalMessage = screen.queryByText(message)
+        const modalMessage = screen.queryByText(confirmMessage)
         expect(modalMessage).not.toBeInTheDocument()
     })
     test('Clicking remove button should display modal text with yes and no buttons', async () => {
         // Render component
-        renderWithContext(<DeleteModal />, null, {message})
+        renderWithContext(<DeleteModal />, {props})
         // Find and click button
         const button = screen.getAllByRole('button')[0]
         await user.click(button)
         // Modal and message should now be present
         const modal = screen.getByRole('dialog')
         expect(modal).toBeInTheDocument()
-        const modalMessage = screen.getByText(message)
+        const modalMessage = screen.getByText(confirmMessage)
         expect(modalMessage).toBeInTheDocument()
         // Yes and no buttons should be present
         const yesButton = screen.getByRole('button', {name: 'Yes'})
@@ -52,7 +53,7 @@ describe('RENDERING CORRECT BUTTONS AND TEXT', () => {
 describe('CLICKING MODAL BUTTONS', () => {
     test('Clicking no button hides modal', async () => {
         // Render component
-        renderWithContext(<DeleteModal />, {message})
+        renderWithContext(<DeleteModal />, {props})
         // Find and click show button
         const button = screen.getAllByRole('button')[0]
         await user.click(button) 
@@ -62,12 +63,12 @@ describe('CLICKING MODAL BUTTONS', () => {
         // Modal and message should not be present
         const modal = screen.queryByRole('dialog')
         expect(modal).not.toBeInTheDocument()
-        const modalMessage = screen.queryByText(message)
+        const modalMessage = screen.queryByText(confirmMessage)
         expect(modalMessage).not.toBeInTheDocument()
     })
     test('Clicking yes button changes button text to "deleting..."', async () => {
         // Render component
-        renderWithContext(<DeleteModal />, {message})
+        renderWithContext(<DeleteModal />, {props})
         // Find and click show button
         const button = screen.getAllByRole('button')[0]
         await user.click(button) 

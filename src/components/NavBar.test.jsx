@@ -29,7 +29,9 @@ const user = userEvent.setup()
 describe('RENDERING CORRECT ICONS', () => {
     test('When no current user is provided, only logo, login and sign up links should be displayed.', () => {
         // Render component
-        renderWithContext(<NavBar />, null, null, '/', null, null, null)
+        const path = '/'
+        const currentUser = null
+        renderWithContext(<NavBar />, {path, currentUser})
         // Assert login and sign up links are present
         const login = screen.getByRole('link', {name: 'Login'})
         expect(login).toBeInTheDocument()
@@ -50,7 +52,8 @@ describe('RENDERING CORRECT ICONS', () => {
     })
     test('When current user is provided, only logo and logged in icons should be displayed.', async () => {
         // Render component
-        renderWithContext(<NavBar />, null, null, '/', null, null)    
+        const path = '/'
+        renderWithContext(<NavBar />, {path})
         // Logo should be present (name should be text combined with image alt text)
         const logo = screen.getByRole('heading', {name: 'FILM A bag of popcorn FRIENDS'})
         expect(logo).toBeInTheDocument() 

@@ -41,7 +41,7 @@ const FriendRequestButtons = () => {
                                 <ShareModal /> 
                             : ''}
                             <FilmPreviewProvider>
-                                <DeleteModal message={`Are you sure you want to remove ${reciever.username} as a friend?`} />
+                                <DeleteModal confirmMessage={`Are you sure you want to remove ${reciever.username} as a friend?`} />
                             </FilmPreviewProvider>
                         </ButtonGroup>
                     </>

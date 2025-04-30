@@ -17,21 +17,20 @@ import { createMemoryHistory } from 'history';
 // If an initial path is supplied, also returns a history variable to keep track of url
 const currentUserImage = 'https://res.cloudinary.com/dojzptdbc/image/upload/v1744368051/defaultProfile_hizptb.png'
 
-const renderWithContext = (
-    component, // component to render
+const renderWithContext = (component, {
     filmPreviewData, // data to pass into FilmPreviewProvider
     props, // props to pass into component
     path, // Initial path for history,
     currentFilmData, // Data to pass into currentFilm context
     friendData, // Data to pass into FriendDataProvider
-    currentUser={user: {username: 'user1', _id: 'user1id', image: currentUserImage, email: 'user1@email.com'}}, // default currentUser value
-) => {
+    currentUser={user: {username: 'user1', _id: 'user1id', image: currentUserImage, email: 'user1@email.com'}, token: 'user1token'}, // default currentUser value
+}={}) => {
 
     // Desctructure film preview data
     const { message, film, savedToWatchlist } = filmPreviewData || {}
     
     // Destructure currentFilm data
-    const { isOwner } = currentFilmData || {}
+    const { isOwner, username } = currentFilmData || {}
 
     // Destructure friendData
     const { request } = friendData || {}
@@ -42,7 +41,7 @@ const renderWithContext = (
         {component: render(
             <CurrentUserContext.Provider value={{currentUser}}>
                 <RecoveryDataContext.Provider value={{}}>
-                    <CurrentFilmContext.Provider value={{setCurrentFilmIds: () => {}, isOwner}}>
+                    <CurrentFilmContext.Provider value={{setCurrentFilmIds: () => {}, isOwner, username}}>
                         <FriendActionContext.Provider value={{deleteRequest: () => {}}}>
                             <SaveFilmContext.Provider value={{deleteReccomendation: () => {}}}>
                                 <FilmSearchContext.Provider value={{}}>

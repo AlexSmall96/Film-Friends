@@ -14,10 +14,11 @@ setupTests()
 
 // Define sample data to pass into component
 const films = ['Spider-Man 2', 'Love Actually', 'Memento', 'Inception']
+const props = {films}
 
 test('Each film should appear once in badges and once in hidden badges.', () => {
     // Render component
-    const { component } = renderWithContext(<FilmBadges />, null, {films})
+    const { component } = renderWithContext(<FilmBadges />, {props})
     const container = component.container
     // Get elements with class name visible badge
     const visibleBadges = container.getElementsByClassName('_badge_da902b')
@@ -41,7 +42,7 @@ test('Each film should appear once in badges and once in hidden badges.', () => 
 
 test('When screen width is changed, badges should dissapear if their right border is cut off', async () => {
     // Render component
-    const { component } = renderWithContext(<FilmBadges />, null, {films})
+    const { component } = renderWithContext(<FilmBadges />, {props})
     const container = component.container
     // Get both badges for each film (hidden and visible)
     const hiddenBadgeElements = container.getElementsByClassName('hidden-badge')

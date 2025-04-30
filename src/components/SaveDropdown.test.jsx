@@ -18,7 +18,7 @@ describe('USING COMPONENT AS SEARCH RESULTS OR ANOTHER USERS FILM LIST', () => {
     test('When film is not saved to watchlist, save dropdown appears with correct options.', async () => {
         // Render component with no message and not yet saved to watchlist
         const filmPreviewData = {film: {Title: 'film 1'}}
-        renderWithContext(<SaveDropown />, filmPreviewData)
+        renderWithContext(<SaveDropown />, {filmPreviewData})
         // Find button
         const saveButton = screen.getByRole('button', {name: 'Save'})
         expect(saveButton).toBeInTheDocument()
@@ -50,9 +50,9 @@ describe('USING COMPONENT AS SEARCH RESULTS OR ANOTHER USERS FILM LIST', () => {
             savedToWatchlist: true, 
             film: {imdbID: 'im123', _id: 'id123'}
         }
-        const homePagePath = '/'
+        const path = '/'
         const props = null
-        const { history } = renderWithContext(<SaveDropown />, filmPreviewData, props, homePagePath)
+        const { history } = renderWithContext(<SaveDropown />, {filmPreviewData, props, path})
         // Remove button should not be present
         const removeButton = screen.queryByRole('button', {name: 'Remove'})
         expect(removeButton).not.toBeInTheDocument()
@@ -83,7 +83,7 @@ describe('USING COMPONENT IN A RECCOMENDATION', () => {
             film: {Title: 'film 1'},
             message: "Hey! Check out this awesome film I've just watched. I think you'll love it!"
         }
-        renderWithContext(<SaveDropown />, filmPreviewData)
+        renderWithContext(<SaveDropown />, {filmPreviewData})
         // Remove button should be present
         const removeButton = screen.getByRole('button', {name: 'Remove'})
         expect(removeButton).toBeInTheDocument()

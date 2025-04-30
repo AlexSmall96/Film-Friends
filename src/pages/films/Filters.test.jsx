@@ -18,7 +18,7 @@ test('If current user is owner of films list, dropdwon with public and private o
     // Render component as owner of films list
     const props = {filter: {public: true, watched: false}}
     const currentFilmData = {isOwner: true, username: 'user1'}
-    renderWithContext(<Filters />, null, props, null, currentFilmData)
+    renderWithContext(<Filters />, {props, currentFilmData})
     // Dropdown options should not yet be present
     const optionNames = ['Public', 'Private']
     optionNames.map(name => {
@@ -43,7 +43,7 @@ test('If current user is not owner of films list, text saying user 1s watchlist 
     // Render component as not owner of films list
     const props = {filter: {public: true, watched: false}}
     const currentFilmData = {isOwner: false, username: 'user1'}
-    renderWithContext(<Filters />, null, props, null, currentFilmData)   
+    renderWithContext(<Filters />, {props, currentFilmData})
     // Dropdown button should not be present
     const publicPrivateDrpdwn = screen.queryByRole('button', {name: 'Your Public Watchlist'})
     expect(publicPrivateDrpdwn).not.toBeInTheDocument() 
@@ -56,7 +56,7 @@ test('Filter by watched/unwatched and sort dropdowns should be present', async (
     // Render component as not owner of films list
     const props = {filter: {public: true, watched: false}}
     const currentFilmData = {isOwner: false, username: 'user1'}
-    renderWithContext(<Filters />, null, props, null, currentFilmData)  
+    renderWithContext(<Filters />, {props, currentFilmData}) 
     // Dropdown options should not yet be present
     const sortOptionNames = ['A-Z', 'Last Updated']
     sortOptionNames.map(name => {

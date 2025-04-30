@@ -25,11 +25,12 @@ for (let i=0; i<72; i++){
     }
     films.push(film)
 }
+const props = {films}
 
 describe('CORRECT ITEM IS ACTIVE', () => {
     test('The 1st carousel item should be active, and the 2nd and 3rd should not be active.', async () => {
         // Render component
-        const { component } = renderWithContext(<FilmPosterCarousel />, null, {films})
+        const { component } = renderWithContext(<FilmPosterCarousel />, {props})
         const container = component.container
         // Should be 3 carousel items
         const items = container.getElementsByClassName('carousel-item')
@@ -45,7 +46,7 @@ describe('CORRECT ITEM IS ACTIVE', () => {
 describe('FILMS ARE DISTRIBUTED CORRECTLY', () => {
     test('For large screens, films are distributed correctly across the three carousel items.', () => {
         // Render component
-        const { component } = renderWithContext(<FilmPosterCarousel />, null, {films})
+        const { component } = renderWithContext(<FilmPosterCarousel />, {props})
         const container = component.container
         // Ensure width is set for large screen: 1000
         act(() => {
@@ -74,7 +75,7 @@ describe('FILMS ARE DISTRIBUTED CORRECTLY', () => {
     
     test('For small screens, films are distributed correctly across the three carousel items.', () => {
         // Render component
-        const { component } = renderWithContext(<FilmPosterCarousel />, null, {films})
+        const { component } = renderWithContext(<FilmPosterCarousel />, {props})
         const container = component.container
         // Ensure width is set for small screen: 500
         act(() => {

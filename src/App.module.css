@@ -29,7 +29,7 @@
   font-size: medium;
 }
 
-.App i:hover {
+.rightAlign i:hover {
   cursor: pointer;
 }
 

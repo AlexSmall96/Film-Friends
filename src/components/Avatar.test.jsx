@@ -15,7 +15,7 @@ test('When rendered with all props, the image should have correct height, width 
     const src = 'https://res.cloudinary.com/dojzptdbc/image/upload/v1744633674/defaultProfile_fjp9f4.png'
     const props = {src, height: 100}
     // Render component
-    renderWithContext(<Avatar />, null, props)
+    renderWithContext(<Avatar />, {props})
     // Find image
     const image = screen.getByRole('img', {name: 'avatar'})
     expect(image).toBeInTheDocument()
@@ -40,7 +40,7 @@ test('When rendered with no props, the image should have default source and heig
 test('When rendered with square prop as true, the image should have class name squareAvatar and not avatar.', () => {
     // Render component with square as true
     const props = {square: true}
-    renderWithContext(<Avatar />, null, props)
+    renderWithContext(<Avatar />, {props})
     const image = screen.getByRole('img', {name: 'avatar'})
     expect(image).toBeInTheDocument()
     expect(image).not.toHaveClass('_avatar_a0aacb')
@@ -49,7 +49,8 @@ test('When rendered with square prop as true, the image should have class name s
 
 test('When rendered with square prop as false, the image should have class name avatar and not squareAvatar', () => {
     // Render component with square as false
-    renderWithContext(<Avatar />, {square: false})
+    const props = {square: false}
+    renderWithContext(<Avatar />, {props})
     const image = screen.getByRole('img', {name: 'avatar'})
     expect(image).toBeInTheDocument()
     expect(image).not.toHaveClass('_squareAvatar_a0aacb')

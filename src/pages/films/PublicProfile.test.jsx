@@ -21,7 +21,7 @@ describe('RENDERING USERNAME AND IMAGE', () => {
     test('Username and profile image should be rendered.', () => {
         // render component
         const props = {profile: {username: 'user1', _id: 'user1id', image:profileImage}}
-        renderWithContext(<PublicProfile />, null, props)
+        renderWithContext(<PublicProfile />, {props})
         // image should be present
         const image = screen.getByRole('img', {name: 'avatar'})
         expect(image).toBeInTheDocument()
@@ -35,7 +35,7 @@ describe('RENDERING USERNAME AND IMAGE', () => {
         const props = {profile: {username: 'user1', _id: 'user1id', image:profileImage}}
         const currentFilmData = {isOwner: true}
         const path = '/films/user1id'
-        const { history } = renderWithContext(<PublicProfile />, null, props, path, currentFilmData)
+        const { history } = renderWithContext(<PublicProfile />, {props, path, currentFilmData})
         expect(history.location.pathname).toBe('/films/user1id')
         const username = screen.getByRole('heading', {username: 'user1'})
         await user.click(username)
@@ -55,7 +55,7 @@ describe('RENDERING WATCHED PROGRESS BAR AND SIMILARITY SCORE', () => {
         }
         const currentFilmData = {isOwner: true}
         // Render component
-        renderWithContext(<PublicProfile />, null, props, null, currentFilmData)
+        renderWithContext(<PublicProfile />, {props, currentFilmData})
         // Find watched header
         const watchedHeading = screen.getByRole('heading', {name: 'Watched'})
         expect(watchedHeading).toBeInTheDocument()
@@ -74,7 +74,7 @@ describe('RENDERING WATCHED PROGRESS BAR AND SIMILARITY SCORE', () => {
         } 
         const currentFilmData = {isOwner: false}
         // Render component
-        renderWithContext(<PublicProfile />, null, props, null, currentFilmData)
+        renderWithContext(<PublicProfile />, {props, currentFilmData})
         // Find similarity header
         const similarityHeading = screen.getByRole('heading', {name: 'Similarity'})
         expect(similarityHeading).toBeInTheDocument()
@@ -96,7 +96,7 @@ describe('RENDERING FAVOURITE GENRES AND DIRECTORS PROGRESS BARS', () => {
         } 
         const currentFilmData = {isOwner: false}
         // Render component
-        const { component } = renderWithContext(<PublicProfile />, null, props, null, currentFilmData)
+        const { component } = renderWithContext(<PublicProfile />, {props, currentFilmData})
         // Set width
         act(() => {
             global.innerWidth = 1000;
@@ -143,7 +143,7 @@ describe('RENDERING FAVOURITE GENRES AND DIRECTORS PROGRESS BARS', () => {
         }        
         const currentFilmData = {isOwner: false}
         // Render component
-        const { component } = renderWithContext(<PublicProfile />, null, props, null, currentFilmData)
+        const { component } = renderWithContext(<PublicProfile />, {props, currentFilmData})
         // Set width
         act(() => {
             global.innerWidth = 500;
@@ -185,7 +185,7 @@ describe('RENDERING FAVOURITE GENRES AND DIRECTORS PROGRESS BARS', () => {
         }        
         const currentFilmData = {isOwner: false}
         // Render component
-        const { component } = renderWithContext(<PublicProfile />, null, props, null, currentFilmData)
+        const { component } = renderWithContext(<PublicProfile />, {props, currentFilmData})
         // Set width
         act(() => {
             global.innerWidth = 1000;
@@ -225,7 +225,7 @@ describe('HOVERING OVER ELEMENTS DISPLAYS TOOLTIPS', () => {
         } 
         // Render component
         const currentFilmData = {isOwner: false}
-        renderWithContext(<PublicProfile />, null, props, null, currentFilmData)      
+        renderWithContext(<PublicProfile />, {props, currentFilmData})      
         // Find similarity text saying 60%
         const similarityCount = screen.getByText('60%')
         expect(similarityCount).toBeInTheDocument()    
@@ -267,7 +267,7 @@ describe('HOVERING OVER ELEMENTS DISPLAYS TOOLTIPS', () => {
         } 
         // Render component
         const currentFilmData = {isOwner: false}
-        renderWithContext(<PublicProfile />, null, props, null, currentFilmData)   
+        renderWithContext(<PublicProfile />, {props, currentFilmData})   
         // Set width to ensure progress bar appears
         act(() => {
             global.innerWidth = 1000;
