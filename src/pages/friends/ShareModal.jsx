@@ -125,9 +125,9 @@ const ShareModal = () => {
                                             :
                                             <>
                                                 You've shared all your public films with {user.username}.
-                                                <Button variant='link' href={`/films/${currentUser.user._id}`} >Update your films list</Button>
+                                                <Button variant='link' onClick={() => history.push(`/films/${currentUser.user._id}`)}>Update your films list</Button>
                                                     or
-                                                <Button variant='link' href='/'>Browse more films.</Button>
+                                                <Button variant='link' onClick={() => history.push(`/`)}>Browse more films.</Button>
                                             </>
                                             }
                                         </p>
@@ -167,7 +167,7 @@ const ShareModal = () => {
                                 {/* WHEN NO PUBLIC FILMS ARE FOUND, LINK TO WATCHLIST */}
                                 You don't have any public films. 
                                 <p>
-                                    <Button onClick={() => history.push('/films')} variant='link'>Go to your watchlist</Button> to mark a film as public.
+                                    <Button onClick={() => history.push(`/films/${currentUser.user._id}`)} variant='link'>Go to your watchlist</Button> to mark a film as public.
                                 </p>
                             </>
                             
