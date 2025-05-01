@@ -29,9 +29,6 @@ const renderWithContext = (component, {
     // Desctructure film preview data
     const { message, film, savedToWatchlist } = filmPreviewData || {}
     
-    // Destructure currentFilm data
-    const { isOwner, username } = currentFilmData || {}
-
     // Destructure friendData
     const { request } = friendData || {}
     // Create history variable to track url
@@ -41,7 +38,7 @@ const renderWithContext = (component, {
         {component: render(
             <CurrentUserContext.Provider value={{currentUser}}>
                 <RecoveryDataContext.Provider value={{}}>
-                    <CurrentFilmContext.Provider value={{setCurrentFilmIds: () => {}, isOwner, username}}>
+                    <CurrentFilmContext.Provider value={{setCurrentFilmIds: () => {}, ...currentFilmData}}>
                         <FriendActionContext.Provider value={{deleteRequest: () => {}}}>
                             <SaveFilmContext.Provider value={{deleteReccomendation: () => {}}}>
                                 <FilmSearchContext.Provider value={{}}>

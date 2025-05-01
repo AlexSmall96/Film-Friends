@@ -19,7 +19,7 @@ const user1Films = [
 	{
 		Title: "The Lord of the Rings: The Fellowship of the Ring",
 		Year: "2001",
-		imdbID: imdbIDs.LOTR,
+		imdbID: imdbIDs.LOTR1,
 		Type: "movie",
 		Poster: posters.LOTR1,
 		watched: true,
@@ -75,6 +75,58 @@ const user2Films = [
 		owner: 'user2id',
 		userRating: 0,
 		_id: 'loveact1'				
+	}
+]
+
+const user1Reqs = [
+	{
+		// Not accepted yet
+		accepted: false,
+		isSender: true,
+		reciever: {
+			username: 'user2'
+		}
+	} , {
+		// No Reccomendations sent to user 3
+		accepted: true,
+		isSender: true,
+		reciever: {
+			username: 'user3'
+		}
+	} , {
+		// All of user 1 films sent to user 4
+		accepted: true,
+		isSender: true,
+		reciever: {
+			username: 'user4'
+		}
+	} , {
+		// No Reccomendations sent to user 5
+		accepted: true,
+		isSender: true,
+		reciever: {
+			username: 'user5'
+		}
+	}
+]
+
+const user2Reqs = [
+	{
+		accepted: true,
+		isSender: true,
+		reciever: {
+			username: 'user3'
+		}
+	}
+]
+
+const user2reccs = [
+	{
+		film : user2Films[0],
+		isSender: true,
+		reciever: {
+			username: 'user3'
+		}
 	}
 ]
 
@@ -207,7 +259,6 @@ export const handlers = [
 		}, {status: 200})
 	}),
 
-
 	// Get current users reccomendations
 	http.get(`${url}/reccomendations`, ({request}) => {
 		const currentUserToken = request.headers.get('Authorization').replace('Bearer ', '')
@@ -217,9 +268,23 @@ export const handlers = [
 			return HttpResponse.json(user1reccs, {status: 200})		
 		} 
 		if (currentUserToken === user2token){
-			return HttpResponse.json([], {status: 200})		
+			return HttpResponse.json(user2reccs, {status: 200})		
 		}
 	}),
+
+	// Get current users friend requests
+	http.get(`${url}/requests`, ({request}) => {
+		const currentUserToken = request.headers.get('Authorization').replace('Bearer ', '')
+		const user1token = 'user1token'
+		const user2token = 'user2token'
+		if (currentUserToken === user1token){
+			return HttpResponse.json(user1Reqs, {status: 200})	
+		}
+		if (currentUserToken === user2token){
+			return HttpResponse.json(user2Reqs, {status: 200})	
+		}
+	}),
+
 
 	// Send a reccomendation
 	http.post(`${url}/reccomendations`, () => {

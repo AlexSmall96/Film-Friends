@@ -161,7 +161,7 @@ const EllipsisMenu = ({updateViewingData}) => {
                         ''
                     )}
                 </Modal.Header>
-                {/* FILM TITLE AND IMAGE IN BODY */}
+                {/* FILM TITLE IN BODY */}
                 <Modal.Body>
                     {hasLoaded? 
                         <>
@@ -175,7 +175,8 @@ const EllipsisMenu = ({updateViewingData}) => {
                             className={`${appStyles.modalText} ${appStyles.verticalMargin} ${!recipient? appStyles.grey : ''}`} 
                             as='textarea' 
                             readOnly={recipient === null} 
-                            value={message} 
+                            value={message}
+                            name='message' 
                             onChange={handleMessageChange}
                         >
                         </Form.Control>
