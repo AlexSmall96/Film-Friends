@@ -57,7 +57,7 @@ const Film = () => {
         <Row>   
             {/* FILM POSTER */}
             <Col md={6} xs={5}>
-                <Image src={Poster} thumbnail fluid />
+                <Image src={Poster} thumbnail fluid alt={`Poster for ${omdbData.Title}`} />
             </Col>
             {/* FILM DATA */}
             <Col md={6} xs={7} className={appStyles.leftAlign}>
