@@ -26,9 +26,6 @@ const renderWithContext = (component, {
     currentUser={user: {username: 'user1', _id: 'user1id', image: currentUserImage, email: 'user1@email.com'}, token: 'user1token'}, // default currentUser value
 }={}) => {
 
-    // Desctructure film preview data
-    const { message, film, savedToWatchlist } = filmPreviewData || {}
-    
     // Destructure friendData
     const { request } = friendData || {}
     // Create history variable to track url
@@ -43,7 +40,7 @@ const renderWithContext = (component, {
                             <SaveFilmContext.Provider value={{deleteReccomendation: () => {}}}>
                                 <FilmSearchContext.Provider value={{}}>
                                     <FriendDataProvider request={request}>
-                                        <FilmPreviewProvider resultId={{}} message={message} film={film} savedToWatchlist={savedToWatchlist}>
+                                        <FilmPreviewProvider {...filmPreviewData}>
                                             {history?(
                                                 <Router history={history}>
                                                     <Route path={`${path}`} render={() => React.cloneElement(component, props)} />

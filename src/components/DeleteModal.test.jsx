@@ -68,7 +68,8 @@ describe('CLICKING MODAL BUTTONS', () => {
     })
     test('Clicking yes button changes button text to "deleting..."', async () => {
         // Render component
-        renderWithContext(<DeleteModal />, {props})
+        const filmPreviewData = {resultId: {}}
+        renderWithContext(<DeleteModal />, {props, filmPreviewData})
         // Find and click show button
         const button = screen.getAllByRole('button')[0]
         await user.click(button) 

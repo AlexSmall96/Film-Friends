@@ -109,7 +109,10 @@ const FilmPreview = () => {
                 :
                 <>
                     {/* TITLE, GENRE, DIRECTOR AND YEAR */}
-                    {!filmsPage && !message && !shareModal? <h5 className={`${mobile? `${appStyles.verySmallFont} ${appStyles.center} ${appStyles.smallPadding}`: appStyles.smallFont}`}>{film.Title}</h5>:''}
+                    {!filmsPage && !message && !shareModal? 
+                        <h5 className={`${mobile? `${appStyles.verySmallFont} ${appStyles.center} ${appStyles.smallPadding}`: appStyles.smallFont}`}>
+                            {film.Title}
+                        </h5>:''}
                     {!mobile && !filmsPage && !message?
                         <>
                             <p className={`${appStyles.smallFont} ${appStyles.grey}`}>{omdbString}</p>

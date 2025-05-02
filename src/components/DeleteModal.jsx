@@ -42,7 +42,7 @@ const DeleteModal = ({confirmMessage}) => {
                     <Button variant="outline-secondary" className={appStyles.roundButton} 
                         onClick={() => {
                             setText('Deleting...')
-                            resultId? deleteReccomendation(mainFilm? currentReccomendation._id :resultId) : deleteRequest(request._id)
+                            resultId? deleteReccomendation(mainFilm? currentReccomendation?._id :resultId) : deleteRequest(request._id)
                         }}
                     >
                         {text}
