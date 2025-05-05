@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {  Carousel, Row, Col } from 'react-bootstrap'
 import FilmPreview from '../../components/FilmPreview';
 import { FilmPreviewProvider } from '../../contexts/FilmPreviewContext';
@@ -8,7 +8,7 @@ import useWindowDimensions from '../../hooks/useWindowDimensions';
 const FilmPosterCarousel = ({films}) => {
     // Hooks
     const { largeScreen } = useWindowDimensions()
-    
+    const [activeIndex, setActiveIndex] = useState(0)
     // Column structure used to display film poster
     const FilmCol = (film) => {
         return (
@@ -25,11 +25,22 @@ const FilmPosterCarousel = ({films}) => {
             </Col>
         )
     }
+    // The code to update activeIndex was taken from the below article
+    // https://upmostly.com/tutorials/settimeout-in-react-components-using-hooks
+    useEffect(() => {
+        const timer = setTimeout(() => {
+        	const newIndex = (activeIndex + 1) % 3
+        	setActiveIndex(newIndex);
+        }, 8000);
+        return () => clearTimeout(timer);
+      }, [activeIndex]);
+
+
     // Return 3 carousel items, each with 24 or 18 film posters depending on screen size
     return (
-        <Carousel data-bs-theme="dark" nextIcon={null} prevIcon={null} indicators={false} fade>
+        <Carousel data-bs-theme="dark" activeIndex={activeIndex} nextIcon={null} prevIcon={null} indicators={false} fade>
             <Carousel.Item>
-                <Row>
+                <Row onClick={(e) => e.stopPropagation()}>
                     {largeScreen? 
                         films.slice(0, 24).map((film) => FilmCol(film))
                     :
@@ -55,7 +66,7 @@ const FilmPosterCarousel = ({films}) => {
                         }
                 </Row>
             </Carousel.Item>
-            </Carousel>
+        </Carousel>
     )
 }
 
