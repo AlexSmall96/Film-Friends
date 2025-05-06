@@ -14,8 +14,8 @@ setupTests()
 // Define data to be passed as props - each object represents a rating
 const data = [
     {src: 'https://res.cloudinary.com/dojzptdbc/image/upload/v1728577496/43153_imdb_icon_vvpjnz.png', name: 'IMDB', value: '8.4/10'},
-    {src: 'https://res.cloudinary.com/dojzptdbc/image/upload/v1728577835/Rotten_Tomatoes_tqvchw.svg', name: 'Rotten Tomaties', value: '94%'},
-    {src:'https://res.cloudinary.com/dojzptdbc/image/upload/v1728577923/Metacritic_uduhqj.svg', name: 'Metacrtic', value: '83/100'}
+    {src: 'https://res.cloudinary.com/dojzptdbc/image/upload/v1728577835/Rotten_Tomatoes_tqvchw.svg', name: 'Rotten Tomatoes', value: '94%'},
+    {src:'https://res.cloudinary.com/dojzptdbc/image/upload/v1728577923/Metacritic_uduhqj.svg', name: 'Metacritic', value: '83/100'}
 ]
 
 test('For each index, the image should have the correct source and have width 25, and the correct rating value should be displayed.', () => {

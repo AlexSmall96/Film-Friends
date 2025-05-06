@@ -60,7 +60,7 @@ describe('RENDERING CORRECT FILM DATA', () => {
         const genre = screen.getByText(/Adventure, Drama, Fantasy/)
         expect(genre).toBeInTheDocument()
         // Icon ratings should be present
-        const names = ['IMDB', 'Rotten Tomaties', 'Metacrtic']
+        const names = ['IMDB', 'Rotten Tomatoes', 'Metacritic']
         names.map(name => {
             const image = screen.getByRole('img', {name})
             expect(image).toBeInTheDocument()

@@ -36,7 +36,6 @@ const Results = ({reccomendationsPage }) => {
     const [filter, setFilter] = useState('All')
     const [sort, setSort] = useState('Last Sent')
     const [totalResults, setTotalResults] = useState(0)
-    const [error, setError] = useState('')
     const [hasLoaded, setHasLoaded] = useState(!reccomendationsPage)
     const [hasLoadedMainFilm, setHasLoadedMainFilm] = useState(false)
     const [usernames, setUsernames] = useState([])
@@ -47,7 +46,7 @@ const Results = ({reccomendationsPage }) => {
     const [hasRecs, setHasRecs] = useState(false)
     const [showToast, setShowToast] = useState(accountDeleted)
     const [backgroundFilms, setBackgroundFilms] = useState([])
-    const { search, setSearch, submitted, setSubmitted, searchedViaCarousel, setSearchedViaCarousel } = useFilmSearchContext()
+    const { search, searchedViaCarousel, setSearchedViaCarousel } = useFilmSearchContext()
 
     useEffect(() => {
         // Gets the imdbIds of the users saved films, to determine which buttons should appear next to film result
@@ -148,17 +147,11 @@ const Results = ({reccomendationsPage }) => {
                                     currentPage={currentPage} 
                                     setCurrentPage={setCurrentPage} 
                                     setFinalPage={setFinalPage} 
-                                    setError={setError} 
                                     setHasLoaded={setHasLoaded} 
-                                    setShowMainFilm={setShowMainFilm}
-                                    search={search} 
-                                    setSearch={setSearch}
-                                    submitted={submitted} 
-                                    setSubmitted={setSubmitted}
                                 />
                                 {/* BACKGROUND FILMS */}
                                 {backgroundFilms.length?
-                                    <FilmBadges search={search} setSearch={setSearch} setSubmitted={setSubmitted} films={backgroundFilms.slice(0,30).map(film => film.Title)} />
+                                    <FilmBadges films={backgroundFilms.slice(0,30).map(film => film.Title)} />
                                 :''}
                               </>
                             :   /* FILTERS */
@@ -270,34 +263,29 @@ const Results = ({reccomendationsPage }) => {
                                 </Container>
                             ):(<Spinner />)
                         ):(
-                            error !== '' ? 
-                                (
-                                    <p>{error}</p>
-                                ):(
-                                    !reccomendationsPage? 
-                                        <>
-                                            {/* CAROUSEL USED AS BACKGROUND IMAGE */}
-                                            {backgroundFilms.length? 
-                                                <FilmPosterCarousel films={backgroundFilms} />
-                                            :''}
-                                            {accountDeleted? 
-                                                /* TOAST MESSAGE IF ACCOUNT HAS JUST BEEN DELETED */
-                                                <ToastContainer
-                                                    className={`p-3 ${styles.toastContainer}`}
-                                                    position="middle-center"
-                                                >
-                                                    <Toast show={showToast} onClose={() => setShowToast(false)}>
-                                                        <Toast.Header>
-                                                            <img src="holder.js/20x20?text=%20" className="rounded me-2" alt="" />
-                                                            <strong className="me-auto">Film Friends</strong>
-                                                        </Toast.Header>
-                                                        <Toast.Body>Your account was deleted successfully.</Toast.Body>
-                                                    </Toast>
-                                                </ToastContainer>
-                                            :''}
-                                        </>
-                                    :''
-                                )
+                            !reccomendationsPage? 
+                                <>
+                                    {/* CAROUSEL USED AS BACKGROUND IMAGE */}
+                                    {backgroundFilms.length? 
+                                        <FilmPosterCarousel films={backgroundFilms} />
+                                    :''}
+                                    {accountDeleted? 
+                                        /* TOAST MESSAGE IF ACCOUNT HAS JUST BEEN DELETED */
+                                        <ToastContainer
+                                            className={`p-3 ${styles.toastContainer}`}
+                                            position="middle-center"
+                                        >
+                                            <Toast show={showToast} onClose={() => setShowToast(false)}>
+                                                <Toast.Header>
+                                                    <img src="holder.js/20x20?text=%20" className="rounded me-2" alt="" />
+                                                    <strong className="me-auto">Film Friends</strong>
+                                                </Toast.Header>
+                                                <Toast.Body>Your account was deleted successfully.</Toast.Body>
+                                            </Toast>
+                                        </ToastContainer>
+                                    :''}
+                                </>
+                            :''
                         )}
                     </div>
                 </>

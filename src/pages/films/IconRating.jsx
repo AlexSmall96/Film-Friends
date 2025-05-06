@@ -10,8 +10,8 @@ const IconRating = ({index, value}) => {
 
     const data = [
         {src: 'https://res.cloudinary.com/dojzptdbc/image/upload/v1728577496/43153_imdb_icon_vvpjnz.png', name: 'IMDB'},
-        {src: 'https://res.cloudinary.com/dojzptdbc/image/upload/v1728577835/Rotten_Tomatoes_tqvchw.svg', name : 'Rotten Tomaties'},
-        {src:'https://res.cloudinary.com/dojzptdbc/image/upload/v1728577923/Metacritic_uduhqj.svg', name: 'Metacrtic'}
+        {src: 'https://res.cloudinary.com/dojzptdbc/image/upload/v1728577835/Rotten_Tomatoes_tqvchw.svg', name : 'Rotten Tomatoes'},
+        {src:'https://res.cloudinary.com/dojzptdbc/image/upload/v1728577923/Metacritic_uduhqj.svg', name: 'Metacritic'}
     ]
 
     const renderTooltip = (name, value) => (

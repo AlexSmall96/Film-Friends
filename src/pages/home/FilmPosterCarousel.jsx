@@ -29,8 +29,10 @@ const FilmPosterCarousel = ({films}) => {
     // https://upmostly.com/tutorials/settimeout-in-react-components-using-hooks
     useEffect(() => {
         const timer = setTimeout(() => {
-        	const newIndex = (activeIndex + 1) % 3
-        	setActiveIndex(newIndex);
+        	if (films.length >= 18){
+				const newIndex = (activeIndex + 1) % 3
+				setActiveIndex(newIndex);
+			}
         }, 8000);
         return () => clearTimeout(timer);
       }, [activeIndex]);
@@ -40,7 +42,7 @@ const FilmPosterCarousel = ({films}) => {
     return (
         <Carousel data-bs-theme="dark" activeIndex={activeIndex} nextIcon={null} prevIcon={null} indicators={false} fade>
             <Carousel.Item>
-                <Row onClick={(e) => e.stopPropagation()}>
+                <Row>
                     {largeScreen? 
                         films.slice(0, 24).map((film) => FilmCol(film))
                     :
