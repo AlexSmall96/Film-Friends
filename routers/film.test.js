@@ -69,22 +69,23 @@ describe('VIEW A USERS FILM LIST', () => {
     test('Should load all films if user is owner of film list', async () => {
         // Default sort is last updated
         const response = await request(app).get(`/data/films/${userOne._id}`).set(...userOneAuth)
-        // Should be 4 films
-        expect(response.body.films).toHaveLength(4)
-        // film one a should be last
-        expect(response.body.films[3].Title).toBe('film one a')
+        // Should be 6 films
+        expect(response.body.films).toHaveLength(6)
+        // Love Actually should be first
+        expect(response.body.films[0].Title).toBe('Love Actually')
         // Sort alphabetically
         const responseSorted = await request(app).get(`/data/films/${userOne._id}/?sort=A-Z`).set(...userOneAuth)
-        // film one a should be first
-        expect(responseSorted.body.films[0].Title).toBe('film one a')
-
+        // Film one a should be first
+        expect(responseSorted.body.films[0].Title).toBe('Film one a')
     })
     test('Should load only public films if user is not owner of film list', async () => {
         const response = await request(app).get(`/data/films/${userOne._id}`).set(...userTwoAuth)
-        // Should only show 1 film - film one a, which is public
-        expect(response.body.films).toHaveLength(1)
+        // Should show 3 films
+        expect(response.body.films).toHaveLength(3)
         expect(response.body.films[0].public).toBe(true)
-        expect(response.body.films[0].Title).toBe('film one a')
+        expect(response.body.films[0].Title).toBe('Love Actually')
+        expect(response.body.films[1].Title).toBe('Star Wars')
+        expect(response.body.films[2].Title).toBe('Film one a')
     })
     test('View films should fail with invalid id', async () => {
         await request(app).get('/data/films/invalidID').set(...userTwoAuth).expect(400)
@@ -107,10 +108,10 @@ describe('GET ALL FILMS', () => {
         expect(firstFilm.userRating).toBe(5)
         // Second film should be most recently updated
         const secondFilm = films[1]
-        expect(secondFilm.Title).toBe('A film reccomended by user9')
+        expect(secondFilm.Title).toBe('Star Wars')
         // Third film should be second most recently updated
         const thirdFilm = films[2]
-        expect(thirdFilm.Title).toBe('A film reccomended by user8')
+        expect(thirdFilm.Title).toBe('A film reccomended by user9')
     })
 })
 
