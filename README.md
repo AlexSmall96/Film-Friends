@@ -1,6 +1,8 @@
 # Film Friends
 Introduction
-Picture (use amiresponsive.org)
+
+![](documentation/screenshots/amiresponsive.jpg)
+
 ## Live Site
 [https://film-friends.onrender.com/](https://film-friends.onrender.com/)
 ## Repository
