@@ -11,7 +11,7 @@ import styles from '../../styles/Friends.module.css'
 import { useRedirect } from '../../hooks/useRedirect';
 import ResultsPagination from '../../components/ResultsPagination';
 import Avatar from '../../components/Avatar';
-
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 /*
 Displays users pending and accepted friend requests along with status of each
 ALlows user to search for new friends
@@ -21,6 +21,7 @@ const Friends = () => {
     // Contexts
     const { currentUser } = useCurrentUser()
     const { updatedFriends, setUpdatedFriends } = useFriendAction()
+    const history = useHistory()
     // Initialize state variables
     const [requests, setRequests] = useState([])
     const [requestIds, setRequestIds] = useState({accepted: [], pending: []})
@@ -37,7 +38,7 @@ const Friends = () => {
     
     // Callback function to sort requests based on sort variable
     const sortRequest = (req, sort) => {
-        return sort === 'A-Z' ? req.isSender? req.reciever.username: req.sender.username: req.updatedAt
+        return sort === 'A-Z' ? req.isSender? req.reciever.username: req.sender.username:req.updatedAt
     }
 
     useEffect(() => {
@@ -74,7 +75,10 @@ const Friends = () => {
                 const response = await axiosReq.get(`/requests/`, {headers: {'Authorization': `Bearer ${currentUser?.token}`}})
                 setHasFriends(response.data.length)
                 const filteredResponse = response.data.filter(request => checkRequest(request))
-                const sortedResponse = sortBy(filteredResponse, (req) => sortRequest(req, sort))
+                const sortedResponse = sort === 'A-Z'?
+                    sortBy(filteredResponse, (req) => sortRequest(req, sort))
+                :
+                sortBy(filteredResponse, (req) => sortRequest(req, sort)).reverse()
                 setRequests(sortedResponse.slice(9 * (currentPage - 1), 9 * currentPage))
                 const acceptedRequests = response.data.filter(request => request.accepted)
                 const pendingRequests = response.data.filter(request => !request.accepted )
@@ -144,7 +148,7 @@ const Friends = () => {
                                                         <Avatar src={result.image} height={45} className='result'/>
                                                     </Col>
                                                     <Col md={3} xs={3} className='result'>
-                                                        <a href={`/films/${result._id}`} className='result'>{result.username}</a>
+                                                        <a onClick={() => history.push(`/films/${result._id}`)} className='result'>{result.username}</a>
                                                     </Col>
                                                     <Col md={7} xs={6} className='result'>
                                                         {requestIds.accepted.includes(result._id)? 
@@ -205,7 +209,7 @@ const Friends = () => {
                                                 <div className={`${styles.userCard} ${appStyles.greyBackground}`}>
                                                     <Avatar src={request.isSender? request.reciever.image : request.sender.image} height={160} square/>
                                                     <br />
-                                                    <a href={`/films/${request.isSender? request.reciever._id: request.sender._id}`} className={appStyles.smallFont}>{request.isSender? request.reciever.username : request.sender.username}</a>
+                                                    <a onClick={() => {history.push(`/films/${request.isSender? request.reciever._id: request.sender._id}`)}} className={appStyles.smallFont}>{request.isSender? request.reciever.username : request.sender.username}</a>
                                                     <FriendDataProvider request={request}>
                                                         <FriendRequestButtons />
                                                     </FriendDataProvider>
@@ -220,7 +224,7 @@ const Friends = () => {
                         /* IMAGE WHEN NO FRIENDS ARE FOUND  */
                         <div className={styles.friendsImage}>
                             <p>It looks like you don't have any friends yet. Search to connect with other users!</p>
-                            <Image src='https://res.cloudinary.com/dojzptdbc/image/upload/v1744199262/FriendsPlus_jbxswo.png' fluid />
+                            <Image src='https://res.cloudinary.com/dojzptdbc/image/upload/v1744199262/FriendsPlus_jbxswo.png' alt='Friends placeholder image' fluid />
                         </div>}
                       
                 </>

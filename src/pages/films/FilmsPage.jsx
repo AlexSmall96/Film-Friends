@@ -127,7 +127,7 @@ const FilmsPage = () => {
             }
         }
         fetchProfileAndFilms()
-    },[filter, sort, updated, id, currentFilmIds?.imdbID, currentUser?.token, isOwner, setCurrentFilmIds, setUsername ])
+    },[filter, sort, updated, id, currentUser?.token, isOwner, setCurrentFilmIds, setUsername ])
 
     // Functions that update data specific to the user
     useEffect(() => {
