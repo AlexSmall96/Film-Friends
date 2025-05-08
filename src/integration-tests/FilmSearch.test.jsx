@@ -7,35 +7,17 @@ import '@testing-library/jest-dom/vitest';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import { test, expect, describe} from 'vitest';
 import setupTests from '../test-utils/setupTests';
-import renderWithContext from '../test-utils/renderWithContext';
-import { FilmSearchProvider } from '../contexts/FilmSearchContext';
-import { CurrentFilmProvider } from '../contexts/CurrentFilmContext';
-import { SaveFilmProvider } from '../contexts/SaveFilmContext';
 import userEvent from '@testing-library/user-event';
+import renderWithProviders from '../test-utils/renderWithProviders';
 
 setupTests()
 
 const user = userEvent.setup()
 
-// Helper function that renders component with providers (to set state variables) and contexts for custom values
-// Returns the history variable from the renderWithContext function
-const renderWithProviders = (currentUser) => {
-    const { component, history } = renderWithContext(
-        <CurrentFilmProvider>
-            <SaveFilmProvider>
-                <FilmSearchProvider>
-                    <Results />
-                </FilmSearchProvider>
-            </SaveFilmProvider>
-        </CurrentFilmProvider>, {currentUser, path: '/'}        
-    )
-    return { component, history }
-}
-
 describe('SEARCHING VIA CAROUSEL IMAGES', () => {
     test('On large screens, clicking film image in carousel shows all search results.', async () => {
         // Render component
-        const { history } = renderWithProviders(null)
+        const { history } = renderWithProviders(<Results />, {path: '/', currentUser: null})
         // Set screen width
         act(() => {
             global.innerWidth = 1000;
@@ -83,7 +65,7 @@ describe('SEARCHING VIA CAROUSEL IMAGES', () => {
     })
     test('On mobile, clicking film image in carousel shows selected film in mobile view.', async () => {
         // Render component
-        renderWithProviders({user: {username: 'user3', _id: 'user3id'}, token: 'user3token'})
+        renderWithProviders(<Results />)
         // Set screen width
         act(() => {
             global.innerWidth = 300;
@@ -156,7 +138,7 @@ describe('SEARCHING VIA CAROUSEL IMAGES', () => {
 describe('SEARCHING VIA BADGES', () => {
     test('Clicking a badge shows correct search results.', async () => {
         // Render component
-        renderWithProviders({user: {username: 'user3', _id: 'user3id'}, token: 'user3token'})
+        renderWithProviders(<Results />)
         // Set screen width
         act(() => {
             global.innerWidth = 1000;
@@ -195,7 +177,7 @@ describe('SEARCHING VIA BADGES', () => {
 describe('SEARCHING VIA TYPING IN SEARCH BAR', () => {
     test('Typing a matching film shows suggestions under search bar and clicking suggestion shows results.', async () => {
         // Render component
-        const { component } = renderWithProviders({user: {username: 'user3', _id: 'user3id'}, token: 'user3token'})
+        const { component } = renderWithProviders(<Results />)
         // Find input
         const input = screen.getByRole('searchbox')
         fireEvent.change(input, {target: {value: 'Spider-Man'}})
@@ -220,7 +202,7 @@ describe('SEARCHING VIA TYPING IN SEARCH BAR', () => {
         expect(suggestions).toHaveLength(0)
     })
     test('Typing a matching film and pressing search button shows results.', async () => {
-        renderWithProviders({user: {username: 'user3', _id: 'user3id'}, token: 'user3token'})
+        renderWithProviders(<Results />)
         // Find input
         const input = screen.getByRole('searchbox')
         fireEvent.change(input, {target: {value: 'Spider-Man'}})
@@ -234,7 +216,7 @@ describe('SEARCHING VIA TYPING IN SEARCH BAR', () => {
         }
     })
     test('Typing a non matching film shows nothing.', async () => {
-        renderWithProviders({user: {username: 'user3', _id: 'user3id'}, token: 'user3token'})
+        renderWithProviders(<Results />)
         // Find input
         const input = screen.getByRole('searchbox')
         fireEvent.change(input, {target: {value: 'the'}})
