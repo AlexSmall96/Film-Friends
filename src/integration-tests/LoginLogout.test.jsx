@@ -3,17 +3,14 @@
  */
 import React from 'react';
 import '@testing-library/jest-dom/vitest';
-import { fireEvent, screen, render } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import { test, expect, describe} from 'vitest';
 import setupTests from '../test-utils/setupTests';
 import userEvent from '@testing-library/user-event';
 import Login from '../pages/auth/Login'
-import { CurrentUserProvider } from '../contexts/CurrentUserContext';
-import { Router, Route } from 'react-router-dom';
-import { createMemoryHistory } from 'history';
-import Navbar from '../components/NavBar'
 import { server } from '../test-utils/mocks/server'
 import { HttpResponse, http } from "msw";
+import renderWithUserProvider from '../test-utils/renderWithUserProvider';
 
 setupTests()
 
@@ -21,33 +18,10 @@ const user = userEvent.setup()
 
 const url = 'https://film-friends.onrender.com/data'
 
-// The below code to remove matchmedia errors was taken from 
-//https://stackoverflow.com/questions/39830580/jest-test-fails-typeerror-window-matchmedia-is-not-a-function
-window.matchMedia = window.matchMedia || function() {
-    return {
-        matches: false,
-        addListener: function() {},
-        removeListener: function() {}
-    };
-};
-
-const renderWithProvider = () => {
-    const history = createMemoryHistory({ initialEntries: ['/login'] })
-    render(
-        <Router history={history}>
-            <CurrentUserProvider>
-                <Navbar />
-                <Route path={'/login'} render={() => <Login />} />
-            </CurrentUserProvider>
-        </Router>
-    )
-    return history
-}
-
 describe('RENDERING CORRECT ELEMENTS', () => {
     test('Image, form, login button, forgotten password and signup links should be rendered.', async () => {
         // Render component
-        const history = renderWithProvider()
+        const history = renderWithUserProvider(<Login />, '/login')
         // Find image
         const image = screen.getByRole('img', {name: 'A film take board'})
         expect(image).toBeInTheDocument()
@@ -74,7 +48,7 @@ describe('RENDERING CORRECT ELEMENTS', () => {
 describe('LOGIN / LOGOUT SUCCESS', () => {
     test('Submitting form with valid data takes user to home page, logout changes which links are displayed in navbar.', async () => {
         // Render component
-        const history = renderWithProvider() 
+        const history = renderWithUserProvider(<Login />, '/login')
         // Find inputs
         const emailInput = screen.getByLabelText('Email address')  
         const passwordInput = screen.getByLabelText('Password') 
@@ -128,7 +102,7 @@ describe('LOGIN FAILURE', () => {
             })
         )
         // Render component
-        const history = renderWithProvider() 
+        const history = renderWithUserProvider(<Login />, '/login')
         // Find login button
         const loginButton = screen.getByRole('button', {name: /Login/i})
         const user = userEvent.setup()
@@ -152,7 +126,7 @@ describe('LOGIN FAILURE', () => {
             })
         )
         // Render component
-        const history = renderWithProvider() 
+        const history = renderWithUserProvider(<Login />, '/login')
         // Find login button
         const loginButton = screen.getByRole('button', {name: /Login/i})
         // Enter data into form 

@@ -8,8 +8,7 @@ import { FriendDataProvider } from '../contexts/FriendDataContext';
 import { FilmSearchContext } from '../contexts/FilmSearchContext';
 import { SaveFilmContext } from '../contexts/SaveFilmContext'
 import { FilmPreviewProvider } from '../contexts/FilmPreviewContext';
-import { Router } from 'react-router-dom';
-import { Route } from 'react-router-dom';
+import { Router, Route } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 
 // Renders a component with all necessary contexts
