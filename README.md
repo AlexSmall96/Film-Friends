@@ -1,5 +1,5 @@
 # Film Friends
-Introduction
+Film Friends is a film, sharing and reviewing app, where users can save and rate films, add eachother as friends, and share reccomendations. The back end is built using node.js and the Express framework, while the front end is built in React. The film data is taken from the  [Open Movie Database (OMDB) API](https://www.omdbapi.com/).
 
 ![](documentation/screenshots/amiresponsive.jpg)
 
@@ -13,7 +13,10 @@ Alex Small | [GitHub](https://github.com/AlexSmall96) | [LinkedIn](https://www.l
 
 
 ## Project Goals and Planning
+The goal of this project was to develop my skills in React, Node.js and automated testing, while creating a website that real film lovers would use to organise their films and connect with others.
+
 ### Process Flow Diagrams
+To plan the end to end processes involved in the site, the following diagrams were created.
 #### Login and Sign Up
 ![Login and Sign up](documentation/process-flows/SignInSignUp.png)
 #### Save a new Film
@@ -32,8 +35,7 @@ Films that the user has saved. The public field determines whether or not others
 - **Requests**
 Friend requests between users. Sender is the user ID of the requester, and reciever is the user ID of the user receiving the friend request. Accepted is true or false depending if the user has accepted the friend request.
 - **Reccomendations**
-Film recommendations between users. Sender is the id of the user that sends the reccomendation and reciever is the id of the user that recieves the reccomendation. A request must be made and accepted prior to sending a recommendation. The receiver can set liked to true and add a comment on the recommendation.
-
+Film recommendations between users. Sender is the id of the user that sends the reccomendation and reciever is the id of the user that recieves the reccomendation. A request must be made and accepted prior to sending a recommendation. 
 
 ![Databse Schema](documentation/db/Film-Friends-Db-Schema.png)
 ### Methodology
@@ -41,7 +43,7 @@ The project used an agile methodology and was divided into 5 sprints. Throughout
 
 
 ![Initial Kanban Board](documentation/methodology/KanbanBoardInitial.png)
-- Include a picture of a finished kanban board
+![Final Kanban Board](documentation/methodology/KanbanBoardFinished.png)
 #### Sprint 1: Planning and Documentation
 This phase involved the brainstorming of the initial idea as well as designing the theme and layout of the user interface. The process flow diagram was created to plan a high-level overview of the functionality of the site. The process flow diagram was then used as a guide in deciding the database schema, creating the wireframes, and the backend site logic.
 
@@ -60,7 +62,7 @@ Collections in Studio 3T:
 ![](documentation/methodology/requests.png)
 ![](documentation/methodology/reccomendations.png)
 
-Automated testing using [vitest](https://vitest.dev/) and the [supertest package](https://www.npmjs.com/package/supertest) was implemented for all HTTP requests (with the exception of those requiring external APIs or emails) in parallel to development, and an associated test file can be found alongside each of the router files in [this folder](https://github.com/AlexSmall96/Film-Friends/tree/main/routers). See [Testing](#testing) for details.
+Automated testing using [vitest](https://vitest.dev/) and the [supertest package](https://www.npmjs.com/package/supertest) was implemented for all HTTP requests (with the exception of those requiring external APIs or emails) in parallel to development, and an associated test file can be found alongside each of the router files in [this folder](https://github.com/AlexSmall96/Film-Friends/tree/main/routers). See [Testing](https://github.com/AlexSmall96/Film-Friends/blob/main/TESTING.MD) for details.
 
 The methodology in this section was inspired by the below Udemy course.
  - [https://www.udemy.com/course/the-complete-nodejs-developer-course-2](https://www.udemy.com/course/the-complete-nodejs-developer-course-2)
