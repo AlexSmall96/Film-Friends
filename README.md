@@ -1,5 +1,5 @@
 # Film Friends
-Film Friends is a film, sharing and reviewing app, where users can save and rate films, add eachother as friends, and share reccomendations. The back end is built using node.js and the Express framework, while the front end is built in React. The film data is taken from the  [Open Movie Database (OMDB) API](https://www.omdbapi.com/).
+Film Friends is a film, sharing and reviewing app, where users can save and rate films, add eachother as friends, and share reccomendations. The back end is built using node.js and the Express framework, while the front end is built in React. The film data is taken from the [Open Movie Database (OMDB) API](https://www.omdbapi.com/).
 
 ![](documentation/screenshots/amiresponsive.jpg)
 
@@ -67,7 +67,7 @@ Automated testing using [vitest](https://vitest.dev/) and the [supertest package
 The methodology in this section was inspired by the Udemy course: [https://www.udemy.com/course/the-complete-nodejs-developer-course-2](https://www.udemy.com/course/the-complete-nodejs-developer-course-2)
 
 #### Sprint 3: Frontend Functionality
-This phase began by creating the basic page layout used to implement the processes required. As the project grew in complexity, sub components were added to pages and the react architectutre was refined. Throughout this phase some of the backend routers were updated to accomodate new functionality. A diagram detailing the final structure of the react architectutre is given below.
+This phase began by creating the basic page layout used to implement the processes required. As the project grew in complexity, sub components were added to pages and the react architectutre was refined. With many layers of subcomponents, contexts became useful to better manage state. Throughout this phase some of the backend routers were updated to accomodate new functionality. A diagram detailing the final structure of the react architectutre is given below.
 
 - React Architecture
 #### Sprint 4: Frontend Styling
@@ -97,15 +97,13 @@ This phase involved updating some backend router tests before creating unit test
 - Users can change their email or password.
 ## UX
 
-
 ### Target Audience
-
+The target audience of this site is anyone who is passionate about films, and enjoys organising and planning their film viewing, as well as connecting with others over common film interests.
 ### Wireframes
 The wireframes below were created to plan the app's front-end layout. A large view and a mobile view have been made for each page.
 
 
 **Home Page**
-
 
 ![](documentation/wireframes/HomePage.png)
 
@@ -121,18 +119,15 @@ The wireframes below were created to plan the app's front-end layout. A large vi
 
 **Friends Page**
 
-
 ![](documentation/wireframes/Friends.png)
 
 
 **Recommendations Page**
 
-
 ![](documentation/wireframes/Reccomendations.png)
 
 
 **Sign up**
-
 
 ![](documentation/wireframes/Signup.png)
 
@@ -144,18 +139,18 @@ The wireframes below were created to plan the app's front-end layout. A large vi
 
 **Films Page**
 
-
 ![](documentation/wireframes/FilmsPage.png)
 
 
-### Colours
-
-
 ### Fonts
-
+The fonts used in this site are; Josefin Sans for the heading, Gudea for the film plots and Roboto Flex for everything else.
 
 ### Images
+The film images used in this site come from the [Open Movie Database (OMDB) API](https://www.omdbapi.com/), while the placeholder images were created on [https://pixelied.com](https://pixelied.com/).
 
+![](documentation/ux/homeimages.jpg)
+
+![](documentation/ux/placeholders.jpg)
 
 ## Programming Languages, Frameworks, and Libraries used
 
