@@ -1,5 +1,22 @@
 # Testing
 Several methodologies were used to test the site. The backend HTTP requests were tested in parralel to development, and all HTTP requests were covered by automated tests, with the exception of those that rely on the [OMDB API](https://www.omdbapi.com/) and those that involve sending emails. The front end section of the site was tested using automated tests and manual tests. The automated tests being divded into unit tests and integration tests. A finally category of tests was defined; End to End testing. This was included to ensure all 4 models (users, films, requests and reccomendations) had full CRUD functionality, and the user interface gave feedback on these operations where appropriate.
+## Table of Contents
+- [Testing](#testing)
+  * [Table of Contents](#table-of-contents)
+  * [Automated Testing](#automated-testing)
+    + [Backend](#backend)
+    + [Frontend](#frontend)
+      - [Unit Tests](#unit-tests)
+      - [Integration Tests](#integration-tests)
+  * [Manual Testing](#manual-testing)
+    + [Films Page](#films-page)
+    + [Reccomendations](#reccomendations)
+    + [Profile](#profile)
+  * [End to End Testing](#end-to-end-testing)
+    + [Users](#users)
+    + [Films](#films)
+    + [Requests](#requests)
+    + [Reccomendations](#reccomendations-1)
 ## Automated Testing
 ### Backend
 The HTTP request were tested using [vitest](https://vitest.dev/) and the [supertest package](https://www.npmjs.com/package/supertest). Automated tests cover all HTTP requests with the exception of the following:
