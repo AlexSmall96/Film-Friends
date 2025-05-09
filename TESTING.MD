@@ -123,6 +123,45 @@ A selection of features were tested using integration tests, where multiple comp
 
 
 ## Manual Testing
+Manual testing was carried out on the remaining pages not covered by automated tests: Films Page, Reccomendations and Profile. The following tests cover front end user interaction and client side validation, any features that require HTTP requests are covered in End to End testing.
 
-## End to end Testing
+### Films Page
+
+Test No.             |           Pass Criteria  | Screenshot
+:-------------------------:| :-------------------------: |  :-------:|
+1.1 | Correct films load in films list  |![](documentation/testing/manual-tests/1.1.jpg) 
+1.2 | Default Main Film is first in list  | ![](documentation/testing/manual-tests/1.2.jpg) 
+1.3 | Clicking a film in film list changes main film  |![](documentation/testing/manual-tests/1.3.gif) 
+1.4 | Filtering public/private changes which films are shown | ![](documentation/testing/manual-tests/1.4.gif)
+1.5 | Filtering all/watched/still to watch changes which films are shown | ![](documentation/testing/manual-tests/1.5.gif)
+1.6 | Sorting alphabetically/last updated changes order of films | ![](documentation/testing/manual-tests/1.6.gif)
+1.7 | Message appears when no films match current filters  | ![](documentation/testing/manual-tests/1.7.jpg)
+1.8 | Viewing another users watchlist only shows public films | ![](documentation/testing/manual-tests/1.8.jpg)
+1.9 | When screen width is less than 768px, full view is only shown for one film at at time| ![](documentation/testing/manual-tests/1.9.gif)
+1.10 | If a film in search results has go to watchlist link, clicking link goes to the current users watchlist, and clicked film is in main view|![](documentation/testing/manual-tests/1.10.gif) 
+
+### Reccomendations
+Test No.             |           Pass Criteria  | Screenshot
+:-------------------------:| :-------------------------: |  :-------:|
+2.1 | Correct films load in reccomendations list with messages |![](documentation/testing/manual-tests/2.1.jpg) 
+2.2 | Hovering over a film shows plot | ![](documentation/testing/manual-tests/2.2.gif) 
+2.3 | Filtering by sender changes which films are shown |![](documentation/testing/manual-tests/2.3.gif) 
+2.4 | Sorting alphabetically or last sent changes order of films|![](documentation/testing/manual-tests/2.4.gif) 
+2.5 | When screen width is less than 768px, only film images are shown, and the full view is only shown for one film at a time |![](documentation/testing/manual-tests/2.5.gif) 
+2.6 | When user has recieved more than 10 reccomendations, pagination is displayed and changing page number chagnes which films are displayed |![](documentation/testing/manual-tests/2.6.gif) 
+2.7 | If a film has go to watchlist link, clicking link goes to the current users watchlist, and clicked film is in main view|![](documentation/testing/manual-tests/2.7.gif) 
+
+### Profile
+Test No.             |           Pass Criteria  | Screenshot
+:-------------------------:| :-------------------------: |  :-------:|
+3.1 | Correct username and profile image load| ![](documentation/testing/manual-tests/3.1.jpg) 
+3.2 | Clicking tabs changes what is displayed |![](documentation/testing/manual-tests/3.2.gif) 
+3.3 | Clicking your watchlist takes the user to thier own watchlist | ![](documentation/testing/manual-tests/3.3.gif) 
+3.4 | Save button is disabled and becomes enabled if username or profile image is changed | ![](documentation/testing/manual-tests/3.4.gif) 
+3.5 | If too large an image is uploaded, error message appears|![](documentation/testing/manual-tests/3.5.gif) 
+
+
+## End to End Testing
+
+## Responsiveness
 
