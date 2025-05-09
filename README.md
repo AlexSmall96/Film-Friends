@@ -3,6 +3,7 @@ Film Friends is a film sharing and reviewing app, where users can save and rate 
 
 ![](documentation/screenshots/amiresponsive.jpg)
 
+Further previews of the site can be found in [Testing](https://github.com/AlexSmall96/Film-Friends/blob/main/TESTING.MD).
 ## Live Site
 [https://film-friends.onrender.com/](https://film-friends.onrender.com/)
 ## Repository
