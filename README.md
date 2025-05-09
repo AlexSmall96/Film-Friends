@@ -1,5 +1,5 @@
 # Film Friends
-Film Friends is a film, sharing and reviewing app, where users can save and rate films, add eachother as friends, and share reccomendations. The back end is built using node.js and the Express framework, while the front end is built in React. The film data is taken from the [Open Movie Database (OMDB) API](https://www.omdbapi.com/).
+Film Friends is a film sharing and reviewing app, where users can save and rate films, add each other as friends, and share recommendations. The back end is built using node.js and the Express framework, while the front end is built in React. The film data is taken from the [Open Movie Database (OMDB) API](https://www.omdbapi.com/).
 
 ![](documentation/screenshots/amiresponsive.jpg)
 
@@ -20,7 +20,7 @@ Alex Small | [GitHub](https://github.com/AlexSmall96) | [LinkedIn](https://www.l
       - [Login and Sign Up](#login-and-sign-up)
       - [Save a new Film](#save-a-new-film)
       - [Search for Users and Send Friend Requests](#search-for-users-and-send-friend-requests)
-      - [Send a Reccomendation](#send-a-reccomendation)
+      - [Send a Recommendation](#send-a-recommendation)
     + [Database Schema](#database-schema)
     + [Methodology](#methodology)
       - [Sprint 1: Planning and Documentation](#sprint-1--planning-and-documentation)
@@ -59,7 +59,7 @@ To plan the end to end processes involved in the site, the following diagrams we
 ![Save a new Film](documentation/process-flows/FilmCreate.png)
 #### Search for Users and Send Friend Requests
 ![Search for Users and Send Friend Requests](documentation/process-flows/SearchAndFriendRequest.png)
-#### Send a Reccomendation
+#### Send a Recommendation
 ![Search for Users and Send Friend Requests](documentation/process-flows/SendReccomendation.png)
 ### Database Schema
 The below diagram was used to model the database schema. An interactive version can be found [here](https://dbdocs.io/alex.small739/Film-Friends-Db-Schema?view=relationships).
@@ -69,11 +69,11 @@ Contains User's login and profile data.
 - **Films**
 Films that the user has saved. The public field determines whether or not others can see the film on the user's list. The watched field is true or false depending on whether the user has watched the film or not.
 - **Requests**
-Friend requests between users. Sender is the user ID of the requester, and reciever is the user ID of the user receiving the friend request. Accepted is true or false depending if the user has accepted the friend request.
-- **Reccomendations**
-Film recommendations between users. Sender is the id of the user that sends the reccomendation and reciever is the id of the user that recieves the reccomendation. A request must be made and accepted prior to sending a recommendation. 
+Friend requests between users. Sender is the user ID of the requester, and receiver is the user ID of the user receiving the friend request. Accepted is true or false depending if the user has accepted the friend request.
+- **Recommendations**
+Film recommendations between users. Sender is the id of the user that sends the recommendation and receiver is the id of the user that receives the recommendation. A request must be made and accepted prior to sending a recommendation. 
 
-![Databse Schema](documentation/db/Film-Friends-Db-Schema.png)
+![Database Schema](documentation/db/Film-Friends-Db-Schema.png)
 ### Methodology
 The project used an agile methodology and was divided into 5 sprints. Throughout, a kanban board was used to plan and track progress.
 
@@ -103,13 +103,13 @@ Automated testing using [vitest](https://vitest.dev/) and the [supertest package
 The methodology in this section was inspired by the Udemy course: [https://www.udemy.com/course/the-complete-nodejs-developer-course-2](https://www.udemy.com/course/the-complete-nodejs-developer-course-2)
 
 #### Sprint 3: Frontend Functionality
-This phase began by creating the basic page layout used to implement the processes required. As the project grew in complexity, sub components were added to pages and the react architectutre was refined. With many layers of subcomponents, contexts became useful to better manage state. Throughout this phase some of the backend routers were updated to accomodate new functionality. A diagram detailing the final structure of the react architectutre is given below.
+This phase began by creating the basic page layout used to implement the processes required. As the project grew in complexity, sub components were added to pages and the react architecture was refined. With many layers of subcomponents, contexts became useful to better manage state. Throughout this phase some of the backend routers were updated to accommodate new functionality. A diagram detailing the final structure of the react architecture is given below. Components are coloured according to their level in the hierarchy. Grey components have no subcomponents, and arrows travel in the direction of parent -> child.
 
-- React Architecture
+![](documentation/architecture/reactarch.png)
 #### Sprint 4: Frontend Styling
-Once the layout had been finalised and the funcionality was working as expected, the visual appearance of the site was refined. This included font choice, colours, margins, images and responsiveness.
+Once the layout had been finalised and the functionality was working as expected, the visual appearance of the site was refined. This included font choice, colours, margins, images and responsiveness.
 #### Sprint 5: Remaining Documentation and Testing
-This phase involved updating some backend router tests before creating unit tests and integration tests for the front end using [vitest](https://vitest.dev/) and [react testing library](https://testing-library.com/). After this, manual tests were carried out to test features not covered in automated testing. End to end testing was then implemented to verify that the models in the database had full CRUD funcionality and the user was given visual feedback to represent these changes.
+This phase involved updating some backend router tests before creating unit tests and integration tests for the front end using [vitest](https://vitest.dev/) and [react testing library](https://testing-library.com/). After this, manual tests were carried out to test features not covered in automated testing. End to end testing was then implemented to verify that the models in the database had full CRUD functionality and the user was given visual feedback to represent these changes.
 ### User Stories
 #### Allow me to sign up for Film Friends
 - Users can sign up using a chosen email, username, and password.
@@ -253,4 +253,4 @@ Code was taken from/inspired by the below articles. Whenever the code is used, i
 
 - The code used in renderWithProviders.jsx to render the component with memory router was taken from: https://medium.com/@bobjunior542/using-useparams-in-react-router-6-with-jest-testing-a29c53811b9e
 
-- Scrollbar styling: https://css-tricks.com/classy-and-cool-custom-css-scrollbars-a-showcase/ 
+- Scrollbar styling: https://css-tricks.com/classy-and-cool-custom-css-scrollbars-a-showcase/

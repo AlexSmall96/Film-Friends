@@ -1,5 +1,5 @@
 # Testing
-Several methodologies were used to test the site. The backend HTTP requests were tested in parralel to development, and all HTTP requests were covered by automated tests, with the exception of those that rely on the [OMDB API](https://www.omdbapi.com/) and those that involve sending emails. The front end section of the site was tested using automated tests and manual tests. The automated tests being divded into unit tests and integration tests. A finally category of tests was defined; End to End testing. This was included to ensure all 4 models (users, films, requests and reccomendations) had full CRUD functionality, and the user interface gave feedback on these operations where appropriate.
+Several methodologies were used to test the site. The backend HTTP requests were tested in parallel to development, and all HTTP requests were covered by automated tests, with the exception of those that rely on the [OMDB API](https://www.omdbapi.com/) and those that involve sending emails. The front end section of the site was tested using automated tests and manual tests. The automated tests being divided into unit tests and integration tests. A finally category of tests was defined; End to End testing. This was included to ensure all 4 models (users, films, requests and recommendations) had full CRUD functionality, and the user interface gave feedback on these operations where appropriate.
 ## Table of Contents
 - [Testing](#testing)
   * [Table of Contents](#table-of-contents)
@@ -10,18 +10,18 @@ Several methodologies were used to test the site. The backend HTTP requests were
       - [Integration Tests](#integration-tests)
   * [Manual Testing](#manual-testing)
     + [Films Page](#films-page)
-    + [Reccomendations](#reccomendations)
+    + [Recommendations](#recommendations)
     + [Profile](#profile)
   * [End to End Testing](#end-to-end-testing)
     + [Users](#users)
     + [Films](#films)
     + [Requests](#requests)
-    + [Reccomendations](#reccomendations-1)
+    + [Recommendations](#recommendations-1)
 ## Automated Testing
 ### Backend
-The HTTP request were tested using [vitest](https://vitest.dev/) and the [supertest package](https://www.npmjs.com/package/supertest). Automated tests cover all HTTP requests with the exception of the following:
+The HTTP requests were tested using [vitest](https://vitest.dev/) and the [supertest package](https://www.npmjs.com/package/supertest). Automated tests cover all HTTP requests with the exception of the following:
 
-Method              |           URL | Reasoning for ommiting
+Method              |           URL | Reasoning for omitting
 :-------------------------:| :-------------------------: | :-------------------------:|
 |GET | /data/filmSearch | Reliance on external API|
 |GET | /data/filmData | Reliance on external API|
@@ -53,7 +53,7 @@ The 4 router files each have an associated test file. Screenshots of the test re
 
 Note: When ran together, several tests sometimes fail. Since the database is wiped before each test, and all tests pass when ran individually, I chose to take the individual results as passing. 
 ### Frontend
-The front end section of the site was tested with automated and manual tests, using Vitest and React Testing Library. Where appropriate, a test file for each React component was created. Mock data was used in the tests, these were passed into the components either diectly through props or contexts, or using  [Mock Service Worker (MSW)](https://mswjs.io/) to intercept and mock request handlers. The methodology for the following automated tests was based on the Udemy course:
+The front end section of the site was tested with automated and manual tests, using Vitest and React Testing Library. Where appropriate, a test file for each React component was created. Mock data was used in the tests, these were passed into the components either directly through props or contexts, or using  [Mock Service Worker (MSW)](https://mswjs.io/) to intercept and mock request handlers. The methodology for the following automated tests was based on the Udemy course:
 [https://www.udemy.com/course/react-testing-library](https://www.udemy.com/course/react-testing-library)
 
 #### Unit Tests
@@ -140,7 +140,7 @@ A selection of features were tested using integration tests, where multiple comp
 
 
 ## Manual Testing
-Manual testing was carried out on the remaining pages not covered by automated tests: Films Page, Reccomendations and Profile. The following tests cover front end user interaction and client side validation, any features that require HTTP requests are covered in End to End testing.
+Manual testing was carried out on the remaining pages not covered by automated tests: Films Page, Recommendations and Profile. The following tests cover front end user interaction and client side validation, any features that require HTTP requests are covered in End to End testing.
 
 ### Films Page
 
@@ -157,15 +157,15 @@ Test No.             |           Pass Criteria  | Screenshot
 1.9 | When screen width is less than 768px, full view is only shown for one film at at time| ![](documentation/testing/manual-tests/1.9.gif)
 1.10 | If a film in search results has go to watchlist link, clicking link goes to the current users watchlist, and clicked film is in main view|![](documentation/testing/manual-tests/1.10.gif) 
 
-### Reccomendations
+### Recommendations
 Test No.             |           Pass Criteria  | Screenshot
 :-------------------------:| :-------------------------: |  :-------:|
-2.1 | Correct films load in reccomendations list with messages |![](documentation/testing/manual-tests/2.1.jpg) 
+2.1 | Correct films load in recommendations list with messages |![](documentation/testing/manual-tests/2.1.jpg) 
 2.2 | Hovering over a film shows plot | ![](documentation/testing/manual-tests/2.2.gif) 
 2.3 | Filtering by sender changes which films are shown |![](documentation/testing/manual-tests/2.3.gif) 
 2.4 | Sorting alphabetically or last sent changes order of films|![](documentation/testing/manual-tests/2.4.gif) 
 2.5 | When screen width is less than 768px, only film images are shown, and the full view is only shown for one film at a time |![](documentation/testing/manual-tests/2.5.gif) 
-2.6 | When user has recieved more than 10 reccomendations, pagination is displayed and changing page number chagnes which films are displayed |![](documentation/testing/manual-tests/2.6.gif) 
+2.6 | When user has received more than 10 recommendations, pagination is displayed and changing page number changes which films are displayed |![](documentation/testing/manual-tests/2.6.gif) 
 2.7 | If a film has go to watchlist link, clicking link goes to the current users watchlist, and clicked film is in main view|![](documentation/testing/manual-tests/2.7.gif) 
 
 ### Profile
@@ -173,19 +173,19 @@ Test No.             |           Pass Criteria  | Screenshot
 :-------------------------:| :-------------------------: |  :-------:|
 3.1 | Correct username and profile image load| ![](documentation/testing/manual-tests/3.1.jpg) 
 3.2 | Clicking tabs changes what is displayed |![](documentation/testing/manual-tests/3.2.gif) 
-3.3 | Clicking your watchlist takes the user to thier own watchlist | ![](documentation/testing/manual-tests/3.3.gif) 
+3.3 | Clicking your watchlist takes the user to their own watchlist | ![](documentation/testing/manual-tests/3.3.gif) 
 3.4 | Save button is disabled and becomes enabled if username or profile image is changed | ![](documentation/testing/manual-tests/3.4.gif) 
 3.5 | If too large an image is uploaded, error message appears|![](documentation/testing/manual-tests/3.5.gif) 
 3.6 | If user tries to change username to one already taken, error message appears | ![](documentation/testing/manual-tests/3.6.jpg) 
 3.7 | If current password is incorrect, error message appears |![](documentation/testing/manual-tests/3.7.jpg) 
-3.8 | If new password fields dont match, error message appears |![](documentation/testing/manual-tests/3.8.jpg) 
-3.9 | If user tries to udpdate email to one taken, erorr message is displayed |  ![](documentation/testing/manual-tests/3.9.jpg)
+3.8 | If new password fields don't match, error message appears |![](documentation/testing/manual-tests/3.8.jpg) 
+3.9 | If user tries to update email to one taken, error message is displayed |  ![](documentation/testing/manual-tests/3.9.jpg)
 3.10 | If OTP is incorrect when attempting to update email address, error message is displayed | ![](documentation/testing/manual-tests/3.10.jpg)
 3.11 | On forgotten password page, if user enters an email address not associated with account, error message is displayed | ![](documentation/testing/manual-tests/3.11.jpg)
 
 
 ## End to End Testing
-The purpose of this section is to ensure that the 4 models (users, films, requests and reccomendations) can be created, updated where applicable, read and deleted, and that these operations are visible in the database UI [Mongo DB Compass](https://www.mongodb.com/products/tools/compass) as well as the client. Read is not included as an operation in this section as this was coverd by manual and automated tests. 
+The purpose of this section is to ensure that the 4 models (users, films, requests and recommendations) can be created, updated where applicable, read and deleted, and that these operations are visible in the database UI [Mongo DB Compass](https://www.mongodb.com/products/tools/compass) as well as the client. Read is not included as an operation in this section as this was covered by manual and automated tests. 
 
 ### Users
 Operation             | Functional Meaning           | Front end change | Database UI Change|
@@ -211,8 +211,8 @@ CREATE | Send a friend request | ![](documentation/testing/end-to-end-tests/r1.g
 UPDATE |Accept a friend request | ![](documentation/testing/end-to-end-tests/r3.gif) | ![](documentation/testing/end-to-end-tests/r4.jpg)
 DELETE | Decline or remove a friend request |![](documentation/testing/end-to-end-tests/r5.gif) ![](documentation/testing/end-to-end-tests/r7.gif) | ![](documentation/testing/end-to-end-tests/r6.jpg)
 
-### Reccomendations 
+### Recommendations 
 Operation             | Functional Meaning           | Front end change | Database UI Change|
 :-------------------------:| :-------------------------: |  :-------:|:-------:|
-CREATE | Send a reccomendation | ![](documentation/testing/end-to-end-tests/rc1.gif) | ![](documentation/testing/end-to-end-tests/rc2.jpg) 
-DELETE | Remove a reccomendation |![](documentation/testing/end-to-end-tests/rc3.gif) | ![](documentation/testing/end-to-end-tests/rc4.jpg)
+CREATE | Send a recommendation | ![](documentation/testing/end-to-end-tests/rc1.gif) | ![](documentation/testing/end-to-end-tests/rc2.jpg) 
+DELETE | Remove a recommendation |![](documentation/testing/end-to-end-tests/rc3.gif) | ![](documentation/testing/end-to-end-tests/rc4.jpg)
