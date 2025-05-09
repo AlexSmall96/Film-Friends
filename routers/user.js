@@ -195,6 +195,12 @@ router.patch('/data/users/me', auth, async (req, res) => {
         } else {
             update = {username: req.body.username, email:req.body.email}
         }
+        if (req.body.username) {
+            const existingUser = await User.findOne({ username: req.body.username });
+            if (existingUser) {
+                return res.status(400).send({ errors: { username: { message: 'Username already taken.' } } });
+            }
+        }
         try {
             const user = await User.findByIdAndUpdate(req.user._id, update)
             res.send({ user, token: req.token })
