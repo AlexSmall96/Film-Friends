@@ -64,15 +64,16 @@ Collections in Studio 3T:
 
 Automated testing using [vitest](https://vitest.dev/) and the [supertest package](https://www.npmjs.com/package/supertest) was implemented for all HTTP requests (with the exception of those requiring external APIs or emails) in parallel to development, and an associated test file can be found alongside each of the router files in [this folder](https://github.com/AlexSmall96/Film-Friends/tree/main/routers). See [Testing](https://github.com/AlexSmall96/Film-Friends/blob/main/TESTING.MD) for details.
 
-The methodology in this section was inspired by the below Udemy course.
- - [https://www.udemy.com/course/the-complete-nodejs-developer-course-2](https://www.udemy.com/course/the-complete-nodejs-developer-course-2)
+The methodology in this section was inspired by the Udemy course: [https://www.udemy.com/course/the-complete-nodejs-developer-course-2](https://www.udemy.com/course/the-complete-nodejs-developer-course-2)
 
 #### Sprint 3: Frontend Functionality
+This phase began by creating the basic page layout used to implement the processes required. As the project grew in complexity, sub components were added to pages and the react architectutre was refined. Throughout this phase some of the backend routers were updated to accomodate new functionality. A diagram detailing the final structure of the react architectutre is given below.
 
-
+- React Architecture
 #### Sprint 4: Frontend Styling
-
-#### Sprint 5: Remaining Documentation and Manual Testing
+Once the layout had been finalised and the funcionality was working as expected, the visual appearance of the site was refined. This included font choice, colours, margins, images and responsiveness.
+#### Sprint 5: Remaining Documentation and Testing
+This phase involved updating some backend router tests before creating unit tests and integration tests for the front end using [vitest](https://vitest.dev/) and [react testing library](https://testing-library.com/). After this, manual tests were carried out to test features not covered in automated testing. End to end testing was then implemented to verify that the models in the database had full CRUD funcionality and the user was given visual feedback to represent these changes.
 ### User Stories
 #### Allow me to sign up for Film Friends
 - Users can sign up using a chosen email, username, and password.
@@ -81,18 +82,16 @@ The methodology in this section was inspired by the below Udemy course.
 #### Allow me to delete my account
 - Users can choose to delete the account.
 #### Allow me to save films, rate them, mark them as watched and remove them from my list
-- User can save a film to their watchlist, rate it, add notes, and mark it as watched.
+- User can save a film to their watchlist, rate it, and mark it as watched.
 - User can view all their films in a list.
 - User can decide which of their films in the list can be viewed by others.
 #### Allow me to add friends and view their film lists
 - Users can find each other on the app by username.
 - Users can add and accept friend requests.
-- Users can view friends' film lists, only seeing films the user has allowed others to see.
-- Users are unable to see other users lists who have not accepted their friend requests.
+- Users can view friends' public film lists.
 #### Allow me to make recommendations to my friends
 - Users can send a film recommendation to friends.
 - Users are unable to send recommendations to other users who have not accepted their friend requests.
-- Receiver of recommendation can like and comment.
 #### Allow me to view and customize my profile
 - Users can edit their name and profile image.
 - Users can change their email or password.
@@ -100,7 +99,6 @@ The methodology in this section was inspired by the below Udemy course.
 
 
 ### Target Audience
-
 
 ### Wireframes
 The wireframes below were created to plan the app's front-end layout. A large view and a mobile view have been made for each page.
@@ -163,10 +161,6 @@ The wireframes below were created to plan the app's front-end layout. A large vi
 
 
 ## Testing
-
-
-## Deployment
-
 
 ## Credits
 Reference Udemy course when code is used:
