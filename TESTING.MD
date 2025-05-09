@@ -199,5 +199,3 @@ Operation             | Functional Meaning           | Front end change | Databa
 :-------------------------:| :-------------------------: |  :-------:|:-------:|
 CREATE | Send a reccomendation | ![](documentation/testing/end-to-end-tests/rc1.gif) | ![](documentation/testing/end-to-end-tests/rc2.jpg) 
 DELETE | Remove a reccomendation |![](documentation/testing/end-to-end-tests/rc3.gif) | ![](documentation/testing/end-to-end-tests/rc4.jpg)
-## Responsiveness
-This section verifies that each page maintains its integrity and visual appeal on all screen sizes. For each page, a recording is given showing the window being resized.
