@@ -162,6 +162,36 @@ Test No.             |           Pass Criteria  | Screenshot
 
 
 ## End to End Testing
+The purpose of this section is to ensure that all 4 models (users, films, requests and reccomendations) can be created, updated, read and deleted, and that these operations are visible in the database UI [Mongo DB Compass](https://www.mongodb.com/products/tools/compass) as well as the client. Read is not included as an operation in this section as this was coverd by manual and automated tests. 
 
+### Users
+Operation             | Functional Meaning           | Front end change | Database UI Change|
+:-------------------------:| :-------------------------: |  :-------:|:-------:|
+CREATE | Signing up | N/A | ![](documentation/testing/end-to-end-tests/u1.jpg)|
+UPDATE | Updating Profile Data | ![](documentation/testing/end-to-end-tests/U2.jpg) |![](documentation/testing/end-to-end-tests/u2a.jpg) |
+UPDATE | Updating email address |![](documentation/testing/end-to-end-tests/u3.jpg) ![](documentation/testing/end-to-end-tests/u3a.jpg) ![](documentation/testing/end-to-end-tests/u3b.jpg) | ![](documentation/testing/end-to-end-tests/u3c.jpg) |
+UPDATE | Updating password |![](documentation/testing/end-to-end-tests/u4.jpg) | ![](documentation/testing/end-to-end-tests/u4a.jpg)
+UPDATE | Resetting forgotten password |![](documentation/testing/end-to-end-tests/u5.jpg) ![](documentation/testing/end-to-end-tests/u5a.jpg) ![](documentation/testing/end-to-end-tests/u5b.jpg)| ![](documentation/testing/end-to-end-tests/u5c.jpg)
+DELETE | Deleting account | ![](documentation/testing/end-to-end-tests/u6a.jpg)|![](documentation/testing/end-to-end-tests/u6b.jpg)
+
+### Films
+Operation             | Functional Meaning           | Front end change | Database UI Change|
+:-------------------------:| :-------------------------: |  :-------:|:-------:|
+CREATE | Saving a film via search results | ![](documentation/testing/end-to-end-tests/f1.gif)|![](documentation/testing/end-to-end-tests/f2.jpg)|
+UPDATE | Rating a film, marking as watched, making public/private|![](documentation/testing/end-to-end-tests/f3.gif) |![](documentation/testing/end-to-end-tests/f4.jpg)|
+DELETE | Removing a film from watchlist | ![](documentation/testing/end-to-end-tests/f5.gif)|![](documentation/testing/end-to-end-tests/f6.jpg)
+
+### Requests
+Operation             | Functional Meaning           | Front end change | Database UI Change|
+:-------------------------:| :-------------------------: |  :-------:|:-------:|
+CREATE | Send a friend request | ![](documentation/testing/end-to-end-tests/r1.gif) |![](documentation/testing/end-to-end-tests/r2.jpg)|
+UPDATE |Accept a friend request | ![](documentation/testing/end-to-end-tests/r3.gif) | ![](documentation/testing/end-to-end-tests/r4.jpg)
+DELETE | Decline or remove a friend request |![](documentation/testing/end-to-end-tests/r5.gif) ![](documentation/testing/end-to-end-tests/r7.gif) | ![](documentation/testing/end-to-end-tests/r6.jpg)
+
+### Reccomendations 
+Operation             | Functional Meaning           | Front end change | Database UI Change|
+:-------------------------:| :-------------------------: |  :-------:|:-------:|
+CREATE | Send a reccomendation | ![](documentation/testing/end-to-end-tests/rc1.gif) | ![](documentation/testing/end-to-end-tests/rc2.jpg) 
+DELETE | Remove a reccomendation |![](documentation/testing/end-to-end-tests/rc3.gif) | ![](documentation/testing/end-to-end-tests/rc4.jpg)
 ## Responsiveness
 
