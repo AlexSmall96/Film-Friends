@@ -10,7 +10,43 @@ Film Friends is a film, sharing and reviewing app, where users can save and rate
 ## Author
 Alex Small | [GitHub](https://github.com/AlexSmall96) | [LinkedIn](https://www.linkedin.com/in/alex-small-a8977116b/)
 ## Table of Contents
-
+- [Film Friends](#film-friends)
+  * [Live Site](#live-site)
+  * [Repository](#repository)
+  * [Author](#author)
+  * [Table of Contents](#table-of-contents)
+  * [Project Goals and Planning](#project-goals-and-planning)
+    + [Process Flow Diagrams](#process-flow-diagrams)
+      - [Login and Sign Up](#login-and-sign-up)
+      - [Save a new Film](#save-a-new-film)
+      - [Search for Users and Send Friend Requests](#search-for-users-and-send-friend-requests)
+      - [Send a Reccomendation](#send-a-reccomendation)
+    + [Database Schema](#database-schema)
+    + [Methodology](#methodology)
+      - [Sprint 1: Planning and Documentation](#sprint-1--planning-and-documentation)
+      - [Sprint 2: Backend Functionality](#sprint-2--backend-functionality)
+      - [Sprint 3: Frontend Functionality](#sprint-3--frontend-functionality)
+      - [Sprint 4: Frontend Styling](#sprint-4--frontend-styling)
+      - [Sprint 5: Remaining Documentation and Testing](#sprint-5--remaining-documentation-and-testing)
+    + [User Stories](#user-stories)
+      - [Allow me to sign up for Film Friends](#allow-me-to-sign-up-for-film-friends)
+      - [Allow me to log in to Film Friends with my account](#allow-me-to-log-in-to-film-friends-with-my-account)
+      - [Allow me to delete my account](#allow-me-to-delete-my-account)
+      - [Allow me to save films, rate them, mark them as watched and remove them from my list](#allow-me-to-save-films--rate-them--mark-them-as-watched-and-remove-them-from-my-list)
+      - [Allow me to add friends and view their film lists](#allow-me-to-add-friends-and-view-their-film-lists)
+      - [Allow me to make recommendations to my friends](#allow-me-to-make-recommendations-to-my-friends)
+      - [Allow me to view and customize my profile](#allow-me-to-view-and-customize-my-profile)
+  * [UX](#ux)
+    + [Target Audience](#target-audience)
+    + [Wireframes](#wireframes)
+    + [Fonts](#fonts)
+    + [Images](#images)
+  * [Programming Languages, Frameworks, and Libraries used](#programming-languages--frameworks--and-libraries-used)
+  * [Other technologies used](#other-technologies-used)
+  * [Credits](#credits)
+    + [Courses](#courses)
+    + [APIs](#apis)
+    + [Code](#code)
 
 ## Project Goals and Planning
 The goal of this project was to develop my skills in React, Node.js and automated testing, while creating a website that real film lovers would use to organise their films and connect with others.
@@ -153,19 +189,68 @@ The film images used in this site come from the [Open Movie Database (OMDB) API]
 ![](documentation/ux/placeholders.jpg)
 
 ## Programming Languages, Frameworks, and Libraries used
+- Backend
+    - Node.js
+    - Express
+- Frontend
+    - React
+    - React Bootstrap
+Testing
+    - Vitest
+    - Supertest
+    - React Testing Library
+    - Mock Service Worker
 
-
-## Testing
+## Other technologies used
+- Deployment
+    - Render
+- Database
+    - MongoDB
+    - MongoDB Compass
+    - Studio 3T
+- Images
+    - Cloudinary
+- Development
+    - VS code
+    - GitHub
+- Documentation
+    - dbdocs
+    - Balsamiq
+    - lucidchart
+    - screentogif
 
 ## Credits
-Reference Udemy course when code is used:
+### Courses
  - [https://www.udemy.com/course/the-complete-nodejs-developer-course-2](https://www.udemy.com/course/the-complete-nodejs-developer-course-2)
-## Code
-### Deployment
-The below dev.to article was used to deploy the project to [Render](https://dashboard.render.com/) :
+ - [https://www.udemy.com/course/react-testing-library](https://www.udemy.com/course/react-testing-library)
+### APIs
+The film data is taken from the [Open Movie Database (OMDB) API](https://www.omdbapi.com/).
+### Code
+Code was taken from/inspired by the below articles. Whenever the code is used, it is referenced as a comment.
 
+- Deploying to Render:
+[https://dev.to/pixelrena/deploying-your-reactjs-expressjs-server-to-rendercom-4jbo](https://dev.to/pixelrena/deploying-your-reactjs-expressjs-server-to-rendercom-4jbo)
 
-- [https://dev.to/pixelrena/deploying-your-reactjs-expressjs-server-to-rendercom-4jbo](https://dev.to/pixelrena/deploying-your-reactjs-expressjs-server-to-rendercom-4jbo)
+- Uploading images to cloudinary: https://dev.to/njong_emy/how-to-store-images-in-mongodb-using-cloudinary-mern-stack-imos
 
-Uploading images to cloudinary
-- https://dev.to/njong_emy/how-to-store-images-in-mongodb-using-cloudinary-mern-stack-imo
+- Removing match media errors from certain tests: https://stackoverflow.com/questions/39830580/jest-test-fails-typeerror-window-matchmedia-is-not-a-function
+
+- To track screen width: https://stackoverflow.com/questions/36862334/get-viewport-window-height-in-reactjs 
+
+- To send OTP: https://www.makeuseof.com/password-reset-forgot-react-node-how-handle/
+
+- To automatically change home page carousel: https://upmostly.com/tutorials/settimeout-in-react-components-using-hooks 
+
+- To show search suggestion on home page: https://www.dhiwise.com/post/how-to-build-react-search-bar-with-suggestions#customizing-the-autocomplete-behavior 
+
+- To convert an image to base 64 was taken from https://dev.to/njong_emy/how-to-store-images-in-mongodb-using-cloudinary-mern-stack-im
+
+- To set the preview file was taken from: https://www.geeksforgeeks.org/how-to-upload-image-and-preview-it-using-reactjs/
+
+- The plotPreview class was inspired by https://stackoverflow.com/questions/7993067/text-overflow-ellipsis-not-working
+
+- The filmRow:hover class was taken from Taken from https://stackoverflow.com/questions/33203148/how-to-make-a-div-box-look-3d 
+
+- The code used in renderWithProviders.jsx to render the component with memory router was taken from: https://medium.com/@bobjunior542/using-useparams-in-react-router-6-with-jest-testing-a29c53811b9e
+
+- Scrollbar styling: https://css-tricks.com/classy-and-cool-custom-css-scrollbars-a-showcase/ 
