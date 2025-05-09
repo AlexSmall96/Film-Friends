@@ -13,7 +13,7 @@ Method              |           URL | Reasoning for ommiting
 
 Features not covered by automated tests will be tested manually.
 
-The 4 router files each have an associated test file. Screenshots of the test results are given below,
+The 4 router files each have an associated test file. Screenshots of the test results are given below.
 
 [user.test.js](https://github.com/AlexSmall96/Film-Friends/tree/main/routers/user.test.js)
 
@@ -21,7 +21,20 @@ The 4 router files each have an associated test file. Screenshots of the test re
 
 [film.test.js](https://github.com/AlexSmall96/Film-Friends/tree/main/routers/film.test.js)
 
+
 ![](documentation/testing/router-tests/films.jpg)
+
+[request.test.js](https://github.com/AlexSmall96/Film-Friends/tree/main/routers/request.test.js)
+
+
+![](documentation/testing/router-tests/requests.jpg)
+
+[reccomendation.test.js](https://github.com/AlexSmall96/Film-Friends/tree/main/routers/reccomendation.test.js)
+
+
+![](documentation/testing/router-tests/reccomendations.jpg)
+
+Note: When ran together, several tests sometimes fail. Since the database is wiped before each test, and all tests pass when ran individually, I chose to take the individual results as passing. 
 ### Frontend
 
 #### Unit Tests
