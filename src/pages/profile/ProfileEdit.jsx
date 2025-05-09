@@ -51,7 +51,7 @@ const ProfileEdit = ({setUpdated, hasLoaded, setHasLoaded, username, setUsername
             setHasLoaded(true)
         } catch (err) {
             setHasLoaded(true)
-            if (err?.response?.data?.errorResponse){
+            if (err?.response?.data?.errors?.username){
                 setMessage({username: 'Username taken. Please select a different username.'})
             } else {
                 setMessage({password:'Currently unable to change username due to system issues. Please try again later.'})
