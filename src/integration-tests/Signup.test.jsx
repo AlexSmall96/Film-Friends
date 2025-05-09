@@ -1,16 +1,16 @@
 /**
  * @vitest-environment jsdom
  */
-import Signup from './Signup';
+import Signup from '../pages/auth/Signup';
 import React from 'react';
 import '@testing-library/jest-dom/vitest';
 import { screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event'
 import { describe, test, expect } from 'vitest';
-import { server } from '../../test-utils/mocks/server'
+import { server } from '../test-utils/mocks/server'
 import { HttpResponse, http } from "msw";
-import setupTests from '../../test-utils/setupTests'
-import renderWithUserProvider from '../../test-utils/renderWithUserProvider';
+import setupTests from '../test-utils/setupTests'
+import renderWithUserProvider from '../test-utils/renderWithUserProvider';
 
 const url = 'https://film-friends.onrender.com/data'
 
