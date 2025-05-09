@@ -159,10 +159,16 @@ Test No.             |           Pass Criteria  | Screenshot
 3.3 | Clicking your watchlist takes the user to thier own watchlist | ![](documentation/testing/manual-tests/3.3.gif) 
 3.4 | Save button is disabled and becomes enabled if username or profile image is changed | ![](documentation/testing/manual-tests/3.4.gif) 
 3.5 | If too large an image is uploaded, error message appears|![](documentation/testing/manual-tests/3.5.gif) 
+3.6 | If user tries to change username to one already taken, error message appears | ![](documentation/testing/manual-tests/3.6.jpg) 
+3.7 | If current password is incorrect, error message appears |![](documentation/testing/manual-tests/3.7.jpg) 
+3.8 | If new password fields dont match, error message appears |![](documentation/testing/manual-tests/3.8.jpg) 
+3.9 | If user tries to udpdate email to one taken, erorr message is displayed |  ![](documentation/testing/manual-tests/3.9.jpg)
+3.10 | If OTP is incorrect when attempting to update email address, error message is displayed | ![](documentation/testing/manual-tests/3.10.jpg)
+3.11 | On forgotten password page, if user enters an email address not associated with account, error message is displayed | ![](documentation/testing/manual-tests/3.11.jpg)
 
 
 ## End to End Testing
-The purpose of this section is to ensure that all 4 models (users, films, requests and reccomendations) can be created, updated, read and deleted, and that these operations are visible in the database UI [Mongo DB Compass](https://www.mongodb.com/products/tools/compass) as well as the client. Read is not included as an operation in this section as this was coverd by manual and automated tests. 
+The purpose of this section is to ensure that the 4 models (users, films, requests and reccomendations) can be created, updated where applicable, read and deleted, and that these operations are visible in the database UI [Mongo DB Compass](https://www.mongodb.com/products/tools/compass) as well as the client. Read is not included as an operation in this section as this was coverd by manual and automated tests. 
 
 ### Users
 Operation             | Functional Meaning           | Front end change | Database UI Change|
@@ -194,4 +200,4 @@ Operation             | Functional Meaning           | Front end change | Databa
 CREATE | Send a reccomendation | ![](documentation/testing/end-to-end-tests/rc1.gif) | ![](documentation/testing/end-to-end-tests/rc2.jpg) 
 DELETE | Remove a reccomendation |![](documentation/testing/end-to-end-tests/rc3.gif) | ![](documentation/testing/end-to-end-tests/rc4.jpg)
 ## Responsiveness
-
+This section verifies that each page maintains its integrity and visual appeal on all screen sizes. For each page, a recording is given showing the window being resized.
