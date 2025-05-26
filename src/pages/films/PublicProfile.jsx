@@ -54,7 +54,7 @@ const PublicProfile = ({profile, filmStats, showStats, similarity, directorCount
                 :
                     <h4 className={`${appStyles.smallFont} ${appStyles.headingFont}`}>{profile.username}</h4>
                 }
-                <Avatar height={avatarHeight} />
+                <Avatar height={avatarHeight} src={profile.image} />
             </Col>
             {showStats?
                 <>
