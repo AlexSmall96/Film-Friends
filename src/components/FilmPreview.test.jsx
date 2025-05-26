@@ -8,6 +8,7 @@ import { screen, act } from '@testing-library/react';
 import { test, expect, describe} from 'vitest';
 import setupTests from '../test-utils/setupTests';
 import renderWithContext from '../test-utils/renderWithContext';
+import userEvent from '@testing-library/user-event';
 
 setupTests()
 
@@ -136,7 +137,7 @@ describe('USING COMPONENT AS SEARCH RESULT', () => {
 })
 
 describe('USING COMPONENT IN RECCOMENDATIONS PAGE', () => {
-    test('On large screens, only reccomendation message, save dropdown and remove button should be displayed.', () => {
+    test('On large screens, only reccomendation message, save dropdown and remove button should be displayed.', async () => {
         // Replicate film data used in reccomendations page
         const filmPreviewData = {
             film: {
@@ -156,11 +157,12 @@ describe('USING COMPONENT IN RECCOMENDATIONS PAGE', () => {
                 userRating: 5
             },
             message: "Hey! Check out this awesome film I've just watched. I think you'll love it",
-            sender: {username: 'user1'},
+            sender: {username: 'user1', _id: 'user1id'},
             showDropdown: true
         }
         // Render component
-        renderWithContext(<FilmPreview />, {filmPreviewData}) 
+        const path = '/reccomendations'
+        const { history } = renderWithContext(<FilmPreview />, {filmPreviewData, path}) 
         // Image should be present
         const image = screen.getByRole('img', {name: 'Poster for Star Wars: Episode I - The Phantom Menace'})
         expect(image).toBeInTheDocument()
@@ -176,6 +178,15 @@ describe('USING COMPONENT IN RECCOMENDATIONS PAGE', () => {
         // Remove button should be present
         const remove = screen.getByRole('button', {name: 'Remove'})
         expect(remove).toBeInTheDocument()    
+        // Message and senders username should be present
+        const user1Link = screen.getByText(/user1/)
+        expect(user1Link).toBeInTheDocument()
+        const message = screen.getByText("Hey! Check out this awesome film I've just watched. I think you'll love it")
+        expect(message).toBeInTheDocument()
+        // Clicking sender username should direct user to senders film list
+        const user = userEvent.setup()
+        await user.click(user1Link)
+        expect(history.location.pathname).toBe('/films/user1id')
     })
     test('On mobile screens, only poster should be present.', () => {
         // Replicate film data used in reccomendations page

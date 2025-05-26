@@ -9,6 +9,7 @@ import useWindowDimensions from '../hooks/useWindowDimensions';
 import SaveDropown from './SaveDropdown';
 import { useSaveFilmContext } from '../contexts/SaveFilmContext';
 import { useFilmSearchContext } from '../contexts/FilmSearchContext';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 
 // Displays film poster and preview of data either as a list of search results, saved films or reccomendations
 const FilmPreview = () => {
@@ -19,6 +20,7 @@ const FilmPreview = () => {
     const { setShowMainFilm } = useSaveFilmContext()
     // Hooks
     const { width } = useWindowDimensions()
+    const history = useHistory()
     // Initialize variables
     const omdbStringArray = [film.Director, film.Year, film.Type]
     const omdbString = omdbStringArray.filter(value => value).join(', ')
@@ -124,7 +126,7 @@ const FilmPreview = () => {
                 <>
                 {/* RECCOMENDATION MESSAGE */}
                 <Alert variant='light' className={appStyles.verySmallFont}>
-                    <strong>{sender.username}: </strong>{message}
+                    <a href='' onClick={() => history.push(`/films/${sender._id}`)}><strong>{sender.username}: </strong></a>{message}
                 </Alert>
 
                 </> :''}     
