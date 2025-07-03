@@ -16,6 +16,7 @@ Alex Small | [GitHub](https://github.com/AlexSmall96) | [LinkedIn](https://www.l
   * [Repository](#repository)
   * [Author](#author)
   * [Table of Contents](#table-of-contents)
+  * [Testing](#testing)
   * [Project Goals and Planning](#project-goals-and-planning)
     + [Process Flow Diagrams](#process-flow-diagrams)
       - [Login and Sign Up](#login-and-sign-up)
@@ -48,6 +49,9 @@ Alex Small | [GitHub](https://github.com/AlexSmall96) | [LinkedIn](https://www.l
     + [Courses](#courses)
     + [APIs](#apis)
     + [Code](#code)
+    + 
+## Testing 
+See [Testing](https://github.com/AlexSmall96/Film-Friends/blob/main/TESTING.MD)
 
 ## Project Goals and Planning
 The goal of this project was to develop my skills in React, Node.js and automated testing, while creating a website that real film lovers would use to organise their films and connect with others.
