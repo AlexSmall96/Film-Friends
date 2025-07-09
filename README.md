@@ -115,7 +115,11 @@ This phase began by creating the basic page layout used to implement the process
 Once the layout had been finalised and the functionality was working as expected, the visual appearance of the site was refined. This included font choice, colours, margins, images and responsiveness.
 #### Sprint 5: Remaining Documentation and Testing
 This phase involved updating some backend router tests before creating unit tests and integration tests for the front end using [vitest](https://vitest.dev/) and [react testing library](https://testing-library.com/). After this, manual tests were carried out to test features not covered in automated testing. End to end testing was then implemented to verify that the models in the database had full CRUD functionality and the user was given visual feedback to represent these changes.
+
+## UX
+
 ### User Stories
+
 #### Allow me to sign up for Film Friends
 - Users can sign up using a chosen email, username, and password.
 #### Allow me to log in to Film Friends with my account
@@ -136,8 +140,7 @@ This phase involved updating some backend router tests before creating unit test
 #### Allow me to view and customize my profile
 - Users can edit their name and profile image.
 - Users can change their email or password.
-## UX
-
+- 
 ### Target Audience
 The target audience of this site is anyone who is passionate about films, and enjoys organising and planning their film viewing, as well as connecting with others over common film interests.
 ### Wireframes
