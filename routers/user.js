@@ -84,7 +84,7 @@ router.get('/data/users/:id', auth, async (req, res) => {
             const initialValue = 0
             const callBack = (total, rating) => (1 - 0.2 * Math.abs(rating.viewerRating - rating.ownerRating)) + total
             const ratingsSum = ratings.reduce(callBack, initialValue)
-            const similarity = ratingsSum / ratings.length
+            const similarity = Math.round(ratingsSum / ratings.length)
             // Send profile data and similarity score
             return res.status(200).send({ profile, similarity })
         }
