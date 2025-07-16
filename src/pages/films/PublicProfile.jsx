@@ -72,7 +72,7 @@ const PublicProfile = ({profile, filmStats, showStats, similarity, directorCount
                             overlay={<Tooltip id="button-tooltip-2">{similarityMessage}</Tooltip>}
                         >
                             <div className={styles.progressBarParent}>
-                                <CircularProgressbar value={100 * similarity} text={`${100 * similarity}%`} />
+                                <CircularProgressbar value={100 * similarity} text={`${Math.round(100 * similarity)}%`} />
                             </div>
                         </OverlayTrigger>}
                     </Col>
