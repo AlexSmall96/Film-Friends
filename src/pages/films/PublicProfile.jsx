@@ -19,7 +19,7 @@ const PublicProfile = ({profile, filmStats, showStats, similarity, directorCount
     const { isOwner } = useCurrentFilm()
     const { width } = useWindowDimensions()
     const [avatarHeight, setAvatarHeight] = useState(100)
-    const similarityMessage = `Based on films that you and ${profile.username} have in common, your ratings are ${100*similarity || 0}% similar.`
+    const similarityMessage = `Based on films that you and ${profile.username} have in common, your ratings are ${Math.round(100 * similarity) || 0}% similar.`
     // Tooltip for genre and director counts
     const renderTooltip = (name, value, bool) => (
         <Tooltip id="button-tooltip">
