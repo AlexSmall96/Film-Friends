@@ -21,14 +21,14 @@ Several methodologies were used to test the site. The backend HTTP requests were
 ### Backend
 The HTTP requests were tested using [vitest](https://vitest.dev/) and the [supertest package](https://www.npmjs.com/package/supertest). Automated tests cover all HTTP requests with the exception of the following:
 
-Method              |           URL | Reasoning for omitting
-:-------------------------:| :-------------------------: | :-------------------------:|
-|GET | /data/filmSearch | Reliance on external API|
-|GET | /data/filmData | Reliance on external API|
-|POST |/data/users/sendEmail | Reliance on nodemailer |
-|PATCH | /data/users/me | Image upload could not be tested
+Method              |           URL | 
+:-------------------------:| :-------------------------: | 
+|GET | /data/filmSearch | 
+|GET | /data/filmData | 
+|POST |/data/users/sendEmail | 
+|PATCH | /data/users/me | 
 
-Features not covered by automated tests will be tested manually.
+Since the above features relied on external services, I made the decision to test these end points manually due to time constraints
 
 The 4 router files each have an associated test file. Screenshots of the test results are given below.
 
