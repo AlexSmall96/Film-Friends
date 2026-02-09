@@ -15,7 +15,7 @@ Allows user to share film, delete film, or make public / private
 */
 const EllipsisMenu = ({updateViewingData}) => {
     // Contexts
-    const {currentUser} = useCurrentUser()
+    const {currentUser, isGuest} = useCurrentUser()
     const { currentFilmIds, setCurrentFilmIds, viewingData, omdbData, setHasDeleted } = useCurrentFilm()
     const { updated, setUpdated } = useSaveFilmContext()
     // Hooks
@@ -118,7 +118,9 @@ const EllipsisMenu = ({updateViewingData}) => {
                             {/* SHARE, REMOVE AND MAKE PUBLIC / PRIVATE OPTIONS */}
                             <p onClick={viewingData.public && friends.length? handleShowModal : null} className={viewingData.public && friends.length? styles.clickable: appStyles.grey}><i className="fa-solid fa-share"></i> Share</p>
                             <p className={styles.clickable} onClick={() => updateViewingData(null, null, !viewingData.public)}><i className="fa-solid fa-pen"></i> {viewingData.public? 'Make Private': 'Make Public'}</p>
-                            <p className={styles.clickable} onClick={handleDelete}><i className="fa-regular fa-trash-can"></i> Remove from Watchlist</p>
+                            <p className={isGuest ? appStyles.grey: styles.clickable} onClick={() => { if (!isGuest) handleDelete() }}><i className="fa-regular fa-trash-can" disabled={isGuest}></i> 
+                                {isGuest? ' Guest users cannot remove films' : ' Remove from Watchlist'}
+                            </p>
                         </div>)
                     }
                 </Overlay>
