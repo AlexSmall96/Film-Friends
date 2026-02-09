@@ -16,6 +16,13 @@ export const CurrentUserProvider = ({ children }) => {
         return storedUser ? JSON.parse(storedUser): null
     }
 
+    const getStoredGuest = () => {
+        const storedGuest = localStorage.getItem('isGuest')
+        return storedGuest ? JSON.parse(storedGuest) : false
+    }
+
+    const [isGuest, setIsGuest] = useState(getStoredGuest())
+
     // Make HTTP request to check if token is still valid
     const checkToken = async (token) => {
         try {
@@ -46,11 +53,12 @@ export const CurrentUserProvider = ({ children }) => {
         }
     }, [currentUser])
 
+    useEffect(() => {
+        localStorage.setItem('isGuest', JSON.stringify(isGuest))
+    }, [isGuest])
+    
     // Define accountDeleted bool var to display message on home screen after deletion
     const [accountDeleted, setAccountDeleted] = useState(false)
-
-    // Define isGuest bool var to disable certain features for guest users
-    const [isGuest, setIsGuest] = useState(false)
 
     return (
         <CurrentUserContext.Provider value={{currentUser, setCurrentUser, accountDeleted, setAccountDeleted, isGuest, setIsGuest}}>
