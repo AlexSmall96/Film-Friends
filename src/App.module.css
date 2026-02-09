@@ -163,6 +163,10 @@
   color: green
 }
 
+.black {
+  color: black !important;
+}
+
 .warning{
   color: orange;
   font-weight: bold;
