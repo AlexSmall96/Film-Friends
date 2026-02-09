@@ -49,7 +49,7 @@ router.post('/data/users/guest-login', async (_req, res) => {
         const user = await User.findById(process.env.GUEST_USER_ID)
         if (!user) return res.status(500).send("Guest user not found");
         const token = await user.generateAuthToken()
-        res.send({ user, token })
+        res.send({ user, token, isGuest: true })
     } catch (e) {
         res.status(400).send()
     }
