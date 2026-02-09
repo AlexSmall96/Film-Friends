@@ -124,6 +124,10 @@ router.patch('/data/films/:id', auth, async (req, res) => {
 
 // Delete film
 router.delete('/data/films/:id', auth, async (req, res) => {
+    const isGuest = req.user.isGuest
+    if (isGuest) {
+        return res.status(403).send({error: {message: 'Guest users are not authorized to delete films.'}})
+    }
     const _id = req.params.id
     try {
         const film = await Film.findOneAndDelete({_id:_id, owner: req.user._id})
