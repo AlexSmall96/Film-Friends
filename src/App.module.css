@@ -38,7 +38,7 @@
 }
 
 .grey {
-  color: grey;
+  color: grey !important;
   cursor: not-allowed;
   pointer-events: none;
 }
