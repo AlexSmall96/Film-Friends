@@ -6,6 +6,7 @@ import appStyles from '../App.module.css'
 import { useFilmPreview } from '../contexts/FilmPreviewContext';
 import { useSaveFilmContext } from '../contexts/SaveFilmContext';
 import { useCurrentFilm } from '../contexts/CurrentFilmContext';
+import { useCurrentUser } from '../contexts/CurrentUserContext';
 
 // Used as confirmation when user requests to delete reccomendation or friend
 const DeleteModal = ({confirmMessage}) => {
@@ -15,6 +16,7 @@ const DeleteModal = ({confirmMessage}) => {
     const { resultId, mainFilm } = useFilmPreview()
     const { deleteReccomendation } = useSaveFilmContext()
     const { currentReccomendation } = useCurrentFilm()
+    const { isGuest } = useCurrentUser()
 
     // Initialize state variables
     const [show, setShow] = useState(false);
@@ -23,8 +25,8 @@ const DeleteModal = ({confirmMessage}) => {
     return (
         <>  
             {/* BUTTONS TO SHOW MODAL */}
-            <Button variant="outline-secondary" size="sm" className={`${appStyles.roundButton} ${resultId? appStyles.smallVerticalMargin: ''}`} onClick={() => setShow(true)}>
-                <i className="fa-regular fa-trash-can"></i> Remove 
+            <Button variant="outline-secondary" disabled={isGuest} size="sm" className={`${appStyles.roundButton} ${isGuest && `${appStyles.verySmallFont} ${appStyles.black}`} ${resultId? appStyles.smallVerticalMargin: ''}`} onClick={() => setShow(true)}>
+                <i className="fa-regular fa-trash-can"></i> {isGuest? " Cannot remove as guest": " Remove"}
             </Button>
             {/* MODAL CONTENT */}
             <Modal show={show} onHide={() => setShow(false)}>
