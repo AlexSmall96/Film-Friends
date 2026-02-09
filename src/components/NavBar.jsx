@@ -58,6 +58,34 @@ const NavBar = () => {
         setExpanded(false)
     }
 
+    const linkTextAndActions = [
+        {
+            href:'/profile/', 
+            text: 'Profile', 
+            icon: 'fa-solid fa-user', 
+            onClick: handleClick,
+            disabled: false
+        }, {
+            href:'/account/security', 
+            text: 'Account Security', 
+            icon: 'fa-solid fa-shield-halved', 
+            onClick: handleClick,
+            disabled: false
+        },{
+            href:'/', 
+            text: 'Logout', 
+            icon: 'fa-solid fa-right-from-bracket', 
+            onClick: handleLogout,
+            disabled: false
+        },{
+            href:'/account/delete', 
+            text: isGuest ? " Cannot delete account as guest" : " Delete Account", 
+            icon: 'fa-solid fa-trash-can', 
+            onClick: isGuest? null : handleClick, 
+            disabled: isGuest
+        }
+    ]
+
     // Logged in icons: films, friends, reccomendations, user dropdown
     const loggedInIcons = 
     <>  
@@ -75,36 +103,23 @@ const NavBar = () => {
         <Nav.Link href='/reccomendations' onClick={handleClick} className={width <= 767? styles.underlineSection:''}>
             <i className="fa-solid fa-envelope"></i> Reccomendations
         </Nav.Link>
+
         {/* MOBILE VIEW */}
         {width <= 767?(
             <div className={styles.underlineSection}>
-                <Nav.Link href={`/profile/`} onClick={handleClick}>
-                    <i className="fa-solid fa-user"></i> Profile
-                </Nav.Link>
-                <Nav.Link href={`/account/security`} onClick={handleClick}>
-                    <i className="fa-solid fa-shield-halved"></i> Account Security
-                </Nav.Link>
-                <Nav.Link href='/' onClick={handleLogout}  >
-                    <i className="fa-solid fa-right-from-bracket"></i> Logout
-                </Nav.Link>
-                <Nav.Link href={`/account/delete`} onClick={handleClick} disabled={isGuest}>
-                    <i className="fa-solid fa-trash-can"></i> {isGuest ? " Guest users cannot delete account" : " Delete Account"}
-                </Nav.Link>
+                {linkTextAndActions.map((link, index) => (
+                    <Nav.Link key={index} href={link.href} onClick={link.onClick} disabled={link.disabled} className={link.disabled? appStyles.grey: ''}>
+                        <i className={link.icon}></i> {link.text}
+                    </Nav.Link>                    
+                ))}
             </div>
         ):(
             <NavDropdown title={<Avatar src={currentUser?.user.image} />} id="basic-nav-dropdown" drop='start'>
-                <NavDropdown.Item href={`/profile/`}>
-                    <i className="fa-solid fa-user"></i> Profile
-                </NavDropdown.Item>
-                <NavDropdown.Item href={`/account/security`}>
-                    <i className="fa-solid fa-shield-halved"></i> Account Security
-                </NavDropdown.Item>
-                <NavDropdown.Item href='/' onClick={handleLogout}>
-                    <i className="fa-solid fa-right-from-bracket"></i> Logout
-                </NavDropdown.Item>
-                <NavDropdown.Item href={`/account/delete`} disabled={isGuest}>
-                    <i className="fa-solid fa-trash-can"></i> {isGuest ? " Guest users cannot delete account" : " Delete Account"}
-                </NavDropdown.Item>
+                {linkTextAndActions.map((link, index) => (
+                    <NavDropdown.Item key={index} href={link.href} onClick={link.onClick} disabled={link.disabled}>
+                        <i className={link.icon}></i> {link.text}
+                    </NavDropdown.Item>                    
+                ))}
             </NavDropdown>
         )}
 
