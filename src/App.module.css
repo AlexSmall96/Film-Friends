@@ -38,7 +38,9 @@
 }
 
 .grey {
-  color: grey
+  color: grey;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 /* Margins, Paddings and Borders */
