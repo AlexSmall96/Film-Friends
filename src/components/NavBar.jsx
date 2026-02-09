@@ -11,7 +11,7 @@ import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 
 const NavBar = () => {
     // Contexts
-    const { currentUser, setCurrentUser  } = useCurrentUser()
+    const { currentUser, setCurrentUser, setIsGuest, isGuest } = useCurrentUser()
     // Hooks
     const { width } = useWindowDimensions();
     const history = useHistory()
@@ -34,6 +34,7 @@ const NavBar = () => {
         try {
             const response = await axiosReq.post('/users/guest-login')
             setCurrentUser({user:response.data.user, token: response.data.token})
+            setIsGuest(true)
             history.push('/')
         } catch (err){
             console.log(err)
@@ -86,7 +87,7 @@ const NavBar = () => {
                 <Nav.Link href='/' onClick={handleLogout}  >
                     <i className="fa-solid fa-right-from-bracket"></i> Logout
                 </Nav.Link>
-                <Nav.Link href={`/account/delete`} onClick={handleClick}>
+                <Nav.Link href={`/account/delete`} onClick={handleClick} disabled={isGuest}>
                     <i className="fa-solid fa-trash-can"></i> Delete Account 
                 </Nav.Link>
             </div>
@@ -101,7 +102,7 @@ const NavBar = () => {
                 <NavDropdown.Item href='/' onClick={handleLogout}>
                     <i className="fa-solid fa-right-from-bracket"></i> Logout
                 </NavDropdown.Item>
-                <NavDropdown.Item href={`/account/delete`}>
+                <NavDropdown.Item href={`/account/delete`} disabled={isGuest}>
                     <i className="fa-solid fa-trash-can"></i> Delete Account
                 </NavDropdown.Item>
             </NavDropdown>
