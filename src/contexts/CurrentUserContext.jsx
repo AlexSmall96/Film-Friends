@@ -48,9 +48,12 @@ export const CurrentUserProvider = ({ children }) => {
 
     // Define accountDeleted bool var to display message on home screen after deletion
     const [accountDeleted, setAccountDeleted] = useState(false)
-    
+
+    // Define isGuest bool var to disable certain features for guest users
+    const [isGuest, setIsGuest] = useState(false)
+
     return (
-        <CurrentUserContext.Provider value={{currentUser, setCurrentUser, accountDeleted, setAccountDeleted}}>
+        <CurrentUserContext.Provider value={{currentUser, setCurrentUser, accountDeleted, setAccountDeleted, isGuest, setIsGuest}}>
             {children}
         </CurrentUserContext.Provider>
     )
