@@ -102,6 +102,10 @@ https://medium.com/@elijahechekwu/sending-emails-in-node-express-js-with-nodemai
 
 // Check email address
 router.post('/data/users/sendEmail', async (req, res) => {
+    const isGuest = req.user.isGuest
+    if (isGuest) {
+        return res.status(403).send({error: {message: 'Guest users are not authorized to reset password or verify email address.'}})
+    }
     try {
         const email = req.body.email
         const account = await User.findOne({email})
@@ -174,6 +178,10 @@ const uploadToCloudinary = async (path, folder = "my-profile") => {
 
 // Edit profile
 router.patch('/data/users/me', auth, async (req, res) => {
+    const isGuest = req.user.isGuest
+    if (isGuest) {
+        return res.status(403).send({error: {message: 'Guest users are not authorized to edit profile data.'}})
+    }
     if (req.body.currPassword){
         try {
             const user = await User.findById(req.user._id)
@@ -212,6 +220,10 @@ router.patch('/data/users/me', auth, async (req, res) => {
 
 // Reset password
 router.patch('/data/users/resetPassword', async (req, res) => {
+    const isGuest = req.user.isGuest
+    if (isGuest) {
+        return res.status(403).send({error: {message: 'Guest users are not authorized to reset password.'}})
+    }
     try {
         console.log(req.body)
         const email = req.body.email
@@ -227,6 +239,10 @@ router.patch('/data/users/resetPassword', async (req, res) => {
 
 // Delete account
 router.delete('/data/users/me', auth, async (req, res) => {
+    const isGuest = req.user.isGuest
+    if (isGuest) {
+        return res.status(403).send({error: {message: 'Guest users are not authorized to delete account.'}})
+    }
     try {
         await User.findOneAndDelete({_id: req.user._id})
         await Film.deleteMany({owner: req.user._id})
