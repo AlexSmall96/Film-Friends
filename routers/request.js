@@ -106,6 +106,10 @@ router.patch('/data/requests/:id', auth, async (req, res) => {
 
 // Delete request
 router.delete('/data/requests/:id', auth, async (req, res) => {
+    const isGuest = req.user.isGuest
+    if (isGuest) {
+        return res.status(403).send({error: {message: 'Guest users are not authorized to delete friend requests.'}})
+    }
     const _id = req.params.id
     try {
         const request = await Request.findOneAndDelete({_id:_id})
