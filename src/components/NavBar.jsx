@@ -7,12 +7,14 @@ import appStyles from '../App.module.css'
 import styles from '../styles/NavBar.module.css'
 import useWindowDimensions from '../hooks/useWindowDimensions';
 import Avatar from './Avatar';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 
 const NavBar = () => {
     // Contexts
     const { currentUser, setCurrentUser  } = useCurrentUser()
     // Hooks
     const { width } = useWindowDimensions();
+    const history = useHistory()
     // Initialize state variables
     const [expanded, setExpanded] = useState(false)
     // Handle logout
@@ -23,6 +25,17 @@ const NavBar = () => {
             setCurrentUser(null)
             setExpanded(false)
         } catch(err) {
+            console.log(err)
+        }
+    }
+
+    // Handle login to guest account
+    const handleGuestLogin = async () => {
+        try {
+            const response = await axiosReq.post('/users/guest-login')
+            setCurrentUser({user:response.data.user, token: response.data.token})
+            history.push('/')
+        } catch (err){
             console.log(err)
         }
     }
@@ -105,6 +118,9 @@ const NavBar = () => {
         <Nav.Link href='/login' onClick={handleClick}>
             <i className="fa-solid fa-right-to-bracket"></i> Login
         </Nav.Link>   
+        <Nav.Link onClick={handleGuestLogin}>
+            <i className="fa-solid fa-person-circle-question"></i> Continue as Guest
+        </Nav.Link>
     </>
 
     return (
