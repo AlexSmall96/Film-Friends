@@ -88,7 +88,7 @@ const NavBar = () => {
                     <i className="fa-solid fa-right-from-bracket"></i> Logout
                 </Nav.Link>
                 <Nav.Link href={`/account/delete`} onClick={handleClick} disabled={isGuest}>
-                    <i className="fa-solid fa-trash-can"></i> Delete Account 
+                    <i className="fa-solid fa-trash-can"></i> {isGuest ? " Guest users cannot delete account" : " Delete Account"}
                 </Nav.Link>
             </div>
         ):(
@@ -103,7 +103,7 @@ const NavBar = () => {
                     <i className="fa-solid fa-right-from-bracket"></i> Logout
                 </NavDropdown.Item>
                 <NavDropdown.Item href={`/account/delete`} disabled={isGuest}>
-                    <i className="fa-solid fa-trash-can"></i> Delete Account
+                    <i className="fa-solid fa-trash-can"></i> {isGuest ? " Guest users cannot delete account" : " Delete Account"}
                 </NavDropdown.Item>
             </NavDropdown>
         )}
