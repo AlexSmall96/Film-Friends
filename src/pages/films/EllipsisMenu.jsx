@@ -119,7 +119,7 @@ const EllipsisMenu = ({updateViewingData}) => {
                             <p onClick={viewingData.public && friends.length? handleShowModal : null} className={viewingData.public && friends.length? styles.clickable: appStyles.grey}><i className="fa-solid fa-share"></i> Share</p>
                             <p className={styles.clickable} onClick={() => updateViewingData(null, null, !viewingData.public)}><i className="fa-solid fa-pen"></i> {viewingData.public? 'Make Private': 'Make Public'}</p>
                             <p className={isGuest ? appStyles.grey: styles.clickable} onClick={() => { if (!isGuest) handleDelete() }}><i className="fa-regular fa-trash-can" disabled={isGuest}></i> 
-                                {isGuest? ' Guest users cannot remove films' : ' Remove from Watchlist'}
+                                {isGuest? ' Cannot remove as guest' : ' Remove from Watchlist'}
                             </p>
                         </div>)
                     }
