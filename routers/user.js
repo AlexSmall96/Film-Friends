@@ -43,6 +43,18 @@ router.post('/data/users/login', async (req, res) => {
     }
 })
 
+// Login to guest account
+router.post('/data/users/guest-login', async (_req, res) => {
+    try {
+        const user = await User.findById(process.env.GUEST_USER_ID)
+        if (!user) return res.status(500).send("Guest user not found");
+        const token = await user.generateAuthToken()
+        res.send({ user, token })
+    } catch (e) {
+        res.status(400).send()
+    }
+})
+
 // Logout
 router.post('/data/users/logout', auth, async (req, res) => {
     try {
