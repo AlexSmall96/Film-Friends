@@ -83,8 +83,8 @@ router.get('/data/users/:id', auth, async (req, res) => {
             // The returned score is the average of this difference across all common films
             const initialValue = 0
             const callBack = (total, rating) => (1 - 0.2 * Math.abs(rating.viewerRating - rating.ownerRating)) + total
-            const ratingsSum = ratings.reduce(callBack, initialValue)
-            const similarity = ratingsSum / ratings.length
+            const ratingsSum = ratings.length > 0 ? ratings.reduce(callBack, initialValue) : 0
+            const similarity = ratings.length > 0 ? Math.round(ratingsSum / ratings.length * 100) / 100 : 0
             // Send profile data and similarity score
             return res.status(200).send({ profile, similarity })
         }
