@@ -55,34 +55,26 @@ const NavBar = () => {
     })
 
     const handleClick = () => {
-        setExpanded(false)
+        if (!isGuest) {
+            setExpanded(false)
+        }
     }
+
+    const guestMessage = <><i className="fa-solid fa-triangle-exclamation"></i> Sign up to access:</>
 
     const linkTextAndActions = [
         {
             href:'/profile/', 
             text: 'Profile', 
             icon: 'fa-solid fa-user', 
-            onClick: handleClick,
-            disabled: false
         }, {
             href:'/account/security', 
             text: 'Account Security', 
             icon: 'fa-solid fa-shield-halved', 
-            onClick: handleClick,
-            disabled: false
-        },{
-            href:'/', 
-            text: 'Logout', 
-            icon: 'fa-solid fa-right-from-bracket', 
-            onClick: handleLogout,
-            disabled: false
         },{
             href:'/account/delete', 
-            text: isGuest ? " Cannot delete account as guest" : " Delete Account", 
+            text: "Delete Account", 
             icon: 'fa-solid fa-trash-can', 
-            onClick: isGuest? null : handleClick, 
-            disabled: isGuest
         }
     ]
 
@@ -100,23 +92,27 @@ const NavBar = () => {
         <Nav.Link href='/friends' onClick={handleClick}>
             <i className="fa-solid fa-users"></i> Friends
         </Nav.Link>
-        <Nav.Link href='/reccomendations' onClick={handleClick} className={width <= 767? styles.underlineSection:''}>
+        <Nav.Link href='/reccomendations' onClick={handleClick}>
             <i className="fa-solid fa-envelope"></i> Reccomendations
         </Nav.Link>
-
+        <Nav.Link href='/' onClick={handleLogout} className={width <= 767? styles.underlineSection:''}>
+            <i className="fa-solid fa-right-from-bracket"></i> Logout
+        </Nav.Link>
         {/* MOBILE VIEW */}
         {width <= 767?(
             <div className={styles.underlineSection}>
+                {isGuest && guestMessage}
                 {linkTextAndActions.map((link, index) => (
-                    <Nav.Link key={index} href={link.href} onClick={link.onClick} disabled={link.disabled} className={link.disabled? appStyles.grey: ''}>
+                    <Nav.Link key={index} href={link.href} onClick={handleClick} disabled={isGuest} className={isGuest && appStyles.grey}>
                         <i className={link.icon}></i> {link.text}
                     </Nav.Link>                    
                 ))}
             </div>
         ):(
             <NavDropdown title={<Avatar src={currentUser?.user.image} />} id="basic-nav-dropdown" drop='start'>
+                {isGuest && <span className={appStyles.horizMargin}>{guestMessage}</span>}
                 {linkTextAndActions.map((link, index) => (
-                    <NavDropdown.Item key={index} href={link.href} onClick={link.onClick} disabled={link.disabled}>
+                    <NavDropdown.Item key={index} href={link.href} disabled={isGuest} className={isGuest && appStyles.grey}>
                         <i className={link.icon}></i> {link.text}
                     </NavDropdown.Item>                    
                 ))}
