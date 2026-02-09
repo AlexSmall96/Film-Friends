@@ -98,6 +98,10 @@ router.patch('/data/reccomendations/:id', auth, async (req, res) => {
 
 // Delete a reccomendation
 router.delete('/data/reccomendations/:id', auth, async (req, res) => {
+    const isGuest = req.user.isGuest
+    if (isGuest) {
+        return res.status(403).send({error: {message: 'Guest users are not authorized to delete reccomendations.'}})
+    }
     const _id = req.params.id
     try {
         const reccomendation = await Reccomendation.findById(_id)
