@@ -28,8 +28,12 @@ The application is deployed on Render. It normally runs on the free tier, with t
 | Express  |    Bootstrap  | Mongoose       | React Testing Library   | Postman        |  
 
 
-## 🧪 Testing 
-See [Testing](https://github.com/AlexSmall96/Film-Friends/blob/main/TESTING.MD)
+## 🧪 Testing Strategy
+The application uses automated component and integration testing to verify frontend behaviour and backend API functionality.
+
+- Frontend: Component and integration tests were written using Vitest and React Testing Library to verify component behaviour, user interactions, and complete frontend workflows.
+- Backend: Integration tests were written using Supertest for each API router, testing endpoints and their interactions with the database.
+- Manual testing: Key user journeys and functionality were manually tested throughout development.
 
 ## 👤Author
 Alex Small | [GitHub](https://github.com/AlexSmall96) | [LinkedIn](https://www.linkedin.com/in/alex-small-a8977116b/)
