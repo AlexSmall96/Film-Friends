@@ -1,5 +1,5 @@
 # Film Friends
-Film Friends is a film sharing and reviewing app, where users can save and rate films, add each other as friends, and share recommendations. The back end is built using node.js and the Express framework, while the front end is built in React. The film data is taken from the [Open Movie Database (OMDB) API](https://www.omdbapi.com/).
+Film Friends is a full-stack film sharing and reviewing app where users can save and rate films, add friends, and share recommendations. The frontend is built with React and Bootstrap, with a Node.js and Express backend using MongoDB for data persistence. Film data is provided by the [Open Movie Database (OMDB) API](https://www.omdbapi.com/).
 
 ![](documentation/screenshots/amiresponsive.jpg)
 
@@ -7,9 +7,19 @@ Film Friends is a film sharing and reviewing app, where users can save and rate 
 
 ### [📖 Repository](https://github.com/AlexSmall96/Film-Friends)
 
-Users can search and view film details while not logged in. To access the full functionality of the site, an account must be created. Alternatively, clicking 'Continue as Guest' will log the user in to a shared guest account. Guests can save and rate films, add friends, and send recommendations. In order to preserve data, destructive actions like profile updates, film removal, and account deletion are disabled for guests. 
+### Features
 
-The site is currently deployed to Render, defaulting to its free tier. During application periods, the paid starter tier is used to eliminate loading times.
+Users can search for films and view film details without creating an account. Registered users can:
+
+- Search and save films
+- Rate films and track watched status
+- Add and manage friends
+- Send and receive film recommendations
+- Manage their profile
+
+A shared Guest Account is also available for exploring the site's functionality without creating an account. Destructive actions such as profile updates, film removal, and account deletion are disabled for guests to prevent data loss.
+
+The application is deployed on Render. It normally runs on the free tier, with the paid Starter tier used during application periods to eliminate cold-start loading times.
 
 ## 💻 Tech Stack
 | Backend | Frontend | Database | Testing (Vitest) | Other Tools |
