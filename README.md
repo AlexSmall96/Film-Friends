@@ -3,18 +3,13 @@ Film Friends is a film sharing and reviewing app, where users can save and rate 
 
 ![](documentation/screenshots/amiresponsive.jpg)
 
-Further previews of the site can be found in [Testing](https://github.com/AlexSmall96/Film-Friends/blob/main/TESTING.MD).
-## 🌐 Live Site
-[https://film-friends.onrender.com/](https://film-friends.onrender.com/)
+### [🌐 Live Site](https://film-friends.onrender.com)
+
+### [📖 Repository](https://github.com/AlexSmall96/Film-Friends)
 
 Users can search and view film details while not logged in. To access the full functionality of the site, an account must be created. Alternatively, clicking 'Continue as Guest' will log the user in to a shared guest account. Guests can save and rate films, add friends, and send recommendations. In order to preserve data, destructive actions like profile updates, film removal, and account deletion are disabled for guests. 
 
 The site is currently deployed to Render, defaulting to its free tier. During application periods, the paid starter tier is used to eliminate loading times.
-
-## Repository
-[https://github.com/AlexSmall96/Film-Friends](https://github.com/AlexSmall96/Film-Friends)
-## Author
-Alex Small | [GitHub](https://github.com/AlexSmall96) | [LinkedIn](https://www.linkedin.com/in/alex-small-a8977116b/)
 
 ## 🧪 Testing 
 See [Testing](https://github.com/AlexSmall96/Film-Friends/blob/main/TESTING.MD)
@@ -63,6 +58,9 @@ Testing
     - Balsamiq
     - lucidchart
     - screentogif
+
+## 👤Author
+Alex Small | [GitHub](https://github.com/AlexSmall96) | [LinkedIn](https://www.linkedin.com/in/alex-small-a8977116b/)
 
 ## 🤝 Credits
 ### Courses
