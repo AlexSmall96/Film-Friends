@@ -31,20 +31,6 @@ The application is deployed on Render. It normally runs on the free tier, with t
 ## 🧪 Testing 
 See [Testing](https://github.com/AlexSmall96/Film-Friends/blob/main/TESTING.MD)
 
-### 🗃️ Database Schema
-The below diagram was used to model the database schema. An interactive version can be found [here](https://dbdocs.io/alex.small739/Film-Friends-Db-Schema?view=relationships).
-Descriptions of the database tables and fields are as follows:
-- **Users**
-Contains User's login and profile data.
-- **Films**
-Films that the user has saved. The public field determines whether or not others can see the film on the user's list. The watched field is true or false depending on whether the user has watched the film or not.
-- **Requests**
-Friend requests between users. Sender is the user ID of the requester, and receiver is the user ID of the user receiving the friend request. Accepted is true or false depending if the user has accepted the friend request.
-- **Recommendations**
-Film recommendations between users. Sender is the id of the user that sends the recommendation and receiver is the id of the user that receives the recommendation. A request must be made and accepted prior to sending a recommendation. 
-
-![Database Schema](documentation/db/Film-Friends-Db-Schema.png)
-
 ## 👤Author
 Alex Small | [GitHub](https://github.com/AlexSmall96) | [LinkedIn](https://www.linkedin.com/in/alex-small-a8977116b/)
 
