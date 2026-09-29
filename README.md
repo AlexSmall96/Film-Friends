@@ -11,6 +11,13 @@ Users can search and view film details while not logged in. To access the full f
 
 The site is currently deployed to Render, defaulting to its free tier. During application periods, the paid starter tier is used to eliminate loading times.
 
+## 💻 Tech Stack
+| Backend | Frontend | Database | Testing (Vitest) | Other Tools |
+| :------:|:------: | :------: | :------: | :------: |
+| Node.js   |   React      | MongodDB       | Supertest         |  GitHub       |  
+| Express  |    Bootstrap  | Mongoose       | React Testing Library   | Postman        |  
+
+
 ## 🧪 Testing 
 See [Testing](https://github.com/AlexSmall96/Film-Friends/blob/main/TESTING.MD)
 
@@ -27,37 +34,6 @@ Friend requests between users. Sender is the user ID of the requester, and recei
 Film recommendations between users. Sender is the id of the user that sends the recommendation and receiver is the id of the user that receives the recommendation. A request must be made and accepted prior to sending a recommendation. 
 
 ![Database Schema](documentation/db/Film-Friends-Db-Schema.png)
-
-## 🖥️ Programming Languages, Frameworks, and Libraries used
-- Backend
-    - Node.js
-    - Express
-- Frontend
-    - React
-    - React Bootstrap
-Testing
-    - Vitest
-    - Supertest
-    - React Testing Library
-    - Mock Service Worker
-
-## Other technologies used
-- Deployment
-    - Render
-- Database
-    - MongoDB
-    - MongoDB Compass
-    - Studio 3T
-- Images
-    - Cloudinary
-- Development
-    - VS code
-    - GitHub
-- Documentation
-    - dbdocs
-    - Balsamiq
-    - lucidchart
-    - screentogif
 
 ## 👤Author
 Alex Small | [GitHub](https://github.com/AlexSmall96) | [LinkedIn](https://www.linkedin.com/in/alex-small-a8977116b/)
